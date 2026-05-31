@@ -1,14 +1,13 @@
 import Link from "next/link";
-import type { KaraokeEvent, Venue } from "@/types";
+import type { VenueListing } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 
 type VenueCardProps = {
-  venue: Venue;
-  event?: KaraokeEvent;
+  venue: VenueListing;
 };
 
-function getListingBadge(venue: Venue) {
+function getListingBadge(venue: VenueListing) {
   if (venue.listingStatus === "verified") {
     return <Badge variant="verified">Verified</Badge>;
   }
@@ -24,22 +23,24 @@ function getListingBadge(venue: Venue) {
   return null;
 }
 
-export function VenueCard({ venue, event }: VenueCardProps) {
+export function VenueCard({ venue }: VenueCardProps) {
   return (
     <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 transition hover:border-fuchsia-400/40">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <div className="mb-3 flex flex-wrap gap-2">
             {getListingBadge(venue)}
+
             <Badge variant={venue.profileTier === "premium" ? "premium" : "basic"}>
               {venue.profileTier === "premium" ? "Premium" : "Basic"}
             </Badge>
+
             {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
           </div>
 
           <Link href={`/venues/${venue.slug}`}>
             <h3 className="text-2xl font-black text-white hover:text-fuchsia-200">
-              {venue.name}
+              {venue.venueName}
             </h3>
           </Link>
 
@@ -47,11 +48,10 @@ export function VenueCard({ venue, event }: VenueCardProps) {
             {venue.neighborhood} • {venue.address}
           </p>
 
-          {event && (
-            <p className="mt-3 text-sm font-semibold text-cyan-200">
-              {event.dayOfWeek} • {event.startTime} to {event.endTime}
-            </p>
-          )}
+          <p className="mt-3 text-sm font-semibold text-cyan-200">
+            {venue.karaokeDay} • {venue.startTime} to {venue.endTime}
+            {venue.hostName ? ` • Host: ${venue.hostName}` : ""}
+          </p>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
             {venue.description}

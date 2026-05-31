@@ -1,13 +1,9 @@
 import { Button } from "@/components/ui/Button";
 import { VenueCard } from "@/components/venue/VenueCard";
-import { karaokeEvents, venues } from "@/data/mockData";
+import { getFeaturedVenueListings } from "@/lib/venueData";
 
 export default function Home() {
-  const featuredVenues = venues.filter((venue) => venue.isFeatured);
-  const featuredEvents = featuredVenues.map((venue) => ({
-    venue,
-    event: karaokeEvents.find((event) => event.venueId === venue.id),
-  }));
+  const featuredVenues = getFeaturedVenueListings();
 
   return (
     <main>
@@ -55,8 +51,8 @@ export default function Home() {
         </div>
 
         <div className="grid gap-5">
-          {featuredEvents.map(({ venue, event }) => (
-            <VenueCard key={venue.id} venue={venue} event={event} />
+          {featuredVenues.map((venue) => (
+            <VenueCard key={venue.id} venue={venue} />
           ))}
         </div>
       </section>
