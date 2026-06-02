@@ -1,0 +1,11 @@
+id	venue_slug	karaoke_day	start_time	end_time	kj_name	event_name	recurring	status	notes	reservation_link	qa_status	source_url
+night-001	the-shout-house	Friday	8:00 PM	1:30 AM	DJ Rick Rock	Downtown Sing-Off	TRUE	active	High-energy late-night crowd.	https://example.com/shout-house/reserve	seeded	https://example.com/shout-house
+night-002	turf-club	Thursday	7:30 PM	12:00 AM	Julie Jams	Neighborhood Karaoke	TRUE	active	Beginner-friendly regulars night.		seeded	
+night-003	the-office-bar	Saturday	9:00 PM	1:00 AM	Karaoke Kay	Saturday Karaoke	TRUE	needs_verification	AI-scouted listing; confirm before making plans.		scouted	
+night-004	carriage-house-karaoke	Friday	6:00 PM	2:00 AM		Private Room Karaoke	TRUE	active	Group room packages available.		seeded	
+night-005	carriage-house-karaoke	Saturday	6:00 PM	2:00 AM		Private Room Karaoke	TRUE	active	Weekend private-room karaoke blocks.		seeded	
+night-006	lamplighter	Wednesday	9:00 PM	1:30 AM		Classic Karaoke Night	TRUE	active	Classic dive-bar karaoke with loyal regulars.		seeded	
+night-007	redwood-room	Tuesday	8:30 PM	12:30 AM	North Park Karaoke Co.	Craft Karaoke	TRUE	active	Two-for-one duet signups before 9 PM.	https://example.com/redwood-room/reserve	seeded	https://example.com/redwood-room
+night-008	harbor-lights-cantina	Sunday	7:00 PM	11:00 PM		Waterfront Karaoke	TRUE	needs_verification	AI-scouted waterfront karaoke lead.		scouted	
+night-009	south-park-social	Saturday	8:00 PM	12:30 AM	Sonia Sings	South Park Singalong	TRUE	active	Group tables and patio hangs.	https://example.com/south-park-social/reserve	seeded	https://example.com/south-park-social
+night-010	south-park-social	Thursday	7:00 PM	11:00 PM	Sonia Sings	Weeknight Warmup	TRUE	active	Lower-key weeknight karaoke for locals.	https://example.com/south-park-social/reserve	seeded	https://example.com/south-park-social

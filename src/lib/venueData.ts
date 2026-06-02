@@ -1,8 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { ListingStatus, ProfileTier, VenueListing } from "@/types";
-
-type VenueRow = Record<string, string>;
+import { parseTsv, type TsvRow } from "@/lib/tsv";
 
 const DATA_PATH = path.join(process.cwd(), "public", "data", "venues.tsv");
 
@@ -43,25 +42,7 @@ function normalizeListingStatus(value: string | undefined): ListingStatus {
   return "ai_scouted";
 }
 
-function parseTsv(content: string): VenueRow[] {
-  const lines = content
-    .split(/\r?\n/)
-    .map((line) => line.trimEnd())
-    .filter(Boolean);
-
-  const headers = lines[0]?.split("\t") ?? [];
-
-  return lines.slice(1).map((line) => {
-    const values = line.split("\t");
-
-    return headers.reduce<VenueRow>((row, header, index) => {
-      row[header] = values[index] ?? "";
-      return row;
-    }, {});
-  });
-}
-
-function rowToVenueListing(row: VenueRow): VenueListing {
+function rowToVenueListing(row: TsvRow): VenueListing {
   return {
     id: row.id,
     venueName: row.venue_name,

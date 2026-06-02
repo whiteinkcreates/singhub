@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/Button";
 import { VenueCard } from "@/components/venue/VenueCard";
+import { getEventsByVenueSlug } from "@/lib/eventData";
 import { getFeaturedVenueListings } from "@/lib/venueData";
 
 export default function Home() {
   const featuredVenues = getFeaturedVenueListings();
+  const eventsByVenueSlug = getEventsByVenueSlug();
 
   return (
     <main>
@@ -52,7 +54,11 @@ export default function Home() {
 
         <div className="grid gap-5">
           {featuredVenues.map((venue) => (
-            <VenueCard key={venue.id} venue={venue} />
+            <VenueCard
+              key={venue.id}
+              venue={venue}
+              events={eventsByVenueSlug[venue.slug]}
+            />
           ))}
         </div>
       </section>

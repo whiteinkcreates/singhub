@@ -1,10 +1,12 @@
 import Link from "next/link";
-import type { VenueListing } from "@/types";
+import type { KaraokeNightEvent, VenueListing } from "@/types";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { EventSummary } from "@/components/venue/EventSummary";
 
 type VenueCardProps = {
   venue: VenueListing;
+  events?: KaraokeNightEvent[];
 };
 
 function getListingBadge(venue: VenueListing) {
@@ -23,7 +25,7 @@ function getListingBadge(venue: VenueListing) {
   return null;
 }
 
-export function VenueCard({ venue }: VenueCardProps) {
+export function VenueCard({ venue, events = [] }: VenueCardProps) {
   return (
     <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 transition hover:border-fuchsia-400/40">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -48,10 +50,7 @@ export function VenueCard({ venue }: VenueCardProps) {
             {venue.neighborhood} • {venue.address}
           </p>
 
-          <p className="mt-3 text-sm font-semibold text-cyan-200">
-            {venue.karaokeDay} • {venue.startTime} to {venue.endTime}
-            {venue.hostName ? ` • Host: ${venue.hostName}` : ""}
-          </p>
+          <EventSummary events={events} fallbackVenue={venue} compact />
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
             {venue.description}

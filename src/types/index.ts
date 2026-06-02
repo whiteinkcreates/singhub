@@ -33,3 +33,17 @@ export type VenueListing = {
   bookingContact?: string;
   isFeatured: boolean;
 };
+
+export type KaraokeNightEvent = {
+  id: string;
+  venueSlug: string;
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+  kjName?: string;
+  eventName?: string;
+  notes?: string;
+  status?: string;
+  reservationLink?: string;
+  recurring: boolean;
+};
