@@ -1,0 +1,6 @@
+event_id	venue_id	venue_name	venue_slug	karaoke_day	start_time	end_time	host_name	recurring	active_status	event_notes	event_confidence_score	source_1	source_2	last_verified	review_status
+event-0001	venue-0001	HIVE	hive	Sun-Thurs	4 PM	12 AM, 4 PM–2 AM		TRUE	active	Generated from cleaned venue schedule. Verify exact nightly KJ/host before publishing as verified.	73	Uploaded sheets		2026-06-02	needs_review
+event-0002	venue-0002	The Lamplighter	the-lamplighter	Daily	9 PM	2 AM		TRUE	active	Generated from cleaned venue schedule. Verify exact nightly KJ/host before publishing as verified.	95	Uploaded sheets	https://www.thelamplightersd.com/	2026-06-02	verified
+event-0003	venue-0003	Hearth House	hearth-house	TBD	TBD	TBD		TRUE	active	Generated from cleaned venue schedule. Verify exact nightly KJ/host before publishing as verified.	30	Uploaded sheets		2026-06-02	needs_review
+event-0004	venue-0004	Norms	norms	TBD	TBD	TBD		TRUE	active	Generated from cleaned venue schedule. Verify exact nightly KJ/host before publishing as verified.	35	Uploaded sheets		2026-06-02	needs_review
+event-0005	venue-0005	Double Deuce	double-deuce	TBD	TBD	TBD		TRUE	active	Generated from cleaned venue schedule. Verify exact nightly KJ/host before publishing as verified.	50	Uploaded sheets		2026-06-02	needs_review
