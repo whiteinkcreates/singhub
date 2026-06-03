@@ -1,4 +1,5 @@
 import { VenueCard } from "@/components/venue/VenueCard";
+import { groupKaraokeEventsByVenueSlug } from "@/lib/eventData";
 import { getVenueListings } from "@/lib/venueData";
 
 export const metadata = {
@@ -8,6 +9,7 @@ export const metadata = {
 
 export default function FindKaraokePage() {
   const venues = getVenueListings();
+  const eventsByVenueSlug = groupKaraokeEventsByVenueSlug();
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
@@ -37,7 +39,7 @@ export default function FindKaraokePage() {
 
         <div className="grid gap-5">
           {venues.map((venue) => (
-            <VenueCard key={venue.id} venue={venue} />
+            <VenueCard key={venue.id} venue={venue} events={eventsByVenueSlug[venue.slug] ?? []} />
           ))}
         </div>
       </section>

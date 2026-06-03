@@ -1,9 +1,11 @@
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import type { VenueListing } from "@/types";
+import { EventSchedule } from "@/components/venue/EventSchedule";
+import type { KaraokeEventListing, VenueListing } from "@/types";
 
 type VenueProfileProps = {
   venue: VenueListing;
+  events?: KaraokeEventListing[];
 };
 
 function DetailRow({ label, value }: { label: string; value?: string | null }) {
@@ -21,7 +23,7 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
-function PremiumProfile({ venue }: VenueProfileProps) {
+function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
   return (
     <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
       <section className="rounded-[2rem] border border-fuchsia-400/30 bg-fuchsia-400/10 p-6 shadow-2xl shadow-fuchsia-950/30 md:p-8">
@@ -49,6 +51,8 @@ function PremiumProfile({ venue }: VenueProfileProps) {
             <Badge key={tag}>{tag}</Badge>
           ))}
         </div>
+
+        <EventSchedule events={events} />
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
           <DetailRow label="Specials" value={venue.specials} />
@@ -83,7 +87,7 @@ function PremiumProfile({ venue }: VenueProfileProps) {
   );
 }
 
-function BasicProfile({ venue }: VenueProfileProps) {
+function BasicProfile({ venue, events = [] }: VenueProfileProps) {
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_22rem]">
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 md:p-8">
@@ -110,6 +114,8 @@ function BasicProfile({ venue }: VenueProfileProps) {
             <Badge key={tag}>{tag}</Badge>
           ))}
         </div>
+
+        <EventSchedule events={events} />
       </section>
 
       <aside className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6">
@@ -146,10 +152,10 @@ function DetailLine({ label, value }: { label: string; value?: string | null }) 
   );
 }
 
-export function VenueProfile({ venue }: VenueProfileProps) {
+export function VenueProfile({ venue, events = [] }: VenueProfileProps) {
   if (venue.profileTier === "premium") {
-    return <PremiumProfile venue={venue} />;
+    return <PremiumProfile venue={venue} events={events} />;
   }
 
-  return <BasicProfile venue={venue} />;
+  return <BasicProfile venue={venue} events={events} />;
 }

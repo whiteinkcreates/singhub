@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { VenueProfile } from "@/components/venue/VenueProfile";
+import { getKaraokeEventsByVenueSlug } from "@/lib/eventData";
 import { getVenueListingBySlug, getVenueListings } from "@/lib/venueData";
 
 type VenuePageProps = {
@@ -36,6 +37,8 @@ export default async function VenuePage({ params }: VenuePageProps) {
     notFound();
   }
 
+  const events = getKaraokeEventsByVenueSlug(slug);
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
       <div className="mb-8">
@@ -43,7 +46,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
           ← Back to all listings
         </Button>
       </div>
-      <VenueProfile venue={venue} />
+      <VenueProfile venue={venue} events={events} />
     </main>
   );
 }
