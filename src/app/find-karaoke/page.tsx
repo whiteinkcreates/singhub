@@ -1,3 +1,4 @@
+import { VenueMap } from "@/components/map/VenueMap";
 import { VenueCard } from "@/components/venue/VenueCard";
 import { groupKaraokeEventsByVenueSlug } from "@/lib/eventData";
 import { getVenueListings } from "@/lib/venueData";
@@ -27,6 +28,10 @@ export default function FindKaraokePage() {
         </p>
       </section>
 
+      <div className="mt-10">
+        <VenueMap venues={venues} />
+      </div>
+
       <section className="mt-10">
         <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
@@ -39,7 +44,11 @@ export default function FindKaraokePage() {
 
         <div className="grid gap-5">
           {venues.map((venue) => (
-            <VenueCard key={venue.id} venue={venue} events={eventsByVenueSlug[venue.slug] ?? []} />
+            <VenueCard
+              key={venue.id}
+              venue={venue}
+              events={eventsByVenueSlug[venue.slug] ?? []}
+            />
           ))}
         </div>
       </section>
