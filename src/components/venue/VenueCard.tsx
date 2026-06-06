@@ -7,6 +7,7 @@ import { EventSchedule } from "@/components/venue/EventSchedule";
 type VenueCardProps = {
   venue: VenueListing;
   events?: KaraokeEventListing[];
+  distanceLabel?: string;
 };
 
 function getListingBadge(venue: VenueListing) {
@@ -25,7 +26,7 @@ function getListingBadge(venue: VenueListing) {
   return null;
 }
 
-export function VenueCard({ venue, events = [] }: VenueCardProps) {
+export function VenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
   return (
     <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 transition hover:border-fuchsia-400/40">
       <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -49,6 +50,12 @@ export function VenueCard({ venue, events = [] }: VenueCardProps) {
           <p className="mt-1 text-sm text-slate-400">
             {venue.neighborhood} • {venue.address}
           </p>
+
+          {distanceLabel && (
+            <p className="mt-2 inline-flex rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-cyan-100">
+              {distanceLabel}
+            </p>
+          )}
 
           {events.length > 0 ? (
             <EventSchedule events={events} variant="compact" />

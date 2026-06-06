@@ -1,9 +1,17 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import L from "leaflet";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMap,
+} from "react-leaflet";
 import type { ListingStatus, VenueListing } from "@/types";
+import type { Coordinates } from "@/utils/distance";
 
 type Coordinate = [number, number];
 
@@ -20,6 +28,12 @@ type MappableVenueListing = VenueListing & {
 
 type VenueMapClientProps = {
   venues: MappableVenueListing[];
+  userLocation?: Coordinates | null;
+};
+
+type MapBoundsControllerProps = {
+  venues: MappableVenueListing[];
+  userLocation?: Coordinates | null;
 };
 
 const SAN_DIEGO_CENTER: Coordinate = [32.7157, -117.1611];
@@ -97,14 +111,84 @@ function getVenueIcon(status: ListingStatus) {
   });
 }
 
+function getUserIcon() {
+  return L.divIcon({
+    className: "singhub-user-location-marker",
+    html: `
+      <span
+        aria-hidden="true"
+        style="
+          align-items: center;
+          background: radial-gradient(circle at center, #6ee7b7, #059669);
+          border: 3px solid rgba(255, 255, 255, 0.95);
+          border-radius: 9999px;
+          box-shadow: 0 0 0 5px rgba(6, 78, 59, 0.35), 0 0 30px rgba(110, 231, 183, 0.8);
+          color: #022c22;
+          display: flex;
+          font-size: 18px;
+          font-weight: 900;
+          height: 34px;
+          justify-content: center;
+          line-height: 1;
+          width: 34px;
+        "
+        title="Your location"
+      >●</span>
+    `,
+    iconAnchor: [17, 17],
+    popupAnchor: [0, -18],
+  });
+}
+
 function getStatusLabel(status: ListingStatus) {
   return markerStyles[status].label;
 }
 
-export default function VenueMapClient({ venues }: VenueMapClientProps) {
-  const center = getMapCenter(venues);
+function MapBoundsController({
+  venues,
+  userLocation,
+}: MapBoundsControllerProps) {
+  const map = useMap();
 
-  if (venues.length === 0) {
+  useEffect(() => {
+    const points: Coordinate[] = venues.map((venue) => [
+      venue.latitude,
+      venue.longitude,
+    ]);
+
+    if (userLocation) {
+      points.push([userLocation.latitude, userLocation.longitude]);
+    }
+
+    if (points.length === 0) {
+      map.setView(SAN_DIEGO_CENTER, DEFAULT_ZOOM);
+      return;
+    }
+
+    if (points.length === 1) {
+      map.setView(points[0], 13);
+      return;
+    }
+
+    const bounds = L.latLngBounds(points);
+    map.fitBounds(bounds, {
+      padding: [42, 42],
+      maxZoom: userLocation ? 13 : DEFAULT_ZOOM,
+    });
+  }, [map, userLocation, venues]);
+
+  return null;
+}
+
+export default function VenueMapClient({
+  venues,
+  userLocation = null,
+}: VenueMapClientProps) {
+  const center = userLocation
+    ? [userLocation.latitude, userLocation.longitude] as Coordinate
+    : getMapCenter(venues);
+
+  if (venues.length === 0 && !userLocation) {
     return (
       <div className="flex min-h-72 items-center justify-center bg-slate-950/70 p-6 text-center text-sm leading-6 text-slate-300">
         No venue listings have usable coordinates yet. The full listing grid is
@@ -117,14 +201,34 @@ export default function VenueMapClient({ venues }: VenueMapClientProps) {
     <div className="relative h-[28rem] overflow-hidden bg-slate-950 md:h-[34rem]">
       <MapContainer
         center={center}
-        zoom={DEFAULT_ZOOM}
+        zoom={userLocation ? 12 : DEFAULT_ZOOM}
         scrollWheelZoom={false}
         className="h-full w-full"
       >
+        <MapBoundsController venues={venues} userLocation={userLocation} />
+
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+
+        {userLocation && (
+          <Marker
+            position={[userLocation.latitude, userLocation.longitude]}
+            icon={getUserIcon()}
+          >
+            <Popup>
+              <div className="space-y-1 text-slate-900">
+                <p className="text-base font-black text-slate-950">
+                  You are here
+                </p>
+                <p className="text-sm text-slate-700">
+                  SingHUB is sorting venue cards by distance from this point.
+                </p>
+              </div>
+            </Popup>
+          </Marker>
+        )}
 
         {venues.map((venue) => (
           <Marker
