@@ -2,9 +2,11 @@
 
 import dynamic from "next/dynamic";
 import type { VenueListing } from "@/types";
+import { hasValidCoordinates, type Coordinates } from "@/utils/distance";
 
 export type VenueMapProps = {
   venues: VenueListing[];
+  userLocation?: Coordinates | null;
 };
 
 const VenueMapClient = dynamic(() => import("./VenueMapClient"), {
@@ -20,26 +22,11 @@ const legendItems = [
   { label: "Verified", className: "bg-cyan-300 shadow-cyan-300/60" },
   { label: "Claimed", className: "bg-fuchsia-400 shadow-fuchsia-400/60" },
   { label: "AI-Scouted", className: "bg-violet-400 shadow-violet-400/60" },
+  { label: "You", className: "bg-emerald-300 shadow-emerald-300/60" },
 ];
 
-type MappableVenueListing = VenueListing & {
-  latitude: number;
-  longitude: number;
-};
-
-function hasUsableCoordinates(
-  venue: VenueListing,
-): venue is MappableVenueListing {
-  return (
-    typeof venue.latitude === "number" &&
-    Number.isFinite(venue.latitude) &&
-    typeof venue.longitude === "number" &&
-    Number.isFinite(venue.longitude)
-  );
-}
-
-export function VenueMap({ venues }: VenueMapProps) {
-  const mappableVenues = venues.filter(hasUsableCoordinates);
+export function VenueMap({ venues, userLocation = null }: VenueMapProps) {
+  const mappableVenues = venues.filter(hasValidCoordinates);
 
   return (
     <section className="overflow-hidden rounded-[2rem] border border-cyan-300/20 bg-slate-950/80 shadow-2xl shadow-cyan-950/30">
@@ -49,11 +36,14 @@ export function VenueMap({ venues }: VenueMapProps) {
             Karaoke map
           </p>
           <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">
-            See tonight&apos;s spots across San Diego
+            {userLocation
+              ? "Karaoke spots around you"
+              : "See tonight's spots across San Diego"}
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-            Showing {mappableVenues.length} mapped karaoke spots. Some listings
-            may need verification.
+            Showing {mappableVenues.length} mapped karaoke spot
+            {mappableVenues.length === 1 ? "" : "s"}. Some listings may need
+            verification.
           </p>
         </div>
 
@@ -70,7 +60,7 @@ export function VenueMap({ venues }: VenueMapProps) {
         </div>
       </div>
 
-      <VenueMapClient venues={mappableVenues} />
+      <VenueMapClient venues={mappableVenues} userLocation={userLocation} />
     </section>
   );
 }

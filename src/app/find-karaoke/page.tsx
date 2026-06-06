@@ -1,5 +1,4 @@
-import { VenueMap } from "@/components/map/VenueMap";
-import { VenueCard } from "@/components/venue/VenueCard";
+import { FindKaraokeExperience } from "@/components/find/FindKaraokeExperience";
 import { groupKaraokeEventsByVenueSlug } from "@/lib/eventData";
 import { getVenueListings } from "@/lib/venueData";
 
@@ -23,35 +22,15 @@ export default function FindKaraokePage() {
         </h1>
         <p className="mt-5 text-lg leading-8 text-slate-300">
           Browse every Phase 1 listing loaded from public/data/venues.tsv. Use
-          the cards to compare neighborhoods, times, hosts, profile tiers, and
-          verification status.
+          your location to find karaoke nearby, compare neighborhoods, check
+          event schedules, and spot listings that still need verification.
         </p>
       </section>
 
-      <div className="mt-10">
-        <VenueMap venues={venues} />
-      </div>
-
-      <section className="mt-10">
-        <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h2 className="text-2xl font-black text-white">All listings</h2>
-            <p className="mt-1 text-sm text-slate-400">
-              Showing {venues.length} TSV-powered venue listings.
-            </p>
-          </div>
-        </div>
-
-        <div className="grid gap-5">
-          {venues.map((venue) => (
-            <VenueCard
-              key={venue.id}
-              venue={venue}
-              events={eventsByVenueSlug[venue.slug] ?? []}
-            />
-          ))}
-        </div>
-      </section>
+      <FindKaraokeExperience
+        venues={venues}
+        eventsByVenueSlug={eventsByVenueSlug}
+      />
     </main>
   );
 }
