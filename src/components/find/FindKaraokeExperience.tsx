@@ -20,11 +20,38 @@ type LocationStatus = "idle" | "loading" | "success" | "unsupported" | "denied" 
 
 type RadiusFilter = "all" | 5 | 10 | 25;
 
+type DayName =
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday";
+
+type DayFilter = "all" | "tonight" | DayName;
+
 const radiusFilters: { label: string; value: RadiusFilter }[] = [
   { label: "All", value: "all" },
   { label: "Within 5 mi", value: 5 },
   { label: "Within 10 mi", value: 10 },
   { label: "Within 25 mi", value: 25 },
+];
+
+const dayNames: DayName[] = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
+const dayFilters: { label: string; value: DayFilter }[] = [
+  { label: "All nights", value: "all" },
+  { label: "Tonight", value: "tonight" },
+  ...dayNames.map((day) => ({ label: day, value: day })),
 ];
 
 function getLocationMessage(status: LocationStatus) {
@@ -43,6 +70,65 @@ function getLocationMessage(status: LocationStatus) {
   return "";
 }
 
+function getTonightDayName(): DayName {
+  return dayNames[new Date().getDay()];
+}
+
+function normalizeDayText(value: string | undefined) {
+  return value?.trim().toLowerCase() ?? "";
+}
+
+function textIncludesDay(value: string | undefined, day: DayName) {
+  return normalizeDayText(value).includes(day.toLowerCase());
+}
+
+function eventMatchesDay(event: KaraokeEventListing, day: DayName) {
+  return textIncludesDay(event.karaokeDay, day);
+}
+
+function venueMatchesDay(
+  venue: VenueListing,
+  events: KaraokeEventListing[],
+  dayFilter: DayFilter,
+) {
+  if (dayFilter === "all") {
+    return true;
+  }
+
+  const selectedDay = dayFilter === "tonight" ? getTonightDayName() : dayFilter;
+
+  if (events.length > 0) {
+    return events.some((event) => eventMatchesDay(event, selectedDay));
+  }
+
+  return textIncludesDay(venue.karaokeDay, selectedDay);
+}
+
+function getEventsForDay(
+  events: KaraokeEventListing[],
+  dayFilter: DayFilter,
+) {
+  if (dayFilter === "all") {
+    return events;
+  }
+
+  const selectedDay = dayFilter === "tonight" ? getTonightDayName() : dayFilter;
+
+  return events.filter((event) => eventMatchesDay(event, selectedDay));
+}
+
+function getDayFilterLabel(dayFilter: DayFilter) {
+  if (dayFilter === "all") {
+    return "all nights";
+  }
+
+  if (dayFilter === "tonight") {
+    return `tonight (${getTonightDayName()})`;
+  }
+
+  return dayFilter;
+}
+
 export function FindKaraokeExperience({
   venues,
   eventsByVenueSlug,
@@ -51,6 +137,7 @@ export function FindKaraokeExperience({
   const [locationStatus, setLocationStatus] =
     useState<LocationStatus>("idle");
   const [radiusFilter, setRadiusFilter] = useState<RadiusFilter>("all");
+  const [dayFilter, setDayFilter] = useState<DayFilter>("all");
 
   const venueDistances = useMemo(() => {
     if (!userLocation) {
@@ -74,12 +161,18 @@ export function FindKaraokeExperience({
     }, new Map());
   }, [userLocation, venues]);
 
+  const dayFilteredVenues = useMemo(() => {
+    return venues.filter((venue) =>
+      venueMatchesDay(venue, eventsByVenueSlug[venue.slug] ?? [], dayFilter),
+    );
+  }, [dayFilter, eventsByVenueSlug, venues]);
+
   const visibleVenues = useMemo(() => {
     if (!userLocation) {
-      return venues;
+      return dayFilteredVenues;
     }
 
-    const venuesWithDistance = venues
+    const venuesWithDistance = dayFilteredVenues
       .map((venue) => ({
         venue,
         distance: venueDistances.get(venue.id),
@@ -105,10 +198,24 @@ export function FindKaraokeExperience({
         return first.distance - second.distance;
       })
       .map(({ venue }) => venue);
-  }, [radiusFilter, userLocation, venueDistances, venues]);
+  }, [dayFilteredVenues, radiusFilter, userLocation, venueDistances]);
+
+  const filteredEventsByVenueSlug = useMemo(() => {
+    return visibleVenues.reduce<Record<string, KaraokeEventListing[]>>(
+      (groups, venue) => {
+        groups[venue.slug] = getEventsForDay(
+          eventsByVenueSlug[venue.slug] ?? [],
+          dayFilter,
+        );
+        return groups;
+      },
+      {},
+    );
+  }, [dayFilter, eventsByVenueSlug, visibleVenues]);
 
   const mappableVisibleVenueCount = visibleVenues.filter(hasValidCoordinates).length;
   const locationMessage = getLocationMessage(locationStatus);
+  const dayFilterLabel = getDayFilterLabel(dayFilter);
 
   function handleUseLocation() {
     if (!("geolocation" in navigator)) {
@@ -149,14 +256,14 @@ export function FindKaraokeExperience({
         <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-cyan-300">
-              Near Me
+              Karaoke Finder
             </p>
             <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">
-              Find karaoke around your location
+              Find karaoke by night and location
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              Use your location to sort SingHUB listings by distance and narrow
-              the map to karaoke spots nearby.
+              Filter by tonight or a specific day, then use your location to sort
+              SingHUB listings by distance and narrow the map to karaoke spots nearby.
             </p>
           </div>
 
@@ -170,34 +277,61 @@ export function FindKaraokeExperience({
           </button>
         </div>
 
-        {userLocation && (
-          <div className="mt-5 flex flex-wrap gap-2">
-            {radiusFilters.map((filter) => (
+        <div className="mt-6">
+          <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-slate-400">
+            Filter by day
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {dayFilters.map((filter) => (
               <button
-                key={filter.label}
+                key={filter.value}
                 type="button"
-                onClick={() => setRadiusFilter(filter.value)}
+                onClick={() => setDayFilter(filter.value)}
                 className={`rounded-full border px-4 py-2 text-sm font-bold transition ${
-                  radiusFilter === filter.value
-                    ? "border-cyan-300 bg-cyan-300 text-slate-950"
-                    : "border-white/10 bg-white/[0.04] text-slate-200 hover:border-cyan-300/60"
+                  dayFilter === filter.value
+                    ? "border-fuchsia-300 bg-fuchsia-300 text-slate-950"
+                    : "border-white/10 bg-white/[0.04] text-slate-200 hover:border-fuchsia-300/60"
                 }`}
               >
                 {filter.label}
               </button>
             ))}
           </div>
-        )}
+        </div>
 
         {userLocation && (
-          <p className="mt-4 text-sm font-semibold text-cyan-100">
-            Location found. Showing {visibleVenues.length} listing
-            {visibleVenues.length === 1 ? "" : "s"}
-            {radiusFilter === "all" ? "" : ` within ${radiusFilter} miles`} and{" "}
-            {mappableVisibleVenueCount} mapped marker
-            {mappableVisibleVenueCount === 1 ? "" : "s"}.
-          </p>
+          <div className="mt-6">
+            <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-slate-400">
+              Filter by distance
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {radiusFilters.map((filter) => (
+                <button
+                  key={filter.label}
+                  type="button"
+                  onClick={() => setRadiusFilter(filter.value)}
+                  className={`rounded-full border px-4 py-2 text-sm font-bold transition ${
+                    radiusFilter === filter.value
+                      ? "border-cyan-300 bg-cyan-300 text-slate-950"
+                      : "border-white/10 bg-white/[0.04] text-slate-200 hover:border-cyan-300/60"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
+
+        <p className="mt-5 text-sm font-semibold text-cyan-100">
+          Showing {visibleVenues.length} listing
+          {visibleVenues.length === 1 ? "" : "s"} for {dayFilterLabel}
+          {radiusFilter === "all" || !userLocation
+            ? ""
+            : ` within ${radiusFilter} miles`}
+          . {mappableVisibleVenueCount} mapped marker
+          {mappableVisibleVenueCount === 1 ? "" : "s"}.
+        </p>
 
         {locationMessage && (
           <p className="mt-4 rounded-2xl border border-fuchsia-300/20 bg-fuchsia-300/10 p-4 text-sm leading-6 text-fuchsia-100">
@@ -229,7 +363,7 @@ export function FindKaraokeExperience({
               <VenueCard
                 key={venue.id}
                 venue={venue}
-                events={eventsByVenueSlug[venue.slug] ?? []}
+                events={filteredEventsByVenueSlug[venue.slug] ?? []}
                 distanceLabel={
                   venueDistances.has(venue.id)
                     ? formatDistance(venueDistances.get(venue.id) as number)
@@ -240,8 +374,8 @@ export function FindKaraokeExperience({
           </div>
         ) : (
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 text-sm leading-6 text-slate-300">
-            No karaoke listings match this distance filter yet. Switch back to
-            All to keep browsing the full SingHUB venue index.
+            No karaoke listings match these filters yet. Try All nights, a
+            different day, or switch the distance filter back to All.
           </div>
         )}
       </section>
