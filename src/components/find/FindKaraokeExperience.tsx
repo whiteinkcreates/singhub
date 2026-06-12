@@ -54,6 +54,12 @@ const dayFilters: { label: string; value: DayFilter }[] = [
   ...dayNames.map((day) => ({ label: day, value: day })),
 ];
 
+const venueSearchAliases: Record<string, string[]> = {
+  "redwing-bar-grill": ["north park", "northpark", "30th street", "university heights"],
+  "the-ould-sod": ["adams avenue", "normal heights", "north park nearby"],
+  livewire: ["adams avenue", "normal heights", "north park nearby"],
+};
+
 function getLocationMessage(status: LocationStatus) {
   if (status === "unsupported") {
     return "Your browser does not support location lookup. You can still browse the full San Diego karaoke map.";
@@ -80,6 +86,10 @@ function normalizeDayText(value: string | undefined) {
 
 function normalizeSearchText(value: string | undefined) {
   return value?.trim().toLowerCase() ?? "";
+}
+
+function compactSearchText(value: string | undefined) {
+  return normalizeSearchText(value).replace(/[^a-z0-9]/g, "");
 }
 
 function textIncludesDay(value: string | undefined, day: DayName) {
@@ -114,6 +124,7 @@ function venueMatchesSearch(
   searchQuery: string,
 ) {
   const normalizedQuery = normalizeSearchText(searchQuery);
+  const compactQuery = compactSearchText(searchQuery);
 
   if (!normalizedQuery) {
     return true;
@@ -136,6 +147,7 @@ function venueMatchesSearch(
     venue.parkingInfo,
     venue.agePolicy,
     venue.coverCharge,
+    ...(venueSearchAliases[venue.slug] ?? []),
     ...venue.vibeTags,
     ...events.flatMap((event) => [
       event.hostName,
@@ -148,9 +160,15 @@ function venueMatchesSearch(
     ]),
   ];
 
-  return searchableValues.some((value) =>
-    normalizeSearchText(value).includes(normalizedQuery),
-  );
+  return searchableValues.some((value) => {
+    const normalizedValue = normalizeSearchText(value);
+    const compactValue = compactSearchText(value);
+
+    return (
+      normalizedValue.includes(normalizedQuery) ||
+      compactValue.includes(compactQuery)
+    );
+  });
 }
 
 function getEventsForDay(
