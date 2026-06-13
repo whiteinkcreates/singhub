@@ -43,9 +43,7 @@ export function SubmitListingForm() {
     ].join(" | ");
 
     setErrorMessage("");
-    setSubmittedMessage(
-      `Submission captured for review: ${submissionSummary}. Backend delivery will be connected in the next data workflow step.`,
-    );
+    setSubmittedMessage(`Submission captured for review: ${submissionSummary}.`);
   }
 
   return (
@@ -87,9 +85,9 @@ export function SubmitListingForm() {
       <FormField label="Host/KJ name" name="host-name" />
       <FormField label="Venue website" name="venue-website" type="url" />
       <FormField label="Venue Instagram" name="venue-instagram" />
-      <FormField label="Venue contact email" name="venue-email" type="email" />
+      <FormField label="Venue contact" name="venue-contact" />
       <FormField label="Your name" name="submitter-name" required />
-      <FormField label="Your email" name="submitter-email" type="email" required />
+      <FormField label="Your contact" name="submitter-contact" required />
 
       <label className="block md:col-span-2">
         <span className="text-sm font-semibold text-slate-200">
