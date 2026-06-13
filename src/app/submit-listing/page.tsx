@@ -17,7 +17,7 @@ export default function SubmitListingPage() {
         </h1>
         <p className="mt-5 text-lg leading-8 text-slate-300">
           Know a karaoke night missing from SingHUB? Send the venue, schedule,
-          links, and contact details so it can be reviewed for the Venue Index.
+          links, and info so it can be reviewed for the Venue Index.
         </p>
       </section>
 
