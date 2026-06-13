@@ -38,32 +38,39 @@ function getTrustCopy(venue: VenueListing) {
   return "AI-scouted listing. This karaoke lead may need confirmation before you make firm plans.";
 }
 
-function hasUsableValue(value: string | undefined) {
+function getUsableValue(value: string | undefined) {
   if (!value) {
-    return false;
+    return null;
   }
 
-  const normalizedValue = value.trim().toLowerCase();
+  const trimmedValue = value.trim();
+  const normalizedValue = trimmedValue.toLowerCase();
 
-  return normalizedValue.length > 0 && normalizedValue !== "tbd";
+  if (!trimmedValue || normalizedValue === "tbd") {
+    return null;
+  }
+
+  return trimmedValue;
 }
 
 function getDirectionsUrl(venue: VenueListing) {
-  if (!hasUsableValue(venue.address)) {
+  const address = getUsableValue(venue.address);
+
+  if (!address) {
     return null;
   }
 
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-    `${venue.venueName} ${venue.address}`,
+    `${venue.venueName} ${address}`,
   )}`;
 }
 
 function getInstagramUrl(instagram: string | undefined) {
-  if (!hasUsableValue(instagram)) {
+  const trimmedInstagram = getUsableValue(instagram);
+
+  if (!trimmedInstagram) {
     return null;
   }
-
-  const trimmedInstagram = instagram.trim();
 
   if (trimmedInstagram.startsWith("http")) {
     return trimmedInstagram;
@@ -94,6 +101,7 @@ function ExternalActionLink({
 export function VenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
   const directionsUrl = getDirectionsUrl(venue);
   const instagramUrl = getInstagramUrl(venue.instagram);
+  const websiteUrl = getUsableValue(venue.website);
 
   return (
     <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 transition hover:border-fuchsia-400/40">
@@ -154,8 +162,8 @@ export function VenueCard({ venue, events = [], distanceLabel }: VenueCardProps)
           {directionsUrl && (
             <ExternalActionLink href={directionsUrl}>Directions</ExternalActionLink>
           )}
-          {venue.website && (
-            <ExternalActionLink href={venue.website}>Website</ExternalActionLink>
+          {websiteUrl && (
+            <ExternalActionLink href={websiteUrl}>Website</ExternalActionLink>
           )}
           {instagramUrl && (
             <ExternalActionLink href={instagramUrl}>Instagram</ExternalActionLink>
