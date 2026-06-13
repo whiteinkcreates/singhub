@@ -7,14 +7,17 @@ export const metadata = {
 };
 
 type ClaimListingPageProps = {
-  searchParams?: {
+  searchParams?: Promise<{
     venue?: string;
-  };
+  }>;
 };
 
-export default function ClaimListingPage({ searchParams }: ClaimListingPageProps) {
+export default async function ClaimListingPage({
+  searchParams,
+}: ClaimListingPageProps) {
   const venues = getVenueListings();
-  const selectedVenueSlug = searchParams?.venue;
+  const resolvedSearchParams = await searchParams;
+  const selectedVenueSlug = resolvedSearchParams?.venue;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-14 md:py-20">
