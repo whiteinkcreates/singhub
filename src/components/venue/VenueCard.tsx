@@ -26,10 +26,78 @@ function getListingBadge(venue: VenueListing) {
   return null;
 }
 
+function getTrustCopy(venue: VenueListing) {
+  if (venue.listingStatus === "verified") {
+    return "Verified listing. Still check the venue before heading out, especially on holidays or event nights.";
+  }
+
+  if (venue.listingStatus === "claimed") {
+    return "Claimed listing. Venue or host details have been submitted, but schedules can still change.";
+  }
+
+  return "AI-scouted listing. This karaoke lead may need confirmation before you make firm plans.";
+}
+
+function hasUsableValue(value: string | undefined) {
+  if (!value) {
+    return false;
+  }
+
+  const normalizedValue = value.trim().toLowerCase();
+
+  return normalizedValue.length > 0 && normalizedValue !== "tbd";
+}
+
+function getDirectionsUrl(venue: VenueListing) {
+  if (!hasUsableValue(venue.address)) {
+    return null;
+  }
+
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+    `${venue.venueName} ${venue.address}`,
+  )}`;
+}
+
+function getInstagramUrl(instagram: string | undefined) {
+  if (!hasUsableValue(instagram)) {
+    return null;
+  }
+
+  const trimmedInstagram = instagram.trim();
+
+  if (trimmedInstagram.startsWith("http")) {
+    return trimmedInstagram;
+  }
+
+  return `https://www.instagram.com/${trimmedInstagram.replace(/^@/, "")}`;
+}
+
+function ExternalActionLink({
+  children,
+  href,
+}: {
+  children: string;
+  href: string;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex items-center justify-center rounded-full border border-cyan-400/50 bg-cyan-400/10 px-5 py-3 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-offset-2 focus:ring-offset-slate-950"
+    >
+      {children}
+    </a>
+  );
+}
+
 export function VenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
+  const directionsUrl = getDirectionsUrl(venue);
+  const instagramUrl = getInstagramUrl(venue.instagram);
+
   return (
     <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 transition hover:border-fuchsia-400/40">
-      <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+      <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
         <div>
           <div className="mb-3 flex flex-wrap gap-2">
             {getListingBadge(venue)}
@@ -76,17 +144,23 @@ export function VenueCard({ venue, events = [], distanceLabel }: VenueCardProps)
             ))}
           </div>
 
-          {venue.listingStatus === "ai_scouted" && (
-            <p className="mt-4 rounded-2xl border border-purple-400/20 bg-purple-400/10 p-3 text-xs leading-5 text-purple-100">
-              This listing was AI-scouted and may need verification. Claim or
-              update this listing to keep it accurate.
-            </p>
-          )}
+          <p className="mt-4 rounded-2xl border border-white/10 bg-slate-950/40 p-3 text-xs leading-5 text-slate-200">
+            {getTrustCopy(venue)}
+          </p>
         </div>
 
-        <div className="flex shrink-0 gap-3 md:flex-col">
+        <div className="flex shrink-0 flex-wrap gap-3 md:w-44 md:flex-col">
           <Button href={`/venues/${venue.slug}`}>View Profile</Button>
-          <Button href="/claim-listing" variant="ghost">
+          {directionsUrl && (
+            <ExternalActionLink href={directionsUrl}>Directions</ExternalActionLink>
+          )}
+          {venue.website && (
+            <ExternalActionLink href={venue.website}>Website</ExternalActionLink>
+          )}
+          {instagramUrl && (
+            <ExternalActionLink href={instagramUrl}>Instagram</ExternalActionLink>
+          )}
+          <Button href={`/claim-listing?venue=${venue.slug}`} variant="ghost">
             Claim/Update
           </Button>
         </div>
