@@ -6,8 +6,18 @@ export const metadata = {
   description: "Claim or update a SingHUB karaoke venue listing.",
 };
 
-export default function ClaimListingPage() {
+type ClaimListingPageProps = {
+  searchParams?: Promise<{
+    venue?: string;
+  }>;
+};
+
+export default async function ClaimListingPage({
+  searchParams,
+}: ClaimListingPageProps) {
   const venues = getVenueListings();
+  const resolvedSearchParams = await searchParams;
+  const selectedVenueSlug = resolvedSearchParams?.venue;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-14 md:py-20">
@@ -33,11 +43,12 @@ export default function ClaimListingPage() {
             </span>
             <select
               name="venue-slug"
+              defaultValue={selectedVenueSlug}
               className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white outline-none focus:border-emerald-400"
             >
               {venues.map((venue) => (
                 <option key={venue.id} value={venue.slug}>
-                  {venue.venueName} — {venue.neighborhood}
+                  {venue.venueName} - {venue.neighborhood}
                 </option>
               ))}
             </select>
