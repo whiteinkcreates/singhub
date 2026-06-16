@@ -155,7 +155,7 @@ function VenueActions({
   );
 }
 
-function PremiumVenueCard({ venue, events, distanceLabel }: VenueCardProps) {
+function PremiumVenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
   const directionsUrl = getDirectionsUrl(venue);
   const instagramUrl = getInstagramUrl(venue.instagram);
   const websiteUrl = getUsableValue(venue.website);
