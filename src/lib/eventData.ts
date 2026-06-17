@@ -10,6 +10,8 @@ const EVENTS_DATA_PATH = path.join(
   "events_by_night.tsv",
 );
 
+const JTS_TAVERN_EVENT_ID = "event-0008";
+
 function parseBoolean(value: string | undefined) {
   return value?.trim().toLowerCase() === "true";
 }
@@ -24,8 +26,30 @@ function parseNumber(value: string | undefined) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function rowToKaraokeEventListing(row: TsvRow): KaraokeEventListing {
+function applyEventCorrections(event: KaraokeEventListing): KaraokeEventListing {
+  if (event.eventId !== JTS_TAVERN_EVENT_ID) {
+    return event;
+  }
+
   return {
+    ...event,
+    venueId: "venue-0006",
+    venueName: "JT's Tavern",
+    venueSlug: "jts-tavern",
+    karaokeDay: "Daily",
+    startTime: "9pm",
+    endTime: "1am",
+    hostName: "Brian, Will, Chad (different days)",
+    recurring: true,
+    activeStatus: "active",
+    eventNotes: "Daily karaoke from 9pm to 1am. Hosts vary by day.",
+    eventConfidenceScore: 85,
+    reviewStatus: "needs_review",
+  };
+}
+
+function rowToKaraokeEventListing(row: TsvRow): KaraokeEventListing {
+  const event = {
     eventId: row.event_id,
     venueId: row.venue_id,
     venueName: row.venue_name,
@@ -40,6 +64,8 @@ function rowToKaraokeEventListing(row: TsvRow): KaraokeEventListing {
     eventConfidenceScore: parseNumber(row.event_confidence_score),
     reviewStatus: row.review_status || undefined,
   };
+
+  return applyEventCorrections(event);
 }
 
 export function getKaraokeEventListings(): KaraokeEventListing[] {
