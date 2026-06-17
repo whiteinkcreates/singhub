@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EventSchedule } from "@/components/venue/EventSchedule";
@@ -7,6 +8,34 @@ type VenueProfileProps = {
   venue: VenueListing;
   events?: KaraokeEventListing[];
 };
+
+const DEFAULT_BANNER_IMAGE_URL = "/images/venues/default-singhub-banner.svg";
+
+function getUsableValue(value: string | undefined) {
+  if (!value) {
+    return null;
+  }
+
+  const trimmedValue = value.trim();
+  const normalizedValue = trimmedValue.toLowerCase();
+
+  if (!trimmedValue || normalizedValue === "tbd") {
+    return null;
+  }
+
+  return trimmedValue;
+}
+
+function getBannerImageUrl(venue: VenueListing) {
+  return getUsableValue(venue.bannerImageUrl) ?? DEFAULT_BANNER_IMAGE_URL;
+}
+
+function getBannerImageAlt(venue: VenueListing) {
+  return (
+    getUsableValue(venue.bannerImageAlt) ??
+    `SingHUB premium karaoke listing banner for ${venue.venueName}`
+  );
+}
 
 function DetailRow({ label, value }: { label: string; value?: string | null }) {
   if (!value) {
@@ -23,42 +52,71 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
+function getProfileStatusBadge(venue: VenueListing) {
+  if (venue.listingStatus === "claimed") {
+    return <Badge variant="claimed">Claimed</Badge>;
+  }
+
+  if (venue.listingStatus === "verified") {
+    return <Badge variant="verified">Verified</Badge>;
+  }
+
+  return <Badge variant="ai">AI-Scouted</Badge>;
+}
+
 function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
+  const bannerImageUrl = getBannerImageUrl(venue);
+  const bannerImageAlt = getBannerImageAlt(venue);
+
   return (
     <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
-      <section className="rounded-[2rem] border border-fuchsia-400/30 bg-fuchsia-400/10 p-6 shadow-2xl shadow-fuchsia-950/30 md:p-8">
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="premium">Premium Profile</Badge>
-          <Badge variant={venue.listingStatus === "claimed" ? "claimed" : "verified"}>
-            {venue.listingStatus === "claimed" ? "Claimed" : "Verified"}
-          </Badge>
-          {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
+      <section className="overflow-hidden rounded-[2rem] border border-fuchsia-400/30 bg-slate-950 shadow-2xl shadow-fuchsia-950/30">
+        <div className="relative min-h-[28rem] overflow-hidden">
+          <img
+            src={bannerImageUrl}
+            alt={bannerImageAlt}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="eager"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/45 via-slate-950/45 to-slate-950" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/35 to-slate-950/70" />
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan-300 via-fuchsia-300 to-violet-400" />
+
+          <div className="relative flex min-h-[28rem] flex-col justify-end p-6 md:p-8">
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="premium">Premium Profile</Badge>
+              {getProfileStatusBadge(venue)}
+              {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
+            </div>
+
+            <h1 className="mt-5 text-4xl font-black text-white drop-shadow-2xl md:text-6xl">
+              {venue.venueName}
+            </h1>
+            <p className="mt-3 text-lg font-semibold text-cyan-200">
+              {venue.neighborhood} • {venue.karaokeDay} • {venue.startTime} to{" "}
+              {venue.endTime}
+            </p>
+            <p className="mt-5 max-w-3xl text-base leading-8 text-slate-100">
+              {venue.description}
+            </p>
+          </div>
         </div>
 
-        <h1 className="mt-5 text-4xl font-black text-white md:text-6xl">
-          {venue.venueName}
-        </h1>
-        <p className="mt-3 text-lg font-semibold text-cyan-200">
-          {venue.neighborhood} • {venue.karaokeDay} • {venue.startTime} to{" "}
-          {venue.endTime}
-        </p>
-        <p className="mt-5 max-w-3xl text-base leading-8 text-slate-200">
-          {venue.description}
-        </p>
+        <div className="p-6 md:p-8">
+          <div className="flex flex-wrap gap-2">
+            {venue.vibeTags.map((tag) => (
+              <Badge key={tag}>{tag}</Badge>
+            ))}
+          </div>
 
-        <div className="mt-6 flex flex-wrap gap-2">
-          {venue.vibeTags.map((tag) => (
-            <Badge key={tag}>{tag}</Badge>
-          ))}
-        </div>
+          <EventSchedule events={events} />
 
-        <EventSchedule events={events} />
-
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          <DetailRow label="Specials" value={venue.specials} />
-          <DetailRow label="Happy Hour" value={venue.happyHour} />
-          <DetailRow label="Food" value={venue.foodHighlights} />
-          <DetailRow label="Drinks" value={venue.drinkHighlights} />
+          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            <DetailRow label="Specials" value={venue.specials} />
+            <DetailRow label="Happy Hour" value={venue.happyHour} />
+            <DetailRow label="Food" value={venue.foodHighlights} />
+            <DetailRow label="Drinks" value={venue.drinkHighlights} />
+          </div>
         </div>
       </section>
 

@@ -42,6 +42,10 @@ function normalizeListingStatus(value: string | undefined): ListingStatus {
   return "ai_scouted";
 }
 
+function getOptionalValue(value: string | undefined) {
+  return value?.trim() || undefined;
+}
+
 function rowToVenueListing(row: TsvRow): VenueListing {
   return {
     id: row.id,
@@ -54,24 +58,26 @@ function rowToVenueListing(row: TsvRow): VenueListing {
     address: row.address,
     latitude: parseNumber(row.latitude),
     longitude: parseNumber(row.longitude),
-    website: row.website || undefined,
-    instagram: row.instagram || undefined,
+    website: getOptionalValue(row.website),
+    instagram: getOptionalValue(row.instagram),
+    bannerImageUrl: getOptionalValue(row.banner_image_url),
+    bannerImageAlt: getOptionalValue(row.banner_image_alt),
     karaokeDay: row.karaoke_day,
     startTime: row.start_time,
     endTime: row.end_time,
-    hostName: row.host_name || undefined,
+    hostName: getOptionalValue(row.host_name),
     vibeTags: parseTags(row.vibe_tags),
     description: row.description,
-    specials: row.specials || undefined,
-    happyHour: row.happy_hour || undefined,
-    foodHighlights: row.food_highlights || undefined,
-    drinkHighlights: row.drink_highlights || undefined,
-    parkingInfo: row.parking_info || undefined,
-    agePolicy: row.age_policy || undefined,
-    accessibilityNotes: row.accessibility_notes || undefined,
-    coverCharge: row.cover_charge || undefined,
-    reservationLink: row.reservation_link || undefined,
-    bookingContact: row.booking_contact || undefined,
+    specials: getOptionalValue(row.specials),
+    happyHour: getOptionalValue(row.happy_hour),
+    foodHighlights: getOptionalValue(row.food_highlights),
+    drinkHighlights: getOptionalValue(row.drink_highlights),
+    parkingInfo: getOptionalValue(row.parking_info),
+    agePolicy: getOptionalValue(row.age_policy),
+    accessibilityNotes: getOptionalValue(row.accessibility_notes),
+    coverCharge: getOptionalValue(row.cover_charge),
+    reservationLink: getOptionalValue(row.reservation_link),
+    bookingContact: getOptionalValue(row.booking_contact),
     isFeatured: parseBoolean(row.is_featured),
   };
 }

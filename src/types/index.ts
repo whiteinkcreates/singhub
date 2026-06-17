@@ -15,6 +15,8 @@ export type VenueListing = {
   longitude: number | null;
   website?: string;
   instagram?: string;
+  bannerImageUrl?: string;
+  bannerImageAlt?: string;
   karaokeDay: string;
   startTime: string;
   endTime: string;
