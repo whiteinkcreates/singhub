@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import type { KaraokeEventListing, VenueListing } from "@/types";
 import { Badge } from "@/components/ui/Badge";
@@ -15,6 +16,8 @@ type VenueActionUrls = {
   instagramUrl: string | null;
   websiteUrl: string | null;
 };
+
+const DEFAULT_BANNER_IMAGE_URL = "/images/venues/default-singhub-banner.svg";
 
 function getListingBadge(venue: VenueListing) {
   if (venue.listingStatus === "verified") {
@@ -57,6 +60,17 @@ function getUsableValue(value: string | undefined) {
   }
 
   return trimmedValue;
+}
+
+function getBannerImageUrl(venue: VenueListing) {
+  return getUsableValue(venue.bannerImageUrl) ?? DEFAULT_BANNER_IMAGE_URL;
+}
+
+function getBannerImageAlt(venue: VenueListing) {
+  return (
+    getUsableValue(venue.bannerImageAlt) ??
+    `SingHUB premium karaoke listing banner for ${venue.venueName}`
+  );
 }
 
 function getDirectionsUrl(venue: VenueListing) {
@@ -131,7 +145,7 @@ function VenueActions({
   premium?: boolean;
 }) {
   return (
-    <div className="flex shrink-0 flex-wrap gap-3 md:w-44 md:flex-col">
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
       <Button href={`/venues/${venue.slug}`}>{premium ? "Open Premium Profile" : "View Profile"}</Button>
       {directionsUrl && (
         <ExternalActionLink href={directionsUrl} featured={premium}>
@@ -160,93 +174,111 @@ function PremiumVenueCard({ venue, events = [], distanceLabel }: VenueCardProps)
   const instagramUrl = getInstagramUrl(venue.instagram);
   const websiteUrl = getUsableValue(venue.website);
   const premiumHighlights = getPremiumHighlights(venue);
+  const bannerImageUrl = getBannerImageUrl(venue);
+  const bannerImageAlt = getBannerImageAlt(venue);
 
   return (
-    <article className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/40 bg-gradient-to-br from-fuchsia-500/15 via-white/[0.06] to-cyan-400/10 p-5 shadow-2xl shadow-fuchsia-950/30 transition hover:border-fuchsia-200/70">
-      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan-300 via-fuchsia-300 to-violet-400" />
-      <div className="absolute -right-20 -top-24 h-48 w-48 rounded-full bg-fuchsia-400/20 blur-3xl" />
-      <div className="absolute -bottom-24 -left-20 h-48 w-48 rounded-full bg-cyan-300/10 blur-3xl" />
+    <article className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/50 bg-slate-950 shadow-2xl shadow-fuchsia-950/40 transition hover:border-fuchsia-200/80">
+      <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-cyan-400/35 via-transparent to-fuchsia-400/35 opacity-80" />
+      <div className="absolute inset-[1px] rounded-[1.95rem] bg-slate-950" />
 
-      <div className="relative flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-        <div className="min-w-0 flex-1">
-          <div className="mb-4 flex flex-wrap gap-2">
-            <Badge variant="premium">Premium Profile</Badge>
-            {getListingBadge(venue)}
-            {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
-          </div>
+      <div className="relative overflow-hidden rounded-[1.95rem]">
+        <div className="relative min-h-[26rem] overflow-hidden md:min-h-[30rem]">
+          <img
+            src={bannerImageUrl}
+            alt={bannerImageAlt}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/45 via-slate-950/45 to-slate-950" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/30 to-slate-950/70" />
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan-300 via-fuchsia-300 to-violet-400" />
 
-          <p className="mb-3 inline-flex rounded-full border border-fuchsia-300/40 bg-fuchsia-300/10 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100">
-            Enhanced karaoke listing
-          </p>
+          <div className="relative flex min-h-[26rem] flex-col justify-between p-5 md:min-h-[30rem] md:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap gap-2">
+                {distanceLabel && (
+                  <span className="inline-flex rounded-full border border-cyan-300/50 bg-slate-950/60 px-4 py-2 text-xs font-black uppercase tracking-[0.14em] text-cyan-100 backdrop-blur">
+                    {distanceLabel}
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="premium">Premium Profile</Badge>
+                {getListingBadge(venue)}
+                {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
+              </div>
+            </div>
 
-          <Link href={`/venues/${venue.slug}`}>
-            <h3 className="text-3xl font-black text-white hover:text-fuchsia-100 md:text-4xl">
-              {venue.venueName}
-            </h3>
-          </Link>
-
-          <p className="mt-2 text-sm font-semibold text-cyan-100">
-            {venue.neighborhood} • {venue.address}
-          </p>
-
-          {distanceLabel && (
-            <p className="mt-3 inline-flex rounded-full border border-cyan-300/40 bg-cyan-300/10 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-cyan-100">
-              {distanceLabel}
-            </p>
-          )}
-
-          <div className="mt-4 rounded-2xl border border-fuchsia-300/20 bg-slate-950/45 p-4">
-            <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-200">
-              Karaoke schedule
-            </p>
-            {events.length > 0 ? (
-              <EventSchedule events={events} variant="compact" />
-            ) : (
-              <p className="text-sm font-semibold text-cyan-200">
-                {venue.karaokeDay} • {venue.startTime} to {venue.endTime}
-                {venue.hostName ? ` • Host: ${venue.hostName}` : ""}
+            <div className="max-w-4xl">
+              <p className="mb-3 inline-flex rounded-full border border-fuchsia-300/40 bg-fuchsia-300/10 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100 backdrop-blur">
+                Enhanced karaoke listing
               </p>
-            )}
-          </div>
+              <Link href={`/venues/${venue.slug}`}>
+                <h3 className="text-4xl font-black leading-tight text-white drop-shadow-2xl hover:text-fuchsia-100 md:text-6xl">
+                  {venue.venueName}
+                </h3>
+              </Link>
+              <p className="mt-3 text-base font-semibold text-cyan-100 md:text-lg">
+                {venue.neighborhood} • {venue.address}
+              </p>
 
-          <p className="mt-4 max-w-3xl text-sm leading-6 text-slate-200">
+              <div className="mt-5 max-w-2xl rounded-2xl border border-cyan-300/30 bg-slate-950/65 p-4 backdrop-blur">
+                <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
+                  Karaoke schedule
+                </p>
+                {events.length > 0 ? (
+                  <EventSchedule events={events} variant="compact" />
+                ) : (
+                  <p className="text-sm font-semibold text-cyan-100 md:text-base">
+                    {venue.karaokeDay} • {venue.startTime} to {venue.endTime}
+                    {venue.hostName ? ` • Host: ${venue.hostName}` : ""}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative space-y-5 border-t border-white/10 bg-slate-950 p-5 md:p-8">
+          <p className="max-w-3xl text-base leading-7 text-slate-200">
             {venue.description}
           </p>
 
-          {premiumHighlights.length > 0 && (
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              {premiumHighlights.slice(0, 4).map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-2xl border border-white/10 bg-white/[0.06] p-3"
-                >
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-fuchsia-200">
-                    {item.label}
-                  </p>
-                  <p className="mt-1 text-sm leading-5 text-slate-100">{item.value}</p>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
             {venue.vibeTags.map((tag) => (
               <Badge key={tag}>{tag}</Badge>
             ))}
           </div>
 
-          <p className="mt-4 rounded-2xl border border-fuchsia-300/20 bg-slate-950/50 p-3 text-xs leading-5 text-fuchsia-50">
+          {premiumHighlights.length > 0 && (
+            <div className="grid gap-3 md:grid-cols-4">
+              {premiumHighlights.slice(0, 4).map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-white/10 bg-white/[0.06] p-4"
+                >
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-fuchsia-200">
+                    {item.label}
+                  </p>
+                  <p className="mt-2 text-sm leading-5 text-slate-100">{item.value}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <VenueActions
+            venue={venue}
+            directionsUrl={directionsUrl}
+            instagramUrl={instagramUrl}
+            websiteUrl={websiteUrl}
+            premium
+          />
+
+          <p className="rounded-2xl border border-fuchsia-300/20 bg-slate-950/80 p-3 text-xs leading-5 text-fuchsia-50">
             {getTrustCopy(venue)}
           </p>
         </div>
-
-        <VenueActions
-          venue={venue}
-          directionsUrl={directionsUrl}
-          instagramUrl={instagramUrl}
-          websiteUrl={websiteUrl}
-          premium
-        />
       </div>
     </article>
   );
@@ -309,12 +341,15 @@ function BasicVenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
           </p>
         </div>
 
-        <VenueActions
-          venue={venue}
-          directionsUrl={directionsUrl}
-          instagramUrl={instagramUrl}
-          websiteUrl={websiteUrl}
-        />
+        <div className="flex shrink-0 flex-wrap gap-3 md:w-44 md:flex-col">
+          <Button href={`/venues/${venue.slug}`}>View Profile</Button>
+          {directionsUrl && <ExternalActionLink href={directionsUrl}>Directions</ExternalActionLink>}
+          {websiteUrl && <ExternalActionLink href={websiteUrl}>Website</ExternalActionLink>}
+          {instagramUrl && <ExternalActionLink href={instagramUrl}>Instagram</ExternalActionLink>}
+          <Button href={`/claim-listing?venue=${venue.slug}`} variant="ghost">
+            Claim/Update
+          </Button>
+        </div>
       </div>
     </article>
   );
