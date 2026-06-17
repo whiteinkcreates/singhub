@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Default SingHUB venue banner</title>
+  <desc id="desc">A neon SingHUB karaoke banner with stage lights, microphone graphics, and a dark nightlife background.</desc>
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="18%" r="85%">
+      <stop offset="0%" stop-color="#371169"/>
+      <stop offset="45%" stop-color="#081226"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </radialGradient>
+    <linearGradient id="neon" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="50%" stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="stage" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.4"/>
+      <stop offset="55%" stop-color="#f472b6" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <pattern id="dots" width="38" height="38" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="2" fill="#ffffff" opacity="0.08"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bgGlow)"/>
+  <rect width="1600" height="900" fill="url(#dots)"/>
+  <path d="M0 210 C260 120 360 300 560 210 C760 120 940 80 1170 165 C1360 235 1470 180 1600 105 L1600 0 L0 0 Z" fill="#f472b6" opacity="0.09"/>
+  <path d="M0 760 C300 620 510 800 820 680 C1080 580 1260 700 1600 560 L1600 900 L0 900 Z" fill="#22d3ee" opacity="0.08"/>
+
+  <g opacity="0.9">
+    <path d="M305 112 L530 810" stroke="#22d3ee" stroke-width="8" opacity="0.12"/>
+    <path d="M1290 112 L1070 810" stroke="#f472b6" stroke-width="8" opacity="0.14"/>
+    <path d="M700 0 L770 690" stroke="#a78bfa" stroke-width="6" opacity="0.1"/>
+    <path d="M900 0 L830 690" stroke="#f472b6" stroke-width="6" opacity="0.1"/>
+  </g>
+
+  <g transform="translate(735 96)" filter="url(#glow)">
+    <circle cx="65" cy="65" r="58" fill="#111827" stroke="url(#neon)" stroke-width="7"/>
+    <path d="M65 23 L75 54 L108 54 L82 73 L92 104 L65 85 L38 104 L48 73 L22 54 L55 54 Z" fill="url(#neon)" opacity="0.95"/>
+  </g>
+
+  <g transform="translate(260 250)" filter="url(#glow)">
+    <rect x="0" y="0" width="1080" height="360" rx="44" fill="#020617" opacity="0.68" stroke="url(#neon)" stroke-width="5"/>
+    <rect x="28" y="28" width="1024" height="304" rx="34" fill="url(#stage)" opacity="0.75"/>
+
+    <g transform="translate(110 78)">
+      <circle cx="72" cy="72" r="54" fill="none" stroke="#22d3ee" stroke-width="14"/>
+      <rect x="116" y="108" width="42" height="160" rx="20" transform="rotate(-35 137 188)" fill="#f472b6"/>
+      <line x1="46" y1="72" x2="98" y2="72" stroke="#f8fafc" stroke-width="12" stroke-linecap="round"/>
+      <line x1="72" y1="46" x2="72" y2="98" stroke="#f8fafc" stroke-width="12" stroke-linecap="round"/>
+      <circle cx="196" cy="72" r="10" fill="#22d3ee"/>
+      <path d="M215 56 v75 q0 26 -26 26" fill="none" stroke="#22d3ee" stroke-width="9" stroke-linecap="round"/>
+    </g>
+
+    <text x="395" y="145" font-family="Arial, Helvetica, sans-serif" font-size="94" font-weight="900" fill="#ffffff" letter-spacing="2">SINGHUB</text>
+    <text x="400" y="220" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="800" fill="#67e8f9" letter-spacing="8">KARAOKE NEAR YOU</text>
+    <text x="400" y="278" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600" fill="#fbcfe8">Venue photo coming soon</text>
+  </g>
+
+  <g transform="translate(0 655)" opacity="0.72">
+    <rect x="0" y="0" width="1600" height="245" fill="#020617" opacity="0.45"/>
+    <circle cx="230" cy="90" r="7" fill="#22d3ee"/>
+    <circle cx="310" cy="125" r="5" fill="#f472b6"/>
+    <circle cx="1220" cy="88" r="7" fill="#a78bfa"/>
+    <circle cx="1325" cy="132" r="5" fill="#22d3ee"/>
+  </g>
+</svg>
