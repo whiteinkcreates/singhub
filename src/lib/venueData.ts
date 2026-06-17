@@ -4,6 +4,7 @@ import type { ListingStatus, ProfileTier, VenueListing } from "@/types";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
 
 const DATA_PATH = path.join(process.cwd(), "public", "data", "venues.tsv");
+const JTS_TAVERN_VENUE_ID = "venue-0006";
 
 function parseBoolean(value: string | undefined) {
   return value?.trim().toLowerCase() === "true";
@@ -46,8 +47,39 @@ function getOptionalValue(value: string | undefined) {
   return value?.trim() || undefined;
 }
 
-function rowToVenueListing(row: TsvRow): VenueListing {
+function applyVenueCorrections(venue: VenueListing): VenueListing {
+  if (venue.id !== JTS_TAVERN_VENUE_ID) {
+    return venue;
+  }
+
   return {
+    ...venue,
+    venueName: "JT's Tavern",
+    slug: "jts-tavern",
+    profileTier: "premium",
+    listingStatus: "ai_scouted",
+    city: "San Diego",
+    neighborhood: "Mission Gorge / Grantville",
+    address: "5821 Mission Gorge Rd, San Diego, CA 92120",
+    latitude: 32.7809,
+    longitude: -117.0983,
+    instagram: "@jts_tavern",
+    karaokeDay: "Daily",
+    startTime: "9pm",
+    endTime: "1am",
+    hostName: "Brian, Will, Chad (different days)",
+    vibeTags: ["karaoke every day", "games", "local favorite", "lively", "no cover"],
+    description:
+      "Neighborhood tavern known for karaoke, games, simple food, and a lively local atmosphere.",
+    foodHighlights: "Basic bar bites",
+    parkingInfo: "Lot in back",
+    coverCharge: "None",
+    isFeatured: false,
+  };
+}
+
+function rowToVenueListing(row: TsvRow): VenueListing {
+  const venue = {
     id: row.id,
     venueName: row.venue_name,
     slug: row.slug,
@@ -80,6 +112,8 @@ function rowToVenueListing(row: TsvRow): VenueListing {
     bookingContact: getOptionalValue(row.booking_contact),
     isFeatured: parseBoolean(row.is_featured),
   };
+
+  return applyVenueCorrections(venue);
 }
 
 export function getVenueListings(): VenueListing[] {
