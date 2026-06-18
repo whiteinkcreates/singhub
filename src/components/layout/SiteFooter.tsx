@@ -7,8 +7,9 @@ export function SiteFooter() {
         <div>
           <p className="font-semibold text-white">SingHUB</p>
           <p className="mt-2 max-w-2xl">
-            Phase 1 MVP finder for San Diego karaoke nights. Listings are public,
-            read-only, and powered by TSV mock data.
+            Find karaoke near you, starting with San Diego. Listings are updated
+            as we verify schedules, add venues, and build the local karaoke
+            community.
           </p>
         </div>
         <div className="flex flex-wrap gap-4 font-semibold text-slate-300">
