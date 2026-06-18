@@ -5,7 +5,6 @@ const navItems = [
   { href: "/find-karaoke", label: "Find Karaoke" },
   { href: "/submit-listing", label: "Submit Listing" },
   { href: "/claim-listing", label: "Claim Listing" },
-  { href: "/scout", label: "Scout" },
 ];
 
 export function SiteHeader() {
@@ -27,7 +26,7 @@ export function SiteHeader() {
             </Link>
           ))}
           <Button href="/venues/premium" variant="secondary" className="px-4 py-2">
-            Premium Profile
+            For Venues
           </Button>
         </nav>
       </div>
