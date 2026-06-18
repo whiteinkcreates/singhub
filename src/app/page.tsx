@@ -39,18 +39,16 @@ export default function Home() {
             <p className="text-sm font-bold uppercase tracking-[0.25em] text-fuchsia-300">
               Featured Nights
             </p>
-
             <h2 className="mt-2 text-3xl font-black text-white">
               Start with these local karaoke nights
             </h2>
           </div>
-
           <Button href="/find-karaoke" variant="ghost">
-            View all listings
+            View all karaoke nights
           </Button>
         </div>
 
-        <div className="grid gap-5">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {featuredVenues.map((venue) => (
             <VenueCard key={venue.id} venue={venue} />
           ))}
