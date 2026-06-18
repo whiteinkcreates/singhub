@@ -26,6 +26,16 @@ function getUsableValue(value: string | undefined) {
   return trimmedValue;
 }
 
+function isUsableUrl(value: string | undefined) {
+  const usableValue = getUsableValue(value);
+
+  if (!usableValue) {
+    return false;
+  }
+
+  return usableValue.startsWith("http://") || usableValue.startsWith("https://");
+}
+
 function getBannerImageUrl(venue: VenueListing) {
   return getUsableValue(venue.bannerImageUrl) ?? DEFAULT_BANNER_IMAGE_URL;
 }
@@ -67,6 +77,7 @@ function getProfileStatusBadge(venue: VenueListing) {
 function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
   const bannerImageUrl = getBannerImageUrl(venue);
   const bannerImageAlt = getBannerImageAlt(venue);
+  const hasReservationUrl = isUsableUrl(venue.reservationLink);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
@@ -130,12 +141,15 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
             <DetailLine label="Age policy" value={venue.agePolicy} />
             <DetailLine label="Parking" value={venue.parkingInfo} />
             <DetailLine label="Accessibility" value={venue.accessibilityNotes} />
+            {!hasReservationUrl && (
+              <DetailLine label="Reservations" value={venue.reservationLink} />
+            )}
           </dl>
           <div className="mt-6 flex flex-col gap-3">
-            {venue.reservationLink && (
+            {hasReservationUrl && venue.reservationLink && (
               <Button href={venue.reservationLink}>Reserve / Learn More</Button>
             )}
-            <Button href="/claim-listing" variant="ghost">
+            <Button href={`/claim-listing?venue=${venue.slug}`} variant="ghost">
               Claim or update this listing
             </Button>
           </div>
@@ -188,7 +202,7 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
           <Button href="/venues/premium" variant="secondary">
             Upgrade to Premium
           </Button>
-          <Button href="/claim-listing" variant="ghost">
+          <Button href={`/claim-listing?venue=${venue.slug}`} variant="ghost">
             Claim this listing
           </Button>
         </div>
