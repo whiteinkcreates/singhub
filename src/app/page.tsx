@@ -41,7 +41,7 @@ export default function Home() {
             </p>
 
             <h2 className="mt-2 text-3xl font-black text-white">
-              Karaoke worth leaving the couch for
+              Start with these local karaoke nights
             </h2>
           </div>
 
