@@ -146,7 +146,7 @@ function VenueActions({
 }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-      <Button href={`/venues/${venue.slug}`}>{premium ? "Open Premium Profile" : "View Profile"}</Button>
+      <Button href={`/venues/${venue.slug}`}>Select Venue</Button>
       {directionsUrl && (
         <ExternalActionLink href={directionsUrl} featured={premium}>
           Directions
@@ -342,7 +342,7 @@ function BasicVenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
         </div>
 
         <div className="flex shrink-0 flex-wrap gap-3 md:w-44 md:flex-col">
-          <Button href={`/venues/${venue.slug}`}>View Profile</Button>
+          <Button href={`/venues/${venue.slug}`}>Select Venue</Button>
           {directionsUrl && <ExternalActionLink href={directionsUrl}>Directions</ExternalActionLink>}
           {websiteUrl && <ExternalActionLink href={websiteUrl}>Website</ExternalActionLink>}
           {instagramUrl && <ExternalActionLink href={instagramUrl}>Instagram</ExternalActionLink>}
