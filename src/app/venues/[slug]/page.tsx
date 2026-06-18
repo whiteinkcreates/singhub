@@ -37,7 +37,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
     notFound();
   }
 
-  const events = getKaraokeEventsByVenueSlug(slug);
+  const events = getKaraokeEventsByVenueSlug(venue.slug);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
