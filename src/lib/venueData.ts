@@ -5,6 +5,8 @@ import { parseTsv, type TsvRow } from "@/lib/tsv";
 
 const DATA_PATH = path.join(process.cwd(), "public", "data", "venues.tsv");
 const JTS_TAVERN_VENUE_ID = "venue-0006";
+const DEMO_BANNER_IMAGE_URL =
+  "https://res.cloudinary.com/dy3lyejkk/image/upload/v1781683694/ChatGPT_Image_Jun_17_2026_01_05_26_AM_sjmyq4.png";
 
 function parseBoolean(value: string | undefined) {
   return value?.trim().toLowerCase() === "true";
@@ -64,6 +66,8 @@ function applyVenueCorrections(venue: VenueListing): VenueListing {
     latitude: 32.7809,
     longitude: -117.0983,
     instagram: "@jts_tavern",
+    bannerImageUrl: DEMO_BANNER_IMAGE_URL,
+    bannerImageAlt: "High-energy karaoke night crowd singing in a lively bar",
     karaokeDay: "Daily",
     startTime: "9pm",
     endTime: "1am",
