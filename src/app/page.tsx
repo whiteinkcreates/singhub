@@ -3,13 +3,11 @@ import { VenueCard } from "@/components/venue/VenueCard";
 import { getFeaturedVenueListings, getVenueTickerItems } from "@/lib/venueData";
 
 function KaraokeTicker({ items }: { items: string[] }) {
-  const tickerItems = [...items, ...items];
-
   return (
     <div className="mt-10 overflow-hidden rounded-2xl border border-fuchsia-300/30 bg-slate-950/80 shadow-lg shadow-fuchsia-950/30">
-      <div className="flex min-w-max animate-singhub-marquee gap-8 px-4 py-3 text-sm font-black uppercase tracking-[0.18em] text-cyan-100">
-        {tickerItems.map((item, index) => (
-          <span key={`${item}-${index}`} className="flex items-center gap-8 whitespace-nowrap">
+      <div className="flex gap-8 overflow-x-auto px-4 py-3 text-sm font-black uppercase tracking-[0.18em] text-cyan-100">
+        {items.map((item) => (
+          <span key={item} className="flex shrink-0 items-center gap-8 whitespace-nowrap">
             <span>{item}</span>
             <span className="text-fuchsia-300">✦</span>
           </span>
