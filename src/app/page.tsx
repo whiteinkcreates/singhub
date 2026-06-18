@@ -1,9 +1,27 @@
 import { Button } from "@/components/ui/Button";
 import { VenueCard } from "@/components/venue/VenueCard";
-import { getFeaturedVenueListings } from "@/lib/venueData";
+import { getFeaturedVenueListings, getVenueTickerItems } from "@/lib/venueData";
+
+function KaraokeTicker({ items }: { items: string[] }) {
+  const tickerItems = [...items, ...items];
+
+  return (
+    <div className="mt-10 overflow-hidden rounded-2xl border border-fuchsia-300/30 bg-slate-950/80 shadow-lg shadow-fuchsia-950/30">
+      <div className="flex min-w-max animate-singhub-marquee gap-8 px-4 py-3 text-sm font-black uppercase tracking-[0.18em] text-cyan-100">
+        {tickerItems.map((item, index) => (
+          <span key={`${item}-${index}`} className="flex items-center gap-8 whitespace-nowrap">
+            <span>{item}</span>
+            <span className="text-fuchsia-300">✦</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const featuredVenues = getFeaturedVenueListings();
+  const tickerItems = getVenueTickerItems();
 
   return (
     <main>
@@ -27,10 +45,12 @@ export default function Home() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button href="/find-karaoke">Find Karaoke Tonight</Button>
             <Button href="/venues/premium" variant="secondary">
-              Upgrade Venue Profile
+              For Venues
             </Button>
           </div>
         </div>
+
+        <KaraokeTicker items={tickerItems} />
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-20">
