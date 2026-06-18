@@ -17,6 +17,7 @@ export type VenueListing = {
   instagram?: string;
   bannerImageUrl?: string;
   bannerImageAlt?: string;
+  tickerText?: string;
   karaokeDay: string;
   startTime: string;
   endTime: string;
