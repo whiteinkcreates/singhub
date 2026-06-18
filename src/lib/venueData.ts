@@ -68,6 +68,7 @@ function applyVenueCorrections(venue: VenueListing): VenueListing {
     instagram: "@jts_tavern",
     bannerImageUrl: DEMO_BANNER_IMAGE_URL,
     bannerImageAlt: "High-energy karaoke night crowd singing in a lively bar",
+    tickerText: "Tonight: JT's Tavern • Daily karaoke 9pm-1am • No cover",
     karaokeDay: "Daily",
     startTime: "9pm",
     endTime: "1am",
@@ -98,6 +99,7 @@ function rowToVenueListing(row: TsvRow): VenueListing {
     instagram: getOptionalValue(row.instagram),
     bannerImageUrl: getOptionalValue(row.banner_image_url),
     bannerImageAlt: getOptionalValue(row.banner_image_alt),
+    tickerText: getOptionalValue(row.ticker_text),
     karaokeDay: row.karaoke_day,
     startTime: row.start_time,
     endTime: row.end_time,
@@ -127,6 +129,22 @@ export function getVenueListings(): VenueListing[] {
 
 export function getFeaturedVenueListings(): VenueListing[] {
   return getVenueListings().filter((venue) => venue.isFeatured);
+}
+
+export function getVenueTickerItems(): string[] {
+  const tickerItems = getVenueListings()
+    .map((venue) => venue.tickerText)
+    .filter((item): item is string => Boolean(item));
+
+  if (tickerItems.length > 0) {
+    return tickerItems;
+  }
+
+  return [
+    "Tonight in San Diego • Find live bar karaoke, private rooms, and local host-led nights",
+    "SingHUB is actively verifying karaoke schedules and adding new venues",
+    "Know a karaoke night we should add? Submit it to SingHUB",
+  ];
 }
 
 export function getVenueListingBySlug(slug: string): VenueListing | undefined {
