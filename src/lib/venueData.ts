@@ -7,6 +7,10 @@ const DATA_PATH = path.join(process.cwd(), "public", "data", "venues.tsv");
 const JTS_TAVERN_VENUE_ID = "venue-0006";
 const DEMO_BANNER_IMAGE_URL =
   "https://res.cloudinary.com/dy3lyejkk/image/upload/v1781683694/ChatGPT_Image_Jun_17_2026_01_05_26_AM_sjmyq4.png";
+const LAUNCH_TICKER_ITEMS = [
+  "Pal Joey's • KJ Trini Smith • Waring Rd",
+  "Wong's Golden Palace • KJ DJ Harvest • La Mesa",
+];
 
 function parseBoolean(value: string | undefined) {
   return value?.trim().toLowerCase() === "true";
@@ -136,8 +140,10 @@ export function getVenueTickerItems(): string[] {
     .map((venue) => venue.tickerText)
     .filter((item): item is string => Boolean(item));
 
-  if (tickerItems.length > 0) {
-    return tickerItems;
+  const mergedTickerItems = [...tickerItems, ...LAUNCH_TICKER_ITEMS];
+
+  if (mergedTickerItems.length > 0) {
+    return mergedTickerItems;
   }
 
   return [
