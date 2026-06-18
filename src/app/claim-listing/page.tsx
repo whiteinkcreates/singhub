@@ -18,6 +18,7 @@ export default async function ClaimListingPage({
   const venues = getVenueListings();
   const resolvedSearchParams = await searchParams;
   const selectedVenueSlug = resolvedSearchParams?.venue;
+  const selectedVenue = venues.find((venue) => venue.slug === selectedVenueSlug);
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-14 md:py-20">
@@ -39,20 +40,33 @@ export default async function ClaimListingPage({
         <div className="grid gap-5 md:grid-cols-2">
           <label className="block md:col-span-2">
             <span className="text-sm font-semibold text-slate-200">
-              Listing to claim
+              Existing listing
             </span>
             <select
               name="venue-slug"
-              defaultValue={selectedVenueSlug}
+              defaultValue={selectedVenueSlug ?? ""}
               className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white outline-none focus:border-emerald-400"
             >
+              <option value="">Select a listing, or enter the venue below</option>
               {venues.map((venue) => (
                 <option key={venue.id} value={venue.slug}>
-                  {venue.venueName} - {venue.neighborhood}
+                  {venue.venueName}
                 </option>
               ))}
             </select>
           </label>
+
+          <FormField
+            label="Venue name"
+            name="venue_name"
+            defaultValue={selectedVenue?.venueName}
+            required
+          />
+          <FormField
+            label="Neighborhood"
+            name="neighborhood"
+            defaultValue={selectedVenue?.neighborhood}
+          />
           <FormField label="Your name" name="name" required />
           <FormField label="Email" name="email" type="email" required />
           <FormField label="Venue phone" name="phone" />
@@ -81,11 +95,13 @@ function FormField({
   name,
   type = "text",
   required = false,
+  defaultValue,
 }: {
   label: string;
   name: string;
   type?: string;
   required?: boolean;
+  defaultValue?: string;
 }) {
   return (
     <label className="block">
@@ -96,6 +112,7 @@ function FormField({
         name={name}
         type={type}
         required={required}
+        defaultValue={defaultValue}
         className="mt-2 w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-3 text-white outline-none focus:border-emerald-400"
       />
     </label>
