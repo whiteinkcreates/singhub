@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { VenueMap } from "@/components/map/VenueMap";
 import { VenueCard } from "@/components/venue/VenueCard";
-import type { KaraokeEventListing, ListingStatus, VenueListing } from "@/types";
+import type { KaraokeEventListing, ListingStatus, VenueListing, VenueType } from "@/types";
 import {
   formatDistance,
   getDistanceInMiles,
@@ -14,6 +14,8 @@ import {
 type FindKaraokeExperienceProps = {
   venues: VenueListing[];
   eventsByVenueSlug: Record<string, KaraokeEventListing[]>;
+  initialDayFilter?: string;
+  initialVenueTypeFilter?: string;
 };
 
 type LocationStatus = "idle" | "loading" | "success" | "unsupported" | "denied" | "error";
@@ -21,6 +23,8 @@ type LocationStatus = "idle" | "loading" | "success" | "unsupported" | "denied" 
 type RadiusFilter = "all" | 5 | 10 | 25;
 
 type ListingStatusFilter = "all" | ListingStatus;
+
+type VenueTypeFilter = "all" | VenueType;
 
 type DayName =
   | "Sunday"
@@ -45,6 +49,13 @@ const listingStatusFilters: { label: string; value: ListingStatusFilter }[] = [
   { label: "Verified", value: "verified" },
   { label: "Claimed", value: "claimed" },
   { label: "AI-Scouted", value: "ai_scouted" },
+];
+
+const venueTypeFilters: { label: string; value: VenueTypeFilter }[] = [
+  { label: "All venue types", value: "all" },
+  { label: "Live karaoke", value: "live_bar" },
+  { label: "Private rooms", value: "private_room" },
+  { label: "Event producers", value: "event_producer" },
 ];
 
 const dayNames: DayName[] = [
@@ -87,6 +98,31 @@ function getLocationMessage(status: LocationStatus) {
 
 function getTonightDayName(): DayName {
   return dayNames[new Date().getDay()];
+}
+
+function normalizeInitialDayFilter(value: string | undefined): DayFilter {
+  if (value === "all" || value === "tonight") {
+    return value;
+  }
+
+  const dayMatch = dayNames.find((day) => day.toLowerCase() === value?.toLowerCase());
+  return dayMatch ?? "all";
+}
+
+function normalizeInitialVenueTypeFilter(value: string | undefined): VenueTypeFilter {
+  if (value === "live_bar" || value === "private_room" || value === "event_producer") {
+    return value;
+  }
+
+  if (value === "live") {
+    return "live_bar";
+  }
+
+  if (value === "private-room" || value === "room" || value === "rooms") {
+    return "private_room";
+  }
+
+  return "all";
 }
 
 function normalizeDayText(value: string | undefined) {
@@ -138,6 +174,14 @@ function venueMatchesStatus(
   return venue.listingStatus === statusFilter;
 }
 
+function venueMatchesType(venue: VenueListing, venueTypeFilter: VenueTypeFilter) {
+  if (venueTypeFilter === "all") {
+    return true;
+  }
+
+  return venue.venueType === venueTypeFilter;
+}
+
 function venueMatchesSearch(
   venue: VenueListing,
   events: KaraokeEventListing[],
@@ -159,6 +203,7 @@ function venueMatchesSearch(
     venue.karaokeDay,
     venue.startTime,
     venue.endTime,
+    venue.venueType,
     venue.description,
     venue.specials,
     venue.happyHour,
@@ -228,15 +273,38 @@ function getListingStatusLabel(statusFilter: ListingStatusFilter) {
   return `${statusFilter.charAt(0).toUpperCase()}${statusFilter.slice(1)} listings`;
 }
 
+function getVenueTypeFilterLabel(venueTypeFilter: VenueTypeFilter) {
+  if (venueTypeFilter === "all") {
+    return "all venue types";
+  }
+
+  if (venueTypeFilter === "live_bar") {
+    return "live karaoke venues";
+  }
+
+  if (venueTypeFilter === "private_room") {
+    return "private karaoke rooms";
+  }
+
+  return "karaoke event producers";
+}
+
 export function FindKaraokeExperience({
   venues,
   eventsByVenueSlug,
+  initialDayFilter,
+  initialVenueTypeFilter,
 }: FindKaraokeExperienceProps) {
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
   const [locationStatus, setLocationStatus] =
     useState<LocationStatus>("idle");
   const [radiusFilter, setRadiusFilter] = useState<RadiusFilter>("all");
-  const [dayFilter, setDayFilter] = useState<DayFilter>("all");
+  const [dayFilter, setDayFilter] = useState<DayFilter>(() =>
+    normalizeInitialDayFilter(initialDayFilter),
+  );
+  const [venueTypeFilter, setVenueTypeFilter] = useState<VenueTypeFilter>(() =>
+    normalizeInitialVenueTypeFilter(initialVenueTypeFilter),
+  );
   const [statusFilter, setStatusFilter] =
     useState<ListingStatusFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -269,11 +337,17 @@ export function FindKaraokeExperience({
     );
   }, [dayFilter, eventsByVenueSlug, venues]);
 
-  const statusFilteredVenues = useMemo(() => {
+  const typeFilteredVenues = useMemo(() => {
     return dayFilteredVenues.filter((venue) =>
+      venueMatchesType(venue, venueTypeFilter),
+    );
+  }, [dayFilteredVenues, venueTypeFilter]);
+
+  const statusFilteredVenues = useMemo(() => {
+    return typeFilteredVenues.filter((venue) =>
       venueMatchesStatus(venue, statusFilter),
     );
-  }, [dayFilteredVenues, statusFilter]);
+  }, [typeFilteredVenues, statusFilter]);
 
   const searchFilteredVenues = useMemo(() => {
     return statusFilteredVenues.filter((venue) =>
@@ -335,9 +409,11 @@ export function FindKaraokeExperience({
   const locationMessage = getLocationMessage(locationStatus);
   const dayFilterLabel = getDayFilterLabel(dayFilter);
   const statusFilterLabel = getListingStatusLabel(statusFilter);
+  const venueTypeFilterLabel = getVenueTypeFilterLabel(venueTypeFilter);
   const trimmedSearchQuery = searchQuery.trim();
   const hasActiveFilters =
     dayFilter !== "all" ||
+    venueTypeFilter !== "all" ||
     statusFilter !== "all" ||
     trimmedSearchQuery.length > 0 ||
     (userLocation !== null && radiusFilter !== "all");
@@ -377,6 +453,7 @@ export function FindKaraokeExperience({
 
   function handleClearFilters() {
     setDayFilter("all");
+    setVenueTypeFilter("all");
     setStatusFilter("all");
     setRadiusFilter("all");
     setSearchQuery("");
@@ -391,12 +468,11 @@ export function FindKaraokeExperience({
               Karaoke Finder
             </p>
             <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">
-              Find karaoke by night, location, and trust level
+              Find karaoke by night, venue type, and location
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
               Search by venue, city, neighborhood, address, or host. Then filter
-              by tonight, a specific day, listing status, or your distance from
-              the venue.
+              by tonight, live karaoke, private rooms, listing status, or distance.
             </p>
           </div>
 
@@ -441,6 +517,28 @@ export function FindKaraokeExperience({
                   dayFilter === filter.value
                     ? "border-fuchsia-300 bg-fuchsia-300 text-slate-950"
                     : "border-white/10 bg-white/[0.04] text-slate-200 hover:border-fuchsia-300/60"
+                }`}
+              >
+                {filter.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-slate-400">
+            Filter by venue type
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {venueTypeFilters.map((filter) => (
+              <button
+                key={filter.value}
+                type="button"
+                onClick={() => setVenueTypeFilter(filter.value)}
+                className={`rounded-full border px-4 py-2 text-sm font-bold transition ${
+                  venueTypeFilter === filter.value
+                    ? "border-cyan-300 bg-cyan-300 text-slate-950"
+                    : "border-white/10 bg-white/[0.04] text-slate-200 hover:border-cyan-300/60"
                 }`}
               >
                 {filter.label}
@@ -498,8 +596,8 @@ export function FindKaraokeExperience({
         <div className="mt-5 flex flex-col gap-3 rounded-2xl border border-white/10 bg-slate-950/40 p-4 md:flex-row md:items-center md:justify-between">
           <p className="text-sm font-semibold text-cyan-100">
             Showing {visibleVenues.length} listing
-            {visibleVenues.length === 1 ? "" : "s"} for {dayFilterLabel} across{" "}
-            {statusFilterLabel}
+            {visibleVenues.length === 1 ? "" : "s"} for {dayFilterLabel} across {" "}
+            {venueTypeFilterLabel} and {statusFilterLabel}
             {trimmedSearchQuery ? ` matching "${trimmedSearchQuery}"` : ""}
             {radiusFilter === "all" || !userLocation
               ? ""
@@ -537,7 +635,7 @@ export function FindKaraokeExperience({
               {userLocation ? "Nearby listings" : "All listings"}
             </h2>
             <p className="mt-1 text-sm text-slate-400">
-              Showing {visibleVenues.length} TSV-powered venue listing
+              Showing {visibleVenues.length} venue listing
               {visibleVenues.length === 1 ? "" : "s"}.
             </p>
           </div>
@@ -560,7 +658,7 @@ export function FindKaraokeExperience({
           </div>
         ) : (
           <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 text-sm leading-6 text-slate-300">
-            No karaoke listings match this status, day, and distance filter yet.
+            No karaoke listings match this status, venue type, day, and distance filter yet.
             Try All listings, All nights, or expand the distance.
           </div>
         )}
