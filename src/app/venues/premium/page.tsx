@@ -124,10 +124,6 @@ function PremiumProfilePreview() {
           Mission Gorge / Grantville • Daily karaoke • 9pm-1am
         </p>
 
-        <div className="mt-5">
-          <LaunchPriceCard compact />
-        </div>
-
         <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.06] p-4">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-200">
             Everything in Basic, plus
@@ -140,6 +136,10 @@ function PremiumProfilePreview() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="mt-5">
+          <LaunchPriceCard compact />
         </div>
 
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -180,10 +180,6 @@ export default function PremiumVenuePage() {
               profile built for more visibility.
             </p>
 
-            <div className="mt-7 max-w-xl">
-              <LaunchPriceCard />
-            </div>
-
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button href="/claim-listing?premium=true">Start Premium Profile</Button>
               <Button href="/claim-listing" variant="secondary">
@@ -193,7 +189,7 @@ export default function PremiumVenuePage() {
 
             <p className="mt-4 text-sm leading-6 text-slate-400">
               Payment links are being finalized. Early premium venues can request
-              placement now and lock in the $29/mo founding venue rate.
+              placement now and lock in founding venue priority.
             </p>
           </div>
 
@@ -251,13 +247,13 @@ export default function PremiumVenuePage() {
                   💎
                 </div>
               </div>
-              <div className="mt-6">
-                <LaunchPriceCard compact />
-              </div>
               <div className="mt-6 rounded-2xl bg-gradient-to-r from-fuchsia-400 to-cyan-400 px-4 py-3 text-sm font-black uppercase tracking-[0.18em] text-slate-950">
                 Everything in Basic, plus
               </div>
               <FeatureList features={premiumFeatures} accent="fuchsia" />
+              <div className="mt-7">
+                <LaunchPriceCard compact />
+              </div>
             </div>
           </article>
         </div>
