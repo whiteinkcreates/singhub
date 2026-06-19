@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 
+const PREMIUM_DEMO_IMAGE_URL =
+  "https://res.cloudinary.com/dy3lyejkk/image/upload/v1781683694/ChatGPT_Image_Jun_17_2026_01_05_26_AM_sjmyq4.png";
+
 export const metadata = {
   title: "For Venues | SingHUB Premium Profiles",
   description:
@@ -57,6 +60,31 @@ const profileVisualRows = [
   ["Story layer", "What makes the karaoke night worth showing up for"],
 ];
 
+function LaunchPriceCard({ compact = false }: { compact?: boolean }) {
+  return (
+    <div
+      className={`rounded-2xl border border-fuchsia-300/40 bg-fuchsia-300/10 shadow-lg shadow-fuchsia-950/30 ${
+        compact ? "p-4" : "p-5"
+      }`}
+    >
+      <p className="text-xs font-black uppercase tracking-[0.24em] text-fuchsia-200">
+        Limited launch price
+      </p>
+      <div className="mt-2 flex flex-wrap items-end gap-3">
+        <span className="text-lg font-black text-slate-400 line-through decoration-fuchsia-300 decoration-2">
+          $49/mo
+        </span>
+        <span className="text-4xl font-black leading-none text-white drop-shadow-[0_0_18px_rgba(217,70,239,0.65)]">
+          $29/mo
+        </span>
+      </div>
+      <p className="mt-2 text-sm leading-6 text-slate-300">
+        Founding venue rate for a limited time while SingHUB launches in San Diego.
+      </p>
+    </div>
+  );
+}
+
 function FeatureList({ features, accent }: { features: string[]; accent: "cyan" | "fuchsia" }) {
   return (
     <ul className="mt-7 space-y-3">
@@ -80,17 +108,25 @@ function PremiumProfilePreview() {
   return (
     <div className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/50 bg-slate-950 shadow-2xl shadow-fuchsia-950/40">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(217,70,239,0.38),transparent_18rem),radial-gradient(circle_at_82%_28%,rgba(34,211,238,0.24),transparent_20rem),linear-gradient(135deg,rgba(2,6,23,0.2),rgba(2,6,23,0.96))]" />
-      <div className="absolute inset-x-0 top-0 h-44 bg-[linear-gradient(135deg,rgba(217,70,239,0.45),rgba(34,211,238,0.22)),url('/images/hero/san-diego-skyline-vector.svg')] bg-cover bg-center opacity-95" />
-      <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-t from-slate-950 via-slate-950/45 to-transparent" />
+      <div
+        className="absolute inset-x-0 top-0 h-48 bg-cover bg-center opacity-95"
+        style={{ backgroundImage: `url('${PREMIUM_DEMO_IMAGE_URL}')` }}
+      />
+      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-t from-slate-950 via-slate-950/55 to-slate-950/10" />
+      <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-r from-fuchsia-950/45 via-slate-950/10 to-cyan-950/35" />
 
-      <div className="relative p-5 pt-28 sm:p-6 sm:pt-32">
+      <div className="relative p-5 pt-32 sm:p-6 sm:pt-36">
         <div className="mb-4 inline-flex rounded-full border border-fuchsia-300/50 bg-fuchsia-300/15 px-3 py-1 text-xs font-black uppercase tracking-[0.2em] text-fuchsia-100">
           Premium Profile
         </div>
-        <h3 className="text-3xl font-black text-white">Your Venue Name</h3>
+        <h3 className="text-3xl font-black text-white">JT&apos;s Tavern</h3>
         <p className="mt-2 text-sm font-semibold text-cyan-100">
           Mission Gorge / Grantville • Daily karaoke • 9pm-1am
         </p>
+
+        <div className="mt-5">
+          <LaunchPriceCard compact />
+        </div>
 
         <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.06] p-4">
           <p className="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-200">
@@ -144,6 +180,10 @@ export default function PremiumVenuePage() {
               profile built for more visibility.
             </p>
 
+            <div className="mt-7 max-w-xl">
+              <LaunchPriceCard />
+            </div>
+
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button href="/claim-listing?premium=true">Start Premium Profile</Button>
               <Button href="/claim-listing" variant="secondary">
@@ -152,8 +192,8 @@ export default function PremiumVenuePage() {
             </div>
 
             <p className="mt-4 text-sm leading-6 text-slate-400">
-              Launch pricing and payment links are being finalized. Early premium
-              venues can request placement now and lock in founding venue priority.
+              Payment links are being finalized. Early premium venues can request
+              placement now and lock in the $29/mo founding venue rate.
             </p>
           </div>
 
@@ -211,6 +251,9 @@ export default function PremiumVenuePage() {
                   💎
                 </div>
               </div>
+              <div className="mt-6">
+                <LaunchPriceCard compact />
+              </div>
               <div className="mt-6 rounded-2xl bg-gradient-to-r from-fuchsia-400 to-cyan-400 px-4 py-3 text-sm font-black uppercase tracking-[0.18em] text-slate-950">
                 Everything in Basic, plus
               </div>
@@ -252,6 +295,9 @@ export default function PremiumVenuePage() {
                 collect the best hero image or create a SingHUB-style visual, and
                 prepare the profile for monthly billing once payments go live.
               </p>
+              <div className="mt-5 max-w-md">
+                <LaunchPriceCard compact />
+              </div>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
               <Button href="/claim-listing?premium=true">Request Premium</Button>
