@@ -21,8 +21,6 @@ type MarkerStyle = {
   background: string;
 };
 
-type VenueKind = "live" | "room";
-
 type MappableVenueListing = VenueListing & {
   latitude: number;
   longitude: number;
@@ -59,37 +57,6 @@ const markerStyles: Record<ListingStatus, MarkerStyle> = {
   },
 };
 
-function getVenueKind(venue: VenueListing): VenueKind {
-  const searchText = [
-    venue.venueName,
-    venue.description,
-    venue.karaokeDay,
-    venue.hostName,
-    ...venue.vibeTags,
-  ]
-    .join(" ")
-    .toLowerCase();
-
-  const roomSignals = [
-    "private room",
-    "private rooms",
-    "karaoke room",
-    "karaoke rooms",
-    "ktv",
-    "lounge",
-    "bookable",
-    "rooms",
-    "hive",
-    "melody",
-    "spot ktv",
-    "punch bowl",
-    "round1",
-    "jin music",
-  ];
-
-  return roomSignals.some((signal) => searchText.includes(signal)) ? "room" : "live";
-}
-
 function getMapCenter(venues: MappableVenueListing[]): Coordinate {
   if (venues.length === 0) {
     return SAN_DIEGO_CENTER;
@@ -114,9 +81,8 @@ function getScheduleSummary(venue: VenueListing) {
 
 function getVenueIcon(venue: VenueListing) {
   const statusStyle = markerStyles[venue.listingStatus];
-  const venueKind = getVenueKind(venue);
 
-  if (venueKind === "room") {
+  if (venue.venueType === "private_room") {
     return L.divIcon({
       className: "singhub-room-marker",
       html: `
@@ -145,6 +111,36 @@ function getVenueIcon(venue: VenueListing) {
       `,
       iconAnchor: [22, 22],
       popupAnchor: [0, -20],
+    });
+  }
+
+  if (venue.venueType === "event_producer") {
+    return L.divIcon({
+      className: "singhub-event-marker",
+      html: `
+        <span
+          aria-hidden="true"
+          style="
+            align-items: center;
+            background: linear-gradient(135deg, #7c3aed, #f472b6);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            border-radius: 14px 14px 14px 4px;
+            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 28px rgba(232, 121, 249, 0.75);
+            color: white;
+            display: flex;
+            font-size: 20px;
+            height: 42px;
+            justify-content: center;
+            line-height: 1;
+            position: relative;
+            transform: rotate(-4deg);
+            width: 42px;
+          "
+          title="Karaoke event producer"
+        >★</span>
+      `,
+      iconAnchor: [21, 21],
+      popupAnchor: [0, -18],
     });
   }
 
@@ -210,8 +206,16 @@ function getStatusLabel(status: ListingStatus) {
   return markerStyles[status].label;
 }
 
-function getVenueKindLabel(venue: VenueListing) {
-  return getVenueKind(venue) === "room" ? "Karaoke room" : "Live karaoke";
+function getVenueTypeLabel(venue: VenueListing) {
+  if (venue.venueType === "private_room") {
+    return "Karaoke room";
+  }
+
+  if (venue.venueType === "event_producer") {
+    return "Karaoke event";
+  }
+
+  return "Live karaoke";
 }
 
 function MapBoundsController({
@@ -316,7 +320,7 @@ export default function VenueMapClient({
                 </p>
                 <p className="text-sm text-slate-700">{getScheduleSummary(venue)}</p>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                  {getVenueKindLabel(venue)} • {getStatusLabel(venue.listingStatus)} listing
+                  {getVenueTypeLabel(venue)} • {getStatusLabel(venue.listingStatus)} listing
                 </p>
                 <div className="flex flex-col gap-1 pt-1 text-sm font-bold text-cyan-700">
                   <Link href={`/venues/${venue.slug}`}>View venue profile</Link>
