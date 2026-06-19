@@ -2,12 +2,15 @@ export type ListingStatus = "verified" | "ai_scouted" | "claimed";
 
 export type ProfileTier = "basic" | "premium";
 
+export type VenueType = "live_bar" | "private_room" | "event_producer";
+
 export type VenueListing = {
   id: string;
   venueName: string;
   slug: string;
   profileTier: ProfileTier;
   listingStatus: ListingStatus;
+  venueType: VenueType;
   city: string;
   neighborhood: string;
   address: string;
