@@ -19,10 +19,12 @@ const VenueMapClient = dynamic(() => import("./VenueMapClient"), {
 });
 
 const legendItems = [
-  { label: "Verified", className: "bg-cyan-300 shadow-cyan-300/60" },
-  { label: "Claimed", className: "bg-fuchsia-400 shadow-fuchsia-400/60" },
-  { label: "AI-Scouted", className: "bg-violet-400 shadow-violet-400/60" },
-  { label: "You", className: "bg-emerald-300 shadow-emerald-300/60" },
+  { label: "Live karaoke", className: "bg-fuchsia-400 shadow-fuchsia-400/60", symbol: "🎤" },
+  { label: "Karaoke rooms", className: "bg-cyan-300 shadow-cyan-300/60", symbol: "♪" },
+  { label: "Verified", className: "bg-cyan-300 shadow-cyan-300/60", symbol: "●" },
+  { label: "Claimed", className: "bg-fuchsia-400 shadow-fuchsia-400/60", symbol: "●" },
+  { label: "AI-Scouted", className: "bg-violet-400 shadow-violet-400/60", symbol: "●" },
+  { label: "You", className: "bg-emerald-300 shadow-emerald-300/60", symbol: "●" },
 ];
 
 export function VenueMap({ venues, userLocation = null }: VenueMapProps) {
@@ -42,8 +44,8 @@ export function VenueMap({ venues, userLocation = null }: VenueMapProps) {
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
             Showing {mappableVenues.length} mapped karaoke spot
-            {mappableVenues.length === 1 ? "" : "s"}. Some listings may need
-            verification.
+            {mappableVenues.length === 1 ? "" : "s"}. Bar nights and room-style
+            karaoke venues are shown with different map markers.
           </p>
         </div>
 
@@ -51,9 +53,11 @@ export function VenueMap({ venues, userLocation = null }: VenueMapProps) {
           {legendItems.map((item) => (
             <span key={item.label} className="inline-flex items-center gap-2">
               <span
-                className={`h-3 w-3 rounded-full shadow-lg ${item.className}`}
+                className={`inline-flex h-4 w-4 items-center justify-center rounded-full text-[0.55rem] font-black text-slate-950 shadow-lg ${item.className}`}
                 aria-hidden="true"
-              />
+              >
+                {item.symbol}
+              </span>
               {item.label}
             </span>
           ))}
