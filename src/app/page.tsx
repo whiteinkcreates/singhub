@@ -56,7 +56,7 @@ export default function Home() {
         <div className="relative overflow-hidden rounded-[2rem] border-2 border-fuchsia-300/50 bg-slate-950 shadow-2xl shadow-fuchsia-950/50 md:rounded-[2.5rem]">
           <div
             className="absolute inset-0 bg-cover bg-center opacity-95"
-            style={{ backgroundImage: "url('/images/hero/san-diego-skyline-hero.svg')" }}
+            style={{ backgroundImage: "url('/images/hero/san-diego-skyline-vector.svg')" }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/75 to-slate-950/20" />
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-slate-950/40" />
