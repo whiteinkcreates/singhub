@@ -2,12 +2,27 @@ import { FindKaraokeExperience } from "@/components/find/FindKaraokeExperience";
 import { groupKaraokeEventsByVenueSlug } from "@/lib/eventData";
 import { getVenueListings } from "@/lib/venueData";
 
-export const metadata = {
-  title: "Find Karaoke in San Diego | SingHUB",
-  description: "Browse TSV-powered San Diego karaoke listings on SingHUB.",
+type FindKaraokePageProps = {
+  searchParams?:
+    | Promise<Record<string, string | string[] | undefined>>
+    | Record<string, string | string[] | undefined>;
 };
 
-export default function FindKaraokePage() {
+export const metadata = {
+  title: "Find Karaoke in San Diego | SingHUB",
+  description: "Find live karaoke, private rooms, and host-led karaoke nights in San Diego.",
+};
+
+function getSearchParamValue(value: string | string[] | undefined) {
+  if (Array.isArray(value)) {
+    return value[0];
+  }
+
+  return value;
+}
+
+export default async function FindKaraokePage({ searchParams }: FindKaraokePageProps) {
+  const resolvedSearchParams = await searchParams;
   const venues = getVenueListings();
   const eventsByVenueSlug = groupKaraokeEventsByVenueSlug();
 
@@ -21,15 +36,16 @@ export default function FindKaraokePage() {
           Find karaoke nights in San Diego
         </h1>
         <p className="mt-5 text-lg leading-8 text-slate-300">
-          Browse every Phase 1 listing loaded from public/data/venues.tsv. Use
-          your location to find karaoke nearby, compare neighborhoods, check
-          event schedules, and spot listings that still need verification.
+          Browse live karaoke, private rooms, and host-led events around San Diego.
+          Use location, night, venue type, and trust filters to find the right mic.
         </p>
       </section>
 
       <FindKaraokeExperience
         venues={venues}
         eventsByVenueSlug={eventsByVenueSlug}
+        initialDayFilter={getSearchParamValue(resolvedSearchParams?.day)}
+        initialVenueTypeFilter={getSearchParamValue(resolvedSearchParams?.type)}
       />
     </main>
   );
