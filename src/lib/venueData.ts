@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import type { ListingStatus, ProfileTier, VenueListing } from "@/types";
+import type { ListingStatus, ProfileTier, VenueListing, VenueType } from "@/types";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
 
 const DATA_PATH = path.join(process.cwd(), "public", "data", "venues.tsv");
@@ -53,6 +53,62 @@ function getOptionalValue(value: string | undefined) {
   return value?.trim() || undefined;
 }
 
+function inferVenueType(row: TsvRow): VenueType {
+  const searchText = [
+    row.venue_name,
+    row.description,
+    row.karaoke_day,
+    row.host_name,
+    row.vibe_tags,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  const privateRoomSignals = [
+    "private room",
+    "private rooms",
+    "karaoke room",
+    "karaoke rooms",
+    "ktv",
+    "bookable",
+    "room rental",
+    "rooms",
+    "hive",
+    "melody",
+    "spot ktv",
+    "punch bowl",
+    "round1",
+    "jin music",
+  ];
+
+  const eventProducerSignals = [
+    "event producer",
+    "rotating venue",
+    "pop-up",
+    "popup",
+    "monthly event",
+    "rock out karaoke",
+  ];
+
+  if (privateRoomSignals.some((signal) => searchText.includes(signal))) {
+    return "private_room";
+  }
+
+  if (eventProducerSignals.some((signal) => searchText.includes(signal))) {
+    return "event_producer";
+  }
+
+  return "live_bar";
+}
+
+function normalizeVenueType(value: string | undefined, row: TsvRow): VenueType {
+  if (value === "live_bar" || value === "private_room" || value === "event_producer") {
+    return value;
+  }
+
+  return inferVenueType(row);
+}
+
 function applyVenueCorrections(venue: VenueListing): VenueListing {
   if (venue.id !== JTS_TAVERN_VENUE_ID) {
     return venue;
@@ -64,6 +120,7 @@ function applyVenueCorrections(venue: VenueListing): VenueListing {
     slug: "jts-tavern",
     profileTier: "premium",
     listingStatus: "ai_scouted",
+    venueType: "live_bar",
     city: "San Diego",
     neighborhood: "Mission Gorge / Grantville",
     address: "5821 Mission Gorge Rd, San Diego, CA 92120",
@@ -94,6 +151,7 @@ function rowToVenueListing(row: TsvRow): VenueListing {
     slug: row.slug,
     profileTier: normalizeProfileTier(row.profile_tier),
     listingStatus: normalizeListingStatus(row.listing_status),
+    venueType: normalizeVenueType(row.venue_type, row),
     city: row.city,
     neighborhood: row.neighborhood,
     address: row.address,
