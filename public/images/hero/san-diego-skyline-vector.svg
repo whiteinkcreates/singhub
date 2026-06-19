@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 686" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Neon San Diego skyline and Coronado Bridge at night">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#260018"/>
+      <stop offset="38%" stop-color="#05051f"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#13001d"/>
+      <stop offset="45%" stop-color="#071126"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="bridge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="58%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="buildingGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fb7185"/>
+      <stop offset="42%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="1 0 0 0 0.9 0 1 0 0 0.1 0 0 1 0 0.9 0 0 0 0.8 0" result="colored"/>
+      <feMerge>
+        <feMergeNode in="colored"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="cyanGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.1 0 1 0 0 0.7 0 0 1 0 1 0 0 0 0.75 0" result="colored"/>
+      <feMerge>
+        <feMergeNode in="colored"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <radialGradient id="magentaWash" cx="14%" cy="55%" r="55%">
+      <stop offset="0%" stop-color="#ec4899" stop-opacity="0.65"/>
+      <stop offset="44%" stop-color="#8b5cf6" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cyanWash" cx="82%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.45"/>
+      <stop offset="55%" stop-color="#3b82f6" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="686" fill="url(#sky)"/>
+  <rect width="1600" height="686" fill="url(#magentaWash)"/>
+  <rect width="1600" height="686" fill="url(#cyanWash)"/>
+  <path d="M0 330 C220 292 372 322 522 294 C710 258 900 300 1080 270 C1276 237 1430 286 1600 248 L1600 686 L0 686 Z" fill="#020617" opacity="0.28"/>
+  <rect y="445" width="1600" height="241" fill="url(#water)"/>
+
+  <g opacity="0.85">
+    <path d="M0 466 C160 444 270 461 392 449 C560 430 695 456 860 437 C1060 414 1280 432 1600 405 L1600 686 L0 686 Z" fill="#020617" opacity="0.34"/>
+    <path d="M0 465 C160 446 276 460 400 448 C566 431 700 455 866 436 C1064 416 1275 435 1600 410" fill="none" stroke="#ec4899" stroke-width="2" opacity="0.42"/>
+    <path d="M0 478 C180 462 320 473 470 462 C620 450 785 476 955 454 C1134 430 1330 447 1600 422" fill="none" stroke="#22d3ee" stroke-width="1.5" opacity="0.36"/>
+  </g>
+
+  <g transform="translate(86 214)">
+    <g filter="url(#glow)">
+      <rect x="0" y="152" width="28" height="114" fill="#34112e" stroke="#f472b6" stroke-width="2"/>
+      <rect x="38" y="118" width="38" height="148" fill="#221138" stroke="#f472b6" stroke-width="2"/>
+      <path d="M92 266 L92 92 L126 54 L160 92 L160 266 Z" fill="#1c1234" stroke="#f472b6" stroke-width="3"/>
+      <rect x="176" y="135" width="46" height="131" fill="#171a37" stroke="#38bdf8" stroke-width="2"/>
+      <path d="M238 266 L238 70 L276 28 L314 70 L314 266 Z" fill="#201138" stroke="#f472b6" stroke-width="3"/>
+      <rect x="332" y="98" width="44" height="168" fill="#111c37" stroke="#38bdf8" stroke-width="2"/>
+      <rect x="394" y="132" width="34" height="134" fill="#25113a" stroke="#c084fc" stroke-width="2"/>
+      <path d="M448 266 L448 80 L476 38 L504 80 L504 266 Z" fill="#1f1239" stroke="#fb7185" stroke-width="3"/>
+      <rect x="520" y="116" width="46" height="150" fill="#111827" stroke="#22d3ee" stroke-width="2"/>
+      <rect x="586" y="150" width="36" height="116" fill="#201138" stroke="#f472b6" stroke-width="2"/>
+      <rect x="642" y="128" width="54" height="138" fill="#111c37" stroke="#38bdf8" stroke-width="2"/>
+      <rect x="716" y="166" width="40" height="100" fill="#25113a" stroke="#c084fc" stroke-width="2"/>
+      <rect x="776" y="112" width="44" height="154" fill="#111827" stroke="#22d3ee" stroke-width="2"/>
+      <rect x="840" y="146" width="38" height="120" fill="#221138" stroke="#f472b6" stroke-width="2"/>
+      <rect x="896" y="102" width="52" height="164" fill="#111c37" stroke="#38bdf8" stroke-width="2"/>
+    </g>
+    <g fill="#f8fafc" opacity="0.75">
+      <rect x="13" y="174" width="5" height="8"/><rect x="13" y="198" width="5" height="8"/><rect x="51" y="138" width="5" height="9"/><rect x="64" y="138" width="5" height="9"/>
+      <rect x="109" y="113" width="6" height="10"/><rect x="136" y="113" width="6" height="10"/><rect x="109" y="151" width="6" height="10"/><rect x="136" y="151" width="6" height="10"/>
+      <rect x="190" y="154" width="5" height="8"/><rect x="208" y="154" width="5" height="8"/><rect x="254" y="99" width="6" height="10"/><rect x="289" y="99" width="6" height="10"/>
+      <rect x="347" y="122" width="5" height="8"/><rect x="411" y="154" width="5" height="8"/><rect x="463" y="108" width="5" height="8"/><rect x="486" y="108" width="5" height="8"/>
+      <rect x="535" y="142" width="5" height="8"/><rect x="603" y="172" width="5" height="8"/><rect x="660" y="150" width="5" height="8"/><rect x="735" y="187" width="5" height="8"/>
+      <rect x="792" y="132" width="5" height="8"/><rect x="857" y="166" width="5" height="8"/><rect x="914" y="124" width="5" height="8"/>
+    </g>
+  </g>
+
+  <g transform="translate(0 0)">
+    <path d="M892 443 C1038 321 1230 254 1600 176" fill="none" stroke="#ec4899" stroke-width="9" opacity="0.95" filter="url(#glow)"/>
+    <path d="M888 457 C1038 337 1234 270 1600 194" fill="none" stroke="#38bdf8" stroke-width="5" opacity="0.9" filter="url(#cyanGlow)"/>
+    <path d="M896 452 C1047 335 1240 271 1600 198" fill="none" stroke="#0f172a" stroke-width="19" opacity="0.55"/>
+    <g stroke="#38bdf8" stroke-width="6" opacity="0.88" filter="url(#cyanGlow)">
+      <line x1="998" y1="374" x2="998" y2="540"/>
+      <line x1="1078" y1="333" x2="1078" y2="565"/>
+      <line x1="1158" y1="298" x2="1158" y2="592"/>
+      <line x1="1240" y1="266" x2="1240" y2="620"/>
+      <line x1="1325" y1="238" x2="1325" y2="640"/>
+      <line x1="1412" y1="216" x2="1412" y2="660"/>
+      <line x1="1504" y1="194" x2="1504" y2="680"/>
+    </g>
+    <g fill="#f472b6" filter="url(#glow)">
+      <circle cx="1026" cy="356" r="5"/><circle cx="1106" cy="318" r="5"/><circle cx="1188" cy="283" r="5"/><circle cx="1271" cy="252" r="5"/>
+      <circle cx="1359" cy="224" r="5"/><circle cx="1448" cy="203" r="5"/><circle cx="1542" cy="184" r="5"/>
+    </g>
+  </g>
+
+  <g opacity="0.62">
+    <g fill="#ec4899">
+      <rect x="120" y="464" width="18" height="170" rx="9" opacity="0.42"/>
+      <rect x="224" y="470" width="24" height="164" rx="12" opacity="0.38"/>
+      <rect x="432" y="455" width="18" height="180" rx="9" opacity="0.34"/>
+      <rect x="1095" y="452" width="24" height="190" rx="12" opacity="0.36"/>
+      <rect x="1268" y="440" width="20" height="206" rx="10" opacity="0.35"/>
+    </g>
+    <g fill="#22d3ee">
+      <rect x="310" y="456" width="20" height="184" rx="10" opacity="0.36"/>
+      <rect x="568" y="470" width="18" height="160" rx="9" opacity="0.31"/>
+      <rect x="870" y="448" width="24" height="196" rx="12" opacity="0.33"/>
+      <rect x="1432" y="430" width="22" height="220" rx="11" opacity="0.38"/>
+    </g>
+  </g>
+
+  <path d="M0 0 H1600 V686 H0 Z" fill="none"/>
+</svg>
