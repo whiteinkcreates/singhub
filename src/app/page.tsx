@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { VenueCard } from "@/components/venue/VenueCard";
-import { getFeaturedVenueListings, getVenueTickerItems } from "@/lib/venueData";
+import { getTickerItems } from "@/lib/tickerData";
+import { getFeaturedVenueListings } from "@/lib/venueData";
 
 const heroQuickLinks = [
   { href: "/find-karaoke?type=live", label: "Live karaoke", tone: "fuchsia" },
@@ -34,7 +35,7 @@ function KaraokeTicker({ items }: { items: string[] }) {
 
 export default function Home() {
   const featuredVenues = getFeaturedVenueListings();
-  const tickerItems = getVenueTickerItems();
+  const tickerItems = getTickerItems();
 
   return (
     <main>
