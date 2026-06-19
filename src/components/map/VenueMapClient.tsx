@@ -21,6 +21,8 @@ type MarkerStyle = {
   background: string;
 };
 
+type VenueKind = "live" | "room";
+
 type MappableVenueListing = VenueListing & {
   latitude: number;
   longitude: number;
@@ -57,6 +59,37 @@ const markerStyles: Record<ListingStatus, MarkerStyle> = {
   },
 };
 
+function getVenueKind(venue: VenueListing): VenueKind {
+  const searchText = [
+    venue.venueName,
+    venue.description,
+    venue.karaokeDay,
+    venue.hostName,
+    ...venue.vibeTags,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  const roomSignals = [
+    "private room",
+    "private rooms",
+    "karaoke room",
+    "karaoke rooms",
+    "ktv",
+    "lounge",
+    "bookable",
+    "rooms",
+    "hive",
+    "melody",
+    "spot ktv",
+    "punch bowl",
+    "round1",
+    "jin music",
+  ];
+
+  return roomSignals.some((signal) => searchText.includes(signal)) ? "room" : "live";
+}
+
 function getMapCenter(venues: MappableVenueListing[]): Coordinate {
   if (venues.length === 0) {
     return SAN_DIEGO_CENTER;
@@ -79,8 +112,41 @@ function getScheduleSummary(venue: VenueListing) {
   return venue.hostName ? `${schedule} • Host: ${venue.hostName}` : schedule;
 }
 
-function getVenueIcon(status: ListingStatus) {
-  const style = markerStyles[status];
+function getVenueIcon(venue: VenueListing) {
+  const statusStyle = markerStyles[venue.listingStatus];
+  const venueKind = getVenueKind(venue);
+
+  if (venueKind === "room") {
+    return L.divIcon({
+      className: "singhub-room-marker",
+      html: `
+        <span
+          aria-hidden="true"
+          style="
+            align-items: center;
+            background: linear-gradient(135deg, #0891b2, #22d3ee);
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 28px rgba(34, 211, 238, 0.75);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            font-size: 16px;
+            font-weight: 900;
+            height: 44px;
+            justify-content: center;
+            line-height: 0.9;
+            position: relative;
+            transform: rotate(4deg);
+            width: 44px;
+          "
+          title="Karaoke room venue"
+        ><span style="font-size: 17px; line-height: 1;">⌂</span><span style="font-size: 14px; line-height: 1;">♪</span></span>
+      `,
+      iconAnchor: [22, 22],
+      popupAnchor: [0, -20],
+    });
+  }
 
   return L.divIcon({
     className: "singhub-microphone-marker",
@@ -89,10 +155,10 @@ function getVenueIcon(status: ListingStatus) {
         aria-hidden="true"
         style="
           align-items: center;
-          background: ${style.background};
+          background: ${statusStyle.background};
           border: 2px solid rgba(255, 255, 255, 0.85);
           border-radius: 9999px;
-          box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 26px ${style.glow};
+          box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 26px ${statusStyle.glow};
           color: white;
           display: flex;
           font-size: 20px;
@@ -103,7 +169,7 @@ function getVenueIcon(status: ListingStatus) {
           transform: rotate(-8deg);
           width: 42px;
         "
-        title="${style.label} karaoke venue"
+        title="${statusStyle.label} karaoke venue"
       >🎤</span>
     `,
     iconAnchor: [21, 21],
@@ -142,6 +208,10 @@ function getUserIcon() {
 
 function getStatusLabel(status: ListingStatus) {
   return markerStyles[status].label;
+}
+
+function getVenueKindLabel(venue: VenueListing) {
+  return getVenueKind(venue) === "room" ? "Karaoke room" : "Live karaoke";
 }
 
 function MapBoundsController({
@@ -234,7 +304,7 @@ export default function VenueMapClient({
           <Marker
             key={venue.id}
             position={[venue.latitude, venue.longitude]}
-            icon={getVenueIcon(venue.listingStatus)}
+            icon={getVenueIcon(venue)}
           >
             <Popup>
               <div className="space-y-2 text-slate-900">
@@ -246,7 +316,7 @@ export default function VenueMapClient({
                 </p>
                 <p className="text-sm text-slate-700">{getScheduleSummary(venue)}</p>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                  {getStatusLabel(venue.listingStatus)} listing
+                  {getVenueKindLabel(venue)} • {getStatusLabel(venue.listingStatus)} listing
                 </p>
                 <div className="flex flex-col gap-1 pt-1 text-sm font-bold text-cyan-700">
                   <Link href={`/venues/${venue.slug}`}>View venue profile</Link>
