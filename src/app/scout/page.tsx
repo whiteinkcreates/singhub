@@ -1,104 +1,103 @@
-import { ScoutReviewQueue } from "@/components/scout/ScoutReviewQueue";
-import { getScoutCandidates } from "@/lib/scoutData";
+import Link from "next/link";
 
 export const metadata = {
-  title: "AI Scout Review Queue | SingHUB",
-  description: "Internal SingHUB review queue for messy karaoke venue and event leads.",
+  title: "SingHUB Scout | Karaoke Data Engine",
+  description:
+    "SingHUB Scout turns city karaoke signals into useful venue and event entries.",
 };
 
-function countBy<T extends string>(items: T[]) {
-  return items.reduce<Record<string, number>>((counts, item) => {
-    counts[item] = (counts[item] ?? 0) + 1;
-    return counts;
-  }, {});
-}
+const signals = [
+  "venue websites",
+  "karaoke calendars",
+  "host and KJ mentions",
+  "flyers and recurring posts",
+  "community submissions",
+  "verified venue updates",
+];
 
-function labelize(value: string) {
-  return value
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
+const steps = [
+  {
+    title: "Find the signals",
+    text: "Scout gathers karaoke clues from the messy places real nightlife lives: venues, hosts, flyers, calendars, and local updates.",
+  },
+  {
+    title: "Turn noise into leads",
+    text: "Likely karaoke nights become reviewable leads with source notes, location clues, schedule hints, and confidence levels.",
+  },
+  {
+    title: "Verify before publishing",
+    text: "Listings are reviewed before they become public entries in the SingHUB Venue Index.",
+  },
+];
 
-export default function ScoutPage() {
-  const candidates = getScoutCandidates();
-  const statusCounts = countBy(candidates.map((candidate) => candidate.reviewStatus));
-  const confidenceCounts = countBy(candidates.map((candidate) => candidate.confidenceLevel));
-  const premiumProspects = candidates.filter((candidate) => candidate.premiumProspect).length;
-
+export default function ScoutExplainerPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-      <section className="max-w-4xl">
-        <p className="text-sm font-bold uppercase tracking-[0.3em] text-fuchsia-300">
-          Internal Tool
-        </p>
-        <h1 className="mt-3 text-4xl font-black text-white md:text-6xl">
-          AI Scout Review Queue
-        </h1>
-        <p className="mt-5 text-lg leading-8 text-slate-300">
-          AI Scout is an internal review queue for messy karaoke leads. Candidates
-          here are not public listings until reviewed and approved.
-        </p>
-        <p className="mt-4 text-base leading-7 text-slate-400">
-          Use this workspace to chip away at regional karaoke data before anything
-          touches the public Venue Index. False positives, stale mentions, IG flyer
-          clues, KJ names, and premium prospects all belong here first.
-        </p>
+      <section className="relative overflow-hidden rounded-[2rem] border border-cyan-300/30 bg-slate-950 p-6 shadow-2xl shadow-cyan-950/40 md:p-10">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.22),transparent_24rem),radial-gradient(circle_at_80%_30%,rgba(217,70,239,0.18),transparent_24rem)]" />
+        <div className="relative max-w-4xl">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-cyan-200">
+            SingHUB Scout
+          </p>
+          <h1 className="mt-4 text-4xl font-black text-white md:text-6xl">
+            The karaoke data engine behind the Venue Index.
+          </h1>
+          <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-200">
+            Karaoke data is messy. A city can have weekly bar nights, private rooms,
+            one-off events, rotating KJs, stale calendars, and hidden gems that only
+            show up in local posts. SingHUB Scout is the system we use to turn those
+            signals into a cleaner karaoke centerpiece for each city.
+          </p>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/find-karaoke"
+              className="rounded-full bg-fuchsia-400 px-5 py-3 text-center text-sm font-black uppercase tracking-[0.18em] text-slate-950 shadow-lg shadow-fuchsia-950/40 transition hover:-translate-y-0.5 hover:bg-fuchsia-300"
+            >
+              Find Karaoke
+            </Link>
+            <Link
+              href="/submit-listing"
+              className="rounded-full border border-cyan-300/60 px-5 py-3 text-center text-sm font-black uppercase tracking-[0.18em] text-cyan-100 transition hover:-translate-y-0.5 hover:bg-cyan-300/10"
+            >
+              Submit a Lead
+            </Link>
+          </div>
+        </div>
       </section>
 
       <section className="mt-10 grid gap-4 md:grid-cols-3">
-        <div className="rounded-3xl border border-cyan-300/20 bg-cyan-300/10 p-5">
-          <p className="text-sm font-bold uppercase tracking-[0.25em] text-cyan-200">
-            Total leads
-          </p>
-          <p className="mt-3 text-4xl font-black text-white">{candidates.length}</p>
-        </div>
-        <div className="rounded-3xl border border-fuchsia-300/20 bg-fuchsia-300/10 p-5">
-          <p className="text-sm font-bold uppercase tracking-[0.25em] text-fuchsia-200">
-            Premium prospects
-          </p>
-          <p className="mt-3 text-4xl font-black text-white">{premiumProspects}</p>
-        </div>
-        <div className="rounded-3xl border border-purple-300/20 bg-purple-300/10 p-5">
-          <p className="text-sm font-bold uppercase tracking-[0.25em] text-purple-200">
-            Public exposure
-          </p>
-          <p className="mt-3 text-2xl font-black text-white">Hidden</p>
-          <p className="mt-2 text-sm text-slate-300">Internal route only. Not linked in public nav.</p>
+        {steps.map((step) => (
+          <div key={step.title} className="rounded-3xl border border-white/10 bg-slate-950/70 p-6">
+            <h2 className="text-xl font-black text-white">{step.title}</h2>
+            <p className="mt-3 leading-7 text-slate-300">{step.text}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className="mt-10 rounded-3xl border border-fuchsia-300/20 bg-fuchsia-300/10 p-6 md:p-8">
+        <p className="text-sm font-bold uppercase tracking-[0.28em] text-fuchsia-200">
+          What Scout looks for
+        </p>
+        <div className="mt-5 flex flex-wrap gap-3">
+          {signals.map((signal) => (
+            <span
+              key={signal}
+              className="rounded-full border border-white/10 bg-slate-950/80 px-4 py-2 text-sm font-bold text-slate-100"
+            >
+              {signal}
+            </span>
+          ))}
         </div>
       </section>
 
-      <section className="mt-6 grid gap-4 lg:grid-cols-2">
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5">
-          <h2 className="text-xl font-black text-white">Review status</h2>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {Object.entries(statusCounts).map(([status, count]) => (
-              <span
-                key={status}
-                className="rounded-full border border-white/10 bg-slate-900 px-3 py-1 text-sm font-bold text-slate-200"
-              >
-                {labelize(status)}: {count}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5">
-          <h2 className="text-xl font-black text-white">Confidence level</h2>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {Object.entries(confidenceCounts).map(([level, count]) => (
-              <span
-                key={level}
-                className="rounded-full border border-white/10 bg-slate-900 px-3 py-1 text-sm font-bold text-slate-200"
-              >
-                {labelize(level)}: {count}
-              </span>
-            ))}
-          </div>
-        </div>
+      <section className="mt-10 max-w-3xl">
+        <h2 className="text-3xl font-black text-white">Built for city-by-city karaoke discovery.</h2>
+        <p className="mt-4 leading-8 text-slate-300">
+          San Diego is the starting point. The larger goal is a repeatable engine that
+          can digest a city&apos;s karaoke footprint, surface the best leads, and help
+          SingHUB become the place people check before they go sing.
+        </p>
       </section>
-
-      <ScoutReviewQueue candidates={candidates} />
     </main>
   );
 }
