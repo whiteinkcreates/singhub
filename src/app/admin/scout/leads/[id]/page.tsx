@@ -52,6 +52,13 @@ type ScoutLead = {
   updated_by: string | null;
 };
 
+type LeadNavItem = {
+  id: string;
+  lead_name: string;
+  priority: string | null;
+  created_at: string | null;
+};
+
 type PageProps = {
   params: Promise<{ id: string }>;
   searchParams?: Promise<{ saved?: string }>;
@@ -168,6 +175,40 @@ function LinkButton({ href, label }: { href: string | null; label: string }) {
   );
 }
 
+function LeadNav({ previousLead, nextLead, currentIndex, total }: { previousLead: LeadNavItem | null; nextLead: LeadNavItem | null; currentIndex: number; total: number }) {
+  return (
+    <section className="mt-5 grid gap-3 rounded-3xl border border-white/10 bg-slate-950/70 p-4 md:grid-cols-[1fr_auto_1fr] md:items-center">
+      {previousLead ? (
+        <Link
+          href={`/admin/scout/leads/${previousLead.id}`}
+          className="rounded-2xl border border-white/10 bg-slate-900/80 p-4 transition hover:-translate-y-0.5 hover:border-cyan-300/50"
+        >
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">← Previous</p>
+          <p className="mt-1 font-bold text-slate-100">{previousLead.lead_name}</p>
+        </Link>
+      ) : (
+        <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-4 text-sm text-slate-500">Start of queue</div>
+      )}
+
+      <div className="text-center text-xs font-black uppercase tracking-[0.18em] text-slate-500">
+        {currentIndex >= 0 ? `${currentIndex + 1} / ${total}` : `${total} leads`}
+      </div>
+
+      {nextLead ? (
+        <Link
+          href={`/admin/scout/leads/${nextLead.id}`}
+          className="rounded-2xl border border-white/10 bg-slate-900/80 p-4 text-right transition hover:-translate-y-0.5 hover:border-fuchsia-300/50"
+        >
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Next →</p>
+          <p className="mt-1 font-bold text-slate-100">{nextLead.lead_name}</p>
+        </Link>
+      ) : (
+        <div className="rounded-2xl border border-white/10 bg-slate-900/40 p-4 text-right text-sm text-slate-500">End of queue</div>
+      )}
+    </section>
+  );
+}
+
 export default async function ScoutLeadDetailPage({ params, searchParams }: PageProps) {
   const { id } = await params;
   const query = searchParams ? await searchParams : {};
@@ -179,6 +220,17 @@ export default async function ScoutLeadDetailPage({ params, searchParams }: Page
     notFound();
   }
 
+  const { data: navData } = await supabase
+    .from("scout_leads")
+    .select("id, lead_name, priority, created_at")
+    .order("priority", { ascending: true })
+    .order("created_at", { ascending: false })
+    .limit(500);
+
+  const navItems = (navData ?? []) as LeadNavItem[];
+  const currentIndex = navItems.findIndex((item) => item.id === id);
+  const previousLead = currentIndex > 0 ? navItems[currentIndex - 1] : null;
+  const nextLead = currentIndex >= 0 && currentIndex < navItems.length - 1 ? navItems[currentIndex + 1] : null;
   const lead = data as ScoutLead;
 
   return (
@@ -192,6 +244,8 @@ export default async function ScoutLeadDetailPage({ params, searchParams }: Page
           Scout lead saved.
         </div>
       ) : null}
+
+      <LeadNav previousLead={previousLead} nextLead={nextLead} currentIndex={currentIndex} total={navItems.length} />
 
       <section className="mt-6 rounded-3xl border border-cyan-300/20 bg-slate-950/80 p-6 shadow-xl shadow-cyan-950/30 md:p-8">
         <p className="text-sm font-bold uppercase tracking-[0.3em] text-cyan-300">Scout Venue Intelligence</p>
@@ -322,6 +376,8 @@ export default async function ScoutLeadDetailPage({ params, searchParams }: Page
             <TextArea label="Internal Scout notes" name="notes" value={lead.notes} rows={5} />
           </div>
         </section>
+
+        <LeadNav previousLead={previousLead} nextLead={nextLead} currentIndex={currentIndex} total={navItems.length} />
 
         <div className="sticky bottom-4 z-10 rounded-3xl border border-fuchsia-300/30 bg-slate-950/95 p-4 shadow-2xl shadow-fuchsia-950/40 backdrop-blur">
           <button className="w-full rounded-full bg-fuchsia-400 px-5 py-4 text-sm font-black uppercase tracking-[0.18em] text-slate-950 transition hover:-translate-y-0.5 hover:bg-fuchsia-300 md:w-auto">
