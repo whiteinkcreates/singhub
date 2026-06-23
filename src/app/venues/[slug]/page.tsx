@@ -9,6 +9,10 @@ type VenuePageProps = {
   params: Promise<{ slug: string }>;
 };
 
+function isPlaceholderVenue(venueName: string) {
+  return venueName.toLowerCase().includes("tbd") || venueName.toLowerCase().includes("placeholder");
+}
+
 export function generateStaticParams() {
   return getVenueListings().map((venue) => ({ slug: venue.slug }));
 }
@@ -20,12 +24,27 @@ export async function generateMetadata({ params }: VenuePageProps): Promise<Meta
   if (!venue) {
     return {
       title: "Venue Not Found | SingHUB",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
+
+  const shouldNoindex = isPlaceholderVenue(venue.venueName);
 
   return {
     title: `${venue.venueName} Karaoke | SingHUB`,
     description: `${venue.venueName} karaoke listing in ${venue.neighborhood}, San Diego.`,
+    alternates: {
+      canonical: `/venues/${venue.slug}`,
+    },
+    robots: shouldNoindex
+      ? {
+          index: false,
+          follow: false,
+        }
+      : undefined,
   };
 }
 
