@@ -20,7 +20,7 @@ const VenueMapClient = dynamic(() => import("./VenueMapClient"), {
 
 const legendItems = [
   { label: "Live karaoke", className: "bg-fuchsia-400 shadow-fuchsia-400/60", symbol: "🎤" },
-  { label: "Karaoke rooms", className: "bg-cyan-300 shadow-cyan-300/60", symbol: "♪" },
+  { label: "Karaoke rooms", className: "rounded-md bg-cyan-300 shadow-cyan-300/60", symbol: "▣" },
   { label: "Verified", className: "bg-cyan-300 shadow-cyan-300/60", symbol: "●" },
   { label: "Claimed", className: "bg-fuchsia-400 shadow-fuchsia-400/60", symbol: "●" },
   { label: "AI-Scouted", className: "bg-violet-400 shadow-violet-400/60", symbol: "●" },
@@ -53,7 +53,7 @@ export function VenueMap({ venues, userLocation = null }: VenueMapProps) {
           {legendItems.map((item) => (
             <span key={item.label} className="inline-flex items-center gap-2">
               <span
-                className={`inline-flex h-4 w-4 items-center justify-center rounded-full text-[0.55rem] font-black text-slate-950 shadow-lg ${item.className}`}
+                className={`inline-flex h-4 w-4 items-center justify-center text-[0.55rem] font-black text-slate-950 shadow-lg ${item.className.includes("rounded") ? item.className : `rounded-full ${item.className}`}`}
                 aria-hidden="true"
               >
                 {item.symbol}
