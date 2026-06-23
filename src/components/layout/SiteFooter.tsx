@@ -11,6 +11,13 @@ export function SiteFooter() {
             as we verify schedules, add venues, and build the local karaoke
             community.
           </p>
+          <p className="mt-3 text-xs font-bold uppercase tracking-[0.22em] text-cyan-200">
+            Karaoke entries powered by{" "}
+            <Link href="/scout" className="text-fuchsia-200 hover:text-white">
+              SingHUB Scout
+            </Link>
+            .
+          </p>
         </div>
         <div className="flex flex-wrap gap-4 font-semibold text-slate-300">
           <Link href="/find-karaoke" className="hover:text-white">
