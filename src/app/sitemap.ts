@@ -12,8 +12,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
   const staticRoutes = ["/", "/find-karaoke", "/submit-listing", "/claim-listing", "/venues/premium", "/guides", "/neighborhoods"];
-
-  const localRoutes = localSeoPages.map((page) => page.path);
+  const localRoutes = localSeoPages
+    .map((page) => page.path)
+    .filter((path) => path !== "/karaoke-near-me");
   const dayRoutes = daySeoPages.map((page) => `/karaoke/${page.slug}`);
   const neighborhoodRoutes = neighborhoodSeoPages.map((page) => `/neighborhoods/${page.slug}`);
   const guideRoutes = guidePosts.map((post) => `/guides/${post.slug}`);
@@ -25,6 +26,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: absoluteUrl(path),
     lastModified: now,
     changeFrequency: path.startsWith("/guides") ? "weekly" : "daily",
-    priority: path === "/" ? 1 : path.includes("karaoke-near-me") ? 0.95 : 0.7,
+    priority: path === "/" ? 1 : 0.7,
   }));
 }
