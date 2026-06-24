@@ -171,13 +171,10 @@ export default function PremiumVenuePage() {
               For Venues
             </p>
             <h1 className="mt-4 max-w-4xl text-4xl font-black leading-tight text-white md:text-6xl">
-              Get found by singers already looking for their next karaoke night.
+              Local singers are already looking for karaoke. Help them find you.
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">
-              SingHUB gives karaoke venues a cleaner way to show up in local search,
-              explain the vibe, and turn curious singers into people walking through
-              the door. Start with a free basic listing, or upgrade to a premium
-              profile built for more visibility.
+              SingHUB helps karaoke venues show up where people are already searching by neighborhood, day, venue, and vibe. Start with a free listing, or upgrade to a premium profile built to stand out.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
