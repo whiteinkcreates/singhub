@@ -242,16 +242,16 @@ export default function KaraokeNearMePage() {
       <section className="mx-auto max-w-7xl px-3 py-5 sm:px-4 md:py-8">
         <div className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/40 bg-slate-950 shadow-2xl shadow-fuchsia-950/40 md:rounded-[2.5rem]">
           <div
-            className="absolute inset-0 bg-cover bg-[72%_center] opacity-70 md:opacity-85"
+            className="absolute inset-0 bg-no-repeat opacity-45 sm:opacity-55 md:opacity-65 bg-[length:78%] bg-[position:center_1rem] sm:bg-[length:34rem] sm:bg-[position:92%_45%] lg:bg-[length:38rem] lg:bg-[position:88%_50%]"
             style={{ backgroundImage: "url('/images/hero/singhub-logo-glow.svg')" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-950/76 to-slate-950 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/86 md:to-slate-950/25" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/62 via-slate-950/84 to-slate-950 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/88 md:to-slate-950/48" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(217,70,239,0.25),transparent_22rem),radial-gradient(circle_at_80%_12%,rgba(34,211,238,0.14),transparent_24rem)]" />
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-400 via-violet-400 to-cyan-300" />
 
           <div className="relative min-h-[40rem] px-4 py-6 sm:px-6 md:min-h-[37rem] md:px-10 md:py-12 lg:px-14">
             <div className="flex max-w-2xl flex-col justify-center pt-24 sm:pt-32 md:min-h-[32rem] md:pt-0">
-              <p className="mb-3 w-fit rounded-full border border-cyan-300/30 bg-slate-950/55 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-cyan-100 backdrop-blur">
+              <p className="mb-3 w-fit rounded-full border border-cyan-300/30 bg-slate-950/55 px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.14em] text-cyan-100 backdrop-blur sm:text-xs sm:tracking-[0.18em]">
                 SingHUB Local Karaoke Finder
               </p>
               <h1 className="text-[4.3rem] font-black leading-[0.86] tracking-tight text-white drop-shadow-2xl sm:text-8xl md:text-9xl">
