@@ -17,8 +17,8 @@ type Coordinate = [number, number];
 
 type MarkerStyle = {
   label: string;
+  stripe: string;
   glow: string;
-  background: string;
 };
 
 type MappableVenueListing = VenueListing & {
@@ -42,18 +42,18 @@ const DEFAULT_ZOOM = 10;
 const markerStyles: Record<ListingStatus, MarkerStyle> = {
   verified: {
     label: "Verified",
-    glow: "rgba(103, 232, 249, 0.65)",
-    background: "linear-gradient(135deg, #0891b2, #22d3ee)",
+    stripe: "#22d3ee",
+    glow: "rgba(34, 211, 238, 0.75)",
   },
   claimed: {
     label: "Claimed",
-    glow: "rgba(232, 121, 249, 0.65)",
-    background: "linear-gradient(135deg, #c026d3, #f472b6)",
+    stripe: "#f472b6",
+    glow: "rgba(244, 114, 182, 0.7)",
   },
   ai_scouted: {
     label: "AI-Scouted",
-    glow: "rgba(167, 139, 250, 0.55)",
-    background: "linear-gradient(135deg, #6d28d9, #a78bfa)",
+    stripe: "#a78bfa",
+    glow: "rgba(167, 139, 250, 0.65)",
   },
 };
 
@@ -79,118 +79,85 @@ function getScheduleSummary(venue: VenueListing) {
   return venue.hostName ? `${schedule} • Host: ${venue.hostName}` : schedule;
 }
 
-function microphoneSvg(size = 24) {
+function handheldMicSvg(size = 28) {
   return `
     <svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" focusable="false" style="display:block;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.35));">
-      <path d="M32 7c-7 0-12 5-12 12v12c0 7 5 12 12 12s12-5 12-12V19C44 12 39 7 32 7Z" fill="white"/>
-      <path d="M22 21h20M22 29h20" stroke="#0f172a" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
-      <path d="M14 29c0 10 8 18 18 18s18-8 18-18" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
-      <path d="M32 47v8M23 57h18" stroke="white" stroke-width="5" stroke-linecap="round"/>
+      <g transform="rotate(-38 32 32)">
+        <circle cx="25" cy="20" r="13" fill="white"/>
+        <path d="M16 20h18M18 14c5 4 10 4 15 0M18 26c5-4 10-4 15 0" stroke="#0f172a" stroke-width="3.4" stroke-linecap="round" opacity="0.58"/>
+        <path d="M34 29l19 19" stroke="white" stroke-width="10" stroke-linecap="round"/>
+        <path d="M41 36l-7 7" stroke="#0f172a" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+        <path d="M49 44l-7 7" stroke="#0f172a" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+      </g>
     </svg>
   `;
 }
 
-function roomMicSvg() {
-  return `
-    <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true" focusable="false" style="display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4));">
-      <rect x="9" y="7" width="46" height="50" rx="10" fill="rgba(15,23,42,0.38)" stroke="white" stroke-width="4"/>
-      <path d="M47 15v34" stroke="rgba(255,255,255,0.55)" stroke-width="3" stroke-linecap="round"/>
-      <circle cx="43" cy="33" r="2.8" fill="white"/>
-      <path d="M28 16c-5 0-8.5 3.8-8.5 8.5v7c0 5 3.5 8.5 8.5 8.5s8.5-3.5 8.5-8.5v-7C36.5 19.8 33 16 28 16Z" fill="white"/>
-      <path d="M21.5 25h13M21.5 31h13" stroke="#0f172a" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
-      <path d="M17 31c0 6.5 5 11.5 11 11.5S39 37.5 39 31" fill="none" stroke="white" stroke-width="3.8" stroke-linecap="round"/>
-      <path d="M28 42.5v6M22 50.5h12" stroke="white" stroke-width="3.8" stroke-linecap="round"/>
-    </svg>
-  `;
+function getShapeStyle(venue: VenueListing) {
+  if (venue.venueType === "private_room") {
+    return {
+      className: "singhub-room-marker",
+      width: 48,
+      height: 48,
+      anchor: 24,
+      css: "border-radius: 13px;",
+      title: "Private karaoke room",
+    };
+  }
+
+  if (venue.venueType === "event_producer") {
+    return {
+      className: "singhub-event-marker",
+      width: 50,
+      height: 48,
+      anchor: 24,
+      css: "clip-path: polygon(50% 4%, 96% 88%, 4% 88%); padding-top: 4px;",
+      title: "Karaoke event producer",
+    };
+  }
+
+  return {
+    className: "singhub-live-marker",
+    width: 46,
+    height: 46,
+    anchor: 23,
+    css: "border-radius: 9999px;",
+    title: "Live karaoke venue",
+  };
 }
 
 function getVenueIcon(venue: VenueListing) {
   const statusStyle = markerStyles[venue.listingStatus];
-
-  if (venue.venueType === "private_room") {
-    return L.divIcon({
-      className: "singhub-room-marker",
-      html: `
-        <span
-          aria-hidden="true"
-          style="
-            align-items: center;
-            background: radial-gradient(circle at 32% 24%, rgba(255,255,255,0.42), transparent 18px), linear-gradient(135deg, #0891b2, #22d3ee 52%, #a855f7);
-            border: 2px solid rgba(255, 255, 255, 0.92);
-            border-radius: 15px 15px 15px 5px;
-            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 30px rgba(34, 211, 238, 0.82);
-            color: white;
-            display: flex;
-            height: 46px;
-            justify-content: center;
-            line-height: 1;
-            position: relative;
-            transform: rotate(4deg);
-            width: 46px;
-          "
-          title="Karaoke room venue"
-        >${roomMicSvg()}</span>
-      `,
-      iconAnchor: [23, 23],
-      popupAnchor: [0, -20],
-    });
-  }
-
-  if (venue.venueType === "event_producer") {
-    return L.divIcon({
-      className: "singhub-event-marker",
-      html: `
-        <span
-          aria-hidden="true"
-          style="
-            align-items: center;
-            background: linear-gradient(135deg, #7c3aed, #f472b6);
-            border: 2px solid rgba(255, 255, 255, 0.9);
-            border-radius: 14px 14px 14px 4px;
-            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 28px rgba(232, 121, 249, 0.75);
-            color: white;
-            display: flex;
-            font-size: 20px;
-            height: 42px;
-            justify-content: center;
-            line-height: 1;
-            position: relative;
-            transform: rotate(-4deg);
-            width: 42px;
-          "
-          title="Karaoke event producer"
-        >★</span>
-      `,
-      iconAnchor: [21, 21],
-      popupAnchor: [0, -18],
-    });
-  }
+  const shape = getShapeStyle(venue);
 
   return L.divIcon({
-    className: "singhub-microphone-marker",
+    className: shape.className,
     html: `
       <span
         aria-hidden="true"
         style="
           align-items: center;
-          background: radial-gradient(circle at 32% 24%, rgba(255,255,255,0.34), transparent 17px), ${statusStyle.background};
-          border: 2px solid rgba(255, 255, 255, 0.9);
-          border-radius: 9999px;
-          box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 26px ${statusStyle.glow};
+          background: radial-gradient(circle at 32% 24%, rgba(255,255,255,0.42), transparent 17px), linear-gradient(135deg, #111827, #334155 52%, #0f172a);
+          border: 2px solid rgba(255, 255, 255, 0.92);
+          box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 28px ${statusStyle.glow};
           color: white;
           display: flex;
-          height: 43px;
+          height: ${shape.height}px;
           justify-content: center;
           line-height: 1;
+          overflow: hidden;
           position: relative;
-          transform: rotate(-8deg);
-          width: 43px;
+          width: ${shape.width}px;
+          ${shape.css}
         "
-        title="${statusStyle.label} karaoke venue"
-      >${microphoneSvg(25)}</span>
+        title="${shape.title} • ${statusStyle.label}"
+      >
+        <span style="position:absolute;left:7px;right:7px;bottom:5px;height:4px;border-radius:999px;background:${statusStyle.stripe};box-shadow:0 0 10px ${statusStyle.glow};"></span>
+        ${handheldMicSvg(30)}
+      </span>
     `,
-    iconAnchor: [21, 21],
-    popupAnchor: [0, -18],
+    iconAnchor: [shape.anchor, shape.anchor],
+    popupAnchor: [0, -20],
   });
 }
 
