@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 
 const navItems = [
+  { href: "/karaoke-near-me", label: "Karaoke Near Me" },
   { href: "/find-karaoke", label: "Find Karaoke" },
   { href: "/neighborhoods", label: "Neighborhoods" },
   { href: "/submit-listing", label: "Submit Listing" },
