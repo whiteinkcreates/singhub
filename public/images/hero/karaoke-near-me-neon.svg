@@ -1,0 +1,67 @@
+<svg width="1600" height="1100" viewBox="0 0 1600 1100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1075 448) rotate(113) scale(581 674)">
+      <stop stop-color="#ec4899" stop-opacity="0.48"/>
+      <stop offset="0.42" stop-color="#7c3aed" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pinStroke" x1="816" y1="153" x2="1224" y2="917" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f0abfc"/>
+      <stop offset="0.46" stop-color="#ec4899"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="singerFill" x1="776" y1="299" x2="1206" y2="923" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f472b6" stop-opacity="0.92"/>
+      <stop offset="0.55" stop-color="#7c3aed" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#0891b2" stop-opacity="0.85"/>
+    </linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="14" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="28" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1100" fill="#020617"/>
+  <rect width="1600" height="1100" fill="url(#bgGlow)"/>
+  <circle cx="1268" cy="150" r="6" fill="#ec4899" opacity="0.75"/>
+  <circle cx="1368" cy="310" r="3" fill="#22d3ee" opacity="0.72"/>
+  <circle cx="913" cy="206" r="4" fill="#f472b6" opacity="0.7"/>
+  <circle cx="708" cy="442" r="3" fill="#22d3ee" opacity="0.54"/>
+  <circle cx="1474" cy="504" r="5" fill="#ec4899" opacity="0.54"/>
+
+  <!-- faint SingHUB target / pin -->
+  <g opacity="0.72" filter="url(#softGlow)">
+    <path d="M1115 132C958 132 830 258 830 414C830 602 1078 861 1115 900C1152 861 1400 602 1400 414C1400 258 1272 132 1115 132Z" stroke="url(#pinStroke)" stroke-width="26"/>
+    <ellipse cx="1115" cy="925" rx="215" ry="40" stroke="#22d3ee" stroke-width="18" opacity="0.9"/>
+    <path d="M1000 358C1000 302 1044 266 1111 266H1190V327H1115C1080 327 1060 342 1060 366C1060 391 1082 403 1125 421C1180 444 1212 477 1212 535C1212 604 1158 640 1083 640C1042 640 1007 630 974 611L998 556C1024 572 1055 581 1083 581C1125 581 1148 564 1148 536C1148 512 1133 498 1090 481C1030 455 1000 422 1000 358Z" fill="#f9a8d4" opacity="0.75"/>
+    <path d="M1234 279H1301V445H1432V279H1499V666H1432V506H1301V666H1234V279Z" fill="#f9a8d4" opacity="0.68" transform="translate(-135 0)"/>
+    <path d="M1226 282L1248 332L1299 354L1248 376L1226 426L1204 376L1153 354L1204 332L1226 282Z" fill="#f472b6" opacity="0.9"/>
+    <g transform="translate(1044 636)">
+      <rect x="42" y="76" width="57" height="154" rx="22" stroke="#22d3ee" stroke-width="13"/>
+      <circle cx="70" cy="70" r="58" stroke="#93c5fd" stroke-width="12"/>
+      <path d="M10 70H130" stroke="#22d3ee" stroke-width="12" stroke-linecap="round"/>
+      <path d="M43 52C57 41 84 40 99 52M33 74C50 88 91 89 111 74" stroke="#f0abfc" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+    </g>
+  </g>
+
+  <!-- singer silhouette belting -->
+  <g opacity="0.88" filter="url(#glow)">
+    <path d="M897 347C926 289 997 269 1054 304C1102 335 1112 395 1086 437C1072 459 1050 468 1030 478C1002 493 1006 523 1024 560L1090 696C1115 750 1081 812 1020 812H883C826 812 790 752 814 700L864 590C884 546 878 515 849 491C808 459 822 390 897 347Z" fill="url(#singerFill)"/>
+    <path d="M955 307C918 325 896 358 886 405C876 456 902 500 916 545C936 606 907 694 832 751C916 762 1016 718 1049 653C1079 595 1057 539 1038 495C1103 467 1119 398 1072 344C1042 309 996 294 955 307Z" fill="#0f172a" opacity="0.55"/>
+    <path d="M875 423C829 411 780 417 737 440L631 496C606 509 597 540 610 565C623 589 654 598 679 585L780 532C807 518 839 515 868 524L933 543L962 448L875 423Z" fill="url(#singerFill)"/>
+    <path d="M596 495L480 468C451 461 424 479 417 508C410 536 428 564 457 570L575 597C604 604 632 586 638 557C645 529 625 502 596 495Z" fill="#0f172a" stroke="#67e8f9" stroke-width="10"/>
+    <path d="M474 468L293 427" stroke="#0f172a" stroke-width="32" stroke-linecap="round"/>
+    <path d="M474 468L293 427" stroke="#67e8f9" stroke-width="7" stroke-linecap="round" opacity="0.75"/>
+    <path d="M1044 421C1093 430 1132 465 1147 512" stroke="#f9a8d4" stroke-width="10" stroke-linecap="round" opacity="0.7"/>
+  </g>
+</svg>
