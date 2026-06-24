@@ -7,7 +7,7 @@ import type { VenueListing } from "@/types";
 export const metadata: Metadata = {
   title: "Karaoke Near Me | Find Karaoke Bars & Live Nights Tonight | SingHUB",
   description:
-    "Find karaoke near you tonight. Search San Diego karaoke bars, private karaoke rooms, live nights, featured venues, neighborhoods, and day-by-day karaoke schedules.",
+    "Find karaoke near you tonight. Search San Diego karaoke bars, private karaoke rooms, live nights, neighborhoods, and day-by-day karaoke schedules.",
   alternates: {
     canonical: "/karaoke-near-me",
   },
@@ -21,14 +21,8 @@ export const metadata: Metadata = {
   },
 };
 
-const premiumVenueIds = ["venue-0006", "venue-0045", "venue-0010"];
-const spotlightVenueIds = [
-  "venue-0048",
-  "venue-0043",
-  "venue-0044",
-  "venue-0064",
-  "venue-0063",
-];
+const popularVenueIds = ["venue-0002", "venue-0053", "venue-0062", "venue-0064"];
+const weeklySpotlightVenueId = "venue-0006";
 
 const dayLinks = [
   { label: "Mon", href: "/karaoke/monday" },
@@ -47,6 +41,19 @@ const neighborhoodLinks = [
   { label: "Hillcrest", href: "/neighborhoods/hillcrest" },
   { label: "Ocean Beach", href: "/neighborhoods/ocean-beach" },
   { label: "La Mesa", href: "/neighborhoods/east-county-la-mesa" },
+];
+
+const starterGuideLinks = [
+  {
+    title: "First time singing karaoke?",
+    href: "/guides/first-time-singing-karaoke",
+    body: "Pick a song, get through the nerves, and survive your first trip to the mic.",
+  },
+  {
+    title: "Karaoke etiquette basics",
+    href: "/guides/karaoke-etiquette-dont-be-that-guy",
+    body: "A quick room-read before you become someone else's group chat story.",
+  },
 ];
 
 function getVenueById(venues: VenueListing[], id: string) {
@@ -88,35 +95,23 @@ function getSchedule(venue: VenueListing) {
   return `${venue.karaokeDay} • ${venue.startTime} to ${venue.endTime}`;
 }
 
-function VenueMiniCard({ venue, premium = false }: { venue: VenueListing; premium?: boolean }) {
+function VenueMiniCard({ venue }: { venue: VenueListing }) {
   const name = getDisplayName(venue);
   const tags = venue.vibeTags.slice(0, 3);
 
   return (
     <Link
       href={getVenueHref(venue)}
-      className={`group relative flex min-h-[17rem] flex-col justify-between overflow-hidden rounded-[1.75rem] border p-4 shadow-2xl transition hover:-translate-y-1 sm:p-5 ${
-        premium
-          ? "border-amber-300/70 bg-amber-300/10 shadow-amber-950/30"
-          : "border-white/10 bg-white/[0.045] shadow-black/30 hover:border-cyan-300/50"
-      }`}
+      className="group relative flex min-h-[15rem] flex-col justify-between overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.045] p-4 shadow-2xl shadow-black/30 transition hover:-translate-y-1 hover:border-cyan-300/50 sm:p-5"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_10%,rgba(217,70,239,0.28),transparent_14rem),radial-gradient(circle_at_90%_0%,rgba(34,211,238,0.22),transparent_12rem)]" />
-      <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-slate-900/20 to-transparent" />
       <div className="relative">
         <div className="mb-4 flex items-center justify-between gap-2">
-          <span
-            className={`rounded-full border px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.16em] ${
-              premium
-                ? "border-amber-300/70 bg-amber-300/15 text-amber-100"
-                : "border-fuchsia-300/50 bg-fuchsia-300/10 text-fuchsia-100"
-            }`}
-          >
-            {premium ? "Premium" : "Featured"}
+          <span className="rounded-full border border-fuchsia-300/50 bg-fuchsia-300/10 px-3 py-1 text-[0.65rem] font-black uppercase tracking-[0.16em] text-fuchsia-100">
+            Start here
           </span>
-          <span className="text-lg">{premium ? "♛" : "✦"}</span>
+          <span className="text-lg">🎤</span>
         </div>
-
         <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-200/80">
           {venue.neighborhood || "San Diego"}
         </p>
@@ -127,7 +122,6 @@ function VenueMiniCard({ venue, premium = false }: { venue: VenueListing; premiu
           {getSchedule(venue)}
         </p>
       </div>
-
       <div className="relative mt-6">
         <div className="flex flex-wrap gap-2">
           {tags.map((tag) => (
@@ -142,6 +136,41 @@ function VenueMiniCard({ venue, premium = false }: { venue: VenueListing; premiu
         <p className="mt-4 text-sm font-bold text-fuchsia-100">View listing →</p>
       </div>
     </Link>
+  );
+}
+
+function WeeklySpotlight({ venue }: { venue: VenueListing }) {
+  return (
+    <section className="mx-auto max-w-7xl px-4 py-8">
+      <div className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/40 bg-slate-950 p-5 shadow-2xl shadow-fuchsia-950/30 md:p-8">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(217,70,239,0.24),transparent_22rem),radial-gradient(circle_at_85%_10%,rgba(34,211,238,0.18),transparent_20rem)]" />
+        <div className="relative grid gap-6 lg:grid-cols-[1fr_20rem] lg:items-center">
+          <div>
+            <p className="text-sm font-black uppercase tracking-[0.24em] text-fuchsia-300">
+              Weekly spotlight venue
+            </p>
+            <h2 className="mt-3 text-3xl font-black text-white sm:text-5xl">
+              {getDisplayName(venue)}
+            </h2>
+            <p className="mt-3 text-base leading-7 text-slate-300">
+              A rotating SingHUB pick for singers who want one clear place to start. This slot can become a useful sales tool without turning the whole page into an ad wall.
+            </p>
+            <p className="mt-4 text-sm font-semibold text-cyan-100">
+              {venue.neighborhood} • {getSchedule(venue)}
+            </p>
+          </div>
+          <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.05] p-5">
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-200">Why it works</p>
+            <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-200">
+              <li>Easy to understand before you go</li>
+              <li>Good fit for singers looking tonight</li>
+              <li>Clear venue page for schedule and details</li>
+            </ul>
+            <Button href={getVenueHref(venue)} className="mt-5 w-full">View spotlight</Button>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -175,12 +204,10 @@ function BrowsePanel({
 
 export default function KaraokeNearMePage() {
   const venues = getVenueListings();
-  const premiumVenues = premiumVenueIds
+  const popularVenues = popularVenueIds
     .map((id) => getVenueById(venues, id))
     .filter((venue): venue is VenueListing => Boolean(venue));
-  const spotlightVenues = spotlightVenueIds
-    .map((id) => getVenueById(venues, id))
-    .filter((venue): venue is VenueListing => Boolean(venue));
+  const weeklySpotlightVenue = getVenueById(venues, weeklySpotlightVenueId);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -196,7 +223,7 @@ export default function KaraokeNearMePage() {
     },
     mainEntity: {
       "@type": "ItemList",
-      itemListElement: [...premiumVenues, ...spotlightVenues].map((venue, index) => ({
+      itemListElement: popularVenues.map((venue, index) => ({
         "@type": "ListItem",
         position: index + 1,
         name: getDisplayName(venue),
@@ -215,15 +242,15 @@ export default function KaraokeNearMePage() {
       <section className="mx-auto max-w-7xl px-3 py-5 sm:px-4 md:py-8">
         <div className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/40 bg-slate-950 shadow-2xl shadow-fuchsia-950/40 md:rounded-[2.5rem]">
           <div
-            className="absolute inset-0 bg-cover bg-[62%_center] opacity-75 md:opacity-90"
-            style={{ backgroundImage: "url('/images/hero/karaoke-near-me-neon.svg')" }}
+            className="absolute inset-0 bg-cover bg-[72%_center] opacity-70 md:opacity-85"
+            style={{ backgroundImage: "url('/images/hero/singhub-logo-glow.svg')" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/55 via-slate-950/60 to-slate-950 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/82 md:to-slate-950/18" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-950/76 to-slate-950 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/86 md:to-slate-950/25" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(217,70,239,0.25),transparent_22rem),radial-gradient(circle_at_80%_12%,rgba(34,211,238,0.14),transparent_24rem)]" />
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-400 via-violet-400 to-cyan-300" />
 
-          <div className="relative min-h-[42rem] px-4 py-6 sm:px-6 md:min-h-[39rem] md:px-10 md:py-12 lg:px-14">
-            <div className="flex max-w-2xl flex-col justify-end pt-36 sm:pt-44 md:min-h-[34rem] md:justify-center md:pt-0">
+          <div className="relative min-h-[40rem] px-4 py-6 sm:px-6 md:min-h-[37rem] md:px-10 md:py-12 lg:px-14">
+            <div className="flex max-w-2xl flex-col justify-center pt-24 sm:pt-32 md:min-h-[32rem] md:pt-0">
               <p className="mb-3 w-fit rounded-full border border-cyan-300/30 bg-slate-950/55 px-4 py-2 text-xs font-black uppercase tracking-[0.22em] text-cyan-100 backdrop-blur">
                 SingHUB Local Karaoke Finder
               </p>
@@ -255,7 +282,7 @@ export default function KaraokeNearMePage() {
                   type="submit"
                   className="mt-2 w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 px-5 py-4 text-sm font-black text-white shadow-lg shadow-fuchsia-500/20 transition hover:brightness-110 sm:mt-0 sm:w-auto"
                 >
-                  Use My Location
+                  Search SingHUB
                 </button>
               </form>
 
@@ -267,21 +294,6 @@ export default function KaraokeNearMePage() {
                   Browse San Diego
                 </Button>
               </div>
-
-              <div className="mt-5 grid grid-cols-3 gap-2 text-center text-xs font-semibold text-slate-200 sm:text-left">
-                <div className="rounded-2xl border border-white/10 bg-slate-950/55 p-3 backdrop-blur">
-                  <p className="text-lg">✓</p>
-                  <p className="mt-1 text-cyan-100">Verified listings</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-slate-950/55 p-3 backdrop-blur">
-                  <p className="text-lg">🎤</p>
-                  <p className="mt-1 text-fuchsia-100">Live nights</p>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-slate-950/55 p-3 backdrop-blur">
-                  <p className="text-lg">◉</p>
-                  <p className="mt-1 text-cyan-100">Private rooms</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -290,40 +302,23 @@ export default function KaraokeNearMePage() {
       <section className="mx-auto max-w-7xl px-4 py-10">
         <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
           <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Featured venues</p>
-            <h2 className="mt-2 text-3xl font-black text-white sm:text-4xl">Premium karaoke spots</h2>
+            <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Good first clicks</p>
+            <h2 className="mt-2 text-3xl font-black text-white sm:text-4xl">Popular Places to Start</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              Premium placements get extra visibility on high-intent karaoke searches. Start here when you want the room to feel ready.
-            </p>
-          </div>
-          <Button href="/venues/premium" variant="ghost">Premium for venues</Button>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-3">
-          {premiumVenues.map((venue) => (
-            <VenueMiniCard key={venue.id} venue={venue} premium />
-          ))}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-4 py-8">
-        <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-          <div>
-            <p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-300">Karaoke near you</p>
-            <h2 className="mt-2 text-3xl font-black text-white sm:text-4xl">Popular San Diego karaoke listings</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              Canonical venue names from the working San Diego venue sheet, cleaned up for the public search page.
+              A few useful starting points while you decide what kind of karaoke night you want.
             </p>
           </div>
           <Button href="/find-karaoke" variant="secondary">View all venues</Button>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {spotlightVenues.map((venue) => (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {popularVenues.map((venue) => (
             <VenueMiniCard key={venue.id} venue={venue} />
           ))}
         </div>
       </section>
+
+      {weeklySpotlightVenue && <WeeklySpotlight venue={weeklySpotlightVenue} />}
 
       <section className="mx-auto grid max-w-7xl gap-4 px-4 py-8 lg:grid-cols-2">
         <BrowsePanel
@@ -333,23 +328,28 @@ export default function KaraokeNearMePage() {
         />
         <BrowsePanel
           title="Browse by neighborhood"
-          intro="Search the areas people actually use when making plans: beach bars, downtown chaos, East County locals, and more."
+          intro="Search the areas people actually use when making plans: beach bars, downtown, East County locals, and more."
           links={neighborhoodLinks}
         />
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-16 pt-8">
-        <div className="grid gap-4 rounded-[2rem] border border-cyan-300/35 bg-slate-950 p-5 shadow-2xl shadow-cyan-950/25 sm:grid-cols-2 lg:grid-cols-4 lg:p-6">
-          {[
-            ["100% useful first", "Pages are built around real karaoke searches, not random nightlife filler."],
-            ["Updated nightly", "The goal is fresh local karaoke data singers can actually use before leaving."],
-            ["Private rooms included", "KTV and bookable rooms sit beside live bar karaoke instead of hiding in a separate universe."],
-            ["Built for venues", "Premium listings create a paid lane without locking singers out of the finder."],
-          ].map(([title, body]) => (
-            <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <p className="text-base font-black text-white">{title}</p>
-              <p className="mt-2 text-sm leading-6 text-slate-300">{body}</p>
-            </div>
+        <div className="mb-6">
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-300">Karaoke 101</p>
+          <h2 className="mt-2 text-3xl font-black text-white sm:text-4xl">Let’s get you started</h2>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {starterGuideLinks.map((guide) => (
+            <Link
+              key={guide.href}
+              href={guide.href}
+              className="rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 transition hover:-translate-y-1 hover:border-fuchsia-300/50"
+            >
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-300">Guide</p>
+              <h3 className="mt-2 text-2xl font-black text-white">{guide.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-slate-300">{guide.body}</p>
+              <p className="mt-4 text-sm font-bold text-cyan-100">Read guide →</p>
+            </Link>
           ))}
         </div>
       </section>
