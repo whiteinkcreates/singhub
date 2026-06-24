@@ -79,6 +79,31 @@ function getScheduleSummary(venue: VenueListing) {
   return venue.hostName ? `${schedule} • Host: ${venue.hostName}` : schedule;
 }
 
+function microphoneSvg(size = 24) {
+  return `
+    <svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" focusable="false" style="display:block;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.35));">
+      <path d="M32 7c-7 0-12 5-12 12v12c0 7 5 12 12 12s12-5 12-12V19C44 12 39 7 32 7Z" fill="white"/>
+      <path d="M22 21h20M22 29h20" stroke="#0f172a" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+      <path d="M14 29c0 10 8 18 18 18s18-8 18-18" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
+      <path d="M32 47v8M23 57h18" stroke="white" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+  `;
+}
+
+function roomMicSvg() {
+  return `
+    <svg width="34" height="34" viewBox="0 0 64 64" aria-hidden="true" focusable="false" style="display:block;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.4));">
+      <rect x="9" y="7" width="46" height="50" rx="10" fill="rgba(15,23,42,0.38)" stroke="white" stroke-width="4"/>
+      <path d="M47 15v34" stroke="rgba(255,255,255,0.55)" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="43" cy="33" r="2.8" fill="white"/>
+      <path d="M28 16c-5 0-8.5 3.8-8.5 8.5v7c0 5 3.5 8.5 8.5 8.5s8.5-3.5 8.5-8.5v-7C36.5 19.8 33 16 28 16Z" fill="white"/>
+      <path d="M21.5 25h13M21.5 31h13" stroke="#0f172a" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+      <path d="M17 31c0 6.5 5 11.5 11 11.5S39 37.5 39 31" fill="none" stroke="white" stroke-width="3.8" stroke-linecap="round"/>
+      <path d="M28 42.5v6M22 50.5h12" stroke="white" stroke-width="3.8" stroke-linecap="round"/>
+    </svg>
+  `;
+}
+
 function getVenueIcon(venue: VenueListing) {
   const statusStyle = markerStyles[venue.listingStatus];
 
@@ -90,26 +115,23 @@ function getVenueIcon(venue: VenueListing) {
           aria-hidden="true"
           style="
             align-items: center;
-            background: linear-gradient(135deg, #0891b2, #22d3ee);
-            border: 2px solid rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 28px rgba(34, 211, 238, 0.75);
+            background: radial-gradient(circle at 32% 24%, rgba(255,255,255,0.42), transparent 18px), linear-gradient(135deg, #0891b2, #22d3ee 52%, #a855f7);
+            border: 2px solid rgba(255, 255, 255, 0.92);
+            border-radius: 15px 15px 15px 5px;
+            box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 30px rgba(34, 211, 238, 0.82);
             color: white;
             display: flex;
-            flex-direction: column;
-            font-size: 16px;
-            font-weight: 900;
-            height: 44px;
+            height: 46px;
             justify-content: center;
-            line-height: 0.9;
+            line-height: 1;
             position: relative;
             transform: rotate(4deg);
-            width: 44px;
+            width: 46px;
           "
           title="Karaoke room venue"
-        ><span style="font-size: 17px; line-height: 1;">⌂</span><span style="font-size: 14px; line-height: 1;">♪</span></span>
+        >${roomMicSvg()}</span>
       `,
-      iconAnchor: [22, 22],
+      iconAnchor: [23, 23],
       popupAnchor: [0, -20],
     });
   }
@@ -151,22 +173,21 @@ function getVenueIcon(venue: VenueListing) {
         aria-hidden="true"
         style="
           align-items: center;
-          background: ${statusStyle.background};
-          border: 2px solid rgba(255, 255, 255, 0.85);
+          background: radial-gradient(circle at 32% 24%, rgba(255,255,255,0.34), transparent 17px), ${statusStyle.background};
+          border: 2px solid rgba(255, 255, 255, 0.9);
           border-radius: 9999px;
           box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 26px ${statusStyle.glow};
           color: white;
           display: flex;
-          font-size: 20px;
-          height: 42px;
+          height: 43px;
           justify-content: center;
           line-height: 1;
           position: relative;
           transform: rotate(-8deg);
-          width: 42px;
+          width: 43px;
         "
         title="${statusStyle.label} karaoke venue"
-      >🎤</span>
+      >${microphoneSvg(25)}</span>
     `,
     iconAnchor: [21, 21],
     popupAnchor: [0, -18],
@@ -259,7 +280,7 @@ export default function VenueMapClient({
   userLocation = null,
 }: VenueMapClientProps) {
   const center = userLocation
-    ? [userLocation.latitude, userLocation.longitude] as Coordinate
+    ? ([userLocation.latitude, userLocation.longitude] as Coordinate)
     : getMapCenter(venues);
 
   if (venues.length === 0 && !userLocation) {
