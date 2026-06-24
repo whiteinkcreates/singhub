@@ -243,7 +243,7 @@ export default function KaraokeNearMePage() {
         <div className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/40 bg-slate-950 shadow-2xl shadow-fuchsia-950/40 md:rounded-[2.5rem]">
           <div
             className="absolute inset-0 bg-no-repeat opacity-45 sm:opacity-55 md:opacity-65 bg-[length:78%] bg-[position:center_1rem] sm:bg-[length:34rem] sm:bg-[position:92%_45%] lg:bg-[length:38rem] lg:bg-[position:88%_50%]"
-            style={{ backgroundImage: "url('/images/hero/singhub-logo-glow.svg')" }}
+            style={{ backgroundImage: "url('/images/brand/singhub-mark.svg')" }}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-950/62 via-slate-950/84 to-slate-950 md:bg-gradient-to-r md:from-slate-950 md:via-slate-950/88 md:to-slate-950/48" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(217,70,239,0.25),transparent_22rem),radial-gradient(circle_at_80%_12%,rgba(34,211,238,0.14),transparent_24rem)]" />
