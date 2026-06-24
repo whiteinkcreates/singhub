@@ -19,8 +19,8 @@ export function SiteHeader() {
           className="group inline-flex w-fit items-center gap-3 rounded-2xl border border-fuchsia-300/30 bg-slate-950/70 px-3 py-2 shadow-lg shadow-fuchsia-950/40 transition hover:border-cyan-300/60 hover:shadow-cyan-950/40"
         >
           <SingHubMark className="h-12 w-12 shrink-0 rounded-xl shadow-[0_0_22px_rgba(34,211,238,0.18)] transition group-hover:scale-105" />
-          <span className="flex flex-col leading-none">
-            <span className="text-[0.62rem] font-black uppercase tracking-[0.34em] text-cyan-200 group-hover:text-cyan-100">
+          <span className="flex min-w-[8.5rem] flex-col leading-none">
+            <span className="text-[0.66rem] font-black uppercase tracking-[0.16em] text-cyan-200 group-hover:text-cyan-100">
               Karaoke Finder
             </span>
             <span className="mt-1 text-2xl font-black tracking-tight text-white drop-shadow-[0_0_14px_rgba(217,70,239,0.85)]">
