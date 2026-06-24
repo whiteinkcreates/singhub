@@ -5,6 +5,8 @@ import { parseTsv, type TsvRow } from "@/lib/tsv";
 
 const DATA_PATH = path.join(process.cwd(), "public", "data", "venues.tsv");
 const JTS_TAVERN_VENUE_ID = "venue-0006";
+const REGAL_VENUE_ID = "venue-0010";
+const PAL_JOEYS_COCKTAIL_LOUNGE_VENUE_ID = "venue-0045";
 const DEMO_BANNER_IMAGE_URL =
   "https://res.cloudinary.com/dy3lyejkk/image/upload/v1781683694/ChatGPT_Image_Jun_17_2026_01_05_26_AM_sjmyq4.png";
 const LAUNCH_TICKER_ITEMS = [
@@ -110,38 +112,77 @@ function normalizeVenueType(value: string | undefined, row: TsvRow): VenueType {
 }
 
 function applyVenueCorrections(venue: VenueListing): VenueListing {
-  if (venue.id !== JTS_TAVERN_VENUE_ID) {
-    return venue;
+  if (venue.id === JTS_TAVERN_VENUE_ID) {
+    return {
+      ...venue,
+      venueName: "JT's Tavern",
+      slug: "jts-tavern",
+      profileTier: "premium",
+      listingStatus: "ai_scouted",
+      venueType: "live_bar",
+      city: "San Diego",
+      neighborhood: "Mission Gorge / Grantville",
+      address: "5821 Mission Gorge Rd, San Diego, CA 92120",
+      latitude: 32.7809,
+      longitude: -117.0983,
+      instagram: "@jts_tavern",
+      bannerImageUrl: DEMO_BANNER_IMAGE_URL,
+      bannerImageAlt: "Karaoke night crowd in a lively bar",
+      tickerText: "Tonight: JT's Tavern • Daily karaoke 9pm-1am • No cover",
+      karaokeDay: "Daily",
+      startTime: "9pm",
+      endTime: "1am",
+      hostName: "Brian, Will, Chad (different days)",
+      vibeTags: ["karaoke every day", "games", "local favorite", "lively", "no cover"],
+      description:
+        "Neighborhood tavern known for karaoke, games, simple food, and a lively local atmosphere.",
+      foodHighlights: "Basic bar bites",
+      parkingInfo: "Lot in back",
+      coverCharge: "None",
+      isFeatured: true,
+    };
   }
 
-  return {
-    ...venue,
-    venueName: "JT's Tavern",
-    slug: "jts-tavern",
-    profileTier: "premium",
-    listingStatus: "ai_scouted",
-    venueType: "live_bar",
-    city: "San Diego",
-    neighborhood: "Mission Gorge / Grantville",
-    address: "5821 Mission Gorge Rd, San Diego, CA 92120",
-    latitude: 32.7809,
-    longitude: -117.0983,
-    instagram: "@jts_tavern",
-    bannerImageUrl: DEMO_BANNER_IMAGE_URL,
-    bannerImageAlt: "High-energy karaoke night crowd singing in a lively bar",
-    tickerText: "Tonight: JT's Tavern • Daily karaoke 9pm-1am • No cover",
-    karaokeDay: "Daily",
-    startTime: "9pm",
-    endTime: "1am",
-    hostName: "Brian, Will, Chad (different days)",
-    vibeTags: ["karaoke every day", "games", "local favorite", "lively", "no cover"],
-    description:
-      "Neighborhood tavern known for karaoke, games, simple food, and a lively local atmosphere.",
-    foodHighlights: "Basic bar bites",
-    parkingInfo: "Lot in back",
-    coverCharge: "None",
-    isFeatured: false,
-  };
+  if (venue.id === PAL_JOEYS_COCKTAIL_LOUNGE_VENUE_ID) {
+    return {
+      ...venue,
+      venueName: "Pal Joey's Cocktail Lounge",
+      slug: "pal-joeys-cocktail-lounge",
+      profileTier: "premium",
+      listingStatus: "ai_scouted",
+      venueType: "live_bar",
+      city: "San Diego",
+      neighborhood: "Allied Gardens",
+      address: "5147 Waring Rd, San Diego, CA 92120",
+      latitude: 32.7902,
+      longitude: -117.0842,
+      instagram: "https://www.instagram.com/pal_joeys_sd?igsh=MzRlODBiNWFlZA==",
+      karaokeDay: "Tuesday, Thursday, Friday, Saturday, Sunday",
+      startTime: "Evening",
+      endTime: "Late",
+      vibeTags: ["cocktail lounge", "Allied Gardens", "local favorite", "live music", "karaoke"],
+      description:
+        "Neighborhood cocktail lounge with recurring karaoke and live music energy on Waring Road.",
+      isFeatured: true,
+    };
+  }
+
+  if (venue.id === REGAL_VENUE_ID) {
+    return {
+      ...venue,
+      venueName: "The Regal",
+      slug: "regal",
+      profileTier: "premium",
+      listingStatus: "ai_scouted",
+      venueType: "live_bar",
+      vibeTags: ["local bar", "College Area", "regulars", "karaoke"],
+      description:
+        "College Area local bar and early SingHUB premium prospect with karaoke details being confirmed.",
+      isFeatured: true,
+    };
+  }
+
+  return venue;
 }
 
 function rowToVenueListing(row: TsvRow): VenueListing {
