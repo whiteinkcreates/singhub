@@ -19,24 +19,14 @@ function parseBoolean(value: string | undefined) {
 }
 
 function parseNumber(value: string | undefined) {
-  if (!value || !value.trim()) {
-    return null;
-  }
-
+  if (!value || !value.trim()) return null;
   const parsed = Number(value);
-
   return Number.isFinite(parsed) ? parsed : null;
 }
 
 function parseTags(value: string | undefined) {
-  if (!value) {
-    return [];
-  }
-
-  return value
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter(Boolean);
+  if (!value) return [];
+  return value.split(",").map((tag) => tag.trim()).filter(Boolean);
 }
 
 function normalizeProfileTier(value: string | undefined): ProfileTier {
@@ -44,10 +34,7 @@ function normalizeProfileTier(value: string | undefined): ProfileTier {
 }
 
 function normalizeListingStatus(value: string | undefined): ListingStatus {
-  if (value === "verified" || value === "ai_scouted" || value === "claimed") {
-    return value;
-  }
-
+  if (value === "verified" || value === "ai_scouted" || value === "claimed") return value;
   return "ai_scouted";
 }
 
@@ -56,58 +43,18 @@ function getOptionalValue(value: string | undefined) {
 }
 
 function inferVenueType(row: TsvRow): VenueType {
-  const searchText = [
-    row.venue_name,
-    row.description,
-    row.karaoke_day,
-    row.host_name,
-    row.vibe_tags,
-  ]
+  const searchText = [row.venue_name, row.description, row.karaoke_day, row.host_name, row.vibe_tags]
     .join(" ")
     .toLowerCase();
-
-  const privateRoomSignals = [
-    "private room",
-    "private rooms",
-    "karaoke room",
-    "karaoke rooms",
-    "ktv",
-    "bookable",
-    "room rental",
-    "rooms",
-    "hive",
-    "melody",
-    "spot ktv",
-    "punch bowl",
-    "round1",
-    "jin music",
-  ];
-
-  const eventProducerSignals = [
-    "event producer",
-    "rotating venue",
-    "pop-up",
-    "popup",
-    "monthly event",
-    "rock out karaoke",
-  ];
-
-  if (privateRoomSignals.some((signal) => searchText.includes(signal))) {
-    return "private_room";
-  }
-
-  if (eventProducerSignals.some((signal) => searchText.includes(signal))) {
-    return "event_producer";
-  }
-
+  const privateRoomSignals = ["private room", "private rooms", "karaoke room", "karaoke rooms", "ktv", "bookable", "room rental", "rooms", "hive", "melody", "spot ktv", "punch bowl", "round1", "jin music"];
+  const eventProducerSignals = ["event producer", "rotating venue", "pop-up", "popup", "monthly event", "rock out karaoke"];
+  if (privateRoomSignals.some((signal) => searchText.includes(signal))) return "private_room";
+  if (eventProducerSignals.some((signal) => searchText.includes(signal))) return "event_producer";
   return "live_bar";
 }
 
 function normalizeVenueType(value: string | undefined, row: TsvRow): VenueType {
-  if (value === "live_bar" || value === "private_room" || value === "event_producer") {
-    return value;
-  }
-
+  if (value === "live_bar" || value === "private_room" || value === "event_producer") return value;
   return inferVenueType(row);
 }
 
@@ -134,8 +81,7 @@ function applyVenueCorrections(venue: VenueListing): VenueListing {
       endTime: "1am",
       hostName: "Brian, Will, Chad (different days)",
       vibeTags: ["karaoke every day", "games", "local favorite", "lively", "no cover"],
-      description:
-        "Neighborhood tavern known for karaoke, games, simple food, and a lively local atmosphere.",
+      description: "Neighborhood tavern known for karaoke, games, simple food, and a lively local atmosphere.",
       foodHighlights: "Basic bar bites",
       parkingInfo: "Lot in back",
       coverCharge: "None",
@@ -157,12 +103,13 @@ function applyVenueCorrections(venue: VenueListing): VenueListing {
       latitude: 32.7902,
       longitude: -117.0842,
       instagram: "https://www.instagram.com/pal_joeys_sd?igsh=MzRlODBiNWFlZA==",
+      bannerImageUrl: DEMO_BANNER_IMAGE_URL,
+      bannerImageAlt: "Karaoke night crowd in a lively bar",
       karaokeDay: "Tuesday, Thursday, Friday, Saturday, Sunday",
       startTime: "Evening",
       endTime: "Late",
       vibeTags: ["cocktail lounge", "Allied Gardens", "local favorite", "live music", "karaoke"],
-      description:
-        "Neighborhood cocktail lounge with recurring karaoke and live music energy on Waring Road.",
+      description: "Neighborhood cocktail lounge with recurring karaoke and live music energy on Waring Road.",
       isFeatured: true,
     };
   }
@@ -175,9 +122,10 @@ function applyVenueCorrections(venue: VenueListing): VenueListing {
       profileTier: "premium",
       listingStatus: "ai_scouted",
       venueType: "live_bar",
+      bannerImageUrl: DEMO_BANNER_IMAGE_URL,
+      bannerImageAlt: "Karaoke night crowd in a lively bar",
       vibeTags: ["local bar", "College Area", "regulars", "karaoke"],
-      description:
-        "College Area local bar and early SingHUB premium prospect with karaoke details being confirmed.",
+      description: "College Area local bar and early SingHUB premium prospect with karaoke details being confirmed.",
       isFeatured: true,
     };
   }
@@ -221,7 +169,6 @@ function rowToVenueListing(row: TsvRow): VenueListing {
     bookingContact: getOptionalValue(row.booking_contact),
     isFeatured: parseBoolean(row.is_featured),
   };
-
   return applyVenueCorrections(venue);
 }
 
@@ -235,16 +182,9 @@ export function getFeaturedVenueListings(): VenueListing[] {
 }
 
 export function getVenueTickerItems(): string[] {
-  const tickerItems = getVenueListings()
-    .map((venue) => venue.tickerText)
-    .filter((item): item is string => Boolean(item));
-
+  const tickerItems = getVenueListings().map((venue) => venue.tickerText).filter((item): item is string => Boolean(item));
   const mergedTickerItems = [...tickerItems, ...LAUNCH_TICKER_ITEMS];
-
-  if (mergedTickerItems.length > 0) {
-    return mergedTickerItems;
-  }
-
+  if (mergedTickerItems.length > 0) return mergedTickerItems;
   return [
     "Tonight in San Diego • Find live bar karaoke, private rooms, and local host-led nights",
     "SingHUB is actively verifying karaoke schedules and adding new venues",
