@@ -5,7 +5,7 @@ type SingHubMarkProps = {
 export function SingHubMark({ className = "" }: SingHubMarkProps) {
   return (
     <img
-      src="/images/brand/singhub-mark.svg"
+      src="/images/singhub-mark.png"
       alt="SingHUB"
       className={`object-contain ${className}`}
     />
