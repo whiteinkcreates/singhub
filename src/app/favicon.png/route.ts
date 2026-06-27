@@ -1,0 +1,14 @@
+const faviconPngBase64 = "iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAACftElEQVR42uy9d5xkV3nn/X3OufdWVYeJ0kgaZY2yhAIgksGAScKYYILBrNdre9fGu+u0Xpu1135t1mHtXdvYeI2NDZicM5hkTAYRJFCWUEBZozShp1NV3XvOed4/bjw3Eq1d1T0xPkKpWvl/3Od/3ufec89733HOPuXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5efn/hJGyL7G6+4wAAAAASUVORK5CYII=";
+
+export const dynamic = "force-static";
+
+export async function GET() {
+  const image = Buffer.from(faviconPngBase64, "base64");
+
+  return new Response(image, {
+    headers: {
+      "Content-Type": "image/png",
+      "Cache-Control": "public, max-age=0, must-revalidate",
+    },
+  });
+}
