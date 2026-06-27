@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: "SingHUB | Find Karaoke Tonight",
   description:
     "Find karaoke nights in San Diego by day, neighborhood, venue, and vibe.",
+  icons: {
+    icon: "/images/singhub-mark.png",
+    shortcut: "/images/singhub-mark.png",
+    apple: "/images/singhub-mark.png",
+  },
 };
 
 export default function RootLayout({
