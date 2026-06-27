@@ -35,11 +35,13 @@ function getUsefulDetailCount(formData: FormData) {
 export function SubmitListingForm() {
   const [errorMessage, setErrorMessage] = useState("");
   const [submittedMessage, setSubmittedMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const selectedDays = formData.getAll("karaoke-days").map(String);
     const usefulDetailCount = getUsefulDetailCount(formData);
 
@@ -49,18 +51,51 @@ export function SubmitListingForm() {
       return;
     }
 
-    const venueName = getFormValue(formData, "venue-name") || "Name not provided yet";
-    const daySummary = selectedDays.length > 0 ? selectedDays.join(", ") : "Days unknown";
-    const sourceLink = getFormValue(formData, "source-link") || "No source link provided";
+    const payload = {
+      venueName: getFormValue(formData, "venue-name"),
+      neighborhood: getFormValue(formData, "neighborhood"),
+      address: getFormValue(formData, "address"),
+      karaokeDays: selectedDays,
+      startTime: getFormValue(formData, "start-time"),
+      endTime: getFormValue(formData, "end-time"),
+      hostName: getFormValue(formData, "host-name"),
+      sourceLink: getFormValue(formData, "source-link"),
+      venueWebsite: getFormValue(formData, "venue-website"),
+      venueInstagram: getFormValue(formData, "venue-instagram"),
+      venueContact: getFormValue(formData, "venue-contact"),
+      submitterName: getFormValue(formData, "submitter-name"),
+      submitterContact: getFormValue(formData, "submitter-contact"),
+      notes: getFormValue(formData, "notes"),
+    };
 
-    const submissionSummary = [
-      `Venue/night: ${venueName}`,
-      `Days: ${daySummary}`,
-      `Source: ${sourceLink}`,
-    ].join(" | ");
-
+    setIsSubmitting(true);
     setErrorMessage("");
-    setSubmittedMessage(`Thanks. We captured what you know for review: ${submissionSummary}.`);
+    setSubmittedMessage("");
+
+    try {
+      const response = await fetch("/api/submit-listing", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = (await response.json()) as { error?: string };
+
+      if (!response.ok) {
+        throw new Error(result.error || "Submission failed. Please try again.");
+      }
+
+      const venueName = payload.venueName || "that karaoke tip";
+      setSubmittedMessage(`Thanks. ${venueName} was sent to SingHUB for review.`);
+      form.reset();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Submission failed. Please try again.";
+      setErrorMessage(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -143,7 +178,7 @@ export function SubmitListingForm() {
       )}
 
       <div className="md:col-span-2">
-        <Button type="submit">Submit what I know</Button>
+        <Button type="submit" disabled={isSubmitting}>{isSubmitting ? "Sending..." : "Submit what I know"}</Button>
       </div>
     </form>
   );
