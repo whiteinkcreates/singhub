@@ -3,15 +3,13 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import "./globals.css";
 
-const faviconUrl = "/favicon.svg?v=4";
-
 export const metadata: Metadata = {
   title: "SingHUB | Find Karaoke Tonight",
   description: "Find karaoke nights in San Diego by day, neighborhood, venue, and vibe.",
   icons: {
-    icon: faviconUrl,
-    shortcut: faviconUrl,
-    apple: faviconUrl
+    icon: "/icon.png?v=5",
+    shortcut: "/icon.png?v=5",
+    apple: "/icon.png?v=5"
   }
 };
 
