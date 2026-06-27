@@ -2,7 +2,7 @@ import { SubmitListingForm } from "@/components/submit/SubmitListingForm";
 
 export const metadata = {
   title: "Submit a Karaoke Listing | SingHUB",
-  description: "Suggest a San Diego karaoke venue for SingHUB Phase 1.",
+  description: "Suggest a San Diego karaoke venue or karaoke night for SingHUB Phase 1. Incomplete tips are welcome.",
 };
 
 export default function SubmitListingPage() {
@@ -13,11 +13,10 @@ export default function SubmitListingPage() {
           Submit Listing
         </p>
         <h1 className="mt-3 text-4xl font-black text-white md:text-6xl">
-          Add a San Diego karaoke night
+          Tell us about a karaoke night
         </h1>
         <p className="mt-5 text-lg leading-8 text-slate-300">
-          Know a karaoke night missing from SingHUB? Send the venue, schedule,
-          links, and info so it can be reviewed for the Venue Index.
+          Know a karaoke night missing from SingHUB? Send whatever you know: a venue name, host name, IG handle, Google link, flyer, day, time, or quick note. Incomplete listings are welcome and will go into the review queue.
         </p>
       </section>
 
