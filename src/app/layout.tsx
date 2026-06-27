@@ -5,20 +5,15 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "SingHUB | Find Karaoke Tonight",
-  description:
-    "Find karaoke nights in San Diego by day, neighborhood, venue, and vibe.",
+  description: "Find karaoke nights in San Diego by day, neighborhood, venue, and vibe.",
   icons: {
-    icon: "/images/singhub-mark.png",
-    shortcut: "/images/singhub-mark.png",
-    apple: "/images/singhub-mark.png",
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body>
