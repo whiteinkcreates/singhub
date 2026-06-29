@@ -1,5 +1,6 @@
 import { FindKaraokeExperience } from "@/components/find/FindKaraokeExperience";
 import { groupKaraokeEventsByVenueSlug } from "@/lib/eventData";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getVenueListings } from "@/lib/venueData";
 
 type FindKaraokePageProps = {
@@ -23,7 +24,7 @@ function getSearchParamValue(value: string | string[] | undefined) {
 
 export default async function FindKaraokePage({ searchParams }: FindKaraokePageProps) {
   const resolvedSearchParams = await searchParams;
-  const venues = getVenueListings();
+  const venues = getPublicVenues(getVenueListings());
   const eventsByVenueSlug = groupKaraokeEventsByVenueSlug();
 
   return (
