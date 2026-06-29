@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { VenueProfile } from "@/components/venue/VenueProfile";
 import { getKaraokeEventsByVenueSlug } from "@/lib/eventData";
+import { getPublicVenues, isPublicVenue } from "@/lib/publicVenueFilters";
 import { getVenueListingBySlug, getVenueListings } from "@/lib/venueData";
 
 type VenuePageProps = {
@@ -14,14 +15,14 @@ function isPlaceholderVenue(venueName: string) {
 }
 
 export function generateStaticParams() {
-  return getVenueListings().map((venue) => ({ slug: venue.slug }));
+  return getPublicVenues(getVenueListings()).map((venue) => ({ slug: venue.slug }));
 }
 
 export async function generateMetadata({ params }: VenuePageProps): Promise<Metadata> {
   const { slug } = await params;
   const venue = getVenueListingBySlug(slug);
 
-  if (!venue) {
+  if (!venue || !isPublicVenue(venue)) {
     return {
       title: "Venue Not Found | SingHUB",
       robots: {
@@ -52,7 +53,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
   const { slug } = await params;
   const venue = getVenueListingBySlug(slug);
 
-  if (!venue) {
+  if (!venue || !isPublicVenue(venue)) {
     notFound();
   }
 
