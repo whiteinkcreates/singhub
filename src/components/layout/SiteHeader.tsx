@@ -1,5 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
-import { SingHubMark } from "@/components/brand/SingHubMark";
+import headerLogo from "../../singhub-mark.png";
 import { Button } from "@/components/ui/Button";
 
 const navItems = [
@@ -12,21 +13,19 @@ const navItems = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-10 border-b border-white/10 bg-slate-950/82 backdrop-blur">
+    <header className="sticky top-0 z-10 border-b border-white/10 bg-black/85 backdrop-blur">
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-3 md:flex-row md:items-center md:justify-between">
         <Link
           href="/"
-          className="group inline-flex w-fit items-center gap-3 rounded-2xl border border-fuchsia-300/30 bg-slate-950/70 px-3 py-2 shadow-lg shadow-fuchsia-950/40 transition hover:border-cyan-300/60 hover:shadow-cyan-950/40"
+          className="group inline-flex w-fit items-center rounded-2xl px-1 py-1 transition hover:scale-[1.01]"
+          aria-label="SingHUB home"
         >
-          <SingHubMark className="h-12 w-12 shrink-0 rounded-xl shadow-[0_0_22px_rgba(34,211,238,0.18)] transition group-hover:scale-105" />
-          <span className="flex min-w-[8.5rem] flex-col leading-none">
-            <span className="text-[0.66rem] font-black uppercase tracking-[0.16em] text-cyan-200 group-hover:text-cyan-100">
-              Karaoke Finder
-            </span>
-            <span className="mt-1 text-2xl font-black tracking-tight text-white drop-shadow-[0_0_14px_rgba(217,70,239,0.85)]">
-              Sing<span className="bg-gradient-to-r from-fuchsia-400 via-violet-300 to-cyan-300 bg-clip-text text-transparent">HUB</span>
-            </span>
-          </span>
+          <Image
+            src={headerLogo}
+            alt="SingHUB"
+            priority
+            className="h-auto w-[230px] max-w-[70vw] object-contain drop-shadow-[0_0_22px_rgba(217,70,239,0.5)] md:w-[300px]"
+          />
         </Link>
 
         <nav className="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-200">
