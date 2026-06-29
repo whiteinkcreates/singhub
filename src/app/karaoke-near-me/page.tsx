@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
 };
 
-const popularVenueIds = ["venue-0002", "venue-0053", "venue-0062", "venue-0064"];
+const popularVenueIds = ["venue-0002", "venue-0073", "venue-0062", "venue-0064"];
 const weeklySpotlightVenueId = "venue-0006";
 
 const dayLinks = [
@@ -77,6 +77,7 @@ function getDisplayName(venue: VenueListing) {
     "venue-0048": "Hive Karaoke",
     "venue-0063": "The Cordova Bar",
     "venue-0064": "Spot KTV & Restaurant",
+    "venue-0073": "McGuffie's Live",
   };
   return canonicalNames[venue.id] ?? venue.venueName;
 }
@@ -190,26 +191,45 @@ export default function KaraokeNearMePage() {
               <p className="mb-3 w-fit rounded-full border border-cyan-300/30 bg-slate-950/55 px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.14em] text-cyan-100 backdrop-blur sm:text-xs sm:tracking-[0.18em]">SingHUB Local Karaoke Finder</p>
               <h1 className="text-[4.3rem] font-black leading-[0.86] tracking-tight text-white drop-shadow-2xl sm:text-8xl md:text-9xl">Karaoke<span className="block bg-gradient-to-r from-fuchsia-400 via-violet-300 to-cyan-300 bg-clip-text text-transparent">Near Me</span></h1>
               <p className="mt-5 max-w-xl text-base leading-7 text-slate-100 sm:text-lg">Find karaoke bars, private rooms, and live karaoke nights near you tonight. Start with San Diego, then pick the room that matches the mood.</p>
-              <form action="/find-karaoke" className="mt-6 rounded-[1.35rem] border border-cyan-300/40 bg-slate-950/75 p-2 shadow-[0_0_34px_rgba(34,211,238,0.18)] backdrop-blur sm:flex sm:items-center sm:gap-2">
-                <label className="sr-only" htmlFor="karaoke-location-search">Search by city, neighborhood, venue, or zip code</label>
-                <div className="flex min-h-14 flex-1 items-center gap-3 px-3"><span className="text-2xl text-cyan-200">⌖</span><input id="karaoke-location-search" name="q" type="search" placeholder="City, neighborhood, venue, or zip code" className="w-full bg-transparent text-base font-semibold text-white outline-none placeholder:text-slate-400" /></div>
-                <button type="submit" className="mt-2 w-full rounded-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 px-5 py-4 text-sm font-black text-white shadow-lg shadow-fuchsia-500/20 transition hover:brightness-110 sm:mt-0 sm:w-auto">Search SingHUB</button>
+              <form action="/find-karaoke" className="mt-6 rounded-[1.35rem] border border-cyan-300/40 bg-slate-950/75 p-2 shadow-[0_0_34px_rgba(34,211,238,0.18)] backdrop-blur sm:flex">
+                <input name="q" type="search" placeholder="Search venue, neighborhood, vibe, or day" className="min-h-14 w-full rounded-2xl bg-transparent px-4 text-base font-semibold text-white outline-none placeholder:text-slate-400" />
+                <Button type="submit" className="mt-2 w-full sm:mt-0 sm:w-auto">Search</Button>
               </form>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2"><Button href="/find-karaoke?day=tonight" className="w-full bg-gradient-to-r from-fuchsia-500 to-cyan-400 py-4 text-base">Find Karaoke Tonight</Button><Button href="/san-diego-karaoke" variant="secondary" className="w-full py-4 text-base">Browse San Diego</Button></div>
+              <div className="mt-5 flex flex-wrap gap-2 text-sm font-bold">
+                <Link href="/find-karaoke" className="rounded-full border border-white/10 bg-white/10 px-4 py-2 text-white">Browse listings</Link>
+                <Link href="/submit-listing" className="rounded-full border border-fuchsia-300/40 bg-fuchsia-300/10 px-4 py-2 text-fuchsia-100">Add a karaoke night</Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
-      <section className="mx-auto max-w-7xl px-4 py-10">
-        <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Good first clicks</p><h2 className="mt-2 text-3xl font-black text-white sm:text-4xl">Popular Places to Start</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">A few useful starting points while you decide what kind of karaoke night you want.</p></div><Button href="/find-karaoke" variant="secondary">View all venues</Button></div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{popularVenues.map((venue) => <VenueMiniCard key={venue.id} venue={venue} />)}</div>
-      </section>
+
       {weeklySpotlightVenue && <WeeklySpotlight venue={weeklySpotlightVenue} />}
-      <section className="mx-auto grid max-w-7xl gap-4 px-4 py-8 lg:grid-cols-2">
-        <BrowsePanel title="Browse by day" intro="Pick a night and find the rooms running that day." links={dayLinks} />
-        <BrowsePanel title="Browse by neighborhood" intro="Pick the part of town that fits tonight." links={neighborhoodLinks} showAllHref="/neighborhoods" />
+
+      <section className="mx-auto grid max-w-7xl gap-4 px-4 py-8 md:grid-cols-4">
+        {popularVenues.map((venue) => <VenueMiniCard key={venue.id} venue={venue} />)}
       </section>
-      <section className="mx-auto max-w-7xl px-4 pb-16 pt-8"><div className="mb-6"><p className="text-sm font-black uppercase tracking-[0.22em] text-cyan-300">Karaoke 101</p><h2 className="mt-2 text-3xl font-black text-white sm:text-4xl">Let’s get you started</h2></div><div className="grid gap-4 md:grid-cols-2">{starterGuideLinks.map((guide) => <Link key={guide.href} href={guide.href} className="rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 transition hover:-translate-y-1 hover:border-fuchsia-300/50"><p className="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-300">Guide</p><h3 className="mt-2 text-2xl font-black text-white">{guide.title}</h3><p className="mt-3 text-sm leading-6 text-slate-300">{guide.body}</p><p className="mt-4 text-sm font-bold text-cyan-100">Read guide →</p></Link>)}</div></section>
+
+      <section className="mx-auto grid max-w-7xl gap-5 px-4 py-8 lg:grid-cols-2">
+        <BrowsePanel title="Browse karaoke by day" intro="Plans change fast. Pick the day first, then choose the room." links={dayLinks} showAllHref="/find-karaoke" />
+        <BrowsePanel title="Browse karaoke by neighborhood" intro="Start close to where you are, then chase the best crowd." links={neighborhoodLinks} showAllHref="/neighborhoods" />
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-8">
+        <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/20 md:p-8">
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Karaoke 101</p>
+          <h2 className="mt-3 text-3xl font-black text-white">New to karaoke? Start here.</h2>
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            {starterGuideLinks.map((guide) => (
+              <Link key={guide.href} href={guide.href} className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 transition hover:border-cyan-300/50">
+                <h3 className="text-xl font-black text-white">{guide.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-300">{guide.body}</p>
+                <p className="mt-4 text-sm font-bold text-cyan-100">Read guide →</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
