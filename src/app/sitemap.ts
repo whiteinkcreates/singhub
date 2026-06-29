@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { daySeoPages, guidePosts, localSeoPages, neighborhoodSeoPages } from "@/lib/seoContent";
 import { getVenueListings } from "@/lib/venueData";
 
@@ -16,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const dayRoutes = daySeoPages.map((page) => `/karaoke/${page.slug}`);
   const neighborhoodRoutes = neighborhoodSeoPages.map((page) => `/neighborhoods/${page.slug}`);
   const guideRoutes = guidePosts.map((post) => `/guides/${post.slug}`);
-  const venueRoutes = getVenueListings()
+  const venueRoutes = getPublicVenues(getVenueListings())
     .filter((venue) => venue.slug && venue.venueName && !venue.venueName.toLowerCase().includes("tbd"))
     .map((venue) => `/venues/${venue.slug}`);
 
