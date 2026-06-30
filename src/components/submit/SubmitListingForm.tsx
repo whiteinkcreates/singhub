@@ -66,6 +66,7 @@ export function SubmitListingForm() {
       submitterName: getFormValue(formData, "submitter-name"),
       submitterContact: getFormValue(formData, "submitter-contact"),
       notes: getFormValue(formData, "notes"),
+      companyWebsite: getFormValue(formData, "company-website"),
     };
 
     setIsSubmitting(true);
@@ -110,6 +111,17 @@ export function SubmitListingForm() {
         <p className="mt-2 text-sm leading-6 text-slate-200">
           Send whatever you know. A venue name, host name, Instagram, flyer link, Google link, or one karaoke day is enough to get it into the SingHUB review queue.
         </p>
+      </div>
+
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor="company-website">Company website</label>
+        <input
+          id="company-website"
+          name="company-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
       </div>
 
       <FormField label="Venue or karaoke night name" name="venue-name" helper="Example: Pal Joey's, Karaoke with Trini, Thursday karaoke at The Luau" />
