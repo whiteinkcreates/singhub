@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { VenueCard } from "@/components/venue/VenueCard";
 import { getTickerItems } from "@/lib/tickerData";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getFeaturedVenueListings } from "@/lib/venueData";
 
 const heroQuickLinks = [
@@ -34,7 +35,7 @@ function KaraokeTicker({ items }: { items: string[] }) {
 }
 
 export default function Home() {
-  const featuredVenues = getFeaturedVenueListings();
+  const featuredVenues = getPublicVenues(getFeaturedVenueListings());
   const tickerItems = getTickerItems();
 
   return (
