@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getVenueListings } from "@/lib/venueData";
 
 export const metadata = {
@@ -15,7 +16,7 @@ type ClaimListingPageProps = {
 export default async function ClaimListingPage({
   searchParams,
 }: ClaimListingPageProps) {
-  const venues = getVenueListings();
+  const venues = getPublicVenues(getVenueListings());
   const resolvedSearchParams = await searchParams;
   const selectedVenueSlug = resolvedSearchParams?.venue;
   const selectedVenue = venues.find((venue) => venue.slug === selectedVenueSlug);
