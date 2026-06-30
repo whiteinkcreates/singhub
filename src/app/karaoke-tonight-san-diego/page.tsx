@@ -1,4 +1,5 @@
 import { LocalSeoPageView } from "@/components/seo/LocalSeoPageView";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getVenueListings } from "@/lib/venueData";
 import { getLocalSeoPage, guidePosts, neighborhoodSeoPages } from "@/lib/seoContent";
 
@@ -20,7 +21,7 @@ export default function KaraokeTonightSanDiegoPage() {
   return (
     <LocalSeoPageView
       page={page}
-      venues={getVenueListings()}
+      venues={getPublicVenues(getVenueListings())}
       guides={guidePosts}
       neighborhoods={neighborhoodSeoPages}
     />
