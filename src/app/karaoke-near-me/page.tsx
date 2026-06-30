@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Button } from "@/components/ui/Button";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getVenueListings } from "@/lib/venueData";
 import type { VenueListing } from "@/types";
 
@@ -164,7 +165,7 @@ function BrowsePanel({ title, intro, links, showAllHref }: { title: string; intr
 }
 
 export default function KaraokeNearMePage() {
-  const venues = getVenueListings();
+  const venues = getPublicVenues(getVenueListings());
   const popularVenues = popularVenueIds.map((id) => getVenueById(venues, id)).filter((venue): venue is VenueListing => Boolean(venue));
   const weeklySpotlightVenue = getVenueById(venues, weeklySpotlightVenueId);
   const structuredData = {
