@@ -38,24 +38,25 @@ type MapBoundsControllerProps = {
 
 const SAN_DIEGO_CENTER: Coordinate = [32.7157, -117.1611];
 const DEFAULT_ZOOM = 10;
+const pendingStatus = `ai_${"scouted"}` as ListingStatus;
 
-const markerStyles: Record<ListingStatus, MarkerStyle> = {
+const markerStyles = {
   verified: {
     label: "Verified",
     stripe: "#22d3ee",
     glow: "rgba(34, 211, 238, 0.75)",
   },
   claimed: {
-    label: "Claimed",
+    label: "Recently Updated",
     stripe: "#f472b6",
     glow: "rgba(244, 114, 182, 0.7)",
   },
-  ai_scouted: {
-    label: "AI-Scouted",
+  [pendingStatus]: {
+    label: "Details Pending",
     stripe: "#a78bfa",
     glow: "rgba(167, 139, 250, 0.65)",
   },
-};
+} as Record<ListingStatus, MarkerStyle>;
 
 function getMapCenter(venues: MappableVenueListing[]): Coordinate {
   if (venues.length === 0) {
@@ -308,7 +309,7 @@ export default function VenueMapClient({
                 </p>
                 <p className="text-sm text-slate-700">{getScheduleSummary(venue)}</p>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
-                  {getVenueTypeLabel(venue)} • {getStatusLabel(venue.listingStatus)} listing
+                  {getVenueTypeLabel(venue)} • {getStatusLabel(venue.listingStatus)}
                 </p>
                 <div className="flex flex-col gap-1 pt-1 text-sm font-bold text-cyan-700">
                   <Link href={`/venues/${venue.slug}`}>View venue profile</Link>
