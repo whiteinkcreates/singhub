@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import headerLogo from "../../singhub-mark.png";
 import { Button } from "@/components/ui/Button";
 
 const navItems = [
@@ -21,8 +20,10 @@ export function SiteHeader() {
           aria-label="SingHUB home"
         >
           <Image
-            src={headerLogo}
+            src="/images/singhub-mark.png"
             alt="SingHUB"
+            width={420}
+            height={160}
             priority
             className="h-12 w-auto max-w-[180px] object-contain drop-shadow-[0_0_14px_rgba(217,70,239,0.45)] md:h-14 md:max-w-[210px]"
           />
