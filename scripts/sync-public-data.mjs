@@ -150,7 +150,7 @@ function dayList(value) {
   if (/sun(day)?\s*[-–]\s*thu(rs(day)?)?/.test(normalized) || /sunday\s*[-–]\s*thursday/.test(normalized)) return DAYS.slice(0, 5);
   if (/fri(day)?\s*[-–]\s*sat(urday)?/.test(normalized)) return ["Friday", "Saturday"];
   if (/every other wednesday/.test(normalized)) return ["Wednesday"];
-  const found = DAYS.filter((day) => new RegExp(`\\b${day.slice(0, 3)}|${day}\\b`, "i").test(text));
+  const found = DAYS.filter((day) => new RegExp(`\\b(${day.slice(0, 3)}|${day})\\b`, "i").test(text));
   return found.length ? found : [text];
 }
 
@@ -168,7 +168,7 @@ function buildVenues(sourceRows, report) {
       continue;
     }
     const coordinate = coordinates[row.id] || coordinates[row.slug] || {};
-    const venue = {
+    venues.push({
       ...row,
       profile_tier: normalizeTier(row.profile_tier),
       listing_status: normalizeStatus(row.listing_status),
@@ -177,11 +177,7 @@ function buildVenues(sourceRows, report) {
       longitude: row.longitude || coordinate.longitude || "",
       vibe_tags: row.specials || row.venue_type || "",
       is_featured: /^(true|yes|1)$/i.test(row.is_featured) || normalizeTier(row.profile_tier) === "premium" ? "TRUE" : "FALSE",
-    };
-    if (isTbd(venue.address) || isTbd(venue.start_time) || isTbd(venue.host_name)) {
-      report.publicRowsWithTbd.push(`venue row ${row.__rowNumber}: ${venue.id} ${venue.venue_name}`);
-    }
-    venues.push(venue);
+    });
   }
   return venues;
 }
@@ -224,6 +220,14 @@ function buildEvents(sourceRows, venueRows, report) {
   return events;
 }
 
+function reportVenueTbd(venues, report) {
+  for (const venue of venues) {
+    if (isTbd(venue.address) || isTbd(venue.start_time) || isTbd(venue.host_name)) {
+      report.publicRowsWithTbd.push(`venue: ${venue.id} ${venue.venue_name}`);
+    }
+  }
+}
+
 function reportMarkdown(report, venues, events) {
   const section = (title, items) => [`## ${title}`, items.length ? items.map((item) => `- ${item}`).join("\n") : "- None"].join("\n");
   return [
@@ -254,8 +258,11 @@ async function main() {
   };
   const venueSourceRows = await fetchSheet("Venues");
   const eventSourceRows = await fetchSheet("Events");
-  const venues = buildVenues(venueSourceRows, report);
-  const events = buildEvents(eventSourceRows, venues, report);
+  const candidateVenues = buildVenues(venueSourceRows, report);
+  const events = buildEvents(eventSourceRows, candidateVenues, report);
+  const eventVenueIds = new Set(events.map((event) => event.venue_id));
+  const venues = candidateVenues.filter((venue) => eventVenueIds.has(venue.id));
+  reportVenueTbd(venues, report);
   fs.mkdirSync(path.dirname(VENUES_OUT), { recursive: true });
   fs.writeFileSync(VENUES_OUT, tsv(venues, VENUE_COLUMNS));
   fs.writeFileSync(EVENTS_OUT, tsv(events, EVENT_COLUMNS));
