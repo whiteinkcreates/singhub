@@ -43,7 +43,7 @@ function getBannerImageUrl(venue: VenueListing) {
 function getBannerImageAlt(venue: VenueListing) {
   return (
     getUsableValue(venue.bannerImageAlt) ??
-    `SingHUB premium karaoke listing banner for ${venue.venueName}`
+    `SingHUB enhanced karaoke listing banner for ${venue.venueName}`
   );
 }
 
@@ -64,14 +64,14 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
 
 function getProfileStatusBadge(venue: VenueListing) {
   if (venue.listingStatus === "claimed") {
-    return <Badge variant="claimed">Claimed</Badge>;
+    return <Badge variant="claimed">Recently Updated</Badge>;
   }
 
   if (venue.listingStatus === "verified") {
     return <Badge variant="verified">Verified</Badge>;
   }
 
-  return <Badge variant="ai">AI-Scouted</Badge>;
+  return <Badge variant="basic">Details Pending</Badge>;
 }
 
 function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
@@ -95,7 +95,7 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
 
           <div className="relative flex min-h-[28rem] flex-col justify-end p-6 md:p-8">
             <div className="flex flex-wrap gap-2">
-              <Badge variant="premium">Premium Profile</Badge>
+              <Badge variant="premium">Enhanced Profile</Badge>
               {getProfileStatusBadge(venue)}
               {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
             </div>
@@ -165,11 +165,7 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 md:p-8">
         <div className="flex flex-wrap gap-2">
           <Badge variant="basic">Basic Profile</Badge>
-          {venue.listingStatus === "verified" ? (
-            <Badge variant="verified">Verified</Badge>
-          ) : (
-            <Badge variant="ai">AI-Scouted</Badge>
-          )}
+          {getProfileStatusBadge(venue)}
         </div>
         <h1 className="mt-5 text-4xl font-black text-white md:text-5xl">
           {venue.venueName}
@@ -200,7 +196,7 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
         </dl>
         <div className="mt-6 flex flex-col gap-3">
           <Button href="/venues/premium" variant="secondary">
-            Upgrade to Premium
+            Upgrade to Enhanced
           </Button>
           <Button href={`/claim-listing?venue=${venue.slug}`} variant="ghost">
             Claim this listing

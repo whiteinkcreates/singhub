@@ -24,15 +24,11 @@ function getListingBadge(venue: VenueListing) {
     return <Badge variant="verified">Verified</Badge>;
   }
 
-  if (venue.listingStatus === "ai_scouted") {
-    return <Badge variant="ai">AI-Scouted</Badge>;
-  }
-
   if (venue.listingStatus === "claimed") {
-    return <Badge variant="claimed">Claimed</Badge>;
+    return <Badge variant="claimed">Recently Updated</Badge>;
   }
 
-  return null;
+  return <Badge variant="basic">Details Pending</Badge>;
 }
 
 function getTrustCopy(venue: VenueListing) {
@@ -41,10 +37,10 @@ function getTrustCopy(venue: VenueListing) {
   }
 
   if (venue.listingStatus === "claimed") {
-    return "Claimed listing. Venue or host details have been submitted, but schedules can still change.";
+    return "Recently updated listing. Venue or host details have been submitted, but schedules can still change.";
   }
 
-  return "AI-scouted listing. This karaoke lead may need confirmation before you make firm plans.";
+  return "Details pending. SingHUB is still confirming this karaoke listing before treating it as launch-ready.";
 }
 
 function getUsableValue(value: string | undefined) {
@@ -69,7 +65,7 @@ function getBannerImageUrl(venue: VenueListing) {
 function getBannerImageAlt(venue: VenueListing) {
   return (
     getUsableValue(venue.bannerImageAlt) ??
-    `SingHUB premium karaoke listing banner for ${venue.venueName}`
+    `SingHUB enhanced karaoke listing banner for ${venue.venueName}`
   );
 }
 
@@ -204,7 +200,7 @@ function PremiumVenueCard({ venue, events = [], distanceLabel }: VenueCardProps)
                 )}
               </div>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="premium">Premium Profile</Badge>
+                <Badge variant="premium">Enhanced Profile</Badge>
                 {getListingBadge(venue)}
                 {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
               </div>

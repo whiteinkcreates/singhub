@@ -11,6 +11,14 @@ const EVENTS_DATA_PATH = path.join(
 );
 
 const JTS_TAVERN_EVENT_ID = "event-0008";
+const HIDDEN_EVENT_VENUE_IDS = new Set(["venue-0044", "venue-0061", "venue-0063"]);
+const HIDDEN_EVENT_SLUGS = new Set([
+  "the-hole-in-the-wall",
+  "the-hole-in-the-wall-the-hole",
+  "the-hole",
+  "hole-in-the-wall",
+  "the-cordova-bar",
+]);
 
 function parseBoolean(value: string | undefined) {
   return value?.trim().toLowerCase() === "true";
@@ -24,6 +32,13 @@ function parseNumber(value: string | undefined) {
   const parsed = Number(value);
 
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function isPublicEvent(event: KaraokeEventListing) {
+  return (
+    !HIDDEN_EVENT_VENUE_IDS.has(event.venueId) &&
+    !HIDDEN_EVENT_SLUGS.has(event.venueSlug)
+  );
 }
 
 function applyEventCorrections(event: KaraokeEventListing): KaraokeEventListing {
@@ -77,7 +92,8 @@ export function getKaraokeEventListings(): KaraokeEventListing[] {
 
   return parseTsv(content)
     .map(rowToKaraokeEventListing)
-    .filter((event) => event.venueSlug && event.karaokeDay);
+    .filter((event) => event.venueSlug && event.karaokeDay)
+    .filter(isPublicEvent);
 }
 
 export function getKaraokeEventsByVenueSlug(
