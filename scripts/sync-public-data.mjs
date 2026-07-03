@@ -154,6 +154,32 @@ function dayList(value) {
   return found.length ? found : [text];
 }
 
+function uniqueTags(tags) {
+  const seen = new Set();
+  return tags
+    .map(clean)
+    .filter(Boolean)
+    .filter((tag) => {
+      const normalized = key(tag);
+      if (seen.has(normalized)) return false;
+      seen.add(normalized);
+      return true;
+    });
+}
+
+function safeGeneratedTags(row) {
+  const tags = [];
+  if (!isTbd(row.neighborhood)) tags.push(row.neighborhood);
+  for (const day of dayList(row.karaoke_day)) {
+    if (DAYS.includes(day)) tags.push(`${day} karaoke`);
+  }
+  const venueType = normalizeVenueType(row.venue_type);
+  if (venueType === "private_room") tags.push("private rooms");
+  if (venueType === "event_producer") tags.push("event producer");
+  if (venueType === "live_bar") tags.push("live karaoke");
+  return uniqueTags(tags).slice(0, 6).join(", ");
+}
+
 function buildVenues(sourceRows, report) {
   const duplicateIdRows = chooseCanonical(sourceRows, "id", report.duplicateVenueIds);
   const duplicateSlugRows = chooseCanonical(sourceRows, "slug", report.duplicateSlugs);
@@ -175,7 +201,7 @@ function buildVenues(sourceRows, report) {
       venue_type: normalizeVenueType(row.venue_type),
       latitude: row.latitude || coordinate.latitude || "",
       longitude: row.longitude || coordinate.longitude || "",
-      vibe_tags: row.specials || row.venue_type || "",
+      vibe_tags: clean(row.vibe_tags) || safeGeneratedTags(row),
       is_featured: /^(true|yes|1)$/i.test(row.is_featured) || normalizeTier(row.profile_tier) === "premium" ? "TRUE" : "FALSE",
     });
   }
@@ -198,7 +224,7 @@ function buildEvents(sourceRows, venueRows, report) {
     if (key(row.active_status) !== "active") continue;
     const days = dayList(row.karaoke_day);
     const partialStartAllowed = /partial|needs_end_time|needs_host/i.test(`${row.review_status} ${row.event_notes}`);
-    if (!days.length || isTbd(row.start_time) && !partialStartAllowed) continue;
+    if (!days.length || (isTbd(row.start_time) && !partialStartAllowed)) continue;
     for (const day of days) {
       const recurrenceNote = /every other|1st|3rd/i.test(row.karaoke_day) ? ` Recurrence: ${clean(row.karaoke_day)}.` : "";
       const event = {
@@ -220,10 +246,13 @@ function buildEvents(sourceRows, venueRows, report) {
   return events;
 }
 
-function reportVenueTbd(venues, report) {
+function reportVenueValidation(venues, report) {
   for (const venue of venues) {
     if (isTbd(venue.address) || isTbd(venue.start_time) || isTbd(venue.host_name)) {
       report.publicRowsWithTbd.push(`venue: ${venue.id} ${venue.venue_name}`);
+    }
+    if (!clean(venue.latitude) || !clean(venue.longitude)) {
+      report.publicVenuesMissingCoordinates.push(`${venue.id} ${venue.venue_name}`);
     }
   }
 }
@@ -242,6 +271,7 @@ function reportMarkdown(report, venues, events) {
     section("Event References Missing Exported Venues", report.eventReferencesMissingVenues),
     section("Event Slug Mismatches", report.eventSlugMismatches),
     section("Public Rows With TBD Address/Time/Host", report.publicRowsWithTbd),
+    section("Public Venues Missing Coordinates", report.publicVenuesMissingCoordinates),
     section("Closed/Hidden/Form Rows Excluded", report.closedHiddenWouldExport),
     "",
   ].join("\n");
@@ -254,6 +284,7 @@ async function main() {
     eventReferencesMissingVenues: [],
     eventSlugMismatches: [],
     publicRowsWithTbd: [],
+    publicVenuesMissingCoordinates: [],
     closedHiddenWouldExport: [],
   };
   const venueSourceRows = await fetchSheet("Venues");
@@ -262,7 +293,7 @@ async function main() {
   const events = buildEvents(eventSourceRows, candidateVenues, report);
   const eventVenueIds = new Set(events.map((event) => event.venue_id));
   const venues = candidateVenues.filter((venue) => eventVenueIds.has(venue.id));
-  reportVenueTbd(venues, report);
+  reportVenueValidation(venues, report);
   fs.mkdirSync(path.dirname(VENUES_OUT), { recursive: true });
   fs.writeFileSync(VENUES_OUT, tsv(venues, VENUE_COLUMNS));
   fs.writeFileSync(EVENTS_OUT, tsv(events, EVENT_COLUMNS));
