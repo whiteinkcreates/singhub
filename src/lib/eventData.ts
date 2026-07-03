@@ -11,14 +11,26 @@ const EVENTS_DATA_PATH = path.join(
 );
 
 const JTS_TAVERN_EVENT_ID = "event-0008";
+const CORDOVA_EVENT_ID = "event-0018";
 const HIDDEN_EVENT_VENUE_IDS = new Set(["venue-0044", "venue-0061", "venue-0063"]);
-const HIDDEN_EVENT_SLUGS = new Set([
-  "the-hole-in-the-wall",
-  "the-hole-in-the-wall-the-hole",
-  "the-hole",
-  "hole-in-the-wall",
-  "the-cordova-bar",
-]);
+const HIDDEN_EVENT_SLUGS = new Set(["the-cordova-bar"]);
+
+const STAR_BAR_EVENT: KaraokeEventListing = {
+  eventId: "event-star-bar-001",
+  venueId: "venue-0047",
+  venueName: "Star Bar",
+  venueSlug: "star-bar",
+  karaokeDay: "Sunday-Thursday",
+  startTime: "9 PM",
+  endTime: "1:30 AM",
+  hostName: "Art Ruiz Mondays / other hosts TBD",
+  recurring: true,
+  activeStatus: "active",
+  eventNotes:
+    "Gaslamp karaoke Sunday through Thursday from 9 PM to 1:30 AM. Mondays are hosted by Art Ruiz as The Art Show; other hosts still need final confirmation.",
+  eventConfidenceScore: 90,
+  reviewStatus: "verified_partial_host",
+};
 
 function parseBoolean(value: string | undefined) {
   return value?.trim().toLowerCase() === "true";
@@ -42,25 +54,44 @@ function isPublicEvent(event: KaraokeEventListing) {
 }
 
 function applyEventCorrections(event: KaraokeEventListing): KaraokeEventListing {
-  if (event.eventId !== JTS_TAVERN_EVENT_ID) {
-    return event;
+  if (event.eventId === JTS_TAVERN_EVENT_ID) {
+    return {
+      ...event,
+      venueId: "venue-0006",
+      venueName: "JT's Tavern",
+      venueSlug: "jts-tavern",
+      karaokeDay: "Daily",
+      startTime: "9pm",
+      endTime: "1am",
+      hostName: "Brian, Will, Chad (different days)",
+      recurring: true,
+      activeStatus: "active",
+      eventNotes: "Daily karaoke from 9pm to 1am. Hosts vary by day.",
+      eventConfidenceScore: 85,
+      reviewStatus: "needs_review",
+    };
   }
 
-  return {
-    ...event,
-    venueId: "venue-0006",
-    venueName: "JT's Tavern",
-    venueSlug: "jts-tavern",
-    karaokeDay: "Daily",
-    startTime: "9pm",
-    endTime: "1am",
-    hostName: "Brian, Will, Chad (different days)",
-    recurring: true,
-    activeStatus: "active",
-    eventNotes: "Daily karaoke from 9pm to 1am. Hosts vary by day.",
-    eventConfidenceScore: 85,
-    reviewStatus: "needs_review",
-  };
+  if (event.eventId === CORDOVA_EVENT_ID || event.venueSlug === "cordova-bar") {
+    return {
+      ...event,
+      venueId: "venue-0016",
+      venueName: "The Cordova Bar",
+      venueSlug: "cordova-bar",
+      karaokeDay: "Tuesday",
+      startTime: "8 PM",
+      endTime: "12 AM",
+      hostName: "Savor Entertainment",
+      recurring: true,
+      activeStatus: "active",
+      eventNotes:
+        "Tuesday karaoke from 8 PM to midnight. Free to attend, 21+ only, hosted by Savor Entertainment. Monthly themed contest usually second or third Tuesday.",
+      eventConfidenceScore: 96,
+      reviewStatus: "verified",
+    };
+  }
+
+  return event;
 }
 
 function rowToKaraokeEventListing(row: TsvRow): KaraokeEventListing {
@@ -85,15 +116,17 @@ function rowToKaraokeEventListing(row: TsvRow): KaraokeEventListing {
 
 export function getKaraokeEventListings(): KaraokeEventListing[] {
   if (!fs.existsSync(EVENTS_DATA_PATH)) {
-    return [];
+    return [STAR_BAR_EVENT];
   }
 
   const content = fs.readFileSync(EVENTS_DATA_PATH, "utf8");
-
-  return parseTsv(content)
+  const events = parseTsv(content)
     .map(rowToKaraokeEventListing)
     .filter((event) => event.venueSlug && event.karaokeDay)
     .filter(isPublicEvent);
+
+  const hasStarBar = events.some((event) => event.venueSlug === "star-bar");
+  return hasStarBar ? events : [...events, STAR_BAR_EVENT];
 }
 
 export function getKaraokeEventsByVenueSlug(
