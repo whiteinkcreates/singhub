@@ -30,6 +30,13 @@ Exported events: 21.
 - Event `event-0012` Good News Bar has `host_name` = `TBD`.
 - Event `event-0014` Winstons Beach Club has `end_time` = `TBD`.
 
+## Public Venues Missing Coordinates
+- `venue-0077` Diversionary Theatre / Clark Cabaret & Bar.
+- `venue-0078` Good News Bar.
+- `venue-0079` The Scoreboard Imperial Beach Sports Bar & Grill.
+- `venue-0080` The Mesa.
+- `venue-0081` Joycee's Cocktails.
+
 ## Closed/Hidden/Form Rows Excluded
 - `venue-0009` Deano's Pub: `needs_form`.
 - `venue-0053` Henrys Pub: `permanently_closed`.
@@ -41,3 +48,4 @@ Exported events: 21.
 - `Sunday-Thursday` / `Sun-Thurs` style ranges expand to Sunday, Monday, Tuesday, Wednesday, and Thursday event rows.
 - `Every other Wednesday` exports as Wednesday with the recurrence note preserved in `event_notes`.
 - The current Sheet does not include latitude/longitude columns, so the sync script supports `scripts/data-sync/venue-coordinates.json` as a temporary map-coordinate fallback.
+- The current Sheet does not include a `vibe_tags` column. When it does, the sync preserves it; until then, the exporter generates public-safe tags from neighborhood, karaoke day, and venue type.
