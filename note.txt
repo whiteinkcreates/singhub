@@ -1,1 +1,1 @@
-note
+This branch changes sync behavior so public-safe venues are exported even when event rows are incomplete.
