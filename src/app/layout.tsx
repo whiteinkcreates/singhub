@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   title: "SingHUB | Find Karaoke Tonight",
   description: "Find karaoke nights in San Diego by day, neighborhood, venue, and vibe.",
   icons: {
-    icon: [{ url: "/icon", sizes: "512x512", type: "image/png" }],
-    shortcut: [{ url: "/icon", sizes: "512x512", type: "image/png" }],
-    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+    icon: [{ url: "/icon.png", sizes: "512x512", type: "image/png" }],
+    shortcut: [{ url: "/icon.png", sizes: "512x512", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
