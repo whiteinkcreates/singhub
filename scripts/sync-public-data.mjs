@@ -10,9 +10,9 @@ const EVENTS_OUT = path.join(ROOT, "public", "data", "events_by_night.tsv");
 const REPORT_OUT = path.join(ROOT, "public", "data", "sync-validation-report.md");
 const COORDINATES_PATH = path.join(ROOT, "scripts", "data-sync", "venue-coordinates.json");
 
-const EXCLUDED_STATUSES = new Set(["permanently_closed", "duplicate_hidden", "needs_form"]);
-const VERIFIED_STATUSES = new Set(["verified", "verified_schedule", "verified_partial_host"]);
-const PENDING_STATUSES = new Set(["needs_review", "ai_scouted"]);
+const EXCLUDED_STATUSES = new Set(["closed", "permanently_closed", "no_karaoke", "duplicate", "duplicate_hidden", "needs_form"]);
+const VERIFIED_STATUSES = new Set(["verified", "verified_schedule", "verified_partial_host", "enhanced_candidate"]);
+const PENDING_STATUSES = new Set(["needs_review", "needs_time", "needs_address", "ai_scouted"]);
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 const VENUE_COLUMNS = [
@@ -91,7 +91,7 @@ function key(value) {
 }
 
 function isTbd(value) {
-  return /^(tbd|address tbd|-|—)?$/i.test(clean(value));
+  return /^(tbd|address tbd|address needed|-|—)?$/i.test(clean(value));
 }
 
 function normalizeStatus(value) {
@@ -148,7 +148,9 @@ function dayList(value) {
   if (!text || /^tbd$/i.test(text)) return [];
   if (normalized === "daily" || normalized.includes("7 nights")) return DAYS;
   if (/sun(day)?\s*[-–]\s*thu(rs(day)?)?/.test(normalized) || /sunday\s*[-–]\s*thursday/.test(normalized)) return DAYS.slice(0, 5);
+  if (/tuesday\s*[-–]\s*thursday/.test(normalized) || /tue(sday)?\s*[-–]\s*thu(rs(day)?)?/.test(normalized)) return ["Tuesday", "Wednesday", "Thursday"];
   if (/fri(day)?\s*[-–]\s*sat(urday)?/.test(normalized)) return ["Friday", "Saturday"];
+  if (/fri(day)?\s*[-–]\s*sun(day)?/.test(normalized)) return ["Friday", "Saturday", "Sunday"];
   if (/every other wednesday/.test(normalized)) return ["Wednesday"];
   const found = DAYS.filter((day) => new RegExp(`\\b(${day.slice(0, 3)}|${day})\\b`, "i").test(text));
   return found.length ? found : [text];
@@ -180,6 +182,21 @@ function safeGeneratedTags(row) {
   return uniqueTags(tags).slice(0, 6).join(", ");
 }
 
+function isPartialScheduleAllowed(row) {
+  const statusText = `${row.listing_status} ${row.review_status} ${row.confidence_notes} ${row.description}`;
+  return /needs_time|verified_partial_host|partial|needs_end_time|needs_host/i.test(statusText);
+}
+
+function isPublicUsableVenue(row) {
+  const venueType = normalizeVenueType(row.venue_type);
+  if (!clean(row.venue_name)) return { usable: false, reason: "missing venue_name" };
+  if (!clean(row.slug)) return { usable: false, reason: "missing slug" };
+  if (!dayList(row.karaoke_day).length) return { usable: false, reason: "missing usable karaoke_day" };
+  if (isTbd(row.start_time) && !isPartialScheduleAllowed(row)) return { usable: false, reason: "missing start_time" };
+  if (isTbd(row.address) && venueType !== "private_room" && venueType !== "event_producer") return { usable: false, reason: "missing address" };
+  return { usable: true, reason: "" };
+}
+
 function buildVenues(sourceRows, report) {
   const duplicateIdRows = chooseCanonical(sourceRows, "id", report.duplicateVenueIds);
   const duplicateSlugRows = chooseCanonical(sourceRows, "slug", report.duplicateSlugs);
@@ -193,6 +210,13 @@ function buildVenues(sourceRows, report) {
       if (EXCLUDED_STATUSES.has(status)) report.closedHiddenWouldExport.push(`row ${row.__rowNumber}: ${row.id} ${venueName} (${status})`);
       continue;
     }
+
+    const usability = isPublicUsableVenue(row);
+    if (!usability.usable) {
+      report.venuesSkippedAsNotPublicUsable.push(`row ${row.__rowNumber}: ${row.id} ${venueName} - ${usability.reason}`);
+      continue;
+    }
+
     const coordinate = coordinates[row.id] || coordinates[row.slug] || {};
     venues.push({
       ...row,
@@ -221,10 +245,16 @@ function buildEvents(sourceRows, venueRows, report) {
       report.eventSlugMismatches.push(`event row ${row.__rowNumber}: ${row.event_id} has ${row.venue_slug}, venue has ${venue.slug}`);
       continue;
     }
-    if (key(row.active_status) !== "active") continue;
+    if (key(row.active_status) !== "active") {
+      report.eventsSkippedInactive.push(`event row ${row.__rowNumber}: ${row.event_id} ${row.venue_name} (${row.active_status || "blank"})`);
+      continue;
+    }
     const days = dayList(row.karaoke_day);
     const partialStartAllowed = /partial|needs_end_time|needs_host/i.test(`${row.review_status} ${row.event_notes}`);
-    if (!days.length || (isTbd(row.start_time) && !partialStartAllowed)) continue;
+    if (!days.length || (isTbd(row.start_time) && !partialStartAllowed)) {
+      report.eventsSkippedMissingDayOrStart.push(`event row ${row.__rowNumber}: ${row.event_id} ${row.venue_name}`);
+      continue;
+    }
     for (const day of days) {
       const recurrenceNote = /every other|1st|3rd/i.test(row.karaoke_day) ? ` Recurrence: ${clean(row.karaoke_day)}.` : "";
       const event = {
@@ -244,6 +274,15 @@ function buildEvents(sourceRows, venueRows, report) {
     }
   }
   return events;
+}
+
+function reportMissingEventRows(venues, events, report) {
+  const eventVenueIds = new Set(events.map((event) => event.venue_id));
+  for (const venue of venues) {
+    if (!eventVenueIds.has(venue.id)) {
+      report.publicVenuesMissingEventsRow.push(`${venue.id} ${venue.venue_name}`);
+    }
+  }
 }
 
 function reportVenueValidation(venues, report) {
@@ -268,8 +307,12 @@ function reportMarkdown(report, venues, events) {
     "",
     section("Duplicate Venue IDs", report.duplicateVenueIds),
     section("Duplicate Slugs", report.duplicateSlugs),
+    section("Public Venues Missing Events Row", report.publicVenuesMissingEventsRow),
+    section("Venues Skipped As Not Public-Usable", report.venuesSkippedAsNotPublicUsable),
     section("Event References Missing Exported Venues", report.eventReferencesMissingVenues),
     section("Event Slug Mismatches", report.eventSlugMismatches),
+    section("Events Skipped Because Inactive", report.eventsSkippedInactive),
+    section("Events Skipped Because Missing Day Or Start Time", report.eventsSkippedMissingDayOrStart),
     section("Public Rows With TBD Address/Time/Host", report.publicRowsWithTbd),
     section("Public Venues Missing Coordinates", report.publicVenuesMissingCoordinates),
     section("Closed/Hidden/Form Rows Excluded", report.closedHiddenWouldExport),
@@ -281,18 +324,21 @@ async function main() {
   const report = {
     duplicateVenueIds: [],
     duplicateSlugs: [],
+    publicVenuesMissingEventsRow: [],
+    venuesSkippedAsNotPublicUsable: [],
     eventReferencesMissingVenues: [],
     eventSlugMismatches: [],
+    eventsSkippedInactive: [],
+    eventsSkippedMissingDayOrStart: [],
     publicRowsWithTbd: [],
     publicVenuesMissingCoordinates: [],
     closedHiddenWouldExport: [],
   };
   const venueSourceRows = await fetchSheet("Venues");
   const eventSourceRows = await fetchSheet("Events");
-  const candidateVenues = buildVenues(venueSourceRows, report);
-  const events = buildEvents(eventSourceRows, candidateVenues, report);
-  const eventVenueIds = new Set(events.map((event) => event.venue_id));
-  const venues = candidateVenues.filter((venue) => eventVenueIds.has(venue.id));
+  const venues = buildVenues(venueSourceRows, report);
+  const events = buildEvents(eventSourceRows, venues, report);
+  reportMissingEventRows(venues, events, report);
   reportVenueValidation(venues, report);
   fs.mkdirSync(path.dirname(VENUES_OUT), { recursive: true });
   fs.writeFileSync(VENUES_OUT, tsv(venues, VENUE_COLUMNS));
