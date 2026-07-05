@@ -10,10 +10,10 @@ export const metadata: Metadata = {
   title: "SingHUB | Find Karaoke Tonight",
   description: "Find karaoke nights in San Diego by day, neighborhood, venue, and vibe.",
   icons: {
-    icon: "/icon.png?v=5",
-    shortcut: "/icon.png?v=5",
-    apple: "/icon.png?v=5"
-  }
+    icon: [{ url: "/icon", sizes: "512x512", type: "image/png" }],
+    shortcut: [{ url: "/icon", sizes: "512x512", type: "image/png" }],
+    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
