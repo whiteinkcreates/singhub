@@ -86,9 +86,13 @@ export function getFeaturedVenueListings(): VenueListing[] {
 }
 
 export function getVenueTickerItems(): string[] {
+  const eventTickerItems = [
+    "July 14 • Summer Pride Karaoke at The Cordova • 8 PM • Best Song + Best Spirit",
+  ];
   const tickerItems = getVenueListings().map((venue) => venue.tickerText).filter((item): item is string => Boolean(item));
-  if (tickerItems.length > 0) return tickerItems;
+  if (tickerItems.length > 0) return [...eventTickerItems, ...tickerItems];
   return [
+    ...eventTickerItems,
     "Tonight in San Diego • Find live bar karaoke, private rooms, and local host-led nights",
     "SingHUB is actively verifying karaoke schedules and adding new venues",
     "Know a karaoke night we should add? Submit it to SingHUB",
