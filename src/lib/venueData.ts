@@ -4,6 +4,8 @@ import type { ListingStatus, ProfileTier, VenueListing, VenueType } from "@/type
 import { parseTsv, type TsvRow } from "@/lib/tsv";
 
 const DATA_PATH = path.join(process.cwd(), "public", "data", "venues.tsv");
+const CORDOVA_CONTEST_FLYER_URL = "https://res.cloudinary.com/dy3lyejkk/image/upload/v1783314060/Cordova-SummerPrideKaraoke-2_hyesrt.jpg";
+const CORDOVA_CONTEST_FLYER_ALT = "Summer Pride Karaoke flyer for The Cordova Bar, July 14 at 8 PM, hosted by Savor Entertainment";
 
 function parseBoolean(value: string | undefined) {
   return /^(true|yes|1)$/i.test(value?.trim() || "");
@@ -38,6 +40,16 @@ function getOptionalValue(value: string | undefined) {
   return value?.trim() || undefined;
 }
 
+function getBannerImageUrl(row: TsvRow) {
+  if (row.slug === "cordova-bar") return getOptionalValue(row.banner_image_url) || CORDOVA_CONTEST_FLYER_URL;
+  return getOptionalValue(row.banner_image_url);
+}
+
+function getBannerImageAlt(row: TsvRow) {
+  if (row.slug === "cordova-bar") return getOptionalValue(row.banner_image_alt) || CORDOVA_CONTEST_FLYER_ALT;
+  return getOptionalValue(row.banner_image_alt);
+}
+
 function rowToVenueListing(row: TsvRow): VenueListing {
   return {
     id: row.id,
@@ -53,8 +65,8 @@ function rowToVenueListing(row: TsvRow): VenueListing {
     longitude: parseNumber(row.longitude),
     website: getOptionalValue(row.website),
     instagram: getOptionalValue(row.instagram),
-    bannerImageUrl: getOptionalValue(row.banner_image_url),
-    bannerImageAlt: getOptionalValue(row.banner_image_alt),
+    bannerImageUrl: getBannerImageUrl(row),
+    bannerImageAlt: getBannerImageAlt(row),
     tickerText: getOptionalValue(row.ticker_text),
     karaokeDay: row.karaoke_day,
     startTime: row.start_time,
