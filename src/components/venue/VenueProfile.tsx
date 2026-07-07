@@ -77,6 +77,7 @@ function getProfileStatusBadge(venue: VenueListing) {
 function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
   const bannerImageUrl = getBannerImageUrl(venue);
   const bannerImageAlt = getBannerImageAlt(venue);
+  const hasBannerImageUrl = isUsableUrl(venue.bannerImageUrl);
   const hasReservationUrl = isUsableUrl(venue.reservationLink);
 
   return (
@@ -148,6 +149,11 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
           <div className="mt-6 flex flex-col gap-3">
             {hasReservationUrl && venue.reservationLink && (
               <Button href={venue.reservationLink}>Reserve / Learn More</Button>
+            )}
+            {hasBannerImageUrl && venue.bannerImageUrl && (
+              <Button href={venue.bannerImageUrl} variant="secondary">
+                View event flyer
+              </Button>
             )}
             <Button href={`/claim-listing?venue=${venue.slug}`} variant="ghost">
               Claim or update this listing
