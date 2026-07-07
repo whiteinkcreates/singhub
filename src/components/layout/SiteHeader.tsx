@@ -20,22 +20,32 @@ export function SiteHeader() {
           aria-label="SingHUB home"
         >
           <Image
-            src="/images/singhub-mark.png"
+            src="/images/header-singhub-logo.png"
             alt="SingHUB"
-            width={420}
-            height={160}
+            width={2400}
+            height={600}
             priority
-            className="h-12 w-auto max-w-[180px] object-contain drop-shadow-[0_0_14px_rgba(217,70,239,0.45)] md:h-14 md:max-w-[210px]"
+            className="h-11 w-auto max-w-[210px] object-contain md:h-14 md:max-w-[280px]"
           />
         </Link>
 
         <nav className="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-slate-200 md:gap-2 md:text-sm">
           {navItems.map((item) => (
-            <Link key={item.href} href={item.href} className="rounded-full px-2.5 py-1.5 transition hover:bg-white/10 hover:text-white md:px-3 md:py-2">
+            <Link
+              key={item.href}
+              href={item.href}
+              className="rounded-full px-2.5 py-1.5 transition hover:bg-white/10 hover:text-white md:px-3 md:py-2"
+            >
               {item.label}
             </Link>
           ))}
-          <Button href="/venues/premium" variant="secondary" className="px-3 py-1.5 md:px-4 md:py-2">For Venues</Button>
+          <Button
+            href="/venues/premium"
+            variant="secondary"
+            className="px-3 py-1.5 md:px-4 md:py-2"
+          >
+            For Venues
+          </Button>
         </nav>
       </div>
     </header>
