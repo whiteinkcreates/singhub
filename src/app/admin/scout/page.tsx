@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type ScoutLead = {
   id: string;
@@ -43,7 +43,7 @@ export const metadata = {
 };
 
 export default async function AdminScoutPage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: leads, error } = await supabase
     .from("scout_leads")
