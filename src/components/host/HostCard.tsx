@@ -26,7 +26,7 @@ export function TonightHostCard({ host, gig }: { host: HostProfile; gig: HostGig
         </h3>
         <p className="mt-2 text-sm font-semibold text-fuchsia-100">{gig.venueName || "Venue TBA"}</p>
         <p className="mt-1 text-sm text-slate-300">
-          {[gig.time, gig.neighborhood].filter(Boolean).join(" • ") || "Time TBA"}
+          {[gig.time, gig.neighborhood].filter(Boolean).join(" / ") || "Time TBA"}
         </p>
       </div>
     </Link>
@@ -48,7 +48,7 @@ export function HostDirectoryCard({ host }: { host: HostProfile }) {
             {host.publicDisplayName}
           </h2>
           <p className="mt-2 text-sm font-semibold text-cyan-100">
-            {host.primaryAreas.join(" • ") || "San Diego"}
+            {host.primaryAreas.join(" / ") || "San Diego"}
           </p>
         </div>
       </div>
