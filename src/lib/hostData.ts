@@ -295,7 +295,7 @@ async function getServiceAccountRows(sheetId: string, sheetTab: string) {
   const accessToken = await getAccessToken();
   if (!accessToken) return null;
 
-  const range = encodeURIComponent(`'${sheetTab}'`);
+  const range = encodeURIComponent(`'${sheetTab}'!A:Z`);
   const response = await fetch(
     `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`,
     {
