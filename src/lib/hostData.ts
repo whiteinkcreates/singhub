@@ -245,7 +245,12 @@ async function getSheetRows() {
       throw new Error(`Google Sheets responded with ${response.status}`);
     }
 
-    return parseCsv(await response.text());
+    const content = await response.text();
+    if (!content.includes("Status") || !content.includes("KJ / Host")) {
+      throw new Error("KJ Profiles sheet CSV did not include expected headers");
+    }
+
+    return parseCsv(content);
   } catch (error) {
     console.error("Failed to fetch KJ profiles from Google Sheets", error);
     return null;
