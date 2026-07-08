@@ -24,7 +24,7 @@ export const HOST_WEEKDAYS: HostWeekday[] = [
   "Sunday",
 ];
 
-type HostRow = Record<string, string>;
+export type HostSourceRow = Record<string, string>;
 
 function getOptionalValue(value: string | undefined) {
   const trimmedValue = value?.trim();
@@ -43,8 +43,16 @@ function parseList(value: string | undefined) {
     .filter(Boolean);
 }
 
-function getCell(row: HostRow, columnName: string) {
+function getCell(row: HostSourceRow, columnName: string) {
   return getOptionalValue(row[columnName]);
+}
+
+function normalizeStatus(value: string | undefined) {
+  return value?.trim().toLowerCase() || "draft";
+}
+
+function isActiveStatus(value: string | undefined) {
+  return normalizeStatus(value) === "active";
 }
 
 function slugify(value: string) {
@@ -76,7 +84,7 @@ function normalizeInstagramUrl(value: string | undefined) {
   return handle ? `https://www.instagram.com/${handle}` : undefined;
 }
 
-function parseCsv(content: string): HostRow[] {
+function parseCsv(content: string): HostSourceRow[] {
   const rows: string[][] = [];
   let cell = "";
   let row: string[] = [];
@@ -124,26 +132,26 @@ function parseCsv(content: string): HostRow[] {
   return rows
     .filter((values) => values.some((value) => value.trim()))
     .map((values) =>
-      headers.reduce<HostRow>((mappedRow, header, index) => {
+      headers.reduce<HostSourceRow>((mappedRow, header, index) => {
         mappedRow[header] = values[index]?.trim() ?? "";
         return mappedRow;
       }, {}),
     );
 }
 
-function valuesToRows(values: string[][]): HostRow[] {
+function valuesToRows(values: string[][]): HostSourceRow[] {
   const [headers = [], ...rows] = values;
   return rows
     .filter((valuesRow) => valuesRow.some((value) => value.trim()))
     .map((valuesRow) =>
-      headers.reduce<HostRow>((mappedRow, header, index) => {
+      headers.reduce<HostSourceRow>((mappedRow, header, index) => {
         mappedRow[header.trim()] = valuesRow[index]?.trim() ?? "";
         return mappedRow;
       }, {}),
     );
 }
 
-function hasExpectedHeaders(rows: HostRow[]) {
+function hasExpectedHeaders(rows: HostSourceRow[]) {
   if (rows.length === 0) return false;
   const headers = Object.keys(rows[0]);
   return headers.includes("Status") && headers.some((header) => header.includes("KJ / Host"));
@@ -176,7 +184,7 @@ export function parseDayGigs(dayCell: string | undefined): HostGig[] {
     .filter((gig) => gig.venueName || gig.time || gig.neighborhood);
 }
 
-export function parseHostSchedule(row: HostRow) {
+export function parseHostSchedule(row: HostSourceRow) {
   return HOST_WEEKDAYS.reduce<Record<HostWeekday, HostGig[]>>((schedule, day) => {
     schedule[day] = parseDayGigs(row[day]);
     return schedule;
@@ -186,11 +194,11 @@ export function parseHostSchedule(row: HostRow) {
 export function getProfileCompletionLevel(host: Omit<HostProfile, "profileCompletionLevel">): HostProfileCompletionLevel {
   const weeklyGigs = HOST_WEEKDAYS.flatMap((day) => host.schedule[day]);
   const hasBasicProfile =
-    host.status.toLowerCase() === "active" &&
+    isActiveStatus(host.status) &&
     Boolean(host.slug) &&
     Boolean(host.publicDisplayName) &&
     Boolean(host.instagramUrl || host.instagramHandle) &&
-    weeklyGigs.some((gig) => gig.venueName && gig.time && gig.neighborhood);
+    weeklyGigs.some((gig) => gig.venueName && gig.time);
 
   if (!hasBasicProfile) return "incomplete";
 
@@ -212,13 +220,13 @@ export function getProfileCompletionLevel(host: Omit<HostProfile, "profileComple
   return hasEnhancedFields ? "enhanced" : "basic";
 }
 
-function rowToHost(row: HostRow): HostProfile {
+function rowToHost(row: HostSourceRow): HostProfile {
   const hostName = getCell(row, "KJ / Host Name") || getCell(row, "KJ / Host / Company Name") || "";
   const publicDisplayName = getCell(row, "Public Display Name") || hostName;
   const slug = getCell(row, "Slug") || createSlug(publicDisplayName || hostName);
   const instagramUrl = normalizeInstagramUrl(getCell(row, "Instagram URL") || getCell(row, "Instagram Handle"));
   const baseHost = {
-    status: getCell(row, "Status") || "draft",
+    status: normalizeStatus(getCell(row, "Status")),
     hostId: getCell(row, "Host ID") || slug,
     slug,
     hostName,
@@ -339,9 +347,14 @@ async function getSheetRows() {
   try {
     const serviceAccountRows = await getServiceAccountRows(sheetId, sheetTab);
     if (serviceAccountRows) return serviceAccountRows;
+  } catch (error) {
+    console.error("Failed to fetch KJ profiles with Google service account", error);
+  }
+
+  try {
     return await getPublishedCsvRows(sheetId, sheetTab);
   } catch (error) {
-    console.error("Failed to fetch KJ profiles from Google Sheets", error);
+    console.error("Failed to fetch published KJ profiles CSV", error);
     return null;
   }
 }
@@ -349,7 +362,7 @@ async function getSheetRows() {
 function getFallbackRows() {
   if (!fs.existsSync(FALLBACK_DATA_PATH)) return [];
   const rows = parseTsv(fs.readFileSync(FALLBACK_DATA_PATH, "utf8"));
-  return rows.map((row: TsvRow) => row as HostRow);
+  return rows.map((row: TsvRow) => row as HostSourceRow);
 }
 
 export async function getHosts() {
@@ -359,7 +372,7 @@ export async function getHosts() {
 }
 
 export async function getActiveHosts() {
-  return (await getHosts()).filter((host) => host.status.toLowerCase() === "active");
+  return (await getHosts()).filter((host) => isActiveStatus(host.status));
 }
 
 export async function getHostBySlug(slug: string) {
