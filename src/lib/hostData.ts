@@ -198,7 +198,7 @@ export function getProfileCompletionLevel(host: Omit<HostProfile, "profileComple
     Boolean(host.slug) &&
     Boolean(host.publicDisplayName) &&
     Boolean(host.instagramUrl || host.instagramHandle) &&
-    weeklyGigs.some((gig) => gig.venueName && gig.time);
+    weeklyGigs.some((gig) => gig.venueName && gig.time && gig.neighborhood);
 
   if (!hasBasicProfile) return "incomplete";
 
