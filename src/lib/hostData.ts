@@ -1,3 +1,4 @@
+import { createSign } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import type {
@@ -11,6 +12,7 @@ import { parseTsv, type TsvRow } from "@/lib/tsv";
 const FALLBACK_DATA_PATH = path.join(process.cwd(), "public", "data", "kj_profiles.tsv");
 const DEFAULT_SHEET_ID = "1KVYTlrnMNk57zOdCFYq6o5BJEwIQfYXnrDs-90Z7Hw8";
 const DEFAULT_SHEET_TAB = "KJ Profiles V1";
+const SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets.readonly";
 
 export const HOST_WEEKDAYS: HostWeekday[] = [
   "Monday",
@@ -129,6 +131,24 @@ function parseCsv(content: string): HostRow[] {
     );
 }
 
+function valuesToRows(values: string[][]): HostRow[] {
+  const [headers = [], ...rows] = values;
+  return rows
+    .filter((valuesRow) => valuesRow.some((value) => value.trim()))
+    .map((valuesRow) =>
+      headers.reduce<HostRow>((mappedRow, header, index) => {
+        mappedRow[header.trim()] = valuesRow[index]?.trim() ?? "";
+        return mappedRow;
+      }, {}),
+    );
+}
+
+function hasExpectedHeaders(rows: HostRow[]) {
+  if (rows.length === 0) return false;
+  const headers = Object.keys(rows[0]);
+  return headers.includes("Status") && headers.some((header) => header.includes("KJ / Host"));
+}
+
 export function parseDayGigs(dayCell: string | undefined): HostGig[] {
   if (!dayCell?.trim()) return [];
 
@@ -234,23 +254,92 @@ function rowToHost(row: HostRow): HostProfile {
   };
 }
 
+async function getAccessToken() {
+  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
+  if (!clientEmail || !privateKey) return null;
+
+  const now = Math.floor(Date.now() / 1000);
+  const header = Buffer.from(JSON.stringify({ alg: "RS256", typ: "JWT" })).toString("base64url");
+  const payload = Buffer.from(
+    JSON.stringify({
+      iss: clientEmail,
+      scope: SHEETS_SCOPE,
+      aud: "https://oauth2.googleapis.com/token",
+      exp: now + 3600,
+      iat: now,
+    }),
+  ).toString("base64url");
+  const unsignedToken = `${header}.${payload}`;
+  const signature = createSign("RSA-SHA256").update(unsignedToken).sign(privateKey).toString("base64url");
+
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: `${unsignedToken}.${signature}`,
+    }),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Google auth responded with ${response.status}`);
+  }
+
+  const tokenResponse = (await response.json()) as { access_token?: string };
+  return tokenResponse.access_token || null;
+}
+
+async function getServiceAccountRows(sheetId: string, sheetTab: string) {
+  const accessToken = await getAccessToken();
+  if (!accessToken) return null;
+
+  const range = encodeURIComponent(`'${sheetTab}'`);
+  const response = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`,
+    {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      next: { revalidate: 900 },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Google Sheets API responded with ${response.status}`);
+  }
+
+  const sheetResponse = (await response.json()) as { values?: string[][] };
+  const rows = valuesToRows(sheetResponse.values || []);
+  if (!hasExpectedHeaders(rows)) {
+    throw new Error("KJ Profiles sheet did not include expected headers");
+  }
+
+  return rows;
+}
+
+async function getPublishedCsvRows(sheetId: string, sheetTab: string) {
+  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetTab)}`;
+  const response = await fetch(url, { next: { revalidate: 900 } });
+  if (!response.ok) {
+    throw new Error(`Google Sheets CSV responded with ${response.status}`);
+  }
+
+  const rows = parseCsv(await response.text());
+  if (!hasExpectedHeaders(rows)) {
+    throw new Error("KJ Profiles sheet CSV did not include expected headers");
+  }
+
+  return rows;
+}
+
 async function getSheetRows() {
   const sheetId = process.env.GOOGLE_SHEETS_ID || DEFAULT_SHEET_ID;
   const sheetTab = process.env.GOOGLE_SHEET_KJ_PROFILES_TAB || DEFAULT_SHEET_TAB;
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetTab)}`;
 
   try {
-    const response = await fetch(url, { next: { revalidate: 900 } });
-    if (!response.ok) {
-      throw new Error(`Google Sheets responded with ${response.status}`);
-    }
-
-    const content = await response.text();
-    if (!content.includes("Status") || !content.includes("KJ / Host")) {
-      throw new Error("KJ Profiles sheet CSV did not include expected headers");
-    }
-
-    return parseCsv(content);
+    const serviceAccountRows = await getServiceAccountRows(sheetId, sheetTab);
+    if (serviceAccountRows) return serviceAccountRows;
+    return await getPublishedCsvRows(sheetId, sheetTab);
   } catch (error) {
     console.error("Failed to fetch KJ profiles from Google Sheets", error);
     return null;
