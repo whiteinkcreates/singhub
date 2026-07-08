@@ -56,6 +56,57 @@ export type KaraokeEventListing = {
   reviewStatus?: string;
 };
 
+export type HostWeekday =
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday"
+  | "Sunday";
+
+export type HostGig = {
+  venueName: string;
+  time: string;
+  neighborhood?: string;
+  venueId?: string;
+  raw: string;
+};
+
+export type HostProfileCompletionLevel = "basic" | "enhanced" | "incomplete";
+
+export type HostProfile = {
+  status: string;
+  hostId: string;
+  slug: string;
+  hostName: string;
+  publicDisplayName: string;
+  profileImageUrl?: string;
+  logoUrl?: string;
+  instagramUrl?: string;
+  instagramHandle?: string;
+  tiktokUrl?: string;
+  websiteUrl?: string;
+  tipLink?: string;
+  bookingLink?: string;
+  bio?: string;
+  vibeTags: string[];
+  primaryAreas: string[];
+  schedule: Record<HostWeekday, HostGig[]>;
+  privateEvents?: string;
+  featured: boolean;
+  notes?: string;
+  lastUpdated?: string;
+  verificationStatus?: string;
+  source?: string;
+  formResponseTimestamp?: string;
+  contactEmail?: string;
+  tagRepostPermission?: string;
+  weeklyStatus?: string;
+  favoriteKaraokeSpots?: string;
+  profileCompletionLevel: HostProfileCompletionLevel;
+};
+
 export type ScoutReviewStatus =
   | "new"
   | "needs_review"
