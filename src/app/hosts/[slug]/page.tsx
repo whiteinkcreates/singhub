@@ -67,7 +67,7 @@ export default async function HostProfilePage({ params }: HostProfilePageProps) 
                 {host.publicDisplayName}
               </h1>
               <p className="mt-3 text-base font-semibold text-fuchsia-100 md:text-lg">
-                {host.primaryAreas.join(" • ") || "San Diego"}
+                {host.primaryAreas.join(" / ") || "San Diego"}
               </p>
             </div>
           </div>
@@ -96,7 +96,7 @@ export default async function HostProfilePage({ params }: HostProfilePageProps) 
                           <div key={`${day}-${gig.raw}`} className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
                             <p className="font-black text-white">{gig.venueName || "Venue TBA"}</p>
                             <p className="mt-1 text-sm text-slate-300">
-                              {[gig.time, gig.neighborhood].filter(Boolean).join(" • ") || "Time TBA"}
+                              {[gig.time, gig.neighborhood].filter(Boolean).join(" / ") || "Time TBA"}
                             </p>
                           </div>
                         ))}
