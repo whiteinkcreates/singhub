@@ -6,6 +6,7 @@ const navItems = [
   { href: "/karaoke-near-me", label: "Karaoke Near Me" },
   { href: "/find-karaoke", label: "Find Karaoke" },
   { href: "/neighborhoods", label: "Neighborhoods" },
+  { href: "/hosts", label: "Hosts" },
   { href: "/submit-listing", label: "Submit Listing" },
   { href: "/claim-listing", label: "Claim Listing" },
 ];
