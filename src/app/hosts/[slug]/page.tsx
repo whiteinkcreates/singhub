@@ -26,8 +26,13 @@ export async function generateMetadata({ params }: HostProfilePageProps) {
   }
 
   return {
-    title: `${host.publicDisplayName} | San Diego Karaoke Host | SingHUB`,
-    description: host.bio || `See ${host.publicDisplayName}'s weekly karaoke schedule on SingHUB.`,
+    title: `${host.publicDisplayName} Karaoke Nights in San Diego | SingHUB`,
+    description: host.bio || `Find ${host.publicDisplayName}'s weekly karaoke schedule, venues, and host profile on SingHUB.`,
+    openGraph: {
+      title: `${host.publicDisplayName} Karaoke Nights in San Diego | SingHUB`,
+      description: host.bio || `Find ${host.publicDisplayName}'s weekly karaoke schedule, venues, and host profile on SingHUB.`,
+      images: [host.profileImageUrl || host.logoUrl || "/images/og/singhub-og.png"],
+    },
   };
 }
 
@@ -151,10 +156,11 @@ export default async function HostProfilePage({ params }: HostProfilePageProps) 
           <section className="rounded-2xl border border-fuchsia-300/30 bg-fuchsia-300/10 p-5">
             <h2 className="text-xl font-black text-white">Host karaoke in San Diego?</h2>
             <p className="mt-3 text-sm leading-6 text-fuchsia-50">
-              Send your KJ info to SingHUB for review and cleanup.
+              Claim, update, or submit your KJ info to SingHUB for review and cleanup.
             </p>
-            <div className="mt-4">
-              <Button href={FORM_URL}>Send Your KJ Info</Button>
+            <div className="mt-4 grid gap-3">
+              <Button href={FORM_URL} variant="secondary">Claim / Update Your KJ Profile</Button>
+              <Button href={FORM_URL}>Get Listed as a KJ</Button>
             </div>
           </section>
         </aside>
