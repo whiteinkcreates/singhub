@@ -157,6 +157,33 @@ function hasExpectedHeaders(rows: HostSourceRow[]) {
   return headers.includes("Status") && headers.some((header) => header.includes("KJ / Host"));
 }
 
+function normalizeFormDay(value: string | undefined): HostWeekday | undefined {
+  if (!value) return undefined;
+  const normalizedValue = value.trim().toLowerCase().replace(/\.$/, "");
+  const dayAliases: Record<string, HostWeekday> = {
+    mon: "Monday",
+    monday: "Monday",
+    tue: "Tuesday",
+    tues: "Tuesday",
+    tuesday: "Tuesday",
+    wed: "Wednesday",
+    weds: "Wednesday",
+    wednesday: "Wednesday",
+    thu: "Thursday",
+    thur: "Thursday",
+    thurs: "Thursday",
+    thursday: "Thursday",
+    fri: "Friday",
+    friday: "Friday",
+    sat: "Saturday",
+    saturday: "Saturday",
+    sun: "Sunday",
+    sunday: "Sunday",
+  };
+
+  return dayAliases[normalizedValue];
+}
+
 export function parseDayGigs(dayCell: string | undefined): HostGig[] {
   if (!dayCell?.trim()) return [];
 
@@ -198,7 +225,7 @@ export function getProfileCompletionLevel(host: Omit<HostProfile, "profileComple
     Boolean(host.slug) &&
     Boolean(host.publicDisplayName) &&
     Boolean(host.instagramUrl || host.instagramHandle) &&
-    weeklyGigs.some((gig) => gig.venueName && gig.time && gig.neighborhood);
+    weeklyGigs.some((gig) => gig.venueName && gig.time);
 
   if (!hasBasicProfile) return "incomplete";
 
@@ -401,9 +428,9 @@ export function normalizeRawFormSchedule(value: string | undefined) {
   return value.split(/\r?\n/).reduce(
     (result, line) => {
       const [venueName, neighborhood, day, startTime, endTime] = line.split("/").map((part) => part.trim());
-      const matchedDay = HOST_WEEKDAYS.find((weekday) => weekday.toLowerCase() === day?.toLowerCase());
+      const matchedDay = normalizeFormDay(day);
 
-      if (!venueName || !neighborhood || !matchedDay || !startTime) {
+      if (!venueName || !matchedDay || !startTime) {
         result.notes.push(`Needs Confirmation: ${line}`);
         return result;
       }
@@ -412,7 +439,7 @@ export function normalizeRawFormSchedule(value: string | undefined) {
       const venueId = createSlug(venueName);
       result.days[matchedDay] = [
         ...(result.days[matchedDay] || []),
-        `${venueName} | ${time} | ${neighborhood} | ${venueId}`,
+        `${venueName} | ${time} | ${neighborhood || ""} | ${venueId}`,
       ];
       return result;
     },
