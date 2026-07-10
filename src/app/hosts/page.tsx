@@ -2,6 +2,8 @@ import { HostDirectoryCard } from "@/components/host/HostCard";
 import { Button } from "@/components/ui/Button";
 import { getActiveHosts } from "@/lib/hostData";
 
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header";
+
 export const metadata = {
   title: "San Diego Karaoke Hosts | SingHUB",
   description: "Meet the KJs and karaoke hosts running rooms across San Diego.",
@@ -24,9 +26,14 @@ export default async function HostsPage() {
             Browse active local hosts, their weekly rooms, neighborhoods, and karaoke-night style.
           </p>
         </div>
-        <Button href="https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header" variant="secondary">
-          Send Your KJ Info
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row">
+          <Button href={FORM_URL} variant="secondary">
+            Claim / Update Your KJ Profile
+          </Button>
+          <Button href={FORM_URL}>
+            Get Listed as a KJ
+          </Button>
+        </div>
       </section>
 
       {hosts.length > 0 ? (
@@ -41,6 +48,9 @@ export default async function HostsPage() {
           <p className="mt-3 leading-7">
             Know who is hosting karaoke in San Diego? Send us the info and we will review it for SingHUB.
           </p>
+          <div className="mt-5">
+            <Button href={FORM_URL}>Send KJ Info</Button>
+          </div>
         </section>
       )}
     </main>
