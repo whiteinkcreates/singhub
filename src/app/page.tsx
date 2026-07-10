@@ -46,7 +46,7 @@ function KaraokeTicker({ items }: { items: string[] }) {
   const tickerItems = [...items, ...items, ...items];
 
   return (
-    <div className="mt-5 overflow-hidden rounded-2xl border border-fuchsia-300/35 bg-slate-950/75 shadow-lg shadow-fuchsia-950/30 backdrop-blur md:mt-7">
+    <div className="mt-5 max-w-full overflow-hidden rounded-2xl border border-fuchsia-300/35 bg-slate-950/75 shadow-lg shadow-fuchsia-950/30 backdrop-blur md:mt-7">
       <div className="flex min-w-max animate-[marquee_32s_linear_infinite] gap-8 px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-cyan-100 hover:[animation-play-state:paused] md:text-sm md:tracking-[0.18em]">
         {tickerItems.map((item, index) => (
           <span key={`${item}-${index}`} className="flex shrink-0 items-center gap-8 whitespace-nowrap">
@@ -71,9 +71,9 @@ export default async function Home() {
   const hostsHostingToday = await getHostsHostingToday();
 
   return (
-    <main>
+    <main className="overflow-x-hidden">
       <section className="mx-auto max-w-7xl px-3 py-4 sm:px-4 md:py-8">
-        <div className="relative overflow-hidden rounded-[1.35rem] border border-fuchsia-300/45 bg-slate-950 shadow-2xl shadow-fuchsia-950/35 sm:rounded-[1.75rem] md:rounded-[2.25rem]">
+        <div className="relative max-w-full overflow-hidden rounded-[1.35rem] border border-fuchsia-300/45 bg-slate-950 shadow-2xl shadow-fuchsia-950/35 sm:rounded-[1.75rem] md:rounded-[2.25rem]">
           <div
             className="absolute inset-0 bg-cover bg-center opacity-75 sm:opacity-85"
             style={{ backgroundImage: "url('/images/hero/san-diego-skyline-vector.svg')" }}
@@ -85,14 +85,14 @@ export default async function Home() {
           <div className="absolute -right-16 top-8 h-32 w-32 rounded-full bg-red-500/25 blur-3xl sm:h-48 sm:w-48" />
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-300 via-cyan-300 to-red-400" />
 
-          <div className="relative px-4 py-5 sm:px-6 sm:py-7 md:px-10 md:py-10 lg:px-14 lg:py-12">
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center xl:grid-cols-[minmax(0,1fr)_22rem]">
-              <div className="max-w-3xl">
-                <p className="text-[0.7rem] font-black uppercase tracking-[0.2em] text-cyan-200 sm:text-xs sm:tracking-[0.28em]">
+          <div className="relative min-w-0 px-4 py-5 sm:px-6 sm:py-7 md:px-10 md:py-10 lg:px-14 lg:py-12">
+            <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center xl:grid-cols-[minmax(0,1fr)_22rem]">
+              <div className="min-w-0 max-w-3xl">
+                <p className="max-w-full truncate text-[0.7rem] font-black uppercase tracking-[0.2em] text-cyan-200 sm:text-xs sm:tracking-[0.28em]">
                   San Diego Karaoke Starts Here
                 </p>
 
-                <h1 className="mt-4 max-w-3xl text-4xl font-black leading-[0.95] text-white drop-shadow-[0_0_24px_rgba(255,255,255,0.18)] sm:text-5xl md:text-6xl lg:text-7xl">
+                <h1 className="mt-4 max-w-full text-4xl font-black leading-[0.95] text-white drop-shadow-[0_0_24px_rgba(255,255,255,0.18)] sm:text-5xl md:text-6xl lg:text-7xl">
                   Find karaoke in San Diego.
                 </h1>
 
@@ -100,25 +100,27 @@ export default async function Home() {
                   Search by night, neighborhood, venue, or host and see where to sing tonight without digging through outdated calendars and random Instagram posts.
                 </p>
 
-                <div className="mt-5 grid gap-2 rounded-2xl border border-white/10 bg-slate-950/75 p-3 shadow-xl shadow-slate-950/30 backdrop-blur sm:grid-cols-3 lg:mt-6 lg:grid-cols-[1fr_1fr_1fr_auto]">
-                  <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
+                <div className="mt-5 grid min-w-0 gap-2 rounded-2xl border border-white/10 bg-slate-950/75 p-3 shadow-xl shadow-slate-950/30 backdrop-blur sm:grid-cols-3 lg:mt-6 lg:grid-cols-[1fr_1fr_1fr_auto]">
+                  <div className="min-w-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
                     <p className="text-[0.62rem] font-black uppercase tracking-[0.18em] text-cyan-200">Search</p>
                     <p className="mt-1 text-sm font-semibold text-white">Nights, hosts, venues</p>
                   </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
+                  <div className="min-w-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
                     <p className="text-[0.62rem] font-black uppercase tracking-[0.18em] text-fuchsia-200">Location</p>
                     <p className="mt-1 text-sm font-semibold text-white">San Diego</p>
                   </div>
-                  <div className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
+                  <div className="min-w-0 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-3">
                     <p className="text-[0.62rem] font-black uppercase tracking-[0.18em] text-red-200">When</p>
                     <p className="mt-1 text-sm font-semibold text-white">Tonight</p>
                   </div>
-                  <div className="sm:col-span-3 lg:col-span-1 lg:flex lg:items-stretch">
-                    <Button href="/find-karaoke?day=tonight">Find Karaoke</Button>
+                  <div className="min-w-0 sm:col-span-3 lg:col-span-1 lg:flex lg:items-stretch">
+                    <Button href="/find-karaoke?day=tonight" className="w-full lg:w-auto">
+                      Find Karaoke
+                    </Button>
                   </div>
                 </div>
 
-                <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-100 sm:gap-3 sm:text-sm">
+                <div className="mt-4 flex max-w-full flex-wrap gap-2 text-xs font-semibold text-slate-100 sm:gap-3 sm:text-sm">
                   {heroQuickLinks.map((link) => (
                     <Link
                       key={link.href}
