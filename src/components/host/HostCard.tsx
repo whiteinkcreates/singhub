@@ -66,6 +66,10 @@ export function HostDirectoryCard({ host }: { host: HostProfile }) {
       </div>
 
       {host.bio && <p className="mt-4 line-clamp-3 text-sm leading-6 text-slate-300">{host.bio}</p>}
+
+      <span className="mt-5 inline-flex text-sm font-black text-fuchsia-100 transition group-hover:text-cyan-100">
+        View profile →
+      </span>
     </Link>
   );
 }
