@@ -13,7 +13,7 @@ const dashboardTiles = [
     href: "/find-karaoke?day=tonight",
     icon: "▣",
     label: "Tonight",
-    helper: "What&apos;s happening tonight",
+    helper: "What's happening tonight",
     className: "border-fuchsia-300/45 bg-fuchsia-400/12 text-fuchsia-100 shadow-fuchsia-950/30",
   },
   {
@@ -27,7 +27,7 @@ const dashboardTiles = [
     href: "/hosts",
     icon: "◉",
     label: "Hosts",
-    helper: "See who&apos;s on the mic",
+    helper: "See who's on the mic",
     className: "border-amber-300/45 bg-amber-400/12 text-amber-100 shadow-amber-950/20",
   },
   {
@@ -87,7 +87,7 @@ function NeonBackdrop() {
         <div className="absolute bottom-6 left-6 right-6 h-8 opacity-55">
           <div className="absolute bottom-0 left-0 h-4 w-7 rounded-t bg-cyan-200/40 shadow-[0_0_16px_rgba(34,211,238,0.55)]" />
           <div className="absolute bottom-0 left-8 h-6 w-8 rounded-t bg-fuchsia-200/35 shadow-[0_0_16px_rgba(217,70,239,0.55)]" />
-          <div className="absolute bottom-0 left-18 h-3 w-10 rounded-t bg-red-200/35 shadow-[0_0_16px_rgba(248,113,113,0.45)]" />
+          <div className="absolute bottom-0 left-[4.5rem] h-3 w-10 rounded-t bg-red-200/35 shadow-[0_0_16px_rgba(248,113,113,0.45)]" />
           <div className="absolute bottom-0 left-32 h-7 w-6 rounded-t bg-cyan-200/35 shadow-[0_0_16px_rgba(34,211,238,0.45)]" />
         </div>
       </div>
@@ -142,10 +142,9 @@ export default async function Home() {
                       <span className="block text-xl font-black text-white group-hover:text-white sm:text-2xl">
                         {tile.label}
                       </span>
-                      <span
-                        className="mt-1 block text-sm leading-5 text-slate-200"
-                        dangerouslySetInnerHTML={{ __html: tile.helper }}
-                      />
+                      <span className="mt-1 block text-sm leading-5 text-slate-200">
+                        {tile.helper}
+                      </span>
                     </span>
                   </span>
                   <span className="shrink-0 text-2xl font-black text-white/70 transition group-hover:translate-x-1 group-hover:text-white">
