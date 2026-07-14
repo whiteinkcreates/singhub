@@ -66,7 +66,7 @@ function KaraokeTicker({ items }: { items: string[] }) {
 }
 
 export default async function Home() {
-  const featuredVenues = getPublicVenues(getFeaturedVenueListings());
+  const featuredVenues = getPublicVenues(await getFeaturedVenueListings());
   const tickerItems = getTickerItems();
   const hostsHostingToday = await getHostsHostingToday();
 
