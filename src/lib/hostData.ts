@@ -1,4 +1,3 @@
-import { createSign } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import type {
@@ -7,12 +6,12 @@ import type {
   HostProfileCompletionLevel,
   HostWeekday,
 } from "@/types";
+import { getGoogleSheetRows, type GoogleSheetRow } from "@/lib/googleSheets";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
 
 const FALLBACK_DATA_PATH = path.join(process.cwd(), "public", "data", "kj_profiles.tsv");
-const DEFAULT_SHEET_ID = "1KVYTlrnMNk57zOdCFYq6o5BJEwIQfYXnrDs-90Z7Hw8";
-const DEFAULT_SHEET_TAB = "KJ Profiles V1";
-const SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets.readonly";
+const DEFAULT_SHEET_ID = "1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc";
+const DEFAULT_SHEET_TAB = "Hosts_Canonical";
 
 export const HOST_WEEKDAYS: HostWeekday[] = [
   "Monday",
@@ -47,12 +46,27 @@ function getCell(row: HostSourceRow, columnName: string) {
   return getOptionalValue(row[columnName]);
 }
 
+function getCellAny(row: HostSourceRow, columnNames: string[]) {
+  for (const columnName of columnNames) {
+    const value = getCell(row, columnName);
+    if (value) return value;
+  }
+
+  return undefined;
+}
+
 function normalizeStatus(value: string | undefined) {
   return value?.trim().toLowerCase() || "draft";
 }
 
 function isActiveStatus(value: string | undefined) {
   return normalizeStatus(value) === "active";
+}
+
+function isVisible(row: HostSourceRow) {
+  const appVisible = getCell(row, "app_visible");
+  if (!appVisible) return true;
+  return parseBoolean(appVisible);
 }
 
 function slugify(value: string) {
@@ -82,79 +96,6 @@ function normalizeInstagramUrl(value: string | undefined) {
 
   const handle = normalizeInstagramHandle(trimmedValue);
   return handle ? `https://www.instagram.com/${handle}` : undefined;
-}
-
-function parseCsv(content: string): HostSourceRow[] {
-  const rows: string[][] = [];
-  let cell = "";
-  let row: string[] = [];
-  let inQuotes = false;
-
-  for (let index = 0; index < content.length; index += 1) {
-    const character = content[index];
-    const nextCharacter = content[index + 1];
-
-    if (character === '"' && inQuotes && nextCharacter === '"') {
-      cell += '"';
-      index += 1;
-      continue;
-    }
-
-    if (character === '"') {
-      inQuotes = !inQuotes;
-      continue;
-    }
-
-    if (character === "," && !inQuotes) {
-      row.push(cell);
-      cell = "";
-      continue;
-    }
-
-    if ((character === "\n" || character === "\r") && !inQuotes) {
-      if (character === "\r" && nextCharacter === "\n") index += 1;
-      row.push(cell);
-      rows.push(row);
-      row = [];
-      cell = "";
-      continue;
-    }
-
-    cell += character;
-  }
-
-  if (cell || row.length > 0) {
-    row.push(cell);
-    rows.push(row);
-  }
-
-  const headers = rows.shift()?.map((header) => header.trim()) ?? [];
-  return rows
-    .filter((values) => values.some((value) => value.trim()))
-    .map((values) =>
-      headers.reduce<HostSourceRow>((mappedRow, header, index) => {
-        mappedRow[header] = values[index]?.trim() ?? "";
-        return mappedRow;
-      }, {}),
-    );
-}
-
-function valuesToRows(values: string[][]): HostSourceRow[] {
-  const [headers = [], ...rows] = values;
-  return rows
-    .filter((valuesRow) => valuesRow.some((value) => value.trim()))
-    .map((valuesRow) =>
-      headers.reduce<HostSourceRow>((mappedRow, header, index) => {
-        mappedRow[header.trim()] = valuesRow[index]?.trim() ?? "";
-        return mappedRow;
-      }, {}),
-    );
-}
-
-function hasExpectedHeaders(rows: HostSourceRow[]) {
-  if (rows.length === 0) return false;
-  const headers = Object.keys(rows[0]);
-  return headers.includes("Status") && headers.some((header) => header.includes("KJ / Host"));
 }
 
 function normalizeFormDay(value: string | undefined): HostWeekday | undefined {
@@ -220,12 +161,12 @@ export function parseHostSchedule(row: HostSourceRow) {
 
 export function getProfileCompletionLevel(host: Omit<HostProfile, "profileCompletionLevel">): HostProfileCompletionLevel {
   const weeklyGigs = HOST_WEEKDAYS.flatMap((day) => host.schedule[day]);
+  const hasAnySchedule = weeklyGigs.some((gig) => gig.venueName && gig.time);
   const hasBasicProfile =
     isActiveStatus(host.status) &&
     Boolean(host.slug) &&
     Boolean(host.publicDisplayName) &&
-    Boolean(host.instagramUrl || host.instagramHandle) &&
-    weeklyGigs.some((gig) => gig.venueName && gig.time);
+    Boolean(host.instagramUrl || host.instagramHandle || host.bio || hasAnySchedule);
 
   if (!hasBasicProfile) return "incomplete";
 
@@ -248,39 +189,46 @@ export function getProfileCompletionLevel(host: Omit<HostProfile, "profileComple
 }
 
 function rowToHost(row: HostSourceRow): HostProfile {
-  const hostName = getCell(row, "KJ / Host Name") || getCell(row, "KJ / Host / Company Name") || "";
-  const publicDisplayName = getCell(row, "Public Display Name") || hostName;
-  const slug = getCell(row, "Slug") || createSlug(publicDisplayName || hostName);
-  const instagramUrl = normalizeInstagramUrl(getCell(row, "Instagram URL") || getCell(row, "Instagram Handle"));
+  const hostName =
+    getCellAny(row, ["host_name", "KJ / Host Name", "KJ / Host / Company Name"]) || "";
+  const publicDisplayName = getCellAny(row, ["public_display_name", "Public Display Name"]) || hostName;
+  const slug = getCellAny(row, ["slug", "Slug"]) || createSlug(publicDisplayName || hostName);
+  const instagramUrl = normalizeInstagramUrl(
+    getCellAny(row, ["instagram_url", "Instagram URL"]) ||
+      getCellAny(row, ["instagram_handle", "Instagram Handle"]),
+  );
+
   const baseHost = {
-    status: normalizeStatus(getCell(row, "Status")),
-    hostId: getCell(row, "Host ID") || slug,
+    status: normalizeStatus(getCellAny(row, ["status", "Status"])),
+    hostId: getCellAny(row, ["host_id", "Host ID"]) || slug,
     slug,
     hostName,
     publicDisplayName,
-    profileImageUrl: getCell(row, "Profile Image URL"),
-    logoUrl: getCell(row, "Logo URL"),
+    profileImageUrl: getCellAny(row, ["profile_image_url", "Profile Image URL"]),
+    logoUrl: getCellAny(row, ["logo_url", "Logo URL"]),
     instagramUrl,
-    instagramHandle: normalizeInstagramHandle(instagramUrl || getCell(row, "Instagram Handle")),
-    tiktokUrl: getCell(row, "TikTok URL"),
-    websiteUrl: getCell(row, "Website URL"),
-    tipLink: getCell(row, "Tip Link"),
-    bookingLink: getCell(row, "Booking Link"),
-    bio: getCell(row, "Bio"),
-    vibeTags: parseList(getCell(row, "Vibe Tags")),
-    primaryAreas: parseList(getCell(row, "Primary Areas")),
+    instagramHandle: normalizeInstagramHandle(
+      instagramUrl || getCellAny(row, ["instagram_handle", "Instagram Handle"]),
+    ),
+    tiktokUrl: getCellAny(row, ["tiktok_url", "TikTok URL"]),
+    websiteUrl: getCellAny(row, ["website_url", "Website URL"]),
+    tipLink: getCellAny(row, ["tip_link", "Tip Link"]),
+    bookingLink: getCellAny(row, ["booking_link", "Booking Link"]),
+    bio: getCellAny(row, ["bio", "Bio"]),
+    vibeTags: parseList(getCellAny(row, ["vibe_tags", "Vibe Tags"])),
+    primaryAreas: parseList(getCellAny(row, ["primary_areas", "Primary Areas"])),
     schedule: parseHostSchedule(row),
-    privateEvents: getCell(row, "Private Events?"),
-    featured: parseBoolean(getCell(row, "Featured?")),
-    notes: getCell(row, "Notes"),
-    lastUpdated: getCell(row, "Last Updated"),
-    verificationStatus: getCell(row, "Verification Status"),
-    source: getCell(row, "Source"),
-    formResponseTimestamp: getCell(row, "Form Response Timestamp"),
-    contactEmail: getCell(row, "Contact Email"),
-    tagRepostPermission: getCell(row, "Tag/Repost Permission"),
-    weeklyStatus: getCell(row, "Weekly Status"),
-    favoriteKaraokeSpots: getCell(row, "Favorite Karaoke Spots"),
+    privateEvents: getCellAny(row, ["private_events", "Private Events?"]),
+    featured: parseBoolean(getCellAny(row, ["featured", "Featured?"])),
+    notes: getCellAny(row, ["notes", "Notes"]),
+    lastUpdated: getCellAny(row, ["last_updated", "Last Updated"]),
+    verificationStatus: getCellAny(row, ["verification_status", "Verification Status"]),
+    source: getCellAny(row, ["source", "Source"]),
+    formResponseTimestamp: getCellAny(row, ["form_response_timestamp", "Form Response Timestamp"]),
+    contactEmail: getCellAny(row, ["contact_email_internal", "Contact Email"]),
+    tagRepostPermission: getCellAny(row, ["tag_repost_permission", "Tag/Repost Permission"]),
+    weeklyStatus: getCellAny(row, ["weekly_status", "Weekly Status"]),
+    favoriteKaraokeSpots: getCellAny(row, ["favorite_karaoke_spots", "Favorite Karaoke Spots"]),
   } satisfies Omit<HostProfile, "profileCompletionLevel">;
 
   return {
@@ -289,99 +237,15 @@ function rowToHost(row: HostSourceRow): HostProfile {
   };
 }
 
-async function getAccessToken() {
-  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-  if (!clientEmail || !privateKey) return null;
-
-  const now = Math.floor(Date.now() / 1000);
-  const header = Buffer.from(JSON.stringify({ alg: "RS256", typ: "JWT" })).toString("base64url");
-  const payload = Buffer.from(
-    JSON.stringify({
-      iss: clientEmail,
-      scope: SHEETS_SCOPE,
-      aud: "https://oauth2.googleapis.com/token",
-      exp: now + 3600,
-      iat: now,
-    }),
-  ).toString("base64url");
-  const unsignedToken = `${header}.${payload}`;
-  const signature = createSign("RSA-SHA256").update(unsignedToken).sign(privateKey).toString("base64url");
-
-  const response = await fetch("https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      assertion: `${unsignedToken}.${signature}`,
-    }),
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    throw new Error(`Google auth responded with ${response.status}`);
-  }
-
-  const tokenResponse = (await response.json()) as { access_token?: string };
-  return tokenResponse.access_token || null;
-}
-
-async function getServiceAccountRows(sheetId: string, sheetTab: string) {
-  const accessToken = await getAccessToken();
-  if (!accessToken) return null;
-
-  const range = encodeURIComponent(`'${sheetTab}'!A:Z`);
-  const response = await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`,
-    {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      next: { revalidate: 900 },
-    },
-  );
-
-  if (!response.ok) {
-    throw new Error(`Google Sheets API responded with ${response.status}`);
-  }
-
-  const sheetResponse = (await response.json()) as { values?: string[][] };
-  const rows = valuesToRows(sheetResponse.values || []);
-  if (!hasExpectedHeaders(rows)) {
-    throw new Error("KJ Profiles sheet did not include expected headers");
-  }
-
-  return rows;
-}
-
-async function getPublishedCsvRows(sheetId: string, sheetTab: string) {
-  const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetTab)}`;
-  const response = await fetch(url, { next: { revalidate: 900 } });
-  if (!response.ok) {
-    throw new Error(`Google Sheets CSV responded with ${response.status}`);
-  }
-
-  const rows = parseCsv(await response.text());
-  if (!hasExpectedHeaders(rows)) {
-    throw new Error("KJ Profiles sheet CSV did not include expected headers");
-  }
-
-  return rows;
-}
-
 async function getSheetRows() {
   const sheetId = process.env.GOOGLE_SHEETS_ID || DEFAULT_SHEET_ID;
-  const sheetTab = process.env.GOOGLE_SHEET_KJ_PROFILES_TAB || DEFAULT_SHEET_TAB;
+  const sheetTab = process.env.GOOGLE_SHEET_HOSTS_TAB || process.env.GOOGLE_SHEET_KJ_PROFILES_TAB || DEFAULT_SHEET_TAB;
 
   try {
-    const serviceAccountRows = await getServiceAccountRows(sheetId, sheetTab);
-    if (serviceAccountRows) return serviceAccountRows;
+    const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:AZ");
+    return rows as GoogleSheetRow[] | null;
   } catch (error) {
-    console.error("Failed to fetch KJ profiles with Google service account", error);
-  }
-
-  try {
-    return await getPublishedCsvRows(sheetId, sheetTab);
-  } catch (error) {
-    console.error("Failed to fetch published KJ profiles CSV", error);
+    console.error("Failed to fetch host profiles from Google Sheets", error);
     return null;
   }
 }
@@ -395,11 +259,18 @@ function getFallbackRows() {
 export async function getHosts() {
   const sheetRows = await getSheetRows();
   const rows = sheetRows && sheetRows.length > 0 ? sheetRows : getFallbackRows();
-  return rows.map(rowToHost).filter((host) => host.slug && host.publicDisplayName);
+  return rows
+    .filter(isVisible)
+    .map(rowToHost)
+    .filter((host) => host.slug && host.publicDisplayName);
 }
 
 export async function getActiveHosts() {
   return (await getHosts()).filter((host) => isActiveStatus(host.status));
+}
+
+export async function getFeaturedHosts() {
+  return (await getActiveHosts()).filter((host) => host.featured);
 }
 
 export async function getHostBySlug(slug: string) {
