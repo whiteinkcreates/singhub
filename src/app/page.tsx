@@ -2,10 +2,12 @@ import Link from "next/link";
 import { HostDirectoryCard } from "@/components/host/HostCard";
 import { Button } from "@/components/ui/Button";
 import { VenueCard } from "@/components/venue/VenueCard";
+import { getKaraokeEventsHostingToday } from "@/lib/eventData";
 import { getFeaturedHosts } from "@/lib/hostData";
 import { getTickerItems } from "@/lib/tickerData";
 import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getFeaturedVenueListings } from "@/lib/venueData";
+import type { KaraokeEventListing } from "@/types";
 
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header";
 
@@ -78,12 +80,33 @@ function getActionCardClasses(tone: string) {
   };
 }
 
-function KaraokeTicker({ items }: { items: string[] }) {
+function getEventTimeLabel(event: KaraokeEventListing) {
+  const startTime = event.startTime?.trim();
+  const endTime = event.endTime?.trim();
+
+  if (!startTime || /^tbd$/i.test(startTime)) return "Time TBA";
+  if (startTime.includes("-") || !endTime || /^tbd$/i.test(endTime)) return startTime;
+  return `${startTime}-${endTime}`;
+}
+
+function getHostingTonightTickerItems(events: KaraokeEventListing[]) {
+  return events
+    .filter((event) => event.hostName || event.venueName)
+    .map((event) => {
+      const hostLabel = event.hostName || "Host TBA";
+      return `${hostLabel} at ${event.venueName} / ${getEventTimeLabel(event)}`;
+    });
+}
+
+function KaraokeTicker({ items, label = "SingHUB Live" }: { items: string[]; label?: string }) {
   const tickerItems = [...items, ...items, ...items];
 
   return (
-    <div className="mt-5 hidden max-w-full overflow-hidden rounded-2xl border border-fuchsia-300/35 bg-slate-950/75 shadow-lg shadow-fuchsia-950/30 backdrop-blur sm:block md:mt-7">
-      <div className="flex min-w-max animate-[marquee_32s_linear_infinite] gap-8 px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-cyan-100 hover:[animation-play-state:paused] md:text-sm md:tracking-[0.18em]">
+    <div className="mt-5 max-w-full overflow-hidden rounded-2xl border border-fuchsia-300/35 bg-slate-950/75 shadow-lg shadow-fuchsia-950/30 backdrop-blur md:mt-7">
+      <div className="flex items-center border-b border-white/10 px-4 py-2 text-[0.65rem] font-black uppercase tracking-[0.2em] text-red-200 sm:text-xs">
+        {label}
+      </div>
+      <div className="flex min-w-max animate-[marquee_34s_linear_infinite] gap-8 px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-cyan-100 hover:[animation-play-state:paused] md:text-sm md:tracking-[0.18em]">
         {tickerItems.map((item, index) => (
           <span key={`${item}-${index}`} className="flex shrink-0 items-center gap-8 whitespace-nowrap">
             <span>{item}</span>
@@ -103,8 +126,11 @@ function KaraokeTicker({ items }: { items: string[] }) {
 
 export default async function Home() {
   const featuredVenues = getPublicVenues(await getFeaturedVenueListings());
-  const tickerItems = getTickerItems();
-  const featuredHosts = await getFeaturedHosts();
+  const fallbackTickerItems = getTickerItems();
+  const hostingTonightEvents = await getKaraokeEventsHostingToday();
+  const hostingTonightTickerItems = getHostingTonightTickerItems(hostingTonightEvents);
+  const featuredHost = (await getFeaturedHosts())[0];
+  const tickerItems = hostingTonightTickerItems.length > 0 ? hostingTonightTickerItems : fallbackTickerItems;
 
   return (
     <main className="overflow-x-hidden">
@@ -162,7 +188,7 @@ export default async function Home() {
                   ))}
                 </div>
 
-                <KaraokeTicker items={tickerItems} />
+                <KaraokeTicker items={tickerItems} label={hostingTonightTickerItems.length > 0 ? "Hosting Tonight" : "SingHUB Live"} />
               </div>
 
               <div className="hidden lg:flex lg:justify-center">
@@ -212,13 +238,13 @@ export default async function Home() {
         <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.25em] text-red-300">
-              Featured hosts
+              Featured KJ
             </p>
             <h2 className="mt-2 text-3xl font-black text-white">
               Who&apos;s Running The Room?
             </h2>
             <p className="mt-2 max-w-2xl text-slate-300">
-              Meet local KJs and karaoke crews helping San Diego find the next song.
+              A weekly spotlight for local KJs and karaoke crews helping San Diego find the next song.
             </p>
           </div>
           <Button href="/hosts" variant="ghost">
@@ -226,11 +252,9 @@ export default async function Home() {
           </Button>
         </div>
 
-        {featuredHosts.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {featuredHosts.map((host) => (
-              <HostDirectoryCard key={host.slug} host={host} />
-            ))}
+        {featuredHost ? (
+          <div className="max-w-2xl">
+            <HostDirectoryCard host={featuredHost} />
           </div>
         ) : (
           <div className="rounded-2xl border border-white/10 bg-slate-950/72 p-5 md:p-6">
