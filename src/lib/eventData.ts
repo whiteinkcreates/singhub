@@ -92,6 +92,18 @@ function getFallbackEventRows() {
   return parseTsv(content);
 }
 
+function getTodayInLosAngeles() {
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    timeZone: "America/Los_Angeles",
+  }).format(new Date());
+}
+
+function eventRunsToday(event: KaraokeEventListing, today: string) {
+  const eventDay = event.karaokeDay.toLowerCase();
+  return eventDay === today.toLowerCase() || eventDay.includes(today.toLowerCase());
+}
+
 export async function getKaraokeEventListings(): Promise<KaraokeEventListing[]> {
   const sheetRows = await getSheetEventRows();
   const rows = sheetRows && sheetRows.length > 0 ? sheetRows : getFallbackEventRows();
@@ -99,6 +111,11 @@ export async function getKaraokeEventListings(): Promise<KaraokeEventListing[]> 
   return rows
     .map(rowToKaraokeEventListing)
     .filter((event) => event.venueSlug && event.karaokeDay);
+}
+
+export async function getKaraokeEventsHostingToday(): Promise<KaraokeEventListing[]> {
+  const today = getTodayInLosAngeles();
+  return (await getKaraokeEventListings()).filter((event) => eventRunsToday(event, today));
 }
 
 export async function getKaraokeEventsByVenueSlug(
