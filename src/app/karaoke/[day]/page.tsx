@@ -46,11 +46,11 @@ export default async function DayKaraokePage({ params }: DayPageProps) {
     notFound();
   }
 
-  const events = getKaraokeEventListings().filter((event) =>
+  const events = (await getKaraokeEventListings()).filter((event) =>
     eventMatchesDay(event.karaokeDay, page.day),
   );
   const eventVenueSlugs = new Set(events.map((event) => event.venueSlug));
-  const venues = getPublicVenues(getVenueListings()).filter((venue) =>
+  const venues = getPublicVenues(await getVenueListings()).filter((venue) =>
     eventVenueSlugs.has(venue.slug) || eventMatchesDay(venue.karaokeDay, page.day),
   );
 
