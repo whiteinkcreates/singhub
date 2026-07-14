@@ -13,7 +13,7 @@ export const metadata = {
   },
 };
 
-export default function KaraokeTonightSanDiegoPage() {
+export default async function KaraokeTonightSanDiegoPage() {
   if (!page) {
     return null;
   }
@@ -21,7 +21,7 @@ export default function KaraokeTonightSanDiegoPage() {
   return (
     <LocalSeoPageView
       page={page}
-      venues={getPublicVenues(getVenueListings())}
+      venues={getPublicVenues(await getVenueListings())}
       guides={guidePosts}
       neighborhoods={neighborhoodSeoPages}
     />

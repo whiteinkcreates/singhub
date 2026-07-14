@@ -164,8 +164,8 @@ function BrowsePanel({ title, intro, links, showAllHref }: { title: string; intr
   );
 }
 
-export default function KaraokeNearMePage() {
-  const venues = getPublicVenues(getVenueListings());
+export default async function KaraokeNearMePage() {
+  const venues = getPublicVenues(await getVenueListings());
   const popularVenues = popularVenueIds.map((id) => getVenueById(venues, id)).filter((venue): venue is VenueListing => Boolean(venue));
   const weeklySpotlightVenue = getVenueById(venues, weeklySpotlightVenueId);
   const structuredData = {

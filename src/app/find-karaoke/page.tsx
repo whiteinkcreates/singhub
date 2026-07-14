@@ -24,8 +24,8 @@ function getSearchParamValue(value: string | string[] | undefined) {
 
 export default async function FindKaraokePage({ searchParams }: FindKaraokePageProps) {
   const resolvedSearchParams = await searchParams;
-  const venues = getPublicVenues(getVenueListings());
-  const eventsByVenueSlug = groupKaraokeEventsByVenueSlug();
+  const venues = getPublicVenues(await getVenueListings());
+  const eventsByVenueSlug = await groupKaraokeEventsByVenueSlug();
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">

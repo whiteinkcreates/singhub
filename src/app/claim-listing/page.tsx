@@ -16,7 +16,7 @@ type ClaimListingPageProps = {
 export default async function ClaimListingPage({
   searchParams,
 }: ClaimListingPageProps) {
-  const venues = getPublicVenues(getVenueListings());
+  const venues = getPublicVenues(await getVenueListings());
   const resolvedSearchParams = await searchParams;
   const selectedVenueSlug = resolvedSearchParams?.venue;
 

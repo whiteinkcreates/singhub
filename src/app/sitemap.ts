@@ -9,7 +9,7 @@ function absoluteUrl(path: string) {
   return new URL(path, SITE_URL).toString();
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticRoutes = ["/", "/find-karaoke", "/submit-listing", "/claim-listing", "/venues/premium", "/guides", "/neighborhoods"];
@@ -17,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const dayRoutes = daySeoPages.map((page) => `/karaoke/${page.slug}`);
   const neighborhoodRoutes = neighborhoodSeoPages.map((page) => `/neighborhoods/${page.slug}`);
   const guideRoutes = guidePosts.map((post) => `/guides/${post.slug}`);
-  const venueRoutes = getPublicVenues(getVenueListings())
+  const venueRoutes = getPublicVenues(await getVenueListings())
     .filter((venue) => venue.slug && venue.venueName && !venue.venueName.toLowerCase().includes("tbd"))
     .map((venue) => `/venues/${venue.slug}`);
 
