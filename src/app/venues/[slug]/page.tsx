@@ -14,13 +14,13 @@ function isPlaceholderVenue(venueName: string) {
   return venueName.toLowerCase().includes("tbd") || venueName.toLowerCase().includes("placeholder");
 }
 
-export function generateStaticParams() {
-  return getPublicVenues(getVenueListings()).map((venue) => ({ slug: venue.slug }));
+export async function generateStaticParams() {
+  return getPublicVenues(await getVenueListings()).map((venue) => ({ slug: venue.slug }));
 }
 
 export async function generateMetadata({ params }: VenuePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const venue = getVenueListingBySlug(slug);
+  const venue = await getVenueListingBySlug(slug);
 
   if (!venue || !isPublicVenue(venue)) {
     return {
@@ -51,13 +51,13 @@ export async function generateMetadata({ params }: VenuePageProps): Promise<Meta
 
 export default async function VenuePage({ params }: VenuePageProps) {
   const { slug } = await params;
-  const venue = getVenueListingBySlug(slug);
+  const venue = await getVenueListingBySlug(slug);
 
   if (!venue || !isPublicVenue(venue)) {
     notFound();
   }
 
-  const events = getKaraokeEventsByVenueSlug(venue.slug);
+  const events = await getKaraokeEventsByVenueSlug(venue.slug);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
