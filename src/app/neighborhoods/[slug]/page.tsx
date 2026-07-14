@@ -54,7 +54,7 @@ export default async function NeighborhoodPage({ params }: NeighborhoodPageProps
     notFound();
   }
 
-  const venues = getPublicVenues(getVenueListings()).filter((venue) =>
+  const venues = getPublicVenues(await getVenueListings()).filter((venue) =>
     venueMatchesNeighborhood(venue.neighborhood || "", page.name, page.slug),
   );
 
