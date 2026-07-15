@@ -1,11 +1,13 @@
 import Link from "next/link";
-import { TonightHostCard } from "@/components/host/HostCard";
+import { HostDirectoryCard } from "@/components/host/HostCard";
 import { Button } from "@/components/ui/Button";
 import { VenueCard } from "@/components/venue/VenueCard";
-import { getHostsHostingToday } from "@/lib/hostData";
+import { getKaraokeEventsHostingToday } from "@/lib/eventData";
+import { getFeaturedHosts } from "@/lib/hostData";
 import { getTickerItems } from "@/lib/tickerData";
 import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getFeaturedVenueListings } from "@/lib/venueData";
+import type { KaraokeEventListing } from "@/types";
 
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header";
 
@@ -21,33 +23,90 @@ const actionCards = [
     icon: "TN",
     label: "Tonight",
     helper: "See what is happening tonight.",
+    tone: "coral",
   },
   {
     href: "/neighborhoods",
     icon: "NB",
     label: "Neighborhoods",
     helper: "Explore karaoke near you.",
+    tone: "gold",
   },
   {
     href: "/hosts",
     icon: "KJ",
     label: "Hosts",
     helper: "Find your favorite KJs.",
+    tone: "fuchsia",
   },
   {
     href: "/find-karaoke",
     icon: "VN",
     label: "Venues",
     helper: "Bars, pubs, and lounges with karaoke.",
+    tone: "cyan",
   },
 ];
 
-function KaraokeTicker({ items }: { items: string[] }) {
+function getActionCardClasses(tone: string) {
+  if (tone === "coral") {
+    return {
+      card: "border-red-300/45 bg-red-400/10 shadow-red-950/20 hover:border-red-200/80 hover:bg-red-400/15",
+      icon: "border-red-300/55 bg-red-400/15 text-red-100 shadow-[0_0_18px_rgba(248,113,113,0.2)]",
+      title: "group-hover:text-red-100",
+    };
+  }
+
+  if (tone === "gold") {
+    return {
+      card: "border-yellow-300/45 bg-yellow-300/10 shadow-yellow-950/20 hover:border-yellow-200/80 hover:bg-yellow-300/15",
+      icon: "border-yellow-300/55 bg-yellow-300/15 text-yellow-100 shadow-[0_0_18px_rgba(253,224,71,0.18)]",
+      title: "group-hover:text-yellow-100",
+    };
+  }
+
+  if (tone === "cyan") {
+    return {
+      card: "border-cyan-300/45 bg-cyan-300/10 shadow-cyan-950/20 hover:border-cyan-200/80 hover:bg-cyan-300/15",
+      icon: "border-cyan-300/55 bg-cyan-300/15 text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.2)]",
+      title: "group-hover:text-cyan-100",
+    };
+  }
+
+  return {
+    card: "border-fuchsia-300/45 bg-fuchsia-300/10 shadow-fuchsia-950/20 hover:border-fuchsia-200/80 hover:bg-fuchsia-300/15",
+    icon: "border-fuchsia-300/55 bg-fuchsia-300/15 text-fuchsia-100 shadow-[0_0_18px_rgba(217,70,239,0.2)]",
+    title: "group-hover:text-fuchsia-100",
+  };
+}
+
+function getEventTimeLabel(event: KaraokeEventListing) {
+  const startTime = event.startTime?.trim();
+  const endTime = event.endTime?.trim();
+
+  if (!startTime || /^tbd$/i.test(startTime)) return "Time TBA";
+  if (startTime.includes("-") || !endTime || /^tbd$/i.test(endTime)) return startTime;
+  return `${startTime}-${endTime}`;
+}
+
+function getHostingTonightTickerItems(events: KaraokeEventListing[]) {
+  return events
+    .filter((event) => event.hostName || event.venueName)
+    .map((event) => {
+      const hostLabel = event.hostName || "Host TBA";
+      return `${hostLabel} at ${event.venueName} / ${getEventTimeLabel(event)}`;
+    });
+}
+
+function KaraokeTicker({ items, label = "SingHUB Live" }: { items: string[]; label?: string }) {
   const tickerItems = [...items, ...items, ...items];
 
   return (
-    <div className="mt-5 hidden max-w-full overflow-hidden rounded-2xl border border-fuchsia-300/35 bg-slate-950/75 shadow-lg shadow-fuchsia-950/30 backdrop-blur sm:block md:mt-7">
-      <div className="flex min-w-max animate-[marquee_32s_linear_infinite] gap-8 px-4 py-3 text-xs font-black uppercase tracking-[0.16em] text-cyan-100 hover:[animation-play-state:paused] md:text-sm md:tracking-[0.18em]">
+    <div className="mt-5 max-w-full overflow-hidden rounded-2xl border border-fuchsia-300/35 bg-slate-950/75 shadow-lg shadow-fuchsia-950/30 backdrop-blur md:mt-7">
+      <div className="flex items-center border-b border-white/10 px-4 py-2 text-[0.65rem] font-black uppercase tracking-[0.2em] text-red-200 sm:text-xs">
+        {label}
+      </div>
+      <div className="flex min-w-max animate-[marquee_34s_linear_infinite] gap-8 px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-cyan-100 hover:[animation-play-state:paused] md:text-sm md:tracking-[0.18em]">
         {tickerItems.map((item, index) => (
           <span key={`${item}-${index}`} className="flex shrink-0 items-center gap-8 whitespace-nowrap">
             <span>{item}</span>
@@ -67,8 +126,11 @@ function KaraokeTicker({ items }: { items: string[] }) {
 
 export default async function Home() {
   const featuredVenues = getPublicVenues(await getFeaturedVenueListings());
-  const tickerItems = getTickerItems();
-  const hostsHostingToday = await getHostsHostingToday();
+  const fallbackTickerItems = getTickerItems();
+  const hostingTonightEvents = await getKaraokeEventsHostingToday();
+  const hostingTonightTickerItems = getHostingTonightTickerItems(hostingTonightEvents);
+  const featuredHost = (await getFeaturedHosts())[0];
+  const tickerItems = hostingTonightTickerItems.length > 0 ? hostingTonightTickerItems : fallbackTickerItems;
 
   return (
     <main className="overflow-x-hidden">
@@ -126,7 +188,7 @@ export default async function Home() {
                   ))}
                 </div>
 
-                <KaraokeTicker items={tickerItems} />
+                <KaraokeTicker items={tickerItems} label={hostingTonightTickerItems.length > 0 ? "Hosting Tonight" : "SingHUB Live"} />
               </div>
 
               <div className="hidden lg:flex lg:justify-center">
@@ -151,21 +213,24 @@ export default async function Home() {
 
       <section className="mx-auto max-w-7xl px-4 pb-12 md:pb-14">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {actionCards.map((card) => (
-            <Link
-              key={card.href}
-              href={card.href}
-              className="group flex min-h-28 items-center gap-4 rounded-2xl border border-white/10 bg-slate-950/70 p-4 shadow-lg shadow-slate-950/20 transition hover:-translate-y-1 hover:border-cyan-300/55 hover:bg-slate-950 sm:min-h-32"
-            >
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fuchsia-300/45 bg-fuchsia-300/10 text-sm font-black text-fuchsia-100 shadow-[0_0_18px_rgba(217,70,239,0.18)] sm:h-12 sm:w-12">
-                {card.icon}
-              </span>
-              <span>
-                <span className="block text-base font-black text-white group-hover:text-cyan-100 sm:text-lg">{card.label}</span>
-                <span className="mt-1 block text-sm leading-5 text-slate-300">{card.helper}</span>
-              </span>
-            </Link>
-          ))}
+          {actionCards.map((card) => {
+            const classes = getActionCardClasses(card.tone);
+            return (
+              <Link
+                key={card.href}
+                href={card.href}
+                className={`group flex min-h-28 items-center gap-4 rounded-2xl border p-4 shadow-lg transition hover:-translate-y-1 hover:bg-slate-950 sm:min-h-32 ${classes.card}`}
+              >
+                <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-sm font-black sm:h-12 sm:w-12 ${classes.icon}`}>
+                  {card.icon}
+                </span>
+                <span>
+                  <span className={`block text-base font-black text-white sm:text-lg ${classes.title}`}>{card.label}</span>
+                  <span className="mt-1 block text-sm leading-5 text-slate-300">{card.helper}</span>
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
@@ -173,13 +238,13 @@ export default async function Home() {
         <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
             <p className="text-sm font-bold uppercase tracking-[0.25em] text-red-300">
-              Tonight&apos;s hosts
+              Featured KJ
             </p>
             <h2 className="mt-2 text-3xl font-black text-white">
               Who&apos;s Running The Room?
             </h2>
             <p className="mt-2 max-w-2xl text-slate-300">
-              Meet the KJs hosting karaoke tonight across San Diego.
+              A weekly spotlight for local KJs and karaoke crews helping San Diego find the next song.
             </p>
           </div>
           <Button href="/hosts" variant="ghost">
@@ -187,15 +252,13 @@ export default async function Home() {
           </Button>
         </div>
 
-        {hostsHostingToday.length > 0 ? (
-          <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-3 [scrollbar-width:thin]">
-            {hostsHostingToday.map(({ host, gig }) => (
-              <TonightHostCard key={`${host.slug}-${gig.raw}`} host={host} gig={gig} />
-            ))}
+        {featuredHost ? (
+          <div className="max-w-2xl">
+            <HostDirectoryCard host={featuredHost} />
           </div>
         ) : (
           <div className="rounded-2xl border border-white/10 bg-slate-950/72 p-5 md:p-6">
-            <h3 className="text-2xl font-black text-white">Know who&apos;s hosting tonight?</h3>
+            <h3 className="text-2xl font-black text-white">Know a host who should be featured?</h3>
             <p className="mt-3 text-slate-300">Send us the info and we will review it for SingHUB.</p>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row">
               <Button href={FORM_URL}>Send KJ Info</Button>
