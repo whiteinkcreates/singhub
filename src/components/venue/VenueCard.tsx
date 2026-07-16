@@ -28,7 +28,7 @@ function getListingBadge(venue: VenueListing) {
     return <Badge variant="claimed">Recently Updated</Badge>;
   }
 
-  return <Badge variant="basic">Details Pending</Badge>;
+  return <Badge variant="basic">Check Schedule</Badge>;
 }
 
 function getTrustCopy(venue: VenueListing) {
@@ -40,7 +40,7 @@ function getTrustCopy(venue: VenueListing) {
     return "Recently updated listing. Venue or host details have been submitted, but schedules can still change.";
   }
 
-  return "Details pending. SingHUB is still confirming this karaoke listing before treating it as launch-ready.";
+  return "Check before you go. Karaoke schedules can shift for private events, holidays, host changes, or one-off programming.";
 }
 
 function getUsableValue(value: string | undefined) {
