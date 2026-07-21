@@ -4,7 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const SPREADSHEET_ID =
-  process.env.SINGHUB_SHEET_ID || "1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc";
+  process.env.SINGHUB_SHEET_ID || "1xLKts71EXlI5u61z44NPkba_OBeAxH1aefLcQsVRYrc";
 const VENUES_SHEET = process.env.SINGHUB_VENUES_SHEET || "Venues_Canonical";
 const EVENTS_SHEET = process.env.SINGHUB_EVENTS_SHEET || "Events_Canonical";
 
@@ -17,7 +17,9 @@ const COORDINATES_PATH = path.join(ROOT, "scripts", "data-sync", "venue-coordina
 const EXCLUDED_STATUSES = new Set([
   "closed",
   "permanently_closed",
+  "temporarily_closed",
   "no_karaoke",
+  "not_current_karaoke",
   "duplicate",
   "duplicate_hidden",
   "needs_form",
@@ -33,6 +35,26 @@ const VERIFIED_STATUSES = new Set([
   "venue_profile_verified_needs_official_links",
 ]);
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const DAY_ALIASES = {
+  sun: "Sunday",
+  sunday: "Sunday",
+  mon: "Monday",
+  monday: "Monday",
+  tue: "Tuesday",
+  tues: "Tuesday",
+  tuesday: "Tuesday",
+  wed: "Wednesday",
+  weds: "Wednesday",
+  wednesday: "Wednesday",
+  thu: "Thursday",
+  thur: "Thursday",
+  thurs: "Thursday",
+  thursday: "Thursday",
+  fri: "Friday",
+  friday: "Friday",
+  sat: "Saturday",
+  saturday: "Saturday",
+};
 
 const VENUE_COLUMNS = [
   "id", "venue_name", "slug", "profile_tier", "listing_status", "venue_type", "city", "neighborhood", "address", "latitude", "longitude",
@@ -156,17 +178,46 @@ function tsv(rows, columns) {
   return `${columns.join("\t")}\n${body}${body ? "\n" : ""}`;
 }
 
+function canonicalDay(token) {
+  const normalized = key(token).replace(/[^a-z]/g, "");
+  return DAY_ALIASES[normalized] || null;
+}
+
+function expandDayRange(startDay, endDay) {
+  const start = DAYS.indexOf(startDay);
+  const end = DAYS.indexOf(endDay);
+  if (start < 0 || end < 0) return [];
+  const days = [];
+  let index = start;
+  for (let i = 0; i < DAYS.length; i += 1) {
+    days.push(DAYS[index]);
+    if (index === end) break;
+    index = (index + 1) % DAYS.length;
+  }
+  return days;
+}
+
 function dayList(value) {
   const text = clean(value);
   const normalized = text.toLowerCase().replace(/\s+/g, " ");
   if (!text || /^tbd$/i.test(text)) return [];
-  if (normalized === "daily" || normalized.includes("7 nights")) return DAYS;
-  if (/sun(day)?\s*[-–]\s*thu(rs(day)?)?/.test(normalized)) return DAYS.slice(0, 5);
-  if (/tue(sday)?\s*[-–]\s*thu(rs(day)?)?/.test(normalized)) return ["Tuesday", "Wednesday", "Thursday"];
-  if (/fri(day)?\s*[-–]\s*sat(urday)?/.test(normalized)) return ["Friday", "Saturday"];
-  if (/fri(day)?\s*[-–]\s*sun(day)?/.test(normalized)) return ["Friday", "Saturday", "Sunday"];
-  const found = DAYS.filter((day) => new RegExp(`\\b(${day.slice(0, 3)}|${day})\\b`, "i").test(text));
-  return found.length ? found : [text];
+  if (normalized === "daily" || normalized.includes("7 nights") || normalized.includes("seven nights") || normalized.includes("available daily")) {
+    return DAYS;
+  }
+
+  const days = [];
+  const rangeRegex = /\b(sun(?:day)?|mon(?:day)?|tue(?:s|sday|day)?|wed(?:s|nesday)?|thu(?:r|rs|rsday|rday|day)?|fri(?:day)?|sat(?:urday)?)\b\s*(?:-|–|to|through)\s*\b(sun(?:day)?|mon(?:day)?|tue(?:s|sday|day)?|wed(?:s|nesday)?|thu(?:r|rs|rsday|rday|day)?|fri(?:day)?|sat(?:urday)?)\b/gi;
+  for (const match of text.matchAll(rangeRegex)) {
+    const start = canonicalDay(match[1]);
+    const end = canonicalDay(match[2]);
+    for (const day of expandDayRange(start, end)) days.push(day);
+  }
+
+  for (const [alias, day] of Object.entries(DAY_ALIASES)) {
+    if (new RegExp(`\\b${alias}\\b`, "i").test(text)) days.push(day);
+  }
+
+  return unique(days).filter((day) => DAYS.includes(day));
 }
 
 function unique(values) {
@@ -258,29 +309,29 @@ function buildVenues(sourceRows, report) {
       instagram: clean(row.instagram),
       banner_image_url: clean(row.banner_image_url),
       banner_image_alt: clean(row.banner_image_alt),
-      ticker_text: "",
-      karaoke_day: "",
-      start_time: "",
-      end_time: "",
-      host_name: "",
+      ticker_text: clean(row.ticker_text),
+      karaoke_day: clean(row.karaoke_day),
+      start_time: clean(row.start_time),
+      end_time: clean(row.end_time),
+      host_name: clean(row.host_name),
       vibe_tags: clean(row.vibe_tags),
       description: clean(row.public_description),
-      specials: "",
-      happy_hour: "",
-      food_highlights: "",
-      drink_highlights: "",
-      parking_info: "",
-      age_policy: "",
-      accessibility_notes: "",
-      cover_charge: "",
-      reservation_link: "",
+      specials: clean(row.specials),
+      happy_hour: clean(row.happy_hour),
+      food_highlights: clean(row.food_highlights),
+      drink_highlights: clean(row.drink_highlights),
+      parking_info: clean(row.parking_info),
+      age_policy: clean(row.age_policy),
+      accessibility_notes: clean(row.accessibility_notes),
+      cover_charge: clean(row.cover_charge),
+      reservation_link: clean(row.reservation_link),
       booking_contact: clean(row.booking_contact),
       is_featured: truthy(row.is_featured) || normalizeTier(row.profile_tier) === "premium" ? "TRUE" : "FALSE",
       confidence_score: clean(row.confidence_score),
       confidence_notes: clean(row.source_notes || row.internal_notes),
       source_1: clean(row.source_primary),
       source_2: clean(row.source_secondary),
-      source_3: "",
+      source_3: clean(row.source_3),
       last_verified: clean(row.last_verified),
       __rowNumber: row.__rowNumber,
     });
@@ -352,6 +403,59 @@ function buildEvents(sourceRows, venueRows, report) {
   return events;
 }
 
+function eventDayKey(event) {
+  return `${event.venue_id}::${event.karaoke_day}`;
+}
+
+function generateVenueScheduleEvents(venues, events, report) {
+  const existingVenueDays = new Set(events.map(eventDayKey));
+  const generated = [];
+
+  for (const venue of venues) {
+    const days = dayList(venue.karaoke_day);
+    if (!days.length) {
+      report.publicVenuesMissingSchedule.push(`${venue.id} ${venue.venue_name}`);
+      continue;
+    }
+
+    for (const day of days) {
+      const candidate = {
+        venue_id: venue.id,
+        karaoke_day: day,
+      };
+      if (existingVenueDays.has(eventDayKey(candidate))) continue;
+
+      const event = {
+        event_id: `venue-schedule-${venue.slug}-${day.toLowerCase()}`,
+        venue_id: venue.id,
+        venue_name: venue.venue_name,
+        venue_slug: venue.slug,
+        karaoke_day: day,
+        start_time: clean(venue.start_time) || "TBD",
+        end_time: clean(venue.end_time) || "TBD",
+        host_name: clean(venue.host_name) || "TBD",
+        recurring: "TRUE",
+        active_status: "active",
+        event_notes: `Generated from Venues_Canonical schedule: ${clean(venue.karaoke_day)}`,
+        event_confidence_score: clean(venue.confidence_score),
+        source_1: clean(venue.source_1 || "Venues_Canonical"),
+        source_2: clean(venue.source_2),
+        last_verified: clean(venue.last_verified),
+        review_status: clean(venue.listing_status),
+      };
+
+      if (isTbd(event.start_time) || isTbd(event.end_time) || isTbd(event.host_name)) {
+        report.publicRowsWithTbd.push(`generated event: ${event.event_id} ${event.venue_name}`);
+      }
+      report.generatedVenueScheduleEvents.push(`${event.venue_name}: ${day} ${event.start_time}-${event.end_time}`);
+      existingVenueDays.add(eventDayKey(event));
+      generated.push(event);
+    }
+  }
+
+  return [...events, ...generated];
+}
+
 function hydrateVenueSchedules(venues, events) {
   const eventsByVenue = new Map();
   for (const event of events) {
@@ -406,9 +510,11 @@ function reportMarkdown(report, venues, events) {
     `Exported venues: ${venues.length}.`,
     `Exported events: ${events.length}.`,
     "",
+    section("Generated Venue Schedule Events", report.generatedVenueScheduleEvents),
     section("Duplicate Venue IDs", report.duplicateVenueIds),
     section("Duplicate Slugs", report.duplicateSlugs),
     section("Public Venues Missing Events Row", report.publicVenuesMissingEventsRow),
+    section("Public Venues Missing Schedule", report.publicVenuesMissingSchedule),
     section("Venues Skipped Because App Hidden", report.venuesSkippedAppHidden),
     section("Venues Skipped As Not Public-Usable", report.venuesSkippedAsNotPublicUsable),
     section("Events Skipped Because App Hidden", report.eventsSkippedAppHidden),
@@ -428,6 +534,8 @@ async function main() {
     duplicateVenueIds: [],
     duplicateSlugs: [],
     publicVenuesMissingEventsRow: [],
+    publicVenuesMissingSchedule: [],
+    generatedVenueScheduleEvents: [],
     venuesSkippedAppHidden: [],
     venuesSkippedAsNotPublicUsable: [],
     eventsSkippedAppHidden: [],
@@ -443,7 +551,8 @@ async function main() {
   const venueSourceRows = await fetchSheet(VENUES_SHEET);
   const eventSourceRows = await fetchSheet(EVENTS_SHEET);
   const venues = buildVenues(venueSourceRows, report);
-  const events = buildEvents(eventSourceRows, venues, report);
+  const baseEvents = buildEvents(eventSourceRows, venues, report);
+  const events = generateVenueScheduleEvents(venues, baseEvents, report);
 
   hydrateVenueSchedules(venues, events);
   reportMissingEventRows(venues, events, report);
@@ -455,6 +564,7 @@ async function main() {
   fs.writeFileSync(REPORT_OUT, reportMarkdown(report, venues, events));
 
   console.log(`Synced ${venues.length} venues and ${events.length} events from ${SPREADSHEET_ID}.`);
+  console.log(`Generated ${report.generatedVenueScheduleEvents.length} fallback events from Venues_Canonical.`);
 }
 
 main().catch((error) => {
