@@ -1,0 +1,46 @@
+name: Sync public karaoke data
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/sync-public-data.mjs
+      - scripts/data-sync/venue-coordinates.json
+      - .github/workflows/sync-public-data.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-public-data
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate TSV files from canonical sheet
+        run: npm run sync:data
+
+      - name: Commit generated public data
+        run: |
+          if git diff --quiet -- public/data/venues.tsv public/data/events_by_night.tsv public/data/sync-validation-report.md; then
+            echo "Public data is already current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/venues.tsv public/data/events_by_night.tsv public/data/sync-validation-report.md
+          git commit -m "Sync canonical karaoke data"
+          git push
