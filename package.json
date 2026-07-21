@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed:scout": "node scripts/seed-scout-leads.mjs",
-    "sync:data": "node scripts/sync-public-data.mjs"
+    "sync:data": "node scripts/sync-public-data.mjs",
+    "check:data": "node scripts/check-public-data.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
