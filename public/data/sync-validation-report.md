@@ -1,51 +1,297 @@
 # SingHUB Data Sync Validation Report
 
-Generated from Google Sheet `SingHUB Venue Review Database` (`1xLKts71EXlI5u61z44NPkba_OBeAxH1aefLcQsVRYrc`) on 2026-07-03.
+Generated from spreadsheet 1xLKts71EXlI5u61z44NPkba_OBeAxH1aefLcQsVRYrc.
+Venue tab: Venues_Canonical.
+Event tab: Events_Canonical.
+Exported venues: 61.
+Exported events: 124.
 
-Exported venues: 10.
-Exported events: 21.
-
+## Generated Venue Schedule Events
+- 710 Beach Club: Thursday 8:00 PM-12:00 AM
+- BLVD: Saturday TBD-TBD
+- Camels Bar & Grill: Thursday 9:00 PM-TBD
+- Camels Bar & Grill: Saturday 9:00 PM-TBD
+- Carriage House Cocktails & Karaoke: Sunday TBD-TBD
+- Carriage House Cocktails & Karaoke: Monday TBD-TBD
+- Carriage House Cocktails & Karaoke: Tuesday TBD-TBD
+- Carriage House Cocktails & Karaoke: Wednesday TBD-TBD
+- Carriage House Cocktails & Karaoke: Thursday TBD-TBD
+- Carriage House Cocktails & Karaoke: Friday TBD-TBD
+- Carriage House Cocktails & Karaoke: Saturday TBD-TBD
+- Cheers Bar San Diego: Monday 8:00 PM-1:00 AM
+- Cheers Bar San Diego: Wednesday 8:00 PM-1:00 AM
+- Coin-Op Game Room: Friday 9:00 PM-1:00 AM
+- Deano's Pub - Santee: Saturday TBD-TBD
+- Clark Cabaret: Friday 10:00 PM-TBD
+- Gaslamplighter Karaoke Cocktail Bar: Tuesday 9:00 PM-close
+- Gaslamplighter Karaoke Cocktail Bar: Wednesday 9:00 PM-close
+- Gaslamplighter Karaoke Cocktail Bar: Thursday 9:00 PM-close
+- Gaslamplighter Karaoke Cocktail Bar: Friday 9:00 PM-close
+- Gaslamplighter Karaoke Cocktail Bar: Saturday 9:00 PM-close
+- Gaslamplighter Karaoke Cocktail Bar: Sunday 9:00 PM-close
+- Gingers: Thursday 9:00 PM-12:00 AM
+- Happy Does: Thursday 8:30 PM-12:30 AM
+- Happy Does: Friday 8:30 PM-12:30 AM
+- Happy Does: Saturday 8:30 PM-12:30 AM
+- Hearth House: Tuesday 9:00 PM-close
+- Hearth House: Wednesday 9:00 PM-close
+- Hearth House: Thursday 9:00 PM-close
+- Jin Music Studios: Sunday TBD-TBD
+- Jin Music Studios: Monday TBD-TBD
+- Jin Music Studios: Tuesday TBD-TBD
+- Jin Music Studios: Wednesday TBD-TBD
+- Jin Music Studios: Thursday TBD-TBD
+- Jin Music Studios: Friday TBD-TBD
+- Jin Music Studios: Saturday TBD-TBD
+- JT's Tavern: Sunday 9:00 PM-last call
+- JT's Tavern: Monday 9:00 PM-last call
+- JT's Tavern: Thursday 9:00 PM-last call
+- Kaminski's Sports Lounge: Friday 8:30 PM-11:00 PM
+- Main Tap Tavern: Tuesday Tues-8pm, Fri-9pm-close
+- Main Tap Tavern: Friday Tues-8pm, Fri-9pm-close
+- Manhattan Bar: Friday Trivia night Monday, Karaoke Thursday, Live music Fri-Sat-Varies
+- Manhattan Bar: Saturday Trivia night Monday, Karaoke Thursday, Live music Fri-Sat-Varies
+- Manhattan Bar: Monday Trivia night Monday, Karaoke Thursday, Live music Fri-Sat-Varies
+- Manhattan Bar: Thursday Trivia night Monday, Karaoke Thursday, Live music Fri-Sat-Varies
+- Melody Karaoke & Cafe: Sunday TBD-TBD
+- Melody Karaoke & Cafe: Monday TBD-TBD
+- Melody Karaoke & Cafe: Tuesday TBD-TBD
+- Melody Karaoke & Cafe: Wednesday TBD-TBD
+- Melody Karaoke & Cafe: Thursday TBD-TBD
+- Melody Karaoke & Cafe: Friday TBD-TBD
+- Melody Karaoke & Cafe: Saturday TBD-TBD
+- Moxy San Diego (Hotel): Monday TBD-TBD
+- Norms: Wednesday TBD-TBD
+- North County - CoLab Public House: Wednesday 7:00 PM-TBD
+- North County - CoLab Public House: Thursday 7:00 PM-TBD
+- North County - Larrys Beach Club: Sunday 9:00 PM-1:00 AM
+- North County - Larrys Beach Club: Monday 9:00 PM-1:00 AM
+- North County - Larrys Beach Club: Tuesday 9:00 PM-1:00 AM
+- North County - Larrys Beach Club: Wednesday 9:00 PM-1:00 AM
+- North County - Larrys Beach Club: Thursday 9:00 PM-1:00 AM
+- North County - Larrys Beach Club: Friday 9:00 PM-1:00 AM
+- North County - Larrys Beach Club: Saturday 9:00 PM-1:00 AM
+- Novo Brazil Brewing - Lane Ave: Thursday 6:30 PM-TBD
+- On The Rocks Cocktails: Tuesday TBD-TBD
+- On The Rocks Cocktails: Thursday TBD-TBD
+- On The Rocks Cocktails: Saturday TBD-TBD
+- Pal Joey's Cocktail Lounge: Sunday 9:00 PM-1:00 AM
+- Pal Joey's Cocktail Lounge: Thursday 9:00 PM-1:00 AM
+- Pal Joey's Cocktail Lounge: Sunday 9:00 PM-1:00 AM
+- Pal Joey's Cocktail Lounge: Thursday 9:00 PM-1:00 AM
+- Peter D's: Monday 9:00 PM-12:00 AM
+- Peter D's: Saturday 9:00 PM-12:00 AM
+- Punch Bowl Social: Sunday TBD-TBD
+- Punch Bowl Social: Monday TBD-TBD
+- Punch Bowl Social: Tuesday TBD-TBD
+- Punch Bowl Social: Wednesday TBD-TBD
+- Punch Bowl Social: Thursday TBD-TBD
+- Punch Bowl Social: Friday TBD-TBD
+- Punch Bowl Social: Saturday TBD-TBD
+- Spot KTV & Restaurant: Sunday TBD-TBD
+- Spot KTV & Restaurant: Monday TBD-TBD
+- Spot KTV & Restaurant: Tuesday TBD-TBD
+- Spot KTV & Restaurant: Wednesday TBD-TBD
+- Spot KTV & Restaurant: Thursday TBD-TBD
+- Spot KTV & Restaurant: Friday TBD-TBD
+- Spot KTV & Restaurant: Saturday TBD-TBD
+- The Merrow (Now EQ): Thursday Evening-Evening
+- The Merrow (Now EQ): Friday Evening-Evening
+- The Merrow (Now EQ): Saturday Evening-Evening
+- The Regal Bar: Friday 9:00 PM-1:00 AM
+- The Search Bar: Thursday 8:00 PM-12:00 AM
+- Werewolf: Sunday 9:00 PM-1:30 AM
+- Werewolf: Monday 9:00 PM-1:30 AM
+- Werewolf: Tuesday 9:00 PM-1:30 AM
+- Werewolf: Wednesday 9:00 PM-1:30 AM
+- Werewolf: Thursday 9:00 PM-1:30 AM
+- Werewolf: Friday 9:00 PM-1:30 AM
+- Werewolf: Saturday 9:00 PM-1:30 AM
+- Whiskey Girl: Thursday 9:00 PM-1:00 AM
+- Wong's Golden Palace: Thursday Thurs 7pm, Fri 9pm-Thurs 11p, Fri 1am
+- Wong's Golden Palace: Friday Thurs 7pm, Fri 9pm-Thurs 11p, Fri 1am
 ## Duplicate Venue IDs
-- `venue-0030`: two Winstons Beach Club rows. Exported the verified canonical `winstons-beach-club` row and excluded the older `ai_scouted` duplicate.
-- `venue-0047`: two Star Bar rows. Exported the verified canonical `star-bar` row and excluded the `duplicate_hidden` row.
-
+- None
 ## Duplicate Slugs
-- `winstons-beach-club`: duplicate rows share the same slug. Verified row exported.
-- `star-bar`: duplicate rows share the same slug. Verified row exported.
-
+- None
+## Public Venues Missing Events Row
+- venue-0022 Cat Eye Club
+- venue-0075 Chula Vista Brewery
+- venue-0069 Dirk's Niteclub
+- venue-0073 Dock's Cocktail Lounge
+- venue-0020 Don's Cocktails
+- venue-0055 Good Night John Boy
+- venue-0048 Hive Karaoke
+- venue-0032 Mikami Bar & Revolving Sushi
+- venue-0025 McGuffie's (formerly Navajo Live)
+- venue-0067 North County - Grand Comedy Club
+- venue-0033 Off Base Bar
+- venue-0028 Parkys Saloon
+- venue-0023 Rock Out Karaoke
+- venue-0052 Rooftop bar (downtown hotel)
+- venue-0050 Saddle Bar
+- venue-0026 Shooters Cocktails
+- venue-0049 Spot KTV
+## Public Venues Missing Schedule
+- venue-0022 Cat Eye Club
+- venue-0075 Chula Vista Brewery
+- venue-0069 Dirk's Niteclub
+- venue-0073 Dock's Cocktail Lounge
+- venue-0020 Don's Cocktails
+- venue-0055 Good Night John Boy
+- venue-0048 Hive Karaoke
+- venue-0032 Mikami Bar & Revolving Sushi
+- venue-0025 McGuffie's (formerly Navajo Live)
+- venue-0067 North County - Grand Comedy Club
+- venue-0033 Off Base Bar
+- venue-0028 Parkys Saloon
+- venue-0023 Rock Out Karaoke
+- venue-0052 Rooftop bar (downtown hotel)
+- venue-0050 Saddle Bar
+- venue-0026 Shooters Cocktails
+- venue-0049 Spot KTV
+- venue-0002 The Lamplighter
+## Venues Skipped Because App Hidden
+- None
+## Venues Skipped As Not Public-Usable
+- None
+## Events Skipped Because App Hidden
+- event row 18: event-0017
+- event row 19: event-0018
 ## Event References Missing Exported Venues
-- `event-0017` references `venue-0009` / `deanos-pub`; the venue row is `needs_form`, so it is excluded from public export.
-- `event-0018` references `venue-0082` / `deanos-pub-santee`; the event is not `active` and was not exported.
-
+- None
 ## Event Slug Mismatches
-- None found among exported events.
-
+- event row 12: event-0011 has diversionary-theatre-clark-cabaret-bar, venue has clark-cabaret
+## Events Skipped Because Inactive
+- None
+## Events Skipped Because Missing Day Or Start Time
+- None
 ## Public Rows With TBD Address/Time/Host
-- Venue `venue-0030` Winstons Beach Club has `end_time` = `TBD`.
-- Venue `venue-0047` Star Bar host text includes TBD for non-Monday hosts.
-- Venue `venue-0077` Diversionary Theatre / Clark Cabaret & Bar has `end_time` = `TBD` and `host_name` = `TBD`.
-- Venue `venue-0078` Good News Bar has `host_name` = `TBD`.
-- Event `event-0010-sunday` through `event-0010-thursday` include TBD host coverage for non-Monday Star Bar nights.
-- Event `event-0011` Diversionary Theatre / Clark Cabaret & Bar has `end_time` = `TBD` and `host_name` = `TBD`.
-- Event `event-0012` Good News Bar has `host_name` = `TBD`.
-- Event `event-0014` Winstons Beach Club has `end_time` = `TBD`.
-
+- event row 13: event-0012 Good News Bar
+- event row 15: event-0014 Winstons Beach Club
+- generated event: venue-schedule-blvd-saturday BLVD
+- generated event: venue-schedule-camels-bar-grill-thursday Camels Bar & Grill
+- generated event: venue-schedule-camels-bar-grill-saturday Camels Bar & Grill
+- generated event: venue-schedule-carriage-house-cocktails-karaoke-sunday Carriage House Cocktails & Karaoke
+- generated event: venue-schedule-carriage-house-cocktails-karaoke-monday Carriage House Cocktails & Karaoke
+- generated event: venue-schedule-carriage-house-cocktails-karaoke-tuesday Carriage House Cocktails & Karaoke
+- generated event: venue-schedule-carriage-house-cocktails-karaoke-wednesday Carriage House Cocktails & Karaoke
+- generated event: venue-schedule-carriage-house-cocktails-karaoke-thursday Carriage House Cocktails & Karaoke
+- generated event: venue-schedule-carriage-house-cocktails-karaoke-friday Carriage House Cocktails & Karaoke
+- generated event: venue-schedule-carriage-house-cocktails-karaoke-saturday Carriage House Cocktails & Karaoke
+- generated event: venue-schedule-deanos-pub-santee-saturday Deano's Pub - Santee
+- generated event: venue-schedule-clark-cabaret-friday Clark Cabaret
+- generated event: venue-schedule-gaslamplighter-tuesday Gaslamplighter Karaoke Cocktail Bar
+- generated event: venue-schedule-gaslamplighter-wednesday Gaslamplighter Karaoke Cocktail Bar
+- generated event: venue-schedule-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
+- generated event: venue-schedule-gaslamplighter-friday Gaslamplighter Karaoke Cocktail Bar
+- generated event: venue-schedule-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
+- generated event: venue-schedule-gaslamplighter-sunday Gaslamplighter Karaoke Cocktail Bar
+- generated event: venue-schedule-jin-music-studios-sunday Jin Music Studios
+- generated event: venue-schedule-jin-music-studios-monday Jin Music Studios
+- generated event: venue-schedule-jin-music-studios-tuesday Jin Music Studios
+- generated event: venue-schedule-jin-music-studios-wednesday Jin Music Studios
+- generated event: venue-schedule-jin-music-studios-thursday Jin Music Studios
+- generated event: venue-schedule-jin-music-studios-friday Jin Music Studios
+- generated event: venue-schedule-jin-music-studios-saturday Jin Music Studios
+- generated event: venue-schedule-main-tap-tavern-tuesday Main Tap Tavern
+- generated event: venue-schedule-main-tap-tavern-friday Main Tap Tavern
+- generated event: venue-schedule-manhattan-bar-friday Manhattan Bar
+- generated event: venue-schedule-manhattan-bar-saturday Manhattan Bar
+- generated event: venue-schedule-manhattan-bar-monday Manhattan Bar
+- generated event: venue-schedule-manhattan-bar-thursday Manhattan Bar
+- generated event: venue-schedule-melody-karaoke-cafe-sunday Melody Karaoke & Cafe
+- generated event: venue-schedule-melody-karaoke-cafe-monday Melody Karaoke & Cafe
+- generated event: venue-schedule-melody-karaoke-cafe-tuesday Melody Karaoke & Cafe
+- generated event: venue-schedule-melody-karaoke-cafe-wednesday Melody Karaoke & Cafe
+- generated event: venue-schedule-melody-karaoke-cafe-thursday Melody Karaoke & Cafe
+- generated event: venue-schedule-melody-karaoke-cafe-friday Melody Karaoke & Cafe
+- generated event: venue-schedule-melody-karaoke-cafe-saturday Melody Karaoke & Cafe
+- generated event: venue-schedule-moxy-san-diego-hotel-monday Moxy San Diego (Hotel)
+- generated event: venue-schedule-norms-wednesday Norms
+- generated event: venue-schedule-north-county-colab-public-house-wednesday North County - CoLab Public House
+- generated event: venue-schedule-north-county-colab-public-house-thursday North County - CoLab Public House
+- generated event: venue-schedule-novo-brazil-brewing-lane-ave-thursday Novo Brazil Brewing - Lane Ave
+- generated event: venue-schedule-on-the-rocks-cocktails-tuesday On The Rocks Cocktails
+- generated event: venue-schedule-on-the-rocks-cocktails-thursday On The Rocks Cocktails
+- generated event: venue-schedule-on-the-rocks-cocktails-saturday On The Rocks Cocktails
+- generated event: venue-schedule-peter-ds-monday Peter D's
+- generated event: venue-schedule-peter-ds-saturday Peter D's
+- generated event: venue-schedule-punch-bowl-social-sunday Punch Bowl Social
+- generated event: venue-schedule-punch-bowl-social-monday Punch Bowl Social
+- generated event: venue-schedule-punch-bowl-social-tuesday Punch Bowl Social
+- generated event: venue-schedule-punch-bowl-social-wednesday Punch Bowl Social
+- generated event: venue-schedule-punch-bowl-social-thursday Punch Bowl Social
+- generated event: venue-schedule-punch-bowl-social-friday Punch Bowl Social
+- generated event: venue-schedule-punch-bowl-social-saturday Punch Bowl Social
+- generated event: venue-schedule-spot-ktv-restaurant-sunday Spot KTV & Restaurant
+- generated event: venue-schedule-spot-ktv-restaurant-monday Spot KTV & Restaurant
+- generated event: venue-schedule-spot-ktv-restaurant-tuesday Spot KTV & Restaurant
+- generated event: venue-schedule-spot-ktv-restaurant-wednesday Spot KTV & Restaurant
+- generated event: venue-schedule-spot-ktv-restaurant-thursday Spot KTV & Restaurant
+- generated event: venue-schedule-spot-ktv-restaurant-friday Spot KTV & Restaurant
+- generated event: venue-schedule-spot-ktv-restaurant-saturday Spot KTV & Restaurant
+- generated event: venue-schedule-regal-friday The Regal Bar
+- generated event: venue-schedule-the-search-bar-thursday The Search Bar
+- generated event: venue-schedule-werewolf-sunday Werewolf
+- generated event: venue-schedule-werewolf-monday Werewolf
+- generated event: venue-schedule-werewolf-tuesday Werewolf
+- generated event: venue-schedule-werewolf-wednesday Werewolf
+- generated event: venue-schedule-werewolf-thursday Werewolf
+- generated event: venue-schedule-werewolf-friday Werewolf
+- generated event: venue-schedule-werewolf-saturday Werewolf
+- venue: venue-0018 BLVD
+- venue: venue-0015 Carriage House Cocktails & Karaoke
+- venue: venue-0022 Cat Eye Club
+- venue: venue-0075 Chula Vista Brewery
+- venue: venue-0082 Deano's Pub - Santee
+- venue: venue-0069 Dirk's Niteclub
+- venue: venue-0073 Dock's Cocktail Lounge
+- venue: venue-0020 Don's Cocktails
+- venue: venue-0055 Good Night John Boy
+- venue: venue-0048 Hive Karaoke
+- venue: venue-0065 Jin Music Studios
+- venue: venue-0040 Melody Karaoke & Cafe
+- venue: venue-0032 Mikami Bar & Revolving Sushi
+- venue: venue-0057 Moxy San Diego (Hotel)
+- venue: venue-0025 McGuffie's (formerly Navajo Live)
+- venue: venue-0004 Norms
+- venue: venue-0067 North County - Grand Comedy Club
+- venue: venue-0033 Off Base Bar
+- venue: venue-0074 On The Rocks Cocktails
+- venue: venue-0028 Parkys Saloon
+- venue: venue-0060 Punch Bowl Social
+- venue: venue-0023 Rock Out Karaoke
+- venue: venue-0052 Rooftop bar (downtown hotel)
+- venue: venue-0050 Saddle Bar
+- venue: venue-0026 Shooters Cocktails
+- venue: venue-0049 Spot KTV
+- venue: venue-0064 Spot KTV & Restaurant
 ## Public Venues Missing Coordinates
-- `venue-0077` Diversionary Theatre / Clark Cabaret & Bar.
-- `venue-0078` Good News Bar.
-- `venue-0079` The Scoreboard Imperial Beach Sports Bar & Grill.
-- `venue-0080` The Mesa.
-- `venue-0081` Joycee's Cocktails.
-
-## Closed/Hidden/Form Rows Excluded
-- `venue-0009` Deano's Pub: `needs_form`.
-- `venue-0053` Henrys Pub: `permanently_closed`.
-- Duplicate Star Bar row: `duplicate_hidden`.
-
-## Normalization Notes
-- `verified`, `verified_schedule`, and `verified_partial_host` source statuses export as public `verified`.
-- `needs_review` and `ai_scouted` source statuses remain internal `ai_scouted` data status only; public UI should render these as Details Pending, not AI-facing copy.
-- `Sunday-Thursday` / `Sun-Thurs` style ranges expand to Sunday, Monday, Tuesday, Wednesday, and Thursday event rows.
-- `Every other Wednesday` exports as Wednesday with the recurrence note preserved in `event_notes`.
-- The current Sheet does not include latitude/longitude columns, so the sync script supports `scripts/data-sync/venue-coordinates.json` as a temporary map-coordinate fallback.
-- The current Sheet does not include a `vibe_tags` column. When it does, the sync preserves it; until then, the exporter generates public-safe tags from neighborhood, karaoke day, and venue type.
+- venue-0027 Cheers Bar San Diego
+- venue-0075 Chula Vista Brewery
+- venue-0059 Coin-Op Game Room
+- venue-0082 Deano's Pub - Santee
+- venue-0077 Clark Cabaret
+- venue-0073 Dock's Cocktail Lounge
+- venue-0042 Gaslamplighter Karaoke Cocktail Bar
+- venue-0078 Good News Bar
+- venue-0003 Hearth House
+- venue-0048 Hive Karaoke
+- venue-0081 Joycee's Cocktails
+- venue-0071 Kaminski's Sports Lounge
+- venue-0004 Norms
+- venue-0076 Novo Brazil Brewing - Lane Ave
+- venue-0074 On The Rocks Cocktails
+- venue-0045 Pal Joey's Cocktail Lounge
+- venue-0038 Peter D's
+- venue-0052 Rooftop bar (downtown hotel)
+- venue-0050 Saddle Bar
+- venue-0049 Spot KTV
+- venue-0080 The Mesa
+- venue-0079 The Scoreboard Imperial Beach Sports Bar & Grill
+- venue-0072 The Search Bar
+- venue-0008 Whiskey Girl
+- venue-0036 Wong's Golden Palace
+## Closed/Hidden/Archived Rows Excluded
+- None
