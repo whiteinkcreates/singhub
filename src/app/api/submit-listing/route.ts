@@ -42,6 +42,17 @@ function formatValue(value: unknown) {
   return cleanedValue || "Not provided";
 }
 
+function isLikelyEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function submissionsToList(value: string) {
+  return value
+    .split(",")
+    .map((email) => email.trim())
+    .filter(Boolean);
+}
+
 function buildEmailHtml(payload: Record<string, unknown>) {
   const rows = Object.entries(fieldLabels)
     .map(([fieldName, label]) => {
@@ -107,6 +118,11 @@ export async function POST(request: Request) {
   }
 
   if (!resendApiKey || !submissionsTo) {
+    console.error("SingHUB submission email is not configured", {
+      hasResendApiKey: Boolean(resendApiKey),
+      hasSubmissionsTo: Boolean(submissionsTo),
+    });
+
     return NextResponse.json(
       {
         error:
@@ -116,7 +132,29 @@ export async function POST(request: Request) {
     );
   }
 
+  const to = submissionsToList(submissionsTo);
+
+  if (to.length === 0) {
+    console.error("SingHUB submission email has no valid recipients.");
+    return NextResponse.json(
+      { error: "Email recipient is not configured yet. Check SINGHUB_SUBMISSIONS_TO." },
+      { status: 500 },
+    );
+  }
+
   const venueName = cleanString(payload.venueName) || "Karaoke tip";
+  const submitterContact = cleanString(payload.submitterContact);
+  const emailPayload: Record<string, unknown> = {
+    from: submissionsFrom,
+    to,
+    subject: `SingHUB listing/update: ${venueName}`,
+    html: buildEmailHtml(payload),
+    text: buildEmailText(payload),
+  };
+
+  if (isLikelyEmail(submitterContact)) {
+    emailPayload.reply_to = submitterContact;
+  }
 
   const response = await fetch(RESEND_API_URL, {
     method: "POST",
@@ -124,21 +162,14 @@ export async function POST(request: Request) {
       Authorization: `Bearer ${resendApiKey}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      from: submissionsFrom,
-      to: [submissionsTo],
-      subject: `SingHUB listing/update: ${venueName}`,
-      html: buildEmailHtml(payload),
-      text: buildEmailText(payload),
-      reply_to: cleanString(payload.submitterContact) || undefined,
-    }),
+    body: JSON.stringify(emailPayload),
   });
 
   if (!response.ok) {
     const errorText = await response.text();
     console.error("SingHUB submission email failed", errorText);
     return NextResponse.json(
-      { error: "The submission was received by the site, but the email could not be sent yet." },
+      { error: "The submission could not be emailed yet. Please DM @SingHubSD while we fix notifications." },
       { status: 502 },
     );
   }
