@@ -48,7 +48,7 @@ const listingStatusFilters: { label: string; value: ListingStatusFilter }[] = [
   { label: "All listings", value: "all" },
   { label: "Verified", value: "verified" },
   { label: "Claimed", value: "claimed" },
-  { label: "AI-Scouted", value: "ai_scouted" },
+  { label: "Recently Added", value: "ai_scouted" },
 ];
 
 const venueTypeFilters: { label: string; value: VenueTypeFilter }[] = [
@@ -267,7 +267,7 @@ function getListingStatusLabel(statusFilter: ListingStatusFilter) {
   }
 
   if (statusFilter === "ai_scouted") {
-    return "AI-Scouted listings";
+    return "Recently added listings";
   }
 
   return `${statusFilter.charAt(0).toUpperCase()}${statusFilter.slice(1)} listings`;
