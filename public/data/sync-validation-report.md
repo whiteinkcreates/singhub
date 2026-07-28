@@ -113,7 +113,7 @@ Exported events: 124.
 ## Duplicate Venue IDs
 - None
 ## Duplicate Slugs
-- None
+- slug kaminskis-sports-lounge: rows 25, 68
 ## Public Venues Missing Events Row
 - venue-0022 Cat Eye Club
 - venue-0075 Chula Vista Brewery
@@ -154,12 +154,23 @@ Exported events: 124.
 ## Venues Skipped Because App Hidden
 - None
 ## Venues Skipped As Not Public-Usable
-- None
+- row 63: venue-0083 Tony’s Martini Bar - missing address
+- row 64: venue-0084 Side Piece Bar - missing address
+- row 65: venue-0085 Hennessey’s La Jolla - missing address
+- row 66: venue-0086 Ginger’s / Barleymash - missing address
+- row 67: venue-0087 Sessions By The Bay - missing address
+- row 68: venue-0088 Kaminski’s Sports Lounge - missing identity or duplicate
 ## Events Skipped Because App Hidden
 - event row 18: event-0017
 - event row 19: event-0018
 ## Event References Missing Exported Venues
-- None
+- event row 22: event-0021 -> venue-0083
+- event row 23: event-0022 -> venue-0083
+- event row 24: event-0023 -> venue-0084
+- event row 25: event-0024 -> venue-0085
+- event row 26: event-0025 -> venue-0086
+- event row 27: event-0026 -> venue-0087
+- event row 28: event-0027 -> venue-0088
 ## Event Slug Mismatches
 - event row 12: event-0011 has diversionary-theatre-clark-cabaret-bar, venue has clark-cabaret
 ## Events Skipped Because Inactive
@@ -233,13 +244,6 @@ Exported events: 124.
 - generated event: venue-schedule-spot-ktv-restaurant-saturday Spot KTV & Restaurant
 - generated event: venue-schedule-regal-friday The Regal Bar
 - generated event: venue-schedule-the-search-bar-thursday The Search Bar
-- generated event: venue-schedule-werewolf-sunday Werewolf
-- generated event: venue-schedule-werewolf-monday Werewolf
-- generated event: venue-schedule-werewolf-tuesday Werewolf
-- generated event: venue-schedule-werewolf-wednesday Werewolf
-- generated event: venue-schedule-werewolf-thursday Werewolf
-- generated event: venue-schedule-werewolf-friday Werewolf
-- generated event: venue-schedule-werewolf-saturday Werewolf
 - venue: venue-0018 BLVD
 - venue: venue-0015 Carriage House Cocktails & Karaoke
 - venue: venue-0022 Cat Eye Club
