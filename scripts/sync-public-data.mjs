@@ -13,9 +13,6 @@ const VENUES_OUT = path.join(ROOT, "public", "data", "venues.tsv");
 const EVENTS_OUT = path.join(ROOT, "public", "data", "events_by_night.tsv");
 const REPORT_OUT = path.join(ROOT, "public", "data", "sync-validation-report.md");
 const COORDINATES_PATH = path.join(ROOT, "scripts", "data-sync", "venue-coordinates.json");
-const HOSTS_PATH = path.join(ROOT, "public", "data", "kj_profiles.tsv");
-const VENUE_DATA_PATH = path.join(ROOT, "src", "lib", "venueData.ts");
-const FORBIDDEN_PUBLIC_COPY = /\b(?:AI[- ]Scouted|needs_review|TBD)\b/i;
 
 const EXCLUDED_STATUSES = new Set([
   "closed",
@@ -147,13 +144,6 @@ function truthy(value) {
   return /^(true|yes|1)$/i.test(clean(value));
 }
 
-function publicCopy(value, descriptor, report) {
-  const text = clean(value);
-  if (!FORBIDDEN_PUBLIC_COPY.test(text)) return text;
-  report.publicCopyFieldsSuppressed.push(`${descriptor}: ${text}`);
-  return "";
-}
-
 function isTbd(value) {
   return /^(tbd|address tbd|address needed|-|—)?$/i.test(clean(value));
 }
@@ -186,12 +176,6 @@ function loadCoordinates() {
 function tsv(rows, columns) {
   const body = rows.map((row) => columns.map((column) => clean(row[column])).join("\t")).join("\n");
   return `${columns.join("\t")}\n${body}${body ? "\n" : ""}`;
-}
-
-function parseTsvFile(filePath) {
-  if (!fs.existsSync(filePath)) return [];
-  const rows = fs.readFileSync(filePath, "utf8").split(/\r?\n/).filter(Boolean).map((line) => line.split("\t"));
-  return rowsToObjects(rows);
 }
 
 function canonicalDay(token) {
@@ -281,9 +265,6 @@ function chooseCanonical(rows, field, reportBucket) {
 function buildVenues(sourceRows, report) {
   const duplicateIdRows = chooseCanonical(sourceRows, "venue_id", report.duplicateVenueIds);
   const duplicateSlugRows = chooseCanonical(sourceRows, "slug", report.duplicateSlugs);
-  const identityRows = sourceRows.map((row) => ({ ...row, __publicIdentity: `${normalizedName(row.venue_name)}::${normalizedName(row.address)}` }));
-  const duplicateIdentityRows = chooseCanonical(identityRows, "__publicIdentity", report.duplicateVenueProfiles);
-  const hiddenIdentityRowNumbers = new Set([...duplicateIdentityRows].map((row) => row.__rowNumber));
   const coordinates = loadCoordinates();
   const venues = [];
 
@@ -300,7 +281,7 @@ function buildVenues(sourceRows, report) {
       report.closedHiddenWouldExport.push(`row ${row.__rowNumber}: ${venueId} ${venueName} (${status || "archived"})`);
       continue;
     }
-    if (!venueId || !venueName || !clean(row.slug) || duplicateIdRows.has(row) || duplicateSlugRows.has(row) || hiddenIdentityRowNumbers.has(row.__rowNumber)) {
+    if (!venueId || !venueName || !clean(row.slug) || duplicateIdRows.has(row) || duplicateSlugRows.has(row)) {
       report.venuesSkippedAsNotPublicUsable.push(`row ${row.__rowNumber}: ${venueId || "missing id"} ${venueName || "missing name"} - missing identity or duplicate`);
       continue;
     }
@@ -310,10 +291,8 @@ function buildVenues(sourceRows, report) {
       report.venuesSkippedAsNotPublicUsable.push(`row ${row.__rowNumber}: ${venueId} ${venueName} - missing address`);
       continue;
     }
+
     const coordinate = coordinates[venueId] || coordinates[row.slug] || {};
-    if ((!clean(row.latitude) || !clean(row.longitude)) && coordinate.latitude && coordinate.longitude) {
-      report.venuesUsingCoordinateFallbacks.push(`venue row ${row.__rowNumber}: ${venueId} ${venueName} (${clean(row.slug)})`);
-    }
     venues.push({
       id: venueId,
       venue_name: venueName,
@@ -330,22 +309,21 @@ function buildVenues(sourceRows, report) {
       instagram: clean(row.instagram),
       banner_image_url: clean(row.banner_image_url),
       banner_image_alt: clean(row.banner_image_alt),
-      ticker_text: publicCopy(row.ticker_text, `venue row ${row.__rowNumber} ticker_text`, report),
-      // These compatibility columns are hydrated exclusively from Events_Canonical below.
-      karaoke_day: "",
-      start_time: "",
-      end_time: "",
-      host_name: "",
+      ticker_text: clean(row.ticker_text),
+      karaoke_day: clean(row.karaoke_day),
+      start_time: clean(row.start_time),
+      end_time: clean(row.end_time),
+      host_name: clean(row.host_name),
       vibe_tags: clean(row.vibe_tags),
-      description: publicCopy(row.public_description, `venue row ${row.__rowNumber} public_description`, report),
-      specials: publicCopy(row.specials, `venue row ${row.__rowNumber} specials`, report),
-      happy_hour: publicCopy(row.happy_hour, `venue row ${row.__rowNumber} happy_hour`, report),
-      food_highlights: publicCopy(row.food_highlights, `venue row ${row.__rowNumber} food_highlights`, report),
-      drink_highlights: publicCopy(row.drink_highlights, `venue row ${row.__rowNumber} drink_highlights`, report),
-      parking_info: publicCopy(row.parking_info, `venue row ${row.__rowNumber} parking_info`, report),
-      age_policy: publicCopy(row.age_policy, `venue row ${row.__rowNumber} age_policy`, report),
-      accessibility_notes: publicCopy(row.accessibility_notes, `venue row ${row.__rowNumber} accessibility_notes`, report),
-      cover_charge: publicCopy(row.cover_charge, `venue row ${row.__rowNumber} cover_charge`, report),
+      description: clean(row.public_description),
+      specials: clean(row.specials),
+      happy_hour: clean(row.happy_hour),
+      food_highlights: clean(row.food_highlights),
+      drink_highlights: clean(row.drink_highlights),
+      parking_info: clean(row.parking_info),
+      age_policy: clean(row.age_policy),
+      accessibility_notes: clean(row.accessibility_notes),
+      cover_charge: clean(row.cover_charge),
       reservation_link: clean(row.reservation_link),
       booking_contact: clean(row.booking_contact),
       is_featured: truthy(row.is_featured) || normalizeTier(row.profile_tier) === "premium" ? "TRUE" : "FALSE",
@@ -404,11 +382,11 @@ function buildEvents(sourceRows, venueRows, report) {
         venue_slug: venue.slug,
         karaoke_day: day,
         start_time: clean(row.start_time),
-        end_time: publicCopy(row.end_time, `event row ${row.__rowNumber} end_time`, report),
-        host_name: publicCopy(row.host_display_name, `event row ${row.__rowNumber} host_display_name`, report),
+        end_time: clean(row.end_time),
+        host_name: clean(row.host_display_name),
         recurring: truthy(row.recurring) || /^weekly$/i.test(clean(row.recurring)) ? "TRUE" : clean(row.recurring || "TRUE"),
         active_status: "active",
-        event_notes: publicCopy(row.public_notes || row.event_notes, `event row ${row.__rowNumber} public_notes`, report),
+        event_notes: clean(row.public_notes || row.event_notes),
         event_confidence_score: clean(row.event_confidence_score),
         source_1: clean(row.source_primary),
         source_2: clean(row.source_secondary),
@@ -423,6 +401,59 @@ function buildEvents(sourceRows, venueRows, report) {
   }
 
   return events;
+}
+
+function eventDayKey(event) {
+  return `${event.venue_id}::${event.karaoke_day}`;
+}
+
+function generateVenueScheduleEvents(venues, events, report) {
+  const existingVenueDays = new Set(events.map(eventDayKey));
+  const generated = [];
+
+  for (const venue of venues) {
+    const days = dayList(venue.karaoke_day);
+    if (!days.length) {
+      report.publicVenuesMissingSchedule.push(`${venue.id} ${venue.venue_name}`);
+      continue;
+    }
+
+    for (const day of days) {
+      const candidate = {
+        venue_id: venue.id,
+        karaoke_day: day,
+      };
+      if (existingVenueDays.has(eventDayKey(candidate))) continue;
+
+      const event = {
+        event_id: `venue-schedule-${venue.slug}-${day.toLowerCase()}`,
+        venue_id: venue.id,
+        venue_name: venue.venue_name,
+        venue_slug: venue.slug,
+        karaoke_day: day,
+        start_time: clean(venue.start_time) || "TBD",
+        end_time: clean(venue.end_time) || "TBD",
+        host_name: clean(venue.host_name) || "TBD",
+        recurring: "TRUE",
+        active_status: "active",
+        event_notes: `Generated from Venues_Canonical schedule: ${clean(venue.karaoke_day)}`,
+        event_confidence_score: clean(venue.confidence_score),
+        source_1: clean(venue.source_1 || "Venues_Canonical"),
+        source_2: clean(venue.source_2),
+        last_verified: clean(venue.last_verified),
+        review_status: clean(venue.listing_status),
+      };
+
+      if (isTbd(event.start_time) || isTbd(event.end_time) || isTbd(event.host_name)) {
+        report.publicRowsWithTbd.push(`generated event: ${event.event_id} ${event.venue_name}`);
+      }
+      report.generatedVenueScheduleEvents.push(`${event.venue_name}: ${day} ${event.start_time}-${event.end_time}`);
+      existingVenueDays.add(eventDayKey(event));
+      generated.push(event);
+    }
+  }
+
+  return [...events, ...generated];
 }
 
 function hydrateVenueSchedules(venues, events) {
@@ -454,43 +485,12 @@ function reportMissingEventRows(venues, events, report) {
 }
 
 function reportVenueValidation(venues, report) {
-  const runtimeFallbackSlugs = new Set(
-    fs.existsSync(VENUE_DATA_PATH)
-      ? [...fs.readFileSync(VENUE_DATA_PATH, "utf8").matchAll(/^\s*"([^"]+)":\s*\{\s*latitude:/gm)].map((match) => match[1])
-      : [],
-  );
   for (const venue of venues) {
+    if (isTbd(venue.address) || isTbd(venue.start_time)) {
+      report.publicRowsWithTbd.push(`venue: ${venue.id} ${venue.venue_name}`);
+    }
     if (!clean(venue.latitude) || !clean(venue.longitude)) {
       report.publicVenuesMissingCoordinates.push(`${venue.id} ${venue.venue_name}`);
-      if (runtimeFallbackSlugs.has(venue.slug)) {
-        report.venuesUsingRuntimeCoordinateFallbacks.push(`${venue.id} ${venue.venue_name} (${venue.slug})`);
-      }
-    }
-  }
-}
-
-function normalizedName(value) {
-  return key(value).replace(/[^a-z0-9]+/g, " ").trim();
-}
-
-function reportHostMismatches(events, report) {
-  const hosts = parseTsvFile(HOSTS_PATH).filter((row) => !row.app_visible || truthy(row.app_visible));
-  const hostNames = new Set(hosts.flatMap((host) => [host.host_name, host["KJ / Host Name"], host.public_display_name, host["Public Display Name"]]).map(normalizedName).filter(Boolean));
-  for (const event of events) {
-    if (event.host_name && !hostNames.has(normalizedName(event.host_name))) {
-      report.eventHostsMissingProfiles.push(`${event.event_id}: ${event.host_name} at ${event.venue_name} (${event.karaoke_day})`);
-    }
-  }
-
-  for (const host of hosts) {
-    const hostName = clean(host.host_name || host["KJ / Host Name"] || host.public_display_name || host["Public Display Name"]);
-    for (const day of DAYS) {
-      for (const entry of clean(host[day]).split(/\s*;\s*|\s*\|\|\s*|\r?\n/).filter(Boolean)) {
-        const [venueName = "", , , venueId = ""] = entry.split("|").map(clean);
-        const venueKeys = new Set([normalizedName(venueId), normalizedName(venueName)].filter(Boolean));
-        const represented = events.some((event) => event.karaoke_day === day && [event.venue_id, event.venue_slug, event.venue_name].some((value) => venueKeys.has(normalizedName(value))));
-        if (!represented) report.hostSchedulesMissingEvents.push(`${hostName || "Unnamed host"}: ${day} - ${entry}`);
-      }
     }
   }
 }
@@ -510,10 +510,9 @@ function reportMarkdown(report, venues, events) {
     `Exported venues: ${venues.length}.`,
     `Exported events: ${events.length}.`,
     "",
-    section("Generated Venue Schedule Events (disabled; Events_Canonical only)", []),
+    section("Generated Venue Schedule Events", report.generatedVenueScheduleEvents),
     section("Duplicate Venue IDs", report.duplicateVenueIds),
     section("Duplicate Slugs", report.duplicateSlugs),
-    section("Duplicate Venue Profiles Hidden From Export", report.duplicateVenueProfiles),
     section("Public Venues Missing Events Row", report.publicVenuesMissingEventsRow),
     section("Public Venues Missing Schedule", report.publicVenuesMissingSchedule),
     section("Venues Skipped Because App Hidden", report.venuesSkippedAppHidden),
@@ -524,12 +523,7 @@ function reportMarkdown(report, venues, events) {
     section("Events Skipped Because Inactive", report.eventsSkippedInactive),
     section("Events Skipped Because Missing Day Or Start Time", report.eventsSkippedMissingDayOrStart),
     section("Public Rows With TBD Address/Time/Host", report.publicRowsWithTbd),
-    section("Public Copy Fields Suppressed", report.publicCopyFieldsSuppressed),
     section("Public Venues Missing Coordinates", report.publicVenuesMissingCoordinates),
-    section("Venues Using Temporary Coordinate Fallbacks", report.venuesUsingCoordinateFallbacks),
-    section("Venues Using Runtime coordinateFallbacksBySlug", report.venuesUsingRuntimeCoordinateFallbacks),
-    section("Event Hosts Missing Host Profiles", report.eventHostsMissingProfiles),
-    section("Host Profile Schedule Entries Missing Events_Canonical", report.hostSchedulesMissingEvents),
     section("Closed/Hidden/Archived Rows Excluded", report.closedHiddenWouldExport),
     "",
   ].join("\n");
@@ -539,9 +533,9 @@ async function main() {
   const report = {
     duplicateVenueIds: [],
     duplicateSlugs: [],
-    duplicateVenueProfiles: [],
     publicVenuesMissingEventsRow: [],
     publicVenuesMissingSchedule: [],
+    generatedVenueScheduleEvents: [],
     venuesSkippedAppHidden: [],
     venuesSkippedAsNotPublicUsable: [],
     eventsSkippedAppHidden: [],
@@ -550,24 +544,19 @@ async function main() {
     eventsSkippedInactive: [],
     eventsSkippedMissingDayOrStart: [],
     publicRowsWithTbd: [],
-    publicCopyFieldsSuppressed: [],
     publicVenuesMissingCoordinates: [],
-    venuesUsingCoordinateFallbacks: [],
-    venuesUsingRuntimeCoordinateFallbacks: [],
-    eventHostsMissingProfiles: [],
-    hostSchedulesMissingEvents: [],
     closedHiddenWouldExport: [],
   };
 
   const venueSourceRows = await fetchSheet(VENUES_SHEET);
   const eventSourceRows = await fetchSheet(EVENTS_SHEET);
   const venues = buildVenues(venueSourceRows, report);
-  const events = buildEvents(eventSourceRows, venues, report);
+  const baseEvents = buildEvents(eventSourceRows, venues, report);
+  const events = generateVenueScheduleEvents(venues, baseEvents, report);
 
   hydrateVenueSchedules(venues, events);
   reportMissingEventRows(venues, events, report);
   reportVenueValidation(venues, report);
-  reportHostMismatches(events, report);
 
   fs.mkdirSync(path.dirname(VENUES_OUT), { recursive: true });
   fs.writeFileSync(VENUES_OUT, tsv(venues, VENUE_COLUMNS));
@@ -575,7 +564,7 @@ async function main() {
   fs.writeFileSync(REPORT_OUT, reportMarkdown(report, venues, events));
 
   console.log(`Synced ${venues.length} venues and ${events.length} events from ${SPREADSHEET_ID}.`);
-  console.log("Generated 0 fallback events; Events_Canonical is the only public schedule source.");
+  console.log(`Generated ${report.generatedVenueScheduleEvents.length} fallback events from Venues_Canonical.`);
 }
 
 main().catch((error) => {
