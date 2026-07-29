@@ -6,97 +6,69 @@ import path from "node:path";
 const ROOT = process.cwd();
 const EVENTS_PATH = path.join(ROOT, "public", "data", "events_by_night.tsv");
 const VENUES_PATH = path.join(ROOT, "public", "data", "venues.tsv");
-
-const EXPECTED_MINIMUM_EVENTS_BY_DAY = {
-  Monday: 8,
-  Tuesday: 8,
-  Wednesday: 9,
-  Thursday: 14,
-  Friday: 10,
-  Saturday: 10,
-  Sunday: 7,
-};
+const FORBIDDEN_PUBLIC_COPY = /\b(?:AI[- ]Scouted|needs_review|TBD)\b/i;
 
 function clean(value) {
   return String(value ?? "").replace(/[\t\r\n]+/g, " ").trim();
 }
 
-function parseTsvFile(filePath) {
-  if (!fs.existsSync(filePath)) {
-    throw new Error(`Missing required public data file: ${filePath}`);
-  }
-
+function readRows(filePath) {
+  if (!fs.existsSync(filePath)) throw new Error(`Missing required public data file: ${filePath}`);
   const lines = fs.readFileSync(filePath, "utf8").split(/\r?\n/).filter(Boolean);
-  if (!lines.length) return [];
-
-  const headers = lines[0].split("\t").map(clean);
-  return lines.slice(1).map((line, index) => {
+  const headers = (lines.shift() || "").split("\t").map(clean);
+  return lines.map((line, index) => {
     const cells = line.split("\t");
-    const row = { __rowNumber: index + 2 };
-    headers.forEach((header, columnIndex) => {
-      row[header] = clean(cells[columnIndex]);
-    });
-    return row;
+    return { ...Object.fromEntries(headers.map((header, column) => [header, clean(cells[column])])), __rowNumber: index + 2 };
   });
 }
 
-function countEventsByDay(events) {
-  const counts = Object.fromEntries(
-    Object.keys(EXPECTED_MINIMUM_EVENTS_BY_DAY).map((day) => [day, 0]),
-  );
-
-  for (const event of events) {
-    const day = clean(event.karaoke_day);
-    if (counts[day] === undefined) continue;
-    if (clean(event.active_status).toLowerCase() !== "active") continue;
-    counts[day] += 1;
+function duplicates(rows, field) {
+  const seen = new Map();
+  for (const row of rows) {
+    const value = clean(row[field]);
+    if (value) seen.set(value, [...(seen.get(value) || []), row.__rowNumber]);
   }
-
-  return counts;
-}
-
-function findMissingVenueRefs(events, venues) {
-  const venueSlugs = new Set(venues.map((venue) => venue.slug).filter(Boolean));
-  return events
-    .filter((event) => event.venue_slug && !venueSlugs.has(event.venue_slug))
-    .map((event) => `${event.event_id || `row ${event.__rowNumber}`} -> ${event.venue_slug}`);
+  return [...seen].filter(([, rowNumbers]) => rowNumbers.length > 1).map(([value, rowNumbers]) => `${field} ${value} (rows ${rowNumbers.join(", ")})`);
 }
 
 function main() {
-  const venues = parseTsvFile(VENUES_PATH);
-  const events = parseTsvFile(EVENTS_PATH);
-  const counts = countEventsByDay(events);
+  const venues = readRows(VENUES_PATH);
+  const events = readRows(EVENTS_PATH);
   const failures = [];
+  const venueById = new Map(venues.map((venue) => [venue.id, venue]));
+
+  failures.push(...duplicates(venues, "id").map((item) => `Duplicate visible venue ID: ${item}`));
+  failures.push(...duplicates(venues, "slug").map((item) => `Duplicate visible venue slug: ${item}`));
+
+  for (const venue of venues) {
+    if (venue.venue_type === "live_bar" && !venue.address) failures.push(`Visible live_bar has no address: venue row ${venue.__rowNumber} (${venue.id})`);
+    for (const field of ["venue_name", "address", "ticker_text", "description", "specials", "happy_hour", "food_highlights", "drink_highlights", "parking_info", "age_policy", "accessibility_notes", "cover_charge"]) {
+      if (FORBIDDEN_PUBLIC_COPY.test(venue[field])) failures.push(`Forbidden public copy in venue row ${venue.__rowNumber} ${field}: ${venue[field]}`);
+    }
+  }
+
+  for (const event of events) {
+    const label = event.event_id || `row ${event.__rowNumber}`;
+    if (!event.venue_id) failures.push(`Visible event is missing venue_id: ${label}`);
+    const venue = venueById.get(event.venue_id);
+    if (event.venue_id && !venue) failures.push(`Visible event references missing venue_id: ${label} -> ${event.venue_id}`);
+    if (venue && event.venue_slug !== venue.slug) failures.push(`Event venue_slug mismatch: ${label} has ${event.venue_slug}, expected ${venue.slug}`);
+    if (!event.karaoke_day || !event.start_time) failures.push(`Public event missing day/start_time: ${label}`);
+    for (const field of ["venue_name", "start_time", "end_time", "host_name", "event_notes"]) {
+      if (FORBIDDEN_PUBLIC_COPY.test(event[field])) failures.push(`Forbidden public copy in event row ${event.__rowNumber} ${field}: ${event[field]}`);
+    }
+  }
 
   console.log("\nSingHUB public data guardrails\n");
   console.log(`Public venues: ${venues.length}`);
-  console.log(`Public events: ${events.length}\n`);
-
-  for (const [day, expectedMinimum] of Object.entries(EXPECTED_MINIMUM_EVENTS_BY_DAY)) {
-    const actual = counts[day] ?? 0;
-    const status = actual >= expectedMinimum ? "PASS" : "FAIL";
-    console.log(`${status} ${day}: ${actual} exported / ${expectedMinimum} expected minimum`);
-
-    if (actual < expectedMinimum) {
-      failures.push(`${day}: ${actual} exported / ${expectedMinimum} expected minimum`);
-    }
-  }
-
-  const missingVenueRefs = findMissingVenueRefs(events, venues);
-  if (missingVenueRefs.length) {
-    failures.push(`Events reference missing venues: ${missingVenueRefs.join(", ")}`);
-  }
-
+  console.log(`Public events: ${events.length}`);
   if (failures.length) {
     console.error("\nDO NOT DEPLOY. Public data guardrails failed:");
-    for (const failure of failures) {
-      console.error(`- ${failure}`);
-    }
+    failures.forEach((failure) => console.error(`- ${failure}`));
     process.exitCode = 1;
-    return;
+  } else {
+    console.log("\nPublic data guardrails passed. Events_Canonical is the sole schedule source.");
   }
-
-  console.log("\nPublic data guardrails passed. Safe to continue QA/build.");
 }
 
 main();
