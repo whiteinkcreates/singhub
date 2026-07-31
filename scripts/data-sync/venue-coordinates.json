@@ -41,12 +41,6 @@
   "venue-0067": { "latitude": "33.1221", "longitude": "-117.0807" },
   "venue-0068": { "latitude": "33.1697", "longitude": "-117.2201" },
   "venue-0069": { "latitude": "32.7421", "longitude": "-117.0355" },
-  "venue-0094": {
-    "latitude": "43.850867",
-    "longitude": "-69.627172"
-  },
-  "venue-0095": {
-    "latitude": "43.851135",
-    "longitude": "-69.627477"
-  }
+  "venue-0094": { "latitude": "43.850867", "longitude": "-69.627172" },
+  "venue-0095": { "latitude": "43.851135", "longitude": "-69.627477" }
 }
