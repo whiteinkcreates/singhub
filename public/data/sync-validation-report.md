@@ -3,8 +3,8 @@
 Generated from spreadsheet 1xLKts71EXlI5u61z44NPkba_OBeAxH1aefLcQsVRYrc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 65.
-Exported events: 129.
+Exported venues: 67.
+Exported events: 131.
 
 ## Generated Venue Schedule Events
 - 710 Beach Club: Thursday 8:00 PM-12:00 AM
@@ -155,8 +155,7 @@ Exported events: 129.
 - venue-0085 Hennessey’s La Jolla
 - venue-0087 Sessions By The Bay
 ## Venues Skipped Because App Hidden
-- row 67: venue-0094 Mine Oyster
-- row 68: venue-0095 Pier 1 Pizza & Pub
+- None
 ## Venues Skipped As Not Public-Usable
 - None
 ## Events Skipped Because App Hidden
@@ -164,8 +163,6 @@ Exported events: 129.
 - event row 19: event-0018
 - event row 26: event-0025
 - event row 28: event-0027 venue-0071 Kaminski's Sports Lounge kaminskis-sports-lounge Friday 8:00 PM close All Mic Long Weekly active Hosted by All Mic Long. Poway Friday karaoke at 8 PM. Host-confirmed by All Mic Long. Existing Kaminski’s venue profile updated via event row. 90 All Mic Long direct update Corey note 2026-07-28 2026-07-28 host_confirmed TRUE
-- event row 29: weekly-mine-oyster-wednesday
-- event row 30: weekly-pier-1-pizza-thursday
 ## Event References Missing Exported Venues
 - None
 ## Event Slug Mismatches
@@ -177,6 +174,8 @@ Exported events: 129.
 ## Public Rows With TBD Address/Time/Host
 - event row 13: event-0012 Good News Bar
 - event row 15: event-0014 Winstons Beach Club
+- event row 29: weekly-mine-oyster-wednesday Mine Oyster
+- event row 30: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
 - generated event: venue-schedule-blvd-saturday BLVD
 - generated event: venue-schedule-camels-bar-grill-thursday Camels Bar & Grill
 - generated event: venue-schedule-camels-bar-grill-saturday Camels Bar & Grill
