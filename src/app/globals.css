@@ -36,3 +36,14 @@ textarea,
 select {
   font: inherit;
 }
+
+/* Keep the homepage karaoke ticker readable as the live event list grows. */
+.animate-\[marquee_34s_linear_infinite\] {
+  animation-duration: 96s !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-\[marquee_34s_linear_infinite\] {
+    animation-play-state: paused !important;
+  }
+}
