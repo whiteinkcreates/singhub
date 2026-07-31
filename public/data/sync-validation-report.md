@@ -155,7 +155,8 @@ Exported events: 129.
 - venue-0085 Hennessey’s La Jolla
 - venue-0087 Sessions By The Bay
 ## Venues Skipped Because App Hidden
-- None
+- row 67: venue-0094 Mine Oyster
+- row 68: venue-0095 Pier 1 Pizza & Pub
 ## Venues Skipped As Not Public-Usable
 - None
 ## Events Skipped Because App Hidden
@@ -163,6 +164,8 @@ Exported events: 129.
 - event row 19: event-0018
 - event row 26: event-0025
 - event row 28: event-0027 venue-0071 Kaminski's Sports Lounge kaminskis-sports-lounge Friday 8:00 PM close All Mic Long Weekly active Hosted by All Mic Long. Poway Friday karaoke at 8 PM. Host-confirmed by All Mic Long. Existing Kaminski’s venue profile updated via event row. 90 All Mic Long direct update Corey note 2026-07-28 2026-07-28 host_confirmed TRUE
+- event row 29: weekly-mine-oyster-wednesday
+- event row 30: weekly-pier-1-pizza-thursday
 ## Event References Missing Exported Venues
 - None
 ## Event Slug Mismatches
