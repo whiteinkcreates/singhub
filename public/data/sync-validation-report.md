@@ -161,7 +161,7 @@ Exported events: 129.
 ## Events Skipped Because App Hidden
 - event row 18: event-0017
 - event row 19: event-0018
-- event row 26: event-0025 venue-0056 Gingers gingers Thursday 9:00 PM close All Mic Long Weekly active Hosted by All Mic Long. Downtown Thursday karaoke at 9 PM. Host-confirmed by All Mic Long. Existing Ginger’s venue profile updated via event row. 90 All Mic Long direct update Corey note 2026-07-28 2026-07-28 host_confirmed TRUE
+- event row 26: event-0025
 - event row 28: event-0027 venue-0071 Kaminski's Sports Lounge kaminskis-sports-lounge Friday 8:00 PM close All Mic Long Weekly active Hosted by All Mic Long. Poway Friday karaoke at 8 PM. Host-confirmed by All Mic Long. Existing Kaminski’s venue profile updated via event row. 90 All Mic Long direct update Corey note 2026-07-28 2026-07-28 host_confirmed TRUE
 ## Event References Missing Exported Venues
 - None
