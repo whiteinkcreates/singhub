@@ -2,14 +2,42 @@ import Link from "next/link";
 import { HostDirectoryCard } from "@/components/host/HostCard";
 import { Button } from "@/components/ui/Button";
 import { VenueCard } from "@/components/venue/VenueCard";
-import { getKaraokeEventsHostingToday } from "@/lib/eventData";
 import { getFeaturedHosts } from "@/lib/hostData";
-import { getTickerItems } from "@/lib/tickerData";
 import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getFeaturedVenueListings } from "@/lib/venueData";
-import type { KaraokeEventListing } from "@/types";
 
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header";
+
+const SAN_DIEGO_REGION_CITIES = new Set([
+  "San Diego",
+  "La Mesa",
+  "Chula Vista",
+  "National City",
+  "Imperial Beach",
+  "Santee",
+  "El Cajon",
+  "Lakeside",
+  "Poway",
+  "Oceanside",
+  "Vista",
+  "Escondido",
+  "Carlsbad",
+  "Encinitas",
+  "San Marcos",
+  "Spring Valley",
+  "Lemon Grove",
+  "Coronado",
+  "Solana Beach",
+  "Del Mar",
+]);
+
+const onboardingTickerItems = [
+  "Welcome to SingHUB. Let's get started.",
+  "Choose Tonight to see current San Diego karaoke options.",
+  "Search by night, neighborhood, venue, or host.",
+  "Use Karaoke Places to explore the wider map without assuming karaoke is happening tonight.",
+  "See a schedule change? Send it to SingHUB and help keep San Diego accurate.",
+];
 
 const heroQuickLinks = [
   { href: "/find-karaoke?day=tonight", label: "Tonight", tone: "coral" },
@@ -103,25 +131,7 @@ function getActionCardClasses(tone: string) {
   };
 }
 
-function getEventTimeLabel(event: KaraokeEventListing) {
-  const startTime = event.startTime?.trim();
-  const endTime = event.endTime?.trim();
-
-  if (!startTime || /^tbd$/i.test(startTime)) return "Time TBA";
-  if (startTime.includes("-") || !endTime || /^tbd$/i.test(endTime)) return startTime;
-  return `${startTime}-${endTime}`;
-}
-
-function getHostingTonightTickerItems(events: KaraokeEventListing[]) {
-  return events
-    .filter((event) => event.hostName || event.venueName)
-    .map((event) => {
-      const hostLabel = event.hostName || "Host TBA";
-      return `${hostLabel} at ${event.venueName} / ${getEventTimeLabel(event)}`;
-    });
-}
-
-function KaraokeTicker({ items, label = "SingHUB Live" }: { items: string[]; label?: string }) {
+function KaraokeTicker({ items, label = "Welcome to SingHUB" }: { items: string[]; label?: string }) {
   const tickerItems = [...items, ...items, ...items];
 
   return (
@@ -148,14 +158,12 @@ function KaraokeTicker({ items, label = "SingHUB Live" }: { items: string[]; lab
 }
 
 export default async function Home() {
-  const featuredVenues = getPublicVenues(await getFeaturedVenueListings());
-  const fallbackTickerItems = getTickerItems();
-  const hostingTonightEvents = await getKaraokeEventsHostingToday();
-  const hostingTonightTickerItems = getHostingTonightTickerItems(hostingTonightEvents);
+  const featuredVenues = getPublicVenues(await getFeaturedVenueListings()).filter((venue) =>
+    SAN_DIEGO_REGION_CITIES.has(venue.city),
+  );
   const featuredHosts = await getFeaturedHosts();
   const featuredHost =
     featuredHosts.find((host) => host.slug === "bryon-bea") ?? featuredHosts[0];
-  const tickerItems = hostingTonightTickerItems.length > 0 ? hostingTonightTickerItems : fallbackTickerItems;
 
   return (
     <main className="overflow-x-hidden">
@@ -218,7 +226,7 @@ export default async function Home() {
                   ))}
                 </div>
 
-                <KaraokeTicker items={tickerItems} label={hostingTonightTickerItems.length > 0 ? "Hosting Tonight" : "SingHUB Live"} />
+                <KaraokeTicker items={onboardingTickerItems} />
               </div>
 
               <div className="hidden lg:flex lg:justify-center">

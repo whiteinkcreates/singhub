@@ -76,7 +76,7 @@ export function HostDirectoryCard({ host }: { host: HostProfile }) {
   return (
     <Link
       href={`/hosts/${host.slug}`}
-      className="group relative overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-slate-950 p-5 shadow-2xl shadow-slate-950/40 transition hover:-translate-y-1 hover:border-cyan-300/70 hover:shadow-fuchsia-950/40"
+      className="group relative isolate block overflow-hidden rounded-3xl border border-fuchsia-300/20 bg-slate-950 p-5 shadow-2xl shadow-slate-950/40 transition hover:-translate-y-1 hover:border-cyan-300/70 hover:shadow-fuchsia-950/40"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,211,238,0.18),transparent_36%),radial-gradient(circle_at_bottom_right,rgba(217,70,239,0.22),transparent_42%)] opacity-80 transition group-hover:opacity-100" />
 
