@@ -3,8 +3,8 @@
 Generated from spreadsheet 1xLKts71EXlI5u61z44NPkba_OBeAxH1aefLcQsVRYrc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 67.
-Exported events: 131.
+Exported venues: 72.
+Exported events: 156.
 
 ## Generated Venue Schedule Events
 - 710 Beach Club: Thursday 8:00 PM-12:00 AM
@@ -176,6 +176,9 @@ Exported events: 131.
 - event row 15: event-0014 Winstons Beach Club
 - event row 29: weekly-mine-oyster-wednesday Mine Oyster
 - event row 30: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
+- event row 33: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
+- event row 33: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
+- event row 33: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
 - generated event: venue-schedule-blvd-saturday BLVD
 - generated event: venue-schedule-camels-bar-grill-thursday Camels Bar & Grill
 - generated event: venue-schedule-camels-bar-grill-saturday Camels Bar & Grill
