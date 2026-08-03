@@ -2,6 +2,10 @@
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EventSchedule } from "@/components/venue/EventSchedule";
+import {
+  VenueSignalBadges,
+  VenueSignalDetails,
+} from "@/components/venue/VenueSignals";
 import type { KaraokeEventListing, VenueListing } from "@/types";
 
 type VenueProfileProps = {
@@ -12,27 +16,18 @@ type VenueProfileProps = {
 const DEFAULT_BANNER_IMAGE_URL = "/images/venues/default-singhub-banner.svg";
 
 function getUsableValue(value: string | undefined) {
-  if (!value) {
-    return null;
-  }
+  if (!value) return null;
 
   const trimmedValue = value.trim();
   const normalizedValue = trimmedValue.toLowerCase();
 
-  if (!trimmedValue || normalizedValue === "tbd") {
-    return null;
-  }
-
+  if (!trimmedValue || normalizedValue === "tbd") return null;
   return trimmedValue;
 }
 
 function isUsableUrl(value: string | undefined) {
   const usableValue = getUsableValue(value);
-
-  if (!usableValue) {
-    return false;
-  }
-
+  if (!usableValue) return false;
   return usableValue.startsWith("http://") || usableValue.startsWith("https://");
 }
 
@@ -48,9 +43,7 @@ function getBannerImageAlt(venue: VenueListing) {
 }
 
 function DetailRow({ label, value }: { label: string; value?: string | null }) {
-  if (!value) {
-    return null;
-  }
+  if (!value) return null;
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
@@ -62,16 +55,39 @@ function DetailRow({ label, value }: { label: string; value?: string | null }) {
   );
 }
 
-function getProfileStatusBadge(venue: VenueListing) {
-  if (venue.listingStatus === "claimed") {
-    return <Badge variant="claimed">Recently Updated</Badge>;
+function DetailLine({ label, value }: { label: string; value?: string | null }) {
+  if (!value) return null;
+
+  return (
+    <div>
+      <dt className="font-semibold text-slate-500">{label}</dt>
+      <dd className="mt-1 text-slate-200">{value}</dd>
+    </div>
+  );
+}
+
+function getScheduleHeadline(venue: VenueListing, events: KaraokeEventListing[]) {
+  if (events.length === 0 && venue.listingStatus === "ai_scouted") {
+    return `${venue.neighborhood} • Karaoke place profile`;
   }
 
-  if (venue.listingStatus === "verified") {
-    return <Badge variant="verified">Verified</Badge>;
-  }
+  const day = getUsableValue(venue.karaokeDay);
+  const start = getUsableValue(venue.startTime);
+  const end = getUsableValue(venue.endTime);
 
-  return <Badge variant="basic">Details Pending</Badge>;
+  if (!day || !start) return venue.neighborhood;
+  if (!end) return `${venue.neighborhood} • ${day} • ${start}`;
+  return `${venue.neighborhood} • ${day} • ${start} to ${end}`;
+}
+
+function RadarContext({ venue, events }: VenueProfileProps) {
+  if (venue.listingStatus !== "ai_scouted" || (events?.length ?? 0) > 0) return null;
+
+  return (
+    <div className="mt-5 rounded-2xl border border-violet-300/25 bg-violet-300/[0.07] p-4 text-sm leading-6 text-violet-100">
+      This place is saved in the SingHUB Venue Index. Its profile can appear on the map and in nearby searches without claiming karaoke is happening tonight.
+    </div>
+  );
 }
 
 function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
@@ -97,16 +113,17 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
           <div className="relative flex min-h-[28rem] flex-col justify-end p-6 md:p-8">
             <div className="flex flex-wrap gap-2">
               <Badge variant="premium">Enhanced Profile</Badge>
-              {getProfileStatusBadge(venue)}
               {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
+            </div>
+            <div className="mt-3">
+              <VenueSignalBadges venue={venue} />
             </div>
 
             <h1 className="mt-5 text-4xl font-black text-white drop-shadow-2xl md:text-6xl">
               {venue.venueName}
             </h1>
             <p className="mt-3 text-lg font-semibold text-cyan-200">
-              {venue.neighborhood} • {venue.karaokeDay} • {venue.startTime} to{" "}
-              {venue.endTime}
+              {getScheduleHeadline(venue, events)}
             </p>
             <p className="mt-5 max-w-3xl text-base leading-8 text-slate-100">
               {venue.description}
@@ -121,7 +138,9 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
             ))}
           </div>
 
+          <RadarContext venue={venue} events={events} />
           <EventSchedule events={events} />
+          <VenueSignalDetails venue={venue} />
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             <DetailRow label="Specials" value={venue.specials} />
@@ -146,7 +165,7 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
               <DetailLine label="Reservations" value={venue.reservationLink} />
             )}
           </dl>
-          <div className="mt-6 flex flex-col gap-3">
+          <div className="mt-6 grid gap-3">
             {hasReservationUrl && venue.reservationLink && (
               <Button href={venue.reservationLink}>Reserve / Learn More</Button>
             )}
@@ -171,14 +190,16 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 md:p-8">
         <div className="flex flex-wrap gap-2">
           <Badge variant="basic">Basic Profile</Badge>
-          {getProfileStatusBadge(venue)}
         </div>
+        <div className="mt-3">
+          <VenueSignalBadges venue={venue} />
+        </div>
+
         <h1 className="mt-5 text-4xl font-black text-white md:text-5xl">
           {venue.venueName}
         </h1>
         <p className="mt-3 text-lg font-semibold text-cyan-200">
-          {venue.neighborhood} • {venue.karaokeDay} • {venue.startTime} to{" "}
-          {venue.endTime}
+          {getScheduleHeadline(venue, events)}
         </p>
         <p className="mt-5 max-w-3xl leading-8 text-slate-300">
           {venue.description}
@@ -189,7 +210,9 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
           ))}
         </div>
 
+        <RadarContext venue={venue} events={events} />
         <EventSchedule events={events} />
+        <VenueSignalDetails venue={venue} />
       </section>
 
       <aside className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6">
@@ -200,7 +223,7 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
           <DetailLine label="Cover" value={venue.coverCharge} />
           <DetailLine label="Age policy" value={venue.agePolicy} />
         </dl>
-        <div className="mt-6 flex flex-col gap-3">
+        <div className="mt-6 grid gap-3">
           <Button href="/venues/premium" variant="secondary">
             Upgrade to Enhanced
           </Button>
@@ -209,19 +232,6 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
           </Button>
         </div>
       </aside>
-    </div>
-  );
-}
-
-function DetailLine({ label, value }: { label: string; value?: string | null }) {
-  if (!value) {
-    return null;
-  }
-
-  return (
-    <div>
-      <dt className="font-semibold text-slate-500">{label}</dt>
-      <dd className="mt-1 text-slate-200">{value}</dd>
     </div>
   );
 }
