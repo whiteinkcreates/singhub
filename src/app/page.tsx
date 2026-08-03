@@ -13,6 +13,7 @@ const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-u
 
 const heroQuickLinks = [
   { href: "/find-karaoke?day=tonight", label: "Tonight", tone: "coral" },
+  { href: "/places", label: "Karaoke Places", tone: "gold" },
   { href: "/find-karaoke?type=live", label: "Live karaoke", tone: "fuchsia" },
   { href: "/find-karaoke?type=private-room", label: "Private rooms", tone: "cyan" },
 ];
@@ -24,6 +25,13 @@ const actionCards = [
     label: "Tonight",
     helper: "See what is happening tonight.",
     tone: "coral",
+  },
+  {
+    href: "/places",
+    icon: "📡",
+    label: "Karaoke Places",
+    helper: "Explore the Venue Index and map layers.",
+    tone: "violet",
   },
   {
     href: "/neighborhoods",
@@ -38,6 +46,13 @@ const actionCards = [
     label: "Hosts",
     helper: "Find your favorite KJs.",
     tone: "fuchsia",
+  },
+  {
+    href: "/community/san-diego",
+    icon: "SD",
+    label: "Community",
+    helper: "Enter the San Diego karaoke room.",
+    tone: "coral",
   },
   {
     href: "/find-karaoke",
@@ -70,6 +85,14 @@ function getActionCardClasses(tone: string) {
       card: "border-cyan-300/45 bg-cyan-300/10 shadow-cyan-950/20 hover:border-cyan-200/80 hover:bg-cyan-300/15",
       icon: "border-cyan-300/55 bg-cyan-300/15 text-cyan-100 shadow-[0_0_18px_rgba(34,211,238,0.2)]",
       title: "group-hover:text-cyan-100",
+    };
+  }
+
+  if (tone === "violet") {
+    return {
+      card: "border-violet-300/45 bg-violet-300/10 shadow-violet-950/20 hover:border-violet-200/80 hover:bg-violet-300/15",
+      icon: "border-violet-300/55 bg-violet-300/15 text-violet-100 shadow-[0_0_18px_rgba(167,139,250,0.2)]",
+      title: "group-hover:text-violet-100",
     };
   }
 
@@ -129,7 +152,9 @@ export default async function Home() {
   const fallbackTickerItems = getTickerItems();
   const hostingTonightEvents = await getKaraokeEventsHostingToday();
   const hostingTonightTickerItems = getHostingTonightTickerItems(hostingTonightEvents);
-  const featuredHost = (await getFeaturedHosts())[0];
+  const featuredHosts = await getFeaturedHosts();
+  const featuredHost =
+    featuredHosts.find((host) => host.slug === "bryon-bea") ?? featuredHosts[0];
   const tickerItems = hostingTonightTickerItems.length > 0 ? hostingTonightTickerItems : fallbackTickerItems;
 
   return (
@@ -161,12 +186,15 @@ export default async function Home() {
                   Search by night, neighborhood, venue, or host and see where to sing tonight.
                 </p>
 
-                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <div className="mt-5 grid gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-3">
                   <Button href="/find-karaoke?day=tonight" className="w-full sm:w-auto">
                     Find Karaoke Tonight
                   </Button>
-                  <Button href="/hosts" variant="secondary" className="w-full sm:w-auto">
-                    Meet the Hosts
+                  <Button href="/places" variant="secondary" className="w-full sm:w-auto">
+                    Explore Karaoke Places
+                  </Button>
+                  <Button href="/community/san-diego" variant="ghost" className="w-full sm:w-auto">
+                    Enter the SD Room
                   </Button>
                 </div>
 
@@ -180,7 +208,9 @@ export default async function Home() {
                           ? "border-cyan-300/50 bg-slate-950/55 text-cyan-100 hover:border-cyan-200"
                           : link.tone === "coral"
                             ? "border-red-300/50 bg-red-400/10 text-red-100 hover:border-red-200"
-                            : "border-fuchsia-300/50 bg-slate-950/55 text-fuchsia-100 hover:border-fuchsia-200"
+                            : link.tone === "gold"
+                              ? "border-yellow-300/50 bg-yellow-300/10 text-yellow-100 hover:border-yellow-200"
+                              : "border-fuchsia-300/50 bg-slate-950/55 text-fuchsia-100 hover:border-fuchsia-200"
                       }`}
                     >
                       {link.label}
@@ -212,20 +242,20 @@ export default async function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-12 md:pb-14">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {actionCards.map((card) => {
             const classes = getActionCardClasses(card.tone);
             return (
               <Link
                 key={card.href}
                 href={card.href}
-                className={`group flex min-h-28 items-center gap-4 rounded-2xl border p-4 shadow-lg transition hover:-translate-y-1 hover:bg-slate-950 sm:min-h-32 ${classes.card}`}
+                className={`group flex min-h-32 items-center gap-4 rounded-2xl border p-4 shadow-lg transition hover:-translate-y-1 hover:bg-slate-950 xl:flex-col xl:items-start ${classes.card}`}
               >
                 <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border text-sm font-black sm:h-12 sm:w-12 ${classes.icon}`}>
                   {card.icon}
                 </span>
                 <span>
-                  <span className={`block text-base font-black text-white sm:text-lg ${classes.title}`}>{card.label}</span>
+                  <span className={`block text-base font-black text-white ${classes.title}`}>{card.label}</span>
                   <span className="mt-1 block text-sm leading-5 text-slate-300">{card.helper}</span>
                 </span>
               </Link>
@@ -247,9 +277,11 @@ export default async function Home() {
               A weekly spotlight for local KJs and karaoke crews helping San Diego find the next song.
             </p>
           </div>
-          <Button href="/hosts" variant="ghost">
-            View all hosts
-          </Button>
+          <div className="shrink-0">
+            <Button href="/hosts" variant="ghost">
+              View all hosts
+            </Button>
+          </div>
         </div>
 
         {featuredHost ? (
@@ -260,7 +292,7 @@ export default async function Home() {
           <div className="rounded-2xl border border-white/10 bg-slate-950/72 p-5 md:p-6">
             <h3 className="text-2xl font-black text-white">Know a host who should be featured?</h3>
             <p className="mt-3 text-slate-300">Send us the info and we will review it for SingHUB.</p>
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-5 grid gap-3 sm:flex sm:flex-wrap sm:gap-x-4 sm:gap-y-3">
               <Button href={FORM_URL}>Send KJ Info</Button>
               <Button href="/hosts" variant="secondary">Browse All Hosts</Button>
             </div>
@@ -271,7 +303,7 @@ export default async function Home() {
           <p className="text-lg font-black text-white">
             Host karaoke in San Diego? Get listed on SingHUB.
           </p>
-          <div className="mt-4 md:mt-0">
+          <div className="mt-4 shrink-0 md:mt-0">
             <Button href={FORM_URL}>Send Your KJ Info</Button>
           </div>
         </div>
@@ -287,9 +319,11 @@ export default async function Home() {
               Start with these local karaoke nights
             </h2>
           </div>
-          <Button href="/find-karaoke" variant="ghost">
-            View all karaoke nights
-          </Button>
+          <div className="shrink-0">
+            <Button href="/find-karaoke" variant="ghost">
+              View all karaoke nights
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

@@ -19,9 +19,15 @@ export function SiteFooter() {
             .
           </p>
         </div>
-        <div className="flex flex-wrap gap-4 font-semibold text-slate-300">
+        <div className="flex flex-wrap gap-x-4 gap-y-3 font-semibold text-slate-300">
           <Link href="/find-karaoke" className="hover:text-white">
             Find Karaoke
+          </Link>
+          <Link href="/places" className="hover:text-white">
+            Karaoke Places
+          </Link>
+          <Link href="/community/san-diego" className="hover:text-white">
+            San Diego Room
           </Link>
           <Link href="/submit-listing" className="hover:text-white">
             Submit
