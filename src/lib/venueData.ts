@@ -137,7 +137,10 @@ function getFallbackRows() {
 
 async function getSheetRows() {
   const sheetId = getSourceSheetId();
-  const sheetTab = getSourceTab("venues", "GOOGLE_SHEET_VENUES_TAB");
+  const sheetTab = getSourceTab(
+    "venues",
+    "GOOGLE_SHEET_VENUES_TAB",
+  );
 
   try {
     const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:AI");
@@ -152,7 +155,7 @@ function rowToVenueListing(
   row: VenueSourceRow,
   fallback: VenueSourceRow | undefined,
   coordinates: CoordinateMap,
-  allowLegacyScheduleFallback: boolean,
+  useLegacyScheduleFallback: boolean,
 ): VenueListing {
   const id = getAny(row, fallback, ["venue_id", "id"]) || "";
   const slug = getAny(row, fallback, ["slug"]) || "";
@@ -162,7 +165,9 @@ function rowToVenueListing(
     id,
     venueName: getAny(row, fallback, ["venue_name"]) || "",
     slug,
-    profileTier: normalizeProfileTier(getAny(row, fallback, ["profile_tier"])),
+    profileTier: normalizeProfileTier(
+      getAny(row, fallback, ["profile_tier"]),
+    ),
     listingStatus: normalizeListingStatus(
       getAny(row, fallback, ["listing_status"]),
       getAny(row, fallback, ["review_status"]),
@@ -182,19 +187,23 @@ function rowToVenueListing(
     bannerImageUrl: getAny(row, fallback, ["banner_image_url"]),
     bannerImageAlt: getAny(row, fallback, ["banner_image_alt"]),
     tickerText: getAny(row, fallback, ["ticker_text"]),
-    // Event rows own public schedule and KJ truth. Legacy venue schedule data is
-    // used only when the canonical workbook is unavailable altogether.
-    karaokeDay: allowLegacyScheduleFallback
+    // Event rows are canonical for day/time/host. Legacy venue schedule fields
+    // are used only when the canonical workbook is unavailable altogether.
+    karaokeDay: useLegacyScheduleFallback
       ? getOptionalValue(fallback?.karaoke_day) || ""
       : "",
-    startTime: allowLegacyScheduleFallback
+    startTime: useLegacyScheduleFallback
       ? getOptionalValue(fallback?.start_time) || ""
       : "",
-    endTime: allowLegacyScheduleFallback
+    endTime: useLegacyScheduleFallback
       ? getOptionalValue(fallback?.end_time) || ""
       : "",
-    hostName: undefined,
-    vibeTags: parseTags(getAny(row, fallback, ["vibe_tags"])),
+    hostName: useLegacyScheduleFallback
+      ? getOptionalValue(fallback?.host_name)
+      : undefined,
+    vibeTags: parseTags(
+      getAny(row, fallback, ["vibe_tags"]),
+    ),
     description:
       getAny(row, fallback, ["public_description", "description"]) || "",
     specials: getAny(row, fallback, ["specials"]),
