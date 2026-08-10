@@ -58,22 +58,6 @@ const markerStyles = {
   },
 } as Record<ListingStatus, MarkerStyle>;
 
-function getMapCenter(venues: MappableVenueListing[]): Coordinate {
-  if (venues.length === 0) {
-    return SAN_DIEGO_CENTER;
-  }
-
-  const totals = venues.reduce(
-    (accumulator, venue) => ({
-      latitude: accumulator.latitude + venue.latitude,
-      longitude: accumulator.longitude + venue.longitude,
-    }),
-    { latitude: 0, longitude: 0 },
-  );
-
-  return [totals.latitude / venues.length, totals.longitude / venues.length];
-}
-
 function handheldMicSvg(size = 28) {
   return `
     <svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" focusable="false" style="display:block;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.35));">
@@ -208,19 +192,16 @@ function MapBoundsController({
   const map = useMap();
 
   useEffect(() => {
+    if (!userLocation) {
+      map.setView(SAN_DIEGO_CENTER, DEFAULT_ZOOM);
+      return;
+    }
+
     const points: Coordinate[] = venues.map((venue) => [
       venue.latitude,
       venue.longitude,
     ]);
-
-    if (userLocation) {
-      points.push([userLocation.latitude, userLocation.longitude]);
-    }
-
-    if (points.length === 0) {
-      map.setView(SAN_DIEGO_CENTER, DEFAULT_ZOOM);
-      return;
-    }
+    points.push([userLocation.latitude, userLocation.longitude]);
 
     if (points.length === 1) {
       map.setView(points[0], 13);
@@ -230,7 +211,7 @@ function MapBoundsController({
     const bounds = L.latLngBounds(points);
     map.fitBounds(bounds, {
       padding: [42, 42],
-      maxZoom: userLocation ? 13 : DEFAULT_ZOOM,
+      maxZoom: 13,
     });
   }, [map, userLocation, venues]);
 
@@ -243,7 +224,7 @@ export default function VenueMapClient({
 }: VenueMapClientProps) {
   const center = userLocation
     ? ([userLocation.latitude, userLocation.longitude] as Coordinate)
-    : getMapCenter(venues);
+    : SAN_DIEGO_CENTER;
 
   if (venues.length === 0 && !userLocation) {
     return (
