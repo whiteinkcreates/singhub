@@ -42,7 +42,7 @@ const pendingStatus = `ai_${"scouted"}` as ListingStatus;
 
 const markerStyles = {
   verified: {
-    label: "Verified",
+    label: "Verified Karaoke",
     stripe: "#22d3ee",
     glow: "rgba(34, 211, 238, 0.75)",
   },
@@ -52,7 +52,7 @@ const markerStyles = {
     glow: "rgba(244, 114, 182, 0.7)",
   },
   [pendingStatus]: {
-    label: "Details Pending",
+    label: "On the Radar",
     stripe: "#a78bfa",
     glow: "rgba(167, 139, 250, 0.65)",
   },
@@ -72,12 +72,6 @@ function getMapCenter(venues: MappableVenueListing[]): Coordinate {
   );
 
   return [totals.latitude / venues.length, totals.longitude / venues.length];
-}
-
-function getScheduleSummary(venue: VenueListing) {
-  const schedule = `${venue.karaokeDay} • ${venue.startTime} to ${venue.endTime}`;
-
-  return venue.hostName ? `${schedule} • Host: ${venue.hostName}` : schedule;
 }
 
 function handheldMicSvg(size = 28) {
@@ -307,7 +301,6 @@ export default function VenueMapClient({
                 <p className="text-sm font-semibold text-slate-700">
                   {venue.neighborhood}
                 </p>
-                <p className="text-sm text-slate-700">{getScheduleSummary(venue)}</p>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                   {getVenueTypeLabel(venue)} • {getStatusLabel(venue.listingStatus)}
                 </p>

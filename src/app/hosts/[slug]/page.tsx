@@ -10,6 +10,7 @@ import {
   getActiveHosts,
   getHostBySlug,
   getTodayInLosAngeles,
+  isHostConfirmed,
 } from "@/lib/hostData";
 import type { HostGig, HostProfile, HostWeekday } from "@/types";
 
@@ -167,6 +168,7 @@ export default async function HostProfilePage({ params }: HostProfilePageProps) 
   const nextGig = getNextGig(host);
   const hostVenues = getHostVenues(host);
   const activeDays = HOST_WEEKDAYS.filter((day) => host.schedule[day].length > 0);
+  const confirmed = isHostConfirmed(host);
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 md:py-16">
@@ -183,9 +185,8 @@ export default async function HostProfilePage({ params }: HostProfilePageProps) 
                   <p className="text-xs font-black uppercase tracking-[0.25em] text-cyan-300">
                     SingHUB KJ
                   </p>
-                  {host.verificationStatus && (
-                    <Badge variant="verified">{host.verificationStatus}</Badge>
-                  )}
+                  {confirmed && <Badge variant="verified">Host Confirmed</Badge>}
+                  {host.featured && <Badge variant="premium">Featured KJ</Badge>}
                 </div>
 
                 <h1 className="mt-2 text-4xl font-black leading-tight text-white md:text-6xl">

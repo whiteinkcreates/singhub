@@ -21,7 +21,13 @@ function getUsableValue(value: string | undefined) {
   const trimmedValue = value.trim();
   const normalizedValue = trimmedValue.toLowerCase();
 
-  if (!trimmedValue || normalizedValue === "tbd") return null;
+  if (
+    !trimmedValue ||
+    /^(tbd|unknown|-|n\/a)$/i.test(normalizedValue)
+  ) {
+    return null;
+  }
+
   return trimmedValue;
 }
 
@@ -38,7 +44,7 @@ function getBannerImageUrl(venue: VenueListing) {
 function getBannerImageAlt(venue: VenueListing) {
   return (
     getUsableValue(venue.bannerImageAlt) ??
-    `SingHUB enhanced karaoke listing banner for ${venue.venueName}`
+    `${venue.venueName} karaoke venue`
   );
 }
 
@@ -67,7 +73,21 @@ function DetailLine({ label, value }: { label: string; value?: string | null }) 
 }
 
 function getScheduleHeadline(venue: VenueListing, events: KaraokeEventListing[]) {
-  if (events.length === 0 && venue.listingStatus === "ai_scouted") {
+  if (events.length > 0) {
+    const days = Array.from(
+      new Set(events.map((event) => getUsableValue(event.karaokeDay)).filter(Boolean)),
+    ) as string[];
+    const startTimes = Array.from(
+      new Set(events.map((event) => getUsableValue(event.startTime)).filter(Boolean)),
+    ) as string[];
+
+    const parts = [venue.neighborhood, days.join(", ")];
+    if (startTimes.length === 1) parts.push(startTimes[0]);
+
+    return parts.filter(Boolean).join(" • ");
+  }
+
+  if (venue.listingStatus === "ai_scouted") {
     return `${venue.neighborhood} • Karaoke place profile`;
   }
 
@@ -80,12 +100,41 @@ function getScheduleHeadline(venue: VenueListing, events: KaraokeEventListing[])
   return `${venue.neighborhood} • ${day} • ${start} to ${end}`;
 }
 
+function getHostSummary(venue: VenueListing, events: KaraokeEventListing[]) {
+  if (events.length > 0) {
+    const daysByHost = new Map<string, string[]>();
+
+    for (const event of events) {
+      const hostName = getUsableValue(event.hostName);
+      const day = getUsableValue(event.karaokeDay);
+      if (!hostName) continue;
+
+      daysByHost.set(hostName, [
+        ...(daysByHost.get(hostName) || []),
+        ...(day ? [day.slice(0, 3)] : []),
+      ]);
+    }
+
+    const summaries = Array.from(daysByHost.entries()).map(([hostName, days]) => {
+      const uniqueDays = Array.from(new Set(days));
+      return uniqueDays.length > 0
+        ? `${hostName} (${uniqueDays.join(", ")})`
+        : hostName;
+    });
+
+    return summaries.length > 0 ? summaries.join(" • ") : null;
+  }
+
+  return getUsableValue(venue.hostName);
+}
+
 function RadarContext({ venue, events }: VenueProfileProps) {
   if (venue.listingStatus !== "ai_scouted" || (events?.length ?? 0) > 0) return null;
 
   return (
     <div className="mt-5 rounded-2xl border border-violet-300/25 bg-violet-300/[0.07] p-4 text-sm leading-6 text-violet-100">
-      This place is saved in the SingHUB Venue Index. Its profile can appear on the map and in nearby searches without claiming karaoke is happening tonight.
+      This place is saved in the SingHUB Venue Index. Its profile can appear on
+      the map and in nearby searches without claiming karaoke is happening tonight.
     </div>
   );
 }
@@ -95,6 +144,7 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
   const bannerImageAlt = getBannerImageAlt(venue);
   const hasBannerImageUrl = isUsableUrl(venue.bannerImageUrl);
   const hasReservationUrl = isUsableUrl(venue.reservationLink);
+  const hostSummary = getHostSummary(venue, events);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1.3fr_0.7fr]">
@@ -112,7 +162,6 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
 
           <div className="relative flex min-h-[28rem] flex-col justify-end p-6 md:p-8">
             <div className="flex flex-wrap gap-2">
-              <Badge variant="premium">Enhanced Profile</Badge>
               {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
             </div>
             <div className="mt-3">
@@ -156,7 +205,7 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
           <h2 className="text-xl font-black text-white">Plan your night</h2>
           <dl className="mt-4 space-y-3 text-sm text-slate-300">
             <DetailLine label="Address" value={venue.address} />
-            <DetailLine label="Host" value={venue.hostName} />
+            <DetailLine label="KJ / Host" value={hostSummary} />
             <DetailLine label="Cover" value={venue.coverCharge} />
             <DetailLine label="Age policy" value={venue.agePolicy} />
             <DetailLine label="Parking" value={venue.parkingInfo} />
@@ -185,15 +234,12 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
 }
 
 function BasicProfile({ venue, events = [] }: VenueProfileProps) {
+  const hostSummary = getHostSummary(venue, events);
+
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_22rem]">
       <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 md:p-8">
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="basic">Basic Profile</Badge>
-        </div>
-        <div className="mt-3">
-          <VenueSignalBadges venue={venue} />
-        </div>
+        <VenueSignalBadges venue={venue} />
 
         <h1 className="mt-5 text-4xl font-black text-white md:text-5xl">
           {venue.venueName}
@@ -219,16 +265,13 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
         <h2 className="text-xl font-black text-white">Listing details</h2>
         <dl className="mt-4 space-y-3 text-sm text-slate-300">
           <DetailLine label="Address" value={venue.address} />
-          <DetailLine label="Host" value={venue.hostName} />
+          <DetailLine label="KJ / Host" value={hostSummary} />
           <DetailLine label="Cover" value={venue.coverCharge} />
           <DetailLine label="Age policy" value={venue.agePolicy} />
         </dl>
-        <div className="mt-6 grid gap-3">
-          <Button href="/venues/premium" variant="secondary">
-            Upgrade to Enhanced
-          </Button>
+        <div className="mt-6">
           <Button href={`/claim-listing?venue=${venue.slug}`} variant="ghost">
-            Claim this listing
+            Claim or update this listing
           </Button>
         </div>
       </aside>

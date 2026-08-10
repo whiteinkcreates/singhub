@@ -5,13 +5,20 @@ import type {
   HostProfile,
   HostProfileCompletionLevel,
   HostWeekday,
+  KaraokeEventListing,
 } from "@/types";
+import { getKaraokeEventListings } from "@/lib/eventData";
 import { getGoogleSheetRows, type GoogleSheetRow } from "@/lib/googleSheets";
+import { getSourceSheetId, getSourceTab } from "@/lib/sourceOfTruth";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
+import { getVenueListings } from "@/lib/venueData";
 
-const FALLBACK_DATA_PATH = path.join(process.cwd(), "public", "data", "kj_profiles.tsv");
-const DEFAULT_SHEET_ID = "1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc";
-const DEFAULT_SHEET_TAB = "Hosts_Canonical";
+const FALLBACK_DATA_PATH = path.join(
+  process.cwd(),
+  "public",
+  "data",
+  "kj_profiles.tsv",
+);
 
 export const HOST_WEEKDAYS: HostWeekday[] = [
   "Monday",
@@ -24,6 +31,12 @@ export const HOST_WEEKDAYS: HostWeekday[] = [
 ];
 
 export type HostSourceRow = Record<string, string>;
+
+const HOST_CONFIRMED_STATUSES = new Set([
+  "form_response",
+  "direct_submission",
+  "host_confirmed",
+]);
 
 function getOptionalValue(value: string | undefined) {
   const trimmedValue = value?.trim();
@@ -85,8 +98,13 @@ export function normalizeInstagramHandle(value: string | undefined) {
   const trimmedValue = getOptionalValue(value);
   if (!trimmedValue) return undefined;
 
-  const withoutProtocol = trimmedValue.replace(/^https?:\/\/(www\.)?instagram\.com\//i, "");
-  return withoutProtocol.replace(/^@/, "").replace(/\/.*$/, "").trim() || undefined;
+  const withoutProtocol = trimmedValue.replace(
+    /^https?:\/\/(www\.)?instagram\.com\//i,
+    "",
+  );
+  return (
+    withoutProtocol.replace(/^@/, "").replace(/\/.*$/, "").trim() || undefined
+  );
 }
 
 function normalizeInstagramUrl(value: string | undefined) {
@@ -98,7 +116,9 @@ function normalizeInstagramUrl(value: string | undefined) {
   return handle ? `https://www.instagram.com/${handle}` : undefined;
 }
 
-function normalizeFormDay(value: string | undefined): HostWeekday | undefined {
+function normalizeFormDay(
+  value: string | undefined,
+): HostWeekday | undefined {
   if (!value) return undefined;
   const normalizedValue = value.trim().toLowerCase().replace(/\.$/, "");
   const dayAliases: Record<string, HostWeekday> = {
@@ -125,6 +145,16 @@ function normalizeFormDay(value: string | undefined): HostWeekday | undefined {
   return dayAliases[normalizedValue];
 }
 
+function emptySchedule(): Record<HostWeekday, HostGig[]> {
+  return HOST_WEEKDAYS.reduce<Record<HostWeekday, HostGig[]>>(
+    (schedule, day) => {
+      schedule[day] = [];
+      return schedule;
+    },
+    {} as Record<HostWeekday, HostGig[]>,
+  );
+}
+
 export function parseDayGigs(dayCell: string | undefined): HostGig[] {
   if (!dayCell?.trim()) return [];
 
@@ -133,13 +163,8 @@ export function parseDayGigs(dayCell: string | undefined): HostGig[] {
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => {
-      const [venueName = "", time = "", neighborhood = "", venueId = ""] = line
-        .split("|")
-        .map((part) => part.trim());
-
-      if (!venueName || !time) {
-        console.warn("Malformed KJ schedule entry", { entry: line });
-      }
+      const [venueName = "", time = "", neighborhood = "", venueId = ""] =
+        line.split("|").map((part) => part.trim());
 
       return {
         venueName,
@@ -153,20 +178,165 @@ export function parseDayGigs(dayCell: string | undefined): HostGig[] {
 }
 
 export function parseHostSchedule(row: HostSourceRow) {
-  return HOST_WEEKDAYS.reduce<Record<HostWeekday, HostGig[]>>((schedule, day) => {
-    schedule[day] = parseDayGigs(row[day]);
-    return schedule;
-  }, {} as Record<HostWeekday, HostGig[]>);
+  return HOST_WEEKDAYS.reduce<Record<HostWeekday, HostGig[]>>(
+    (schedule, day) => {
+      schedule[day] = parseDayGigs(row[day]);
+      return schedule;
+    },
+    emptySchedule(),
+  );
 }
 
-export function getProfileCompletionLevel(host: Omit<HostProfile, "profileCompletionLevel">): HostProfileCompletionLevel {
+function cleanIdentity(value: string | undefined) {
+  return (value || "")
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[@'’]/g, "")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function splitIdentity(value: string | undefined) {
+  if (!value) return [];
+  const values = [value];
+
+  if (value.includes("/")) {
+    values.push(...value.split("/"));
+  }
+
+  return Array.from(new Set(values.map(cleanIdentity).filter(Boolean)));
+}
+
+function getHostAliases(host: HostProfile) {
+  return Array.from(
+    new Set([
+      ...splitIdentity(host.hostName),
+      ...splitIdentity(host.publicDisplayName),
+    ]),
+  );
+}
+
+function getEventHostCandidates(event: KaraokeEventListing) {
+  return splitIdentity(event.hostName);
+}
+
+function getEventDays(value: string): HostWeekday[] {
+  const normalized = value.toLowerCase();
+
+  return HOST_WEEKDAYS.filter((day) => {
+    const dayValue = day.toLowerCase();
+    const shortValue = dayValue.slice(0, 3);
+    return (
+      new RegExp(`\\b${dayValue}\\b`, "i").test(normalized) ||
+      new RegExp(`\\b${shortValue}\\b`, "i").test(normalized)
+    );
+  });
+}
+
+function formatEventTime(event: KaraokeEventListing) {
+  if (event.startTime && event.endTime) {
+    return `${event.startTime} - ${event.endTime}`;
+  }
+  return event.startTime || event.endTime || "";
+}
+
+function eventToGig(
+  event: KaraokeEventListing,
+  neighborhood?: string,
+): HostGig {
+  const time = formatEventTime(event);
+
+  return {
+    venueName: event.venueName,
+    time,
+    neighborhood: getOptionalValue(neighborhood),
+    venueId: event.venueSlug,
+    raw: [event.venueName, time, neighborhood, event.venueSlug]
+      .filter(Boolean)
+      .join(" | "),
+  };
+}
+
+function attachCanonicalSchedules(
+  hosts: HostProfile[],
+  events: KaraokeEventListing[],
+  venues: Awaited<ReturnType<typeof getVenueListings>>,
+) {
+  if (events.length === 0) return hosts;
+
+  const venuesBySlug = new Map(venues.map((venue) => [venue.slug, venue]));
+  const hostsById = new Map(hosts.map((host) => [host.hostId, host]));
+  const aliases = new Map<string, HostProfile[]>();
+
+  for (const host of hosts) {
+    for (const alias of getHostAliases(host)) {
+      aliases.set(alias, [...(aliases.get(alias) || []), host]);
+    }
+  }
+
+  for (const host of hosts) {
+    host.schedule = emptySchedule();
+  }
+
+  for (const event of events) {
+    const matchedHosts = new Set<HostProfile>();
+
+    if (event.hostId) {
+      const host = hostsById.get(event.hostId);
+      if (host) matchedHosts.add(host);
+    } else {
+      for (const candidate of getEventHostCandidates(event)) {
+        const candidateHosts = aliases.get(candidate) || [];
+        if (candidateHosts.length === 1) {
+          matchedHosts.add(candidateHosts[0]);
+        }
+      }
+    }
+
+    if (matchedHosts.size === 0) continue;
+
+    const days = getEventDays(event.karaokeDay);
+    if (days.length === 0) continue;
+
+    for (const host of matchedHosts) {
+      for (const day of days) {
+        const gig = eventToGig(
+          event,
+          venuesBySlug.get(event.venueSlug)?.neighborhood,
+        );
+        const duplicate = host.schedule[day].some(
+          (existing) =>
+            existing.venueId === gig.venueId && existing.time === gig.time,
+        );
+
+        if (!duplicate) {
+          host.schedule[day].push(gig);
+        }
+      }
+    }
+  }
+
+  return hosts;
+}
+
+export function getProfileCompletionLevel(
+  host: Omit<HostProfile, "profileCompletionLevel">,
+): HostProfileCompletionLevel {
   const weeklyGigs = HOST_WEEKDAYS.flatMap((day) => host.schedule[day]);
-  const hasAnySchedule = weeklyGigs.some((gig) => gig.venueName && gig.time);
+  const hasAnySchedule = weeklyGigs.some(
+    (gig) => gig.venueName && gig.time,
+  );
   const hasBasicProfile =
     isActiveStatus(host.status) &&
     Boolean(host.slug) &&
     Boolean(host.publicDisplayName) &&
-    Boolean(host.instagramUrl || host.instagramHandle || host.bio || hasAnySchedule);
+    Boolean(
+      host.instagramUrl ||
+        host.instagramHandle ||
+        host.bio ||
+        hasAnySchedule,
+    );
 
   if (!hasBasicProfile) return "incomplete";
 
@@ -176,13 +346,10 @@ export function getProfileCompletionLevel(host: Omit<HostProfile, "profileComple
       host.bio ||
       host.vibeTags.length > 0 ||
       host.primaryAreas.length > 0 ||
-      host.tipLink ||
-      host.bookingLink ||
       host.tiktokUrl ||
       host.websiteUrl ||
       host.privateEvents ||
-      host.favoriteKaraokeSpots ||
-      host.verificationStatus,
+      host.favoriteKaraokeSpots,
   );
 
   return hasEnhancedFields ? "enhanced" : "basic";
@@ -190,9 +357,17 @@ export function getProfileCompletionLevel(host: Omit<HostProfile, "profileComple
 
 function rowToHost(row: HostSourceRow): HostProfile {
   const hostName =
-    getCellAny(row, ["host_name", "KJ / Host Name", "KJ / Host / Company Name"]) || "";
-  const publicDisplayName = getCellAny(row, ["public_display_name", "Public Display Name"]) || hostName;
-  const slug = getCellAny(row, ["slug", "Slug"]) || createSlug(publicDisplayName || hostName);
+    getCellAny(row, [
+      "host_name",
+      "KJ / Host Name",
+      "KJ / Host / Company Name",
+    ]) || "";
+  const publicDisplayName =
+    getCellAny(row, ["public_display_name", "Public Display Name"]) ||
+    hostName;
+  const slug =
+    getCellAny(row, ["slug", "Slug"]) ||
+    createSlug(publicDisplayName || hostName);
   const instagramUrl = normalizeInstagramUrl(
     getCellAny(row, ["instagram_url", "Instagram URL"]) ||
       getCellAny(row, ["instagram_handle", "Instagram Handle"]),
@@ -204,11 +379,15 @@ function rowToHost(row: HostSourceRow): HostProfile {
     slug,
     hostName,
     publicDisplayName,
-    profileImageUrl: getCellAny(row, ["profile_image_url", "Profile Image URL"]),
+    profileImageUrl: getCellAny(row, [
+      "profile_image_url",
+      "Profile Image URL",
+    ]),
     logoUrl: getCellAny(row, ["logo_url", "Logo URL"]),
     instagramUrl,
     instagramHandle: normalizeInstagramHandle(
-      instagramUrl || getCellAny(row, ["instagram_handle", "Instagram Handle"]),
+      instagramUrl ||
+        getCellAny(row, ["instagram_handle", "Instagram Handle"]),
     ),
     tiktokUrl: getCellAny(row, ["tiktok_url", "TikTok URL"]),
     websiteUrl: getCellAny(row, ["website_url", "Website URL"]),
@@ -216,19 +395,36 @@ function rowToHost(row: HostSourceRow): HostProfile {
     bookingLink: getCellAny(row, ["booking_link", "Booking Link"]),
     bio: getCellAny(row, ["bio", "Bio"]),
     vibeTags: parseList(getCellAny(row, ["vibe_tags", "Vibe Tags"])),
-    primaryAreas: parseList(getCellAny(row, ["primary_areas", "Primary Areas"])),
+    primaryAreas: parseList(
+      getCellAny(row, ["primary_areas", "Primary Areas"]),
+    ),
     schedule: parseHostSchedule(row),
     privateEvents: getCellAny(row, ["private_events", "Private Events?"]),
     featured: parseBoolean(getCellAny(row, ["featured", "Featured?"])),
     notes: getCellAny(row, ["notes", "Notes"]),
     lastUpdated: getCellAny(row, ["last_updated", "Last Updated"]),
-    verificationStatus: getCellAny(row, ["verification_status", "Verification Status"]),
+    verificationStatus: getCellAny(row, [
+      "verification_status",
+      "Verification Status",
+    ]),
     source: getCellAny(row, ["source", "Source"]),
-    formResponseTimestamp: getCellAny(row, ["form_response_timestamp", "Form Response Timestamp"]),
-    contactEmail: getCellAny(row, ["contact_email_internal", "Contact Email"]),
-    tagRepostPermission: getCellAny(row, ["tag_repost_permission", "Tag/Repost Permission"]),
+    formResponseTimestamp: getCellAny(row, [
+      "form_response_timestamp",
+      "Form Response Timestamp",
+    ]),
+    contactEmail: getCellAny(row, [
+      "contact_email_internal",
+      "Contact Email",
+    ]),
+    tagRepostPermission: getCellAny(row, [
+      "tag_repost_permission",
+      "Tag/Repost Permission",
+    ]),
     weeklyStatus: getCellAny(row, ["weekly_status", "Weekly Status"]),
-    favoriteKaraokeSpots: getCellAny(row, ["favorite_karaoke_spots", "Favorite Karaoke Spots"]),
+    favoriteKaraokeSpots: getCellAny(row, [
+      "favorite_karaoke_spots",
+      "Favorite Karaoke Spots",
+    ]),
   } satisfies Omit<HostProfile, "profileCompletionLevel">;
 
   return {
@@ -238,11 +434,15 @@ function rowToHost(row: HostSourceRow): HostProfile {
 }
 
 async function getSheetRows() {
-  const sheetId = process.env.GOOGLE_SHEETS_ID || DEFAULT_SHEET_ID;
-  const sheetTab = process.env.GOOGLE_SHEET_HOSTS_TAB || process.env.GOOGLE_SHEET_KJ_PROFILES_TAB || DEFAULT_SHEET_TAB;
+  const sheetId = getSourceSheetId();
+  const sheetTab = getSourceTab(
+    "hosts",
+    "GOOGLE_SHEET_HOSTS_TAB",
+    "GOOGLE_SHEET_KJ_PROFILES_TAB",
+  );
 
   try {
-    const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:AZ");
+    const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:AB");
     return rows as GoogleSheetRow[] | null;
   } catch (error) {
     console.error("Failed to fetch host profiles from Google Sheets", error);
@@ -256,13 +456,33 @@ function getFallbackRows() {
   return rows.map((row: TsvRow) => row as HostSourceRow);
 }
 
+export function isHostConfirmed(
+  host: Pick<HostProfile, "verificationStatus" | "formResponseTimestamp">,
+) {
+  if (host.formResponseTimestamp) return true;
+  const status = host.verificationStatus?.trim().toLowerCase();
+  return Boolean(status && HOST_CONFIRMED_STATUSES.has(status));
+}
+
 export async function getHosts() {
-  const sheetRows = await getSheetRows();
+  const [sheetRows, events, venues] = await Promise.all([
+    getSheetRows(),
+    getKaraokeEventListings(),
+    getVenueListings(),
+  ]);
   const rows = sheetRows && sheetRows.length > 0 ? sheetRows : getFallbackRows();
-  return rows
+
+  const hosts = rows
     .filter(isVisible)
     .map(rowToHost)
     .filter((host) => host.slug && host.publicDisplayName);
+
+  attachCanonicalSchedules(hosts, events, venues);
+
+  return hosts.map((host) => ({
+    ...host,
+    profileCompletionLevel: getProfileCompletionLevel(host),
+  }));
 }
 
 export async function getActiveHosts() {
@@ -289,16 +509,24 @@ export async function getHostsHostingToday() {
   const hosts = await getActiveHosts();
 
   return hosts
-    .flatMap((host) => host.schedule[today].map((gig) => ({ host, gig, day: today })))
+    .flatMap((host) =>
+      host.schedule[today].map((gig) => ({ host, gig, day: today })),
+    )
     .filter(({ gig }) => Boolean(gig.venueName || gig.time));
 }
 
 export function normalizeRawFormSchedule(value: string | undefined) {
-  if (!value?.trim()) return { days: {} as Partial<Record<HostWeekday, string[]>>, notes: [] as string[] };
+  if (!value?.trim()) {
+    return {
+      days: {} as Partial<Record<HostWeekday, string[]>>,
+      notes: [] as string[],
+    };
+  }
 
   return value.split(/\r?\n/).reduce(
     (result, line) => {
-      const [venueName, neighborhood, day, startTime, endTime] = line.split("/").map((part) => part.trim());
+      const [venueName, neighborhood, day, startTime, endTime] =
+        line.split("/").map((part) => part.trim());
       const matchedDay = normalizeFormDay(day);
 
       if (!venueName || !matchedDay || !startTime) {
@@ -314,6 +542,9 @@ export function normalizeRawFormSchedule(value: string | undefined) {
       ];
       return result;
     },
-    { days: {} as Partial<Record<HostWeekday, string[]>>, notes: [] as string[] },
+    {
+      days: {} as Partial<Record<HostWeekday, string[]>>,
+      notes: [] as string[],
+    },
   );
 }

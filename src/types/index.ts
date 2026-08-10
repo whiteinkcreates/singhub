@@ -48,6 +48,7 @@ export type KaraokeEventListing = {
   karaokeDay: string;
   startTime: string;
   endTime: string;
+  hostId?: string;
   hostName?: string;
   recurring: boolean;
   activeStatus: string;
