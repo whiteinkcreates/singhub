@@ -21,19 +21,19 @@ const DEFAULT_BANNER_IMAGE_URL = "/images/venues/default-singhub-banner.svg";
 
 function getListingBadge(venue: VenueListing) {
   if (venue.listingStatus === "verified") {
-    return <Badge variant="verified">Verified</Badge>;
+    return <Badge variant="verified">Verified Karaoke</Badge>;
   }
 
   if (venue.listingStatus === "claimed") {
     return <Badge variant="claimed">Recently Updated</Badge>;
   }
 
-  return <Badge variant="basic">Check Schedule</Badge>;
+  return <Badge variant="basic">On the Radar</Badge>;
 }
 
 function getTrustCopy(venue: VenueListing) {
   if (venue.listingStatus === "verified") {
-    return "Verified listing. Still check the venue before heading out, especially on holidays or event nights.";
+    return "Verified karaoke details. Still check the venue before heading out, especially on holidays or event nights.";
   }
 
   if (venue.listingStatus === "claimed") {
@@ -44,16 +44,10 @@ function getTrustCopy(venue: VenueListing) {
 }
 
 function getUsableValue(value: string | undefined) {
-  if (!value) {
-    return null;
-  }
+  if (!value) return null;
 
   const trimmedValue = value.trim();
-  const normalizedValue = trimmedValue.toLowerCase();
-
-  if (!trimmedValue || normalizedValue === "tbd") {
-    return null;
-  }
+  if (!trimmedValue || /^(tbd|unknown|-|n\/a)$/i.test(trimmedValue)) return null;
 
   return trimmedValue;
 }
@@ -63,18 +57,12 @@ function getBannerImageUrl(venue: VenueListing) {
 }
 
 function getBannerImageAlt(venue: VenueListing) {
-  return (
-    getUsableValue(venue.bannerImageAlt) ??
-    `SingHUB enhanced karaoke listing banner for ${venue.venueName}`
-  );
+  return getUsableValue(venue.bannerImageAlt) ?? `${venue.venueName} karaoke venue`;
 }
 
 function getDirectionsUrl(venue: VenueListing) {
   const address = getUsableValue(venue.address);
-
-  if (!address) {
-    return null;
-  }
+  if (!address) return null;
 
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
     `${venue.venueName} ${address}`,
@@ -83,16 +71,22 @@ function getDirectionsUrl(venue: VenueListing) {
 
 function getInstagramUrl(instagram: string | undefined) {
   const trimmedInstagram = getUsableValue(instagram);
+  if (!trimmedInstagram) return null;
 
-  if (!trimmedInstagram) {
-    return null;
-  }
-
-  if (trimmedInstagram.startsWith("http")) {
-    return trimmedInstagram;
-  }
+  if (trimmedInstagram.startsWith("http")) return trimmedInstagram;
 
   return `https://www.instagram.com/${trimmedInstagram.replace(/^@/, "")}`;
+}
+
+function getLegacyScheduleSummary(venue: VenueListing) {
+  const day = getUsableValue(venue.karaokeDay);
+  const start = getUsableValue(venue.startTime);
+  const end = getUsableValue(venue.endTime);
+
+  if (!day && !start && !end) return null;
+
+  const time = start && end ? `${start} to ${end}` : start || end;
+  return [day, time].filter(Boolean).join(" • ");
 }
 
 function getPremiumHighlights(venue: VenueListing) {
@@ -165,6 +159,26 @@ function VenueActions({
   );
 }
 
+function SchedulePreview({
+  venue,
+  events,
+}: {
+  venue: VenueListing;
+  events: KaraokeEventListing[];
+}) {
+  if (events.length > 0) {
+    return <EventSchedule events={events} variant="compact" />;
+  }
+
+  const legacySummary = getLegacyScheduleSummary(venue);
+
+  return (
+    <p className="text-sm font-semibold text-cyan-100 md:text-base">
+      {legacySummary || "Schedule details are being confirmed."}
+    </p>
+  );
+}
+
 function PremiumVenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
   const directionsUrl = getDirectionsUrl(venue);
   const instagramUrl = getInstagramUrl(venue.instagram);
@@ -200,16 +214,12 @@ function PremiumVenueCard({ venue, events = [], distanceLabel }: VenueCardProps)
                 )}
               </div>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="premium">Enhanced Profile</Badge>
                 {getListingBadge(venue)}
                 {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
               </div>
             </div>
 
             <div className="max-w-4xl">
-              <p className="mb-3 inline-flex rounded-full border border-fuchsia-300/40 bg-fuchsia-300/10 px-3 py-1 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100 backdrop-blur">
-                Enhanced karaoke listing
-              </p>
               <Link href={`/venues/${venue.slug}`}>
                 <h3 className="text-4xl font-black leading-tight text-white drop-shadow-2xl hover:text-fuchsia-100 md:text-6xl">
                   {venue.venueName}
@@ -223,14 +233,7 @@ function PremiumVenueCard({ venue, events = [], distanceLabel }: VenueCardProps)
                 <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
                   Karaoke schedule
                 </p>
-                {events.length > 0 ? (
-                  <EventSchedule events={events} variant="compact" />
-                ) : (
-                  <p className="text-sm font-semibold text-cyan-100 md:text-base">
-                    {venue.karaokeDay} • {venue.startTime} to {venue.endTime}
-                    {venue.hostName ? ` • Host: ${venue.hostName}` : ""}
-                  </p>
-                )}
+                <SchedulePreview venue={venue} events={events} />
               </div>
             </div>
           </div>
@@ -291,9 +294,6 @@ function BasicVenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
         <div>
           <div className="mb-3 flex flex-wrap gap-2">
             {getListingBadge(venue)}
-
-            <Badge variant="basic">Basic</Badge>
-
             {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
           </div>
 
@@ -313,14 +313,9 @@ function BasicVenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
             </p>
           )}
 
-          {events.length > 0 ? (
-            <EventSchedule events={events} variant="compact" />
-          ) : (
-            <p className="mt-3 text-sm font-semibold text-cyan-200">
-              {venue.karaokeDay} • {venue.startTime} to {venue.endTime}
-              {venue.hostName ? ` • Host: ${venue.hostName}` : ""}
-            </p>
-          )}
+          <div className="mt-3">
+            <SchedulePreview venue={venue} events={events} />
+          </div>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
             {venue.description}

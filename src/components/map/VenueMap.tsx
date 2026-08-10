@@ -25,9 +25,9 @@ const venueShapeLegend = [
 ];
 
 const statusLegend = [
-  { label: "Verified", className: "bg-cyan-300" },
-  { label: "Claimed", className: "bg-fuchsia-300" },
-  { label: "AI-scouted", className: "bg-violet-300" },
+  { label: "Verified Karaoke", className: "bg-cyan-300" },
+  { label: "Recently Updated", className: "bg-fuchsia-300" },
+  { label: "On the Radar", className: "bg-violet-300" },
 ];
 
 function LegendMicShape({ shape }: { shape: "circle" | "square" | "triangle" }) {

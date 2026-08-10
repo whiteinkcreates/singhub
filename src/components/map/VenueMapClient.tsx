@@ -42,7 +42,7 @@ const pendingStatus = `ai_${"scouted"}` as ListingStatus;
 
 const markerStyles = {
   verified: {
-    label: "Verified",
+    label: "Verified Karaoke",
     stripe: "#22d3ee",
     glow: "rgba(34, 211, 238, 0.75)",
   },
@@ -52,33 +52,11 @@ const markerStyles = {
     glow: "rgba(244, 114, 182, 0.7)",
   },
   [pendingStatus]: {
-    label: "Details Pending",
+    label: "On the Radar",
     stripe: "#a78bfa",
     glow: "rgba(167, 139, 250, 0.65)",
   },
 } as Record<ListingStatus, MarkerStyle>;
-
-function getMapCenter(venues: MappableVenueListing[]): Coordinate {
-  if (venues.length === 0) {
-    return SAN_DIEGO_CENTER;
-  }
-
-  const totals = venues.reduce(
-    (accumulator, venue) => ({
-      latitude: accumulator.latitude + venue.latitude,
-      longitude: accumulator.longitude + venue.longitude,
-    }),
-    { latitude: 0, longitude: 0 },
-  );
-
-  return [totals.latitude / venues.length, totals.longitude / venues.length];
-}
-
-function getScheduleSummary(venue: VenueListing) {
-  const schedule = `${venue.karaokeDay} • ${venue.startTime} to ${venue.endTime}`;
-
-  return venue.hostName ? `${schedule} • Host: ${venue.hostName}` : schedule;
-}
 
 function handheldMicSvg(size = 28) {
   return `
@@ -214,19 +192,16 @@ function MapBoundsController({
   const map = useMap();
 
   useEffect(() => {
+    if (!userLocation) {
+      map.setView(SAN_DIEGO_CENTER, DEFAULT_ZOOM);
+      return;
+    }
+
     const points: Coordinate[] = venues.map((venue) => [
       venue.latitude,
       venue.longitude,
     ]);
-
-    if (userLocation) {
-      points.push([userLocation.latitude, userLocation.longitude]);
-    }
-
-    if (points.length === 0) {
-      map.setView(SAN_DIEGO_CENTER, DEFAULT_ZOOM);
-      return;
-    }
+    points.push([userLocation.latitude, userLocation.longitude]);
 
     if (points.length === 1) {
       map.setView(points[0], 13);
@@ -236,7 +211,7 @@ function MapBoundsController({
     const bounds = L.latLngBounds(points);
     map.fitBounds(bounds, {
       padding: [42, 42],
-      maxZoom: userLocation ? 13 : DEFAULT_ZOOM,
+      maxZoom: 13,
     });
   }, [map, userLocation, venues]);
 
@@ -249,7 +224,7 @@ export default function VenueMapClient({
 }: VenueMapClientProps) {
   const center = userLocation
     ? ([userLocation.latitude, userLocation.longitude] as Coordinate)
-    : getMapCenter(venues);
+    : SAN_DIEGO_CENTER;
 
   if (venues.length === 0 && !userLocation) {
     return (
@@ -307,7 +282,6 @@ export default function VenueMapClient({
                 <p className="text-sm font-semibold text-slate-700">
                   {venue.neighborhood}
                 </p>
-                <p className="text-sm text-slate-700">{getScheduleSummary(venue)}</p>
                 <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
                   {getVenueTypeLabel(venue)} • {getStatusLabel(venue.listingStatus)}
                 </p>
