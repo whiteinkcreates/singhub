@@ -298,7 +298,7 @@ export function FindKaraokeExperience({
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
   const [locationStatus, setLocationStatus] =
     useState<LocationStatus>("idle");
-  const [radiusFilter, setRadiusFilter] = useState<RadiusFilter>("all");
+  const [radiusFilter, setRadiusFilter] = useState<RadiusFilter>(10);
   const [dayFilter, setDayFilter] = useState<DayFilter>(() =>
     normalizeInitialDayFilter(initialDayFilter),
   );
@@ -433,7 +433,7 @@ export function FindKaraokeExperience({
           longitude: position.coords.longitude,
         });
         setLocationStatus("success");
-        setRadiusFilter("all");
+        setRadiusFilter(10);
       },
       (error) => {
         if (error.code === error.PERMISSION_DENIED) {
