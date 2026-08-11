@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { VenueProfile } from "@/components/venue/VenueProfile";
 import type { KaraokeEventListing, VenueListing } from "@/types";
 
 type VenueComparisonToolProps = {
@@ -11,9 +12,12 @@ type VenueComparisonToolProps = {
 type EnhancedField = {
   key: string;
   label: string;
-  value?: string;
-  emptyPrompt: string;
+  actual?: string;
+  sample: string;
 };
+
+const ENHANCED_DEMO_IMAGE_URL =
+  "https://res.cloudinary.com/dy3lyejkk/image/upload/v1781683694/ChatGPT_Image_Jun_17_2026_01_05_26_AM_sjmyq4.png";
 
 function cleanValue(value: string | undefined) {
   const trimmed = value?.trim();
@@ -33,6 +37,7 @@ function getScheduleLines(events: KaraokeEventListing[]) {
       .filter(Boolean)
       .join(" to ");
     const host = cleanValue(event.hostName);
+
     return [event.karaokeDay, time, host ? `KJ: ${host}` : undefined]
       .filter(Boolean)
       .join(" • ");
@@ -44,117 +49,117 @@ function getEnhancedFields(venue: VenueListing): EnhancedField[] {
     {
       key: "specials",
       label: "Weekly Specials",
-      value: cleanValue(venue.specials),
-      emptyPrompt: "Add karaoke-night deals, weekly specials, or recurring promotions.",
+      actual: cleanValue(venue.specials),
+      sample: "Karaoke-night specials and recurring weekly offers",
     },
     {
       key: "happy-hour",
       label: "Happy Hour",
-      value: cleanValue(venue.happyHour),
-      emptyPrompt: "Add happy hour times and offers that help singers plan the night.",
+      actual: cleanValue(venue.happyHour),
+      sample: "Happy hour times and featured offers",
     },
     {
       key: "food",
       label: "Food Highlights",
-      value: cleanValue(venue.foodHighlights),
-      emptyPrompt: "Feature kitchen hours, late-night food, or signature items.",
+      actual: cleanValue(venue.foodHighlights),
+      sample: "Late-night bites, kitchen hours, and signature items",
     },
     {
       key: "drinks",
       label: "Drink Highlights",
-      value: cleanValue(venue.drinkHighlights),
-      emptyPrompt: "Feature cocktails, drink specials, beer, or other bar highlights.",
+      actual: cleanValue(venue.drinkHighlights),
+      sample: "Signature cocktails, local drafts, and karaoke-night drinks",
     },
     {
       key: "parking",
-      label: "Parking / Arrival Tips",
-      value: cleanValue(venue.parkingInfo),
-      emptyPrompt: "Tell singers where to park, rideshare, or what to expect on arrival.",
+      label: "Parking / Arrival",
+      actual: cleanValue(venue.parkingInfo),
+      sample: "Street parking, nearby lots, and rideshare arrival tips",
     },
     {
       key: "cover",
       label: "Cover Charge",
-      value: cleanValue(venue.coverCharge),
-      emptyPrompt: "Clarify whether karaoke has a cover, minimum, or no charge.",
+      actual: cleanValue(venue.coverCharge),
+      sample: "No cover / cover details clearly displayed",
     },
     {
       key: "age-policy",
       label: "Age Policy",
-      value: cleanValue(venue.agePolicy),
-      emptyPrompt: "Clarify 21+, all-ages windows, or other entry policies.",
+      actual: cleanValue(venue.agePolicy),
+      sample: "21+ and entry-policy details",
     },
     {
       key: "accessibility",
       label: "Accessibility",
-      value: cleanValue(venue.accessibilityNotes),
-      emptyPrompt: "Add useful accessibility details for the room and stage area.",
+      actual: cleanValue(venue.accessibilityNotes),
+      sample: "Accessible entry, seating, and stage-area information",
     },
     {
       key: "reservation",
       label: "Reservations / Event Link",
-      value: cleanValue(venue.reservationLink),
-      emptyPrompt: "Add a reservation, ticket, flyer, or event link when relevant.",
+      actual: cleanValue(venue.reservationLink),
+      sample: "Direct reservation, ticket, event, or flyer link",
     },
     {
       key: "booking",
       label: "Booking / Event Contact",
-      value: cleanValue(venue.bookingContact),
-      emptyPrompt: "Add the best contact for private events, groups, or karaoke inquiries.",
+      actual: cleanValue(venue.bookingContact),
+      sample: "Private-event, group, and karaoke booking contact",
     },
     {
       key: "instagram",
       label: "Instagram",
-      value: cleanValue(venue.instagram),
-      emptyPrompt: "Connect the venue's Instagram for discovery and event promotion.",
+      actual: cleanValue(venue.instagram),
+      sample: "Connected venue social profile",
     },
     {
       key: "website",
       label: "Website",
-      value: cleanValue(venue.website),
-      emptyPrompt: "Connect the official venue website or landing page.",
+      actual: cleanValue(venue.website),
+      sample: "Official venue website or landing page",
     },
     {
       key: "hero",
-      label: "Featured Image / Flyer",
-      value: cleanValue(venue.bannerImageUrl),
-      emptyPrompt: "Add a hero image, karaoke flyer, or current event creative.",
+      label: "Hero Image / Flyer",
+      actual: cleanValue(venue.bannerImageUrl),
+      sample: "Full-width venue image or current karaoke-event creative",
     },
   ];
 }
 
-function FieldCard({ field }: { field: EnhancedField }) {
-  const hasValue = Boolean(field.value);
-
+function PreviewLabel({
+  eyebrow,
+  title,
+  copy,
+  tone,
+}: {
+  eyebrow: string;
+  title: string;
+  copy: string;
+  tone: "standard" | "enhanced";
+}) {
   return (
     <div
-      className={`rounded-2xl border p-4 ${
-        hasValue
-          ? "border-cyan-300/25 bg-cyan-300/[0.06]"
-          : "border-fuchsia-300/20 bg-fuchsia-300/[0.05]"
+      className={`mb-4 rounded-2xl border p-4 ${
+        tone === "enhanced"
+          ? "border-fuchsia-300/35 bg-fuchsia-300/[0.08]"
+          : "border-white/10 bg-white/[0.04]"
       }`}
     >
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-slate-300">
-          {field.label}
-        </p>
-        <span
-          className={`rounded-full px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.14em] ${
-            hasValue
-              ? "bg-cyan-300/15 text-cyan-100"
-              : "bg-fuchsia-300/15 text-fuchsia-100"
-          }`}
-        >
-          {hasValue ? "Ready" : "Opportunity"}
-        </span>
-      </div>
-      <p className={`mt-3 text-sm leading-6 ${hasValue ? "text-white" : "text-slate-400"}`}>
-        {field.value || field.emptyPrompt}
+      <p
+        className={`text-xs font-black uppercase tracking-[0.22em] ${
+          tone === "enhanced" ? "text-fuchsia-200" : "text-slate-400"
+        }`}
+      >
+        {eyebrow}
       </p>
+      <h2 className="mt-2 text-xl font-black text-white">{title}</h2>
+      <p className="mt-2 text-sm leading-6 text-slate-300">{copy}</p>
     </div>
   );
 }
 
-function StandardPreview({
+function EnhancedProfileMockup({
   venue,
   venueEvents,
 }: {
@@ -162,170 +167,180 @@ function StandardPreview({
   venueEvents: KaraokeEventListing[];
 }) {
   const scheduleLines = getScheduleLines(venueEvents);
-
-  return (
-    <section className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 md:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-xs font-black uppercase tracking-[0.22em] text-slate-400">
-          Current Free Profile
-        </p>
-        <span className="rounded-full border border-white/10 px-3 py-1 text-xs font-bold text-slate-300">
-          Standard listing
-        </span>
-      </div>
-
-      <h2 className="mt-5 text-3xl font-black text-white">{venue.venueName}</h2>
-      <p className="mt-2 text-sm font-semibold text-cyan-200">
-        {venue.neighborhood} • {venue.address}
-      </p>
-
-      <div className="mt-5 rounded-2xl border border-white/10 bg-slate-950/50 p-4">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">
-          Karaoke Schedule
-        </p>
-        <div className="mt-3 space-y-2 text-sm text-slate-200">
-          {scheduleLines.map((line) => (
-            <p key={line}>{line}</p>
-          ))}
-        </div>
-      </div>
-
-      <p className="mt-5 text-sm leading-7 text-slate-300">
-        {cleanValue(venue.description) || "Basic venue description is still being confirmed."}
-      </p>
-
-      {venue.vibeTags.length > 0 && (
-        <div className="mt-5 flex flex-wrap gap-2">
-          {venue.vibeTags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-bold text-slate-200"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-
-      <div className="mt-6 rounded-2xl border border-white/10 bg-slate-950/40 p-4 text-sm leading-6 text-slate-400">
-        Free listings keep the core discovery information accurate and useful. The Founding Venue preview shows the additional presentation and promotional surface area available through a venue partnership.
-      </div>
-    </section>
-  );
-}
-
-function FoundingPreview({
-  venue,
-  venueEvents,
-}: {
-  venue: VenueListing;
-  venueEvents: KaraokeEventListing[];
-}) {
   const fields = getEnhancedFields(venue);
-  const readyCount = fields.filter((field) => field.value).length;
-  const opportunityCount = fields.length - readyCount;
-  const scheduleLines = getScheduleLines(venueEvents);
-  const bannerImage = cleanValue(venue.bannerImageUrl);
+  const imageUrl = cleanValue(venue.bannerImageUrl) || ENHANCED_DEMO_IMAGE_URL;
 
   return (
-    <section className="overflow-hidden rounded-[2rem] border border-fuchsia-300/40 bg-slate-950 shadow-2xl shadow-fuchsia-950/25">
+    <article className="overflow-hidden rounded-[2rem] border border-fuchsia-300/45 bg-slate-950 shadow-2xl shadow-fuchsia-950/30">
       <div
-        className="relative min-h-72 overflow-hidden border-b border-white/10 p-5 md:p-7"
-        style={
-          bannerImage
-            ? {
-                backgroundImage: `linear-gradient(to top, rgba(2,6,23,0.98), rgba(2,6,23,0.36)), url('${bannerImage}')`,
-                backgroundPosition: "center",
-                backgroundSize: "cover",
-              }
-            : {
-                background:
-                  "radial-gradient(circle at 85% 10%, rgba(34,211,238,0.22), transparent 18rem), radial-gradient(circle at 15% 25%, rgba(217,70,239,0.24), transparent 20rem), #020617",
-              }
-        }
+        className="relative min-h-[25rem] overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: `url('${imageUrl}')` }}
       >
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-300 via-cyan-300 to-red-400" />
-        <div className="relative flex min-h-60 flex-col justify-between">
-          <div className="flex flex-wrap gap-2">
-            <span className="rounded-full border border-fuchsia-300/40 bg-fuchsia-300/10 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100">
-              Founding Venue Preview
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/30 via-slate-950/50 to-slate-950" />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-slate-950/60" />
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan-300 via-fuchsia-300 to-violet-400" />
+
+        <div className="relative flex min-h-[25rem] flex-col justify-between p-5 md:p-7">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="rounded-full border border-fuchsia-200/60 bg-slate-950/65 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-100 backdrop-blur">
+              Enhanced Profile
             </span>
-            <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
-              Enhanced presence
+            <span className="rounded-full border border-amber-200/50 bg-slate-950/70 px-3 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.16em] text-amber-100 backdrop-blur">
+              Sales mockup • sample content where needed
             </span>
           </div>
 
           <div>
-            <h2 className="text-4xl font-black text-white md:text-5xl">{venue.venueName}</h2>
+            <h3 className="text-4xl font-black leading-tight text-white drop-shadow-2xl md:text-6xl">
+              {venue.venueName}
+            </h3>
             <p className="mt-3 text-sm font-semibold text-cyan-100 md:text-base">
               {venue.neighborhood} • {venue.address}
             </p>
-            <div className="mt-4 space-y-1 text-sm font-semibold text-white/90">
-              {scheduleLines.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
+
+            <div className="mt-5 max-w-2xl rounded-2xl border border-cyan-300/30 bg-slate-950/65 p-4 backdrop-blur">
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
+                Karaoke schedule
+              </p>
+              <div className="mt-3 space-y-1 text-sm font-semibold text-white/90">
+                {scheduleLines.map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="p-5 md:p-7">
-        <div className="grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.06] p-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">Ready now</p>
-            <p className="mt-2 text-3xl font-black text-white">{readyCount}</p>
-            <p className="mt-1 text-xs text-slate-400">enhanced fields already populated</p>
-          </div>
-          <div className="rounded-2xl border border-fuchsia-300/20 bg-fuchsia-300/[0.06] p-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-fuchsia-200">Opportunities</p>
-            <p className="mt-2 text-3xl font-black text-white">{opportunityCount}</p>
-            <p className="mt-1 text-xs text-slate-400">fields we can build out together</p>
-          </div>
-          <div className="rounded-2xl border border-amber-300/20 bg-amber-300/[0.06] p-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-200">Pilot</p>
-            <p className="mt-2 text-3xl font-black text-white">90 days</p>
-            <p className="mt-1 text-xs text-slate-400">hands-on Founding Venue partnership</p>
-          </div>
+      <div className="space-y-6 p-5 md:p-7">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-200">
+            Why sing here
+          </p>
+          <p className="mt-3 text-base leading-7 text-slate-100">
+            {cleanValue(venue.description) ||
+              `A richer venue story for ${venue.venueName} can explain the room, crowd, karaoke experience, and what makes the night worth choosing.`}
+          </p>
         </div>
 
-        <div className="mt-7">
-          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-fuchsia-300">
-                Enhanced profile fields
-              </p>
-              <h3 className="mt-2 text-2xl font-black text-white">
-                Everything we can add or improve
-              </h3>
-            </div>
-            <p className="max-w-md text-sm leading-6 text-slate-400">
-              Empty fields are intentionally shown in this admin preview so they can be discussed during the sales call.
-            </p>
+        {venue.vibeTags.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {venue.vibeTags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-full border border-fuchsia-300/25 bg-fuchsia-300/[0.08] px-3 py-1.5 text-xs font-bold text-fuchsia-50"
+              >
+                {tag}
+              </span>
+            ))}
           </div>
+        )}
 
-          <div className="mt-5 grid gap-3 md:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2">
+          {fields
+            .filter((field) => field.key !== "hero")
+            .map((field) => (
+              <div
+                key={field.key}
+                className={`rounded-2xl border p-4 ${
+                  field.actual
+                    ? "border-cyan-300/20 bg-cyan-300/[0.06]"
+                    : "border-white/10 bg-white/[0.04]"
+                }`}
+              >
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-fuchsia-200">
+                  {field.label}
+                </p>
+                <p className={`mt-2 text-sm leading-6 ${field.actual ? "text-white" : "text-slate-300 italic"}`}>
+                  {field.actual || field.sample}
+                </p>
+                {!field.actual && (
+                  <p className="mt-2 text-[0.65rem] font-black uppercase tracking-[0.14em] text-amber-200">
+                    Sample preview content
+                  </p>
+                )}
+              </div>
+            ))}
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div className="rounded-full border border-fuchsia-300/35 bg-fuchsia-300/10 px-4 py-3 text-center text-sm font-black text-fuchsia-50">
+            Directions
+          </div>
+          <div className="rounded-full border border-cyan-300/35 bg-cyan-300/10 px-4 py-3 text-center text-sm font-black text-cyan-50">
+            Website / Event
+          </div>
+          <div className="rounded-full border border-white/15 bg-white/[0.05] px-4 py-3 text-center text-sm font-black text-white">
+            Instagram
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function SalesExplainer({ venue }: { venue: VenueListing }) {
+  const fields = getEnhancedFields(venue);
+  const ready = fields.filter((field) => field.actual);
+  const opportunities = fields.filter((field) => !field.actual);
+
+  return (
+    <section className="mt-8 rounded-[2rem] border border-amber-300/25 bg-amber-300/[0.04] p-5 md:p-7">
+      <div className="flex flex-col justify-between gap-3 md:flex-row md:items-start">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.24em] text-amber-200">
+            Sales notes • not part of the venue UI
+          </p>
+          <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">
+            What the Founding Venue partnership adds
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-300">
+            Use this section as the conversation guide. Everything above is the visual profile comparison; everything here explains what can be added, verified, or promoted.
+          </p>
+        </div>
+        <div className="flex gap-2 text-xs font-black uppercase tracking-[0.14em]">
+          <span className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-cyan-100">
+            {ready.length} ready
+          </span>
+          <span className="rounded-full border border-fuchsia-300/25 bg-fuchsia-300/10 px-3 py-2 text-fuchsia-100">
+            {opportunities.length} opportunities
+          </span>
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-5 lg:grid-cols-2">
+        <div className="rounded-3xl border border-white/10 bg-slate-950/55 p-5">
+          <h3 className="text-lg font-black text-white">Profile buildout</h3>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
             {fields.map((field) => (
-              <FieldCard key={field.key} field={field} />
+              <div key={field.key} className="rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs font-black text-slate-200">{field.label}</p>
+                  <span className={`text-[0.6rem] font-black uppercase tracking-[0.12em] ${field.actual ? "text-cyan-200" : "text-fuchsia-200"}`}>
+                    {field.actual ? "Have it" : "Can add"}
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
         </div>
 
-        <div className="mt-7 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {[
-            ["Stronger presentation", "Premium card and profile treatment that helps the venue look worth the trip."],
-            ["Event promotion", "More room to feature recurring specials, flyers, and one-off karaoke events."],
-            ["Priority updates", "Direct support when schedules, KJs, specials, or event details change."],
-            ["Preferred visibility", "Eligibility for Featured and preferred discovery placements as pilot inventory rolls out."],
-          ].map(([title, body]) => (
-            <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-              <p className="text-sm font-black text-white">{title}</p>
-              <p className="mt-2 text-xs leading-5 text-slate-400">{body}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-6 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.05] p-4 text-sm leading-6 text-cyan-50">
-          Preferred visibility is presented here as pilot eligibility, not a guaranteed top ranking. The organic venue index remains available to all valid karaoke venues.
+        <div className="rounded-3xl border border-white/10 bg-slate-950/55 p-5">
+          <h3 className="text-lg font-black text-white">Partnership value</h3>
+          <div className="mt-4 space-y-3">
+            {[
+              ["Stronger presentation", "A richer visual profile that gives singers more reasons to choose the venue."],
+              ["Special-event promotion", "More room to surface flyers, contests, themed nights, and recurring promotions."],
+              ["Priority updates", "Direct support when karaoke schedules, KJs, specials, or event details change."],
+              ["Additional SingHUB promotion", "Eligibility for roundups, spotlights, and other promotional support during the pilot."],
+              ["Preferred visibility eligibility", "Access to Featured and preferred discovery inventory as those placements roll out. No guaranteed top ranking."],
+            ].map(([title, body]) => (
+              <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <p className="text-sm font-black text-white">{title}</p>
+                <p className="mt-1 text-xs leading-5 text-slate-400">{body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -334,7 +349,7 @@ function FoundingPreview({
 
 export function VenueComparisonTool({ venues, events }: VenueComparisonToolProps) {
   const initialSlug =
-    venues.find((venue) => venue.slug === "the-cordova")?.slug || venues[0]?.slug || "";
+    venues.find((venue) => venue.slug === "cordova-bar")?.slug || venues[0]?.slug || "";
   const [selectedSlug, setSelectedSlug] = useState(initialSlug);
 
   const selectedVenue = useMemo(
@@ -392,10 +407,34 @@ export function VenueComparisonTool({ venues, events }: VenueComparisonToolProps
       </section>
 
       {selectedVenue && (
-        <div className="mt-6 grid gap-6 xl:grid-cols-2 xl:items-start">
-          <StandardPreview venue={selectedVenue} venueEvents={venueEvents} />
-          <FoundingPreview venue={selectedVenue} venueEvents={venueEvents} />
-        </div>
+        <>
+          <div className="mt-6 grid gap-6 xl:grid-cols-2 xl:items-start">
+            <div>
+              <PreviewLabel
+                eyebrow="Actual SingHUB UI"
+                title="Current Free Profile"
+                copy="This side renders the standard public venue profile using the venue's real stored information."
+                tone="standard"
+              />
+              <VenueProfile
+                venue={{ ...selectedVenue, profileTier: "basic", isFeatured: false }}
+                events={venueEvents}
+              />
+            </div>
+
+            <div>
+              <PreviewLabel
+                eyebrow="Visual sales mockup"
+                title="Founding Venue / Enhanced Example"
+                copy="This is the profile example. Real venue data is used where available; clearly labeled sample content fills missing Enhanced fields so the full experience can be shown."
+                tone="enhanced"
+              />
+              <EnhancedProfileMockup venue={selectedVenue} venueEvents={venueEvents} />
+            </div>
+          </div>
+
+          <SalesExplainer venue={selectedVenue} />
+        </>
       )}
     </div>
   );
