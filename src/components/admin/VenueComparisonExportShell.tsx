@@ -7,6 +7,12 @@ import type { KaraokeEventListing, VenueListing } from "@/types";
 type VenueComparisonExportShellProps = { venues: VenueListing[]; events: KaraokeEventListing[] };
 type VenueQuestion = { key: string; label: string; question: string; group: "core" | "enhanced" };
 
+const STALE_ADMIN_EVENT_IDS = new Set([
+  // One-time Cordova Summer Pride Karaoke Contest. Removed from canonical Events,
+  // but excluded here too so an unsynced/cached copy cannot appear in sales PDFs.
+  "event-0020",
+]);
+
 function cleanValue(value: string | undefined) {
   const trimmed = value?.trim();
   if (!trimmed || /^(tbd|unknown|-|n\/a)$/i.test(trimmed)) return undefined;
@@ -69,7 +75,11 @@ export function VenueComparisonExportShell({ venues, events }: VenueComparisonEx
   const initialSlug = venues.find((venue) => venue.slug === "cordova-bar")?.slug || venues[0]?.slug || "";
   const [selectedSlug, setSelectedSlug] = useState(initialSlug);
   const selectedVenue = useMemo(() => venues.find((venue) => venue.slug === selectedSlug) || venues[0], [selectedSlug, venues]);
-  const selectedEvents = useMemo(() => selectedVenue ? getVenueEvents(events, selectedVenue.slug) : [], [events, selectedVenue]);
+  const comparisonEvents = useMemo(
+    () => events.filter((event) => !STALE_ADMIN_EVENT_IDS.has(event.eventId)),
+    [events],
+  );
+  const selectedEvents = useMemo(() => selectedVenue ? getVenueEvents(comparisonEvents, selectedVenue.slug) : [], [comparisonEvents, selectedVenue]);
   const questions = useMemo(() => selectedVenue ? getVenueQuestions(selectedVenue, selectedEvents) : [], [selectedEvents, selectedVenue]);
   const coreQuestions = questions.filter((question) => question.group === "core");
   const enhancedQuestions = questions.filter((question) => question.group === "enhanced");
@@ -127,7 +137,7 @@ export function VenueComparisonExportShell({ venues, events }: VenueComparisonEx
       </header>
 
       <div className="venue-comparison-live">
-        <VenueComparisonTool key={selectedVenue.slug} venues={[selectedVenue]} events={events} />
+        <VenueComparisonTool key={selectedVenue.slug} venues={[selectedVenue]} events={comparisonEvents} />
       </div>
 
       <section className="venue-pdf-questionnaire venue-pdf-print-only mt-6 space-y-5">
