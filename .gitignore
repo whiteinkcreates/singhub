@@ -12,6 +12,8 @@
 
 # testing
 /coverage
+/.data-backups
+/.data-sync-output
 
 # next.js
 /.next/

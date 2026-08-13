@@ -1,16 +1,21 @@
-export const DEFAULT_SOURCE_SHEET_ID =
-  "1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc";
+import sourceConfig from "../../config/data-sources.json";
+
+export const DEFAULT_SOURCE_SHEET_ID = sourceConfig.defaultSourceSheetId;
 
 export const SOURCE_TABS = {
-  venues: "Venues_Canonical",
-  events: "Events_Canonical",
-  hosts: "Hosts_Canonical",
+  venues: sourceConfig.tabs.venues,
+  events: sourceConfig.tabs.events,
+  hosts: sourceConfig.tabs.hosts,
 } as const;
 
 export function getSourceSheetId() {
   // Keep the same production override already used by the host loader.
   // Otherwise use the known canonical SingHUB Source of Truth workbook.
-  return process.env.GOOGLE_SHEETS_ID || DEFAULT_SOURCE_SHEET_ID;
+  return (
+    process.env.GOOGLE_SHEETS_ID ||
+    process.env.SINGHUB_SHEET_ID ||
+    DEFAULT_SOURCE_SHEET_ID
+  );
 }
 
 export function getSourceTab(

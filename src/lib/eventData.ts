@@ -1,8 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { KaraokeEventListing } from "@/types";
-import { getGoogleSheetRows, type GoogleSheetRow } from "@/lib/googleSheets";
-import { getSourceSheetId, getSourceTab } from "@/lib/sourceOfTruth";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
 
 const EVENTS_DATA_PATH = path.join(
@@ -11,8 +9,21 @@ const EVENTS_DATA_PATH = path.join(
   "data",
   "events_by_night.tsv",
 );
+const SYNC_METADATA_PATH = path.join(
+  process.cwd(),
+  "public",
+  "data",
+  "sync-metadata.json",
+);
 
 type EventSourceRow = Record<string, string>;
+
+export type KaraokeEventDataStatus = {
+  source: "committed_tsv";
+  degraded: boolean;
+  reason?: "snapshot_missing" | "snapshot_stale";
+  lastSynced?: string;
+};
 
 function getOptionalValue(value: string | undefined) {
   const trimmedValue = value?.trim();
@@ -29,12 +40,6 @@ function parseNumber(value: string | undefined) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function isVisible(row: EventSourceRow) {
-  const value = getOptionalValue(row.app_visible);
-  if (!value) return true;
-  return /^(true|yes|1)$/i.test(value);
-}
-
 function rowToKaraokeEventListing(row: EventSourceRow): KaraokeEventListing {
   return {
     eventId: row.event_id,
@@ -48,32 +53,36 @@ function rowToKaraokeEventListing(row: EventSourceRow): KaraokeEventListing {
     hostName: getOptionalValue(row.host_display_name || row.host_name),
     recurring: parseBoolean(row.recurring),
     activeStatus: row.active_status || "active",
-    eventNotes: getOptionalValue(row.public_notes),
+    eventNotes: getOptionalValue(row.public_notes || row.event_notes),
     eventConfidenceScore: parseNumber(row.event_confidence_score),
     reviewStatus: getOptionalValue(row.review_status),
+    generated: parseBoolean(row.generated),
+    source1: getOptionalValue(row.source_primary || row.source_1),
+    source2: getOptionalValue(row.source_secondary || row.source_2),
+    lastVerified: getOptionalValue(row.last_verified),
   };
+}
+
+function getFallbackLastSynced() {
+  if (fs.existsSync(SYNC_METADATA_PATH)) {
+    try {
+      const metadata = JSON.parse(
+        fs.readFileSync(SYNC_METADATA_PATH, "utf8"),
+      ) as { generatedAt?: string };
+      if (metadata.generatedAt) return metadata.generatedAt;
+    } catch (error) {
+      console.error("Failed to read public data sync metadata", error);
+    }
+  }
+
+  if (!fs.existsSync(EVENTS_DATA_PATH)) return undefined;
+  return fs.statSync(EVENTS_DATA_PATH).mtime.toISOString();
 }
 
 function getFallbackRows() {
   if (!fs.existsSync(EVENTS_DATA_PATH)) return [];
   const content = fs.readFileSync(EVENTS_DATA_PATH, "utf8");
   return parseTsv(content).map((row: TsvRow) => row as EventSourceRow);
-}
-
-async function getSheetRows() {
-  const sheetId = getSourceSheetId();
-  const sheetTab = getSourceTab(
-    "events",
-    "GOOGLE_SHEET_EVENTS_TAB",
-  );
-
-  try {
-    const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:X");
-    return rows as GoogleSheetRow[] | null;
-  } catch (error) {
-    console.error("Failed to fetch canonical karaoke events", error);
-    return null;
-  }
 }
 
 function getTodayInLosAngeles() {
@@ -88,17 +97,47 @@ function eventRunsToday(event: KaraokeEventListing, today: string) {
   return eventDay === today.toLowerCase() || eventDay.includes(today.toLowerCase());
 }
 
-export async function getKaraokeEventListings(): Promise<KaraokeEventListing[]> {
-  const sheetRows = await getSheetRows();
-  const rows = sheetRows && sheetRows.length > 0 ? sheetRows : getFallbackRows();
+export async function getKaraokeEventData(): Promise<{
+  events: KaraokeEventListing[];
+  status: KaraokeEventDataStatus;
+}> {
+  const rows = getFallbackRows();
+  const lastSynced = getFallbackLastSynced();
+  const maximumAgeDays = Number(process.env.SINGHUB_MAX_DATA_AGE_DAYS || "7");
+  const snapshotAge = lastSynced
+    ? Date.now() - new Date(lastSynced).getTime()
+    : null;
+  const snapshotIsStale =
+    snapshotAge !== null &&
+    Number.isFinite(maximumAgeDays) &&
+    snapshotAge > maximumAgeDays * 24 * 60 * 60 * 1000;
 
-  return rows
-    .filter(isVisible)
+  const events = rows
     .filter((row) => !getOptionalValue(row.archive_reason))
     .filter((row) => !getOptionalValue(row.duplicate_of))
     .map(rowToKaraokeEventListing)
     .filter((event) => event.venueSlug && event.karaokeDay)
-    .filter((event) => event.activeStatus === "active");
+    .filter((event) => event.activeStatus === "active")
+    .filter((event) => !event.generated);
+
+  return {
+    events,
+    status: {
+      source: "committed_tsv",
+      degraded: rows.length === 0 || snapshotIsStale,
+      reason:
+        rows.length === 0
+          ? "snapshot_missing"
+          : snapshotIsStale
+            ? "snapshot_stale"
+            : undefined,
+      lastSynced,
+    },
+  };
+}
+
+export async function getKaraokeEventListings(): Promise<KaraokeEventListing[]> {
+  return (await getKaraokeEventData()).events;
 }
 
 export async function getKaraokeEventsHostingToday(): Promise<KaraokeEventListing[]> {
@@ -117,7 +156,11 @@ export async function getKaraokeEventsByVenueSlug(
 }
 
 export async function groupKaraokeEventsByVenueSlug() {
-  return (await getKaraokeEventListings()).reduce<Record<string, KaraokeEventListing[]>>(
+  return groupKaraokeEvents(await getKaraokeEventListings());
+}
+
+export function groupKaraokeEvents(events: KaraokeEventListing[]) {
+  return events.reduce<Record<string, KaraokeEventListing[]>>(
     (groups, event) => {
       if (!groups[event.venueSlug]) {
         groups[event.venueSlug] = [];

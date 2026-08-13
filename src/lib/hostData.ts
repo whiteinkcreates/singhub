@@ -8,7 +8,11 @@ import type {
   KaraokeEventListing,
 } from "@/types";
 import { getKaraokeEventListings } from "@/lib/eventData";
-import { getGoogleSheetRows, type GoogleSheetRow } from "@/lib/googleSheets";
+import {
+  getGoogleSheetRows,
+  GoogleSheetsConfigurationError,
+  type GoogleSheetRow,
+} from "@/lib/googleSheets";
 import { getSourceSheetId, getSourceTab } from "@/lib/sourceOfTruth";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
 import { getVenueListings } from "@/lib/venueData";
@@ -78,7 +82,6 @@ function isActiveStatus(value: string | undefined) {
 
 function isVisible(row: HostSourceRow) {
   const appVisible = getCell(row, "app_visible");
-  if (!appVisible) return true;
   return parseBoolean(appVisible);
 }
 
@@ -445,7 +448,9 @@ async function getSheetRows() {
     const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:AB");
     return rows as GoogleSheetRow[] | null;
   } catch (error) {
-    console.error("Failed to fetch host profiles from Google Sheets", error);
+    if (!(error instanceof GoogleSheetsConfigurationError)) {
+      console.error("Failed to fetch host profiles from Google Sheets", error);
+    }
     return null;
   }
 }
@@ -470,10 +475,11 @@ export async function getHosts() {
     getKaraokeEventListings(),
     getVenueListings(),
   ]);
-  const rows = sheetRows && sheetRows.length > 0 ? sheetRows : getFallbackRows();
+  const usingSheet = Boolean(sheetRows?.length);
+  const rows = usingSheet ? sheetRows || [] : getFallbackRows();
 
   const hosts = rows
-    .filter(isVisible)
+    .filter((row) => !usingSheet || isVisible(row))
     .map(rowToHost)
     .filter((host) => host.slug && host.publicDisplayName);
 

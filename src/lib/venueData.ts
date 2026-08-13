@@ -1,11 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { ListingStatus, ProfileTier, VenueListing, VenueType } from "@/types";
-import { getGoogleSheetRows, type GoogleSheetRow } from "@/lib/googleSheets";
-import { getSourceSheetId, getSourceTab } from "@/lib/sourceOfTruth";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
 
 const DATA_PATH = path.join(process.cwd(), "public", "data", "venues.tsv");
+const SLUG_ALIASES_PATH = path.join(
+  process.cwd(),
+  "public",
+  "data",
+  "venue_slug_aliases.tsv",
+);
 const COORDINATES_PATH = path.join(
   process.cwd(),
   "scripts",
@@ -111,12 +115,6 @@ function normalizeVenueType(value: string | undefined): VenueType {
   return "live_bar";
 }
 
-function isVisible(row: VenueSourceRow) {
-  const value = getOptionalValue(row.app_visible);
-  if (!value) return true;
-  return parseBoolean(value);
-}
-
 function loadCoordinates(): CoordinateMap {
   if (!fs.existsSync(COORDINATES_PATH)) return {};
 
@@ -135,20 +133,11 @@ function getFallbackRows() {
   );
 }
 
-async function getSheetRows() {
-  const sheetId = getSourceSheetId();
-  const sheetTab = getSourceTab(
-    "venues",
-    "GOOGLE_SHEET_VENUES_TAB",
-  );
-
-  try {
-    const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:AI");
-    return rows as GoogleSheetRow[] | null;
-  } catch (error) {
-    console.error("Failed to fetch canonical venue listings", error);
-    return null;
-  }
+function getCanonicalSlug(slug: string) {
+  if (!fs.existsSync(SLUG_ALIASES_PATH)) return slug;
+  const aliases = parseTsv(fs.readFileSync(SLUG_ALIASES_PATH, "utf8"));
+  const match = aliases.find((row) => row.old_slug === slug);
+  return match?.canonical_slug || slug;
 }
 
 function rowToVenueListing(
@@ -222,39 +211,14 @@ function rowToVenueListing(
 
 export async function getVenueListings(): Promise<VenueListing[]> {
   const fallbackRows = getFallbackRows();
-  const fallbackById = new Map(
-    fallbackRows.map((row) => [getOptionalValue(row.id), row]),
-  );
-  const fallbackBySlug = new Map(
-    fallbackRows.map((row) => [getOptionalValue(row.slug), row]),
-  );
   const coordinates = loadCoordinates();
-  const sheetRows = await getSheetRows();
-
-  if (!sheetRows || sheetRows.length === 0) {
-    return fallbackRows.map((row) =>
-      rowToVenueListing(row, row, coordinates, true),
-    );
-  }
-
-  return sheetRows
-    .filter(isVisible)
+  return fallbackRows
     .filter((row) => !getOptionalValue(row.archive_reason))
-    .filter(
-      (row) =>
-        !EXCLUDED_STATUSES.has(
-          getOptionalValue(row.listing_status)?.toLowerCase() || "",
-        ),
-    )
-    .map((row) => {
-      const id = getOptionalValue(row.venue_id);
-      const slug = getOptionalValue(row.slug);
-      const fallback =
-        (id ? fallbackById.get(id) : undefined) ||
-        (slug ? fallbackBySlug.get(slug) : undefined);
-
-      return rowToVenueListing(row, fallback, coordinates, false);
+    .filter((row) => {
+      const status = getOptionalValue(row.listing_status)?.toLowerCase() || "";
+      return !EXCLUDED_STATUSES.has(status);
     })
+    .map((row) => rowToVenueListing(row, row, coordinates, true))
     .filter((venue) => venue.id && venue.venueName && venue.slug);
 }
 
@@ -279,5 +243,8 @@ export async function getVenueTickerItems(): Promise<string[]> {
 export async function getVenueListingBySlug(
   slug: string,
 ): Promise<VenueListing | undefined> {
-  return (await getVenueListings()).find((venue) => venue.slug === slug);
+  const canonicalSlug = getCanonicalSlug(slug);
+  return (await getVenueListings()).find(
+    (venue) => venue.slug === canonicalSlug,
+  );
 }

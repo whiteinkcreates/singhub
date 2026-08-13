@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { requireAdminAuthorization } from "@/lib/adminAuthorization";
 import { createClient } from "@/lib/supabase/server";
 
 function value(formData: FormData, key: string) {
@@ -19,6 +20,7 @@ function intValue(formData: FormData, key: string) {
 }
 
 export async function updateScoutLead(formData: FormData) {
+  await requireAdminAuthorization();
   const id = value(formData, "id");
 
   if (!id) {
@@ -87,6 +89,7 @@ export async function updateScoutLead(formData: FormData) {
 }
 
 export async function quickUpdateScoutLead(formData: FormData) {
+  await requireAdminAuthorization();
   const id = value(formData, "id");
   const scoutStatus = value(formData, "scout_status");
 
