@@ -7,16 +7,21 @@ import type { KaraokeEventListing, VenueListing } from "@/types";
 type VenueComparisonExportShellProps = { venues: VenueListing[]; events: KaraokeEventListing[] };
 type VenueQuestion = { key: string; label: string; question: string; group: "core" | "enhanced" };
 
-const STALE_ADMIN_EVENT_IDS = new Set([
-  // One-time Cordova Summer Pride Karaoke Contest. Removed from canonical Events,
-  // but excluded here too so an unsynced/cached copy cannot appear in sales PDFs.
-  "event-0020",
-]);
-
 function cleanValue(value: string | undefined) {
   const trimmed = value?.trim();
   if (!trimmed || /^(tbd|unknown|-|n\/a)$/i.test(trimmed)) return undefined;
   return trimmed;
+}
+
+function isStaleAdminComparisonEvent(event: KaraokeEventListing) {
+  if (event.eventId === "event-0020") return true;
+
+  if (event.venueSlug !== "cordova-bar") return false;
+
+  const eventDay = event.karaokeDay || "";
+  const notes = event.eventNotes || "";
+
+  return /july\s*14/i.test(eventDay) || /summer\s+pride/i.test(notes);
 }
 
 function getVenueEvents(events: KaraokeEventListing[], venueSlug: string) {
@@ -76,7 +81,7 @@ export function VenueComparisonExportShell({ venues, events }: VenueComparisonEx
   const [selectedSlug, setSelectedSlug] = useState(initialSlug);
   const selectedVenue = useMemo(() => venues.find((venue) => venue.slug === selectedSlug) || venues[0], [selectedSlug, venues]);
   const comparisonEvents = useMemo(
-    () => events.filter((event) => !STALE_ADMIN_EVENT_IDS.has(event.eventId)),
+    () => events.filter((event) => !isStaleAdminComparisonEvent(event)),
     [events],
   );
   const selectedEvents = useMemo(() => selectedVenue ? getVenueEvents(comparisonEvents, selectedVenue.slug) : [], [comparisonEvents, selectedVenue]);
