@@ -1,0 +1,14 @@
+{
+  "archivedOn": "2026-08-14",
+  "archiveTab": "Live_Only_Event_Review",
+  "reason": "Archived for source verification before any corrected event is promoted back into Events_Canonical.",
+  "eventIds": [
+    "event-0010-sunday",
+    "event-0012",
+    "event-0021",
+    "event-0022",
+    "event-0023",
+    "event-0024",
+    "event-0026"
+  ]
+}

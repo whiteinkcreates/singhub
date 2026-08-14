@@ -2,35 +2,13 @@ import { createSign } from "node:crypto";
 
 const SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets.readonly";
 
-export type GoogleSheetRow = Record<string, string>;
-
-export class GoogleSheetsConfigurationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "GoogleSheetsConfigurationError";
-  }
-}
-
-function valuesToRows(values: string[][]): GoogleSheetRow[] {
-  const [headers = [], ...rows] = values;
-
-  return rows
-    .filter((valuesRow) => valuesRow.some((value) => value.trim()))
-    .map((valuesRow) =>
-      headers.reduce<GoogleSheetRow>((mappedRow, header, index) => {
-        mappedRow[header.trim()] = valuesRow[index]?.trim() ?? "";
-        return mappedRow;
-      }, {}),
-    );
-}
-
 async function getAccessToken() {
   const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
   if (!clientEmail || !privateKey) {
-    throw new GoogleSheetsConfigurationError(
-      "Google Sheets credentials are not configured.",
+    throw new Error(
+      "GOOGLE_SERVICE_ACCOUNT_EMAIL and GOOGLE_PRIVATE_KEY are required for canonical data sync.",
     );
   }
 
@@ -46,7 +24,10 @@ async function getAccessToken() {
     }),
   ).toString("base64url");
   const unsignedToken = `${header}.${payload}`;
-  const signature = createSign("RSA-SHA256").update(unsignedToken).sign(privateKey).toString("base64url");
+  const signature = createSign("RSA-SHA256")
+    .update(unsignedToken)
+    .sign(privateKey)
+    .toString("base64url");
 
   const response = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
@@ -55,14 +36,13 @@ async function getAccessToken() {
       grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
       assertion: `${unsignedToken}.${signature}`,
     }),
-    cache: "no-store",
   });
 
   if (!response.ok) {
-    throw new Error(`Google auth responded with ${response.status}`);
+    throw new Error(`Google auth responded with ${response.status}.`);
   }
 
-  const tokenResponse = (await response.json()) as { access_token?: string };
+  const tokenResponse = await response.json();
   if (!tokenResponse.access_token) {
     throw new Error("Google auth response did not include an access token.");
   }
@@ -70,22 +50,31 @@ async function getAccessToken() {
   return tokenResponse.access_token;
 }
 
-export async function getGoogleSheetRows(sheetId: string, sheetTab: string, columnRange = "A:AZ") {
+export async function fetchGoogleSheetRows(sheetId, sheetTab, columnRange = "A:AZ") {
   const accessToken = await getAccessToken();
-
   const range = encodeURIComponent(`'${sheetTab}'!${columnRange}`);
   const response = await fetch(
     `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`,
-    {
-      headers: { Authorization: `Bearer ${accessToken}` },
-      next: { revalidate: 300 },
-    },
+    { headers: { Authorization: `Bearer ${accessToken}` } },
   );
 
   if (!response.ok) {
-    throw new Error(`Google Sheets API responded with ${response.status}`);
+    throw new Error(`Google Sheets API responded with ${response.status} for ${sheetTab}.`);
   }
 
-  const sheetResponse = (await response.json()) as { values?: string[][] };
-  return valuesToRows(sheetResponse.values || []);
+  const sheetResponse = await response.json();
+  const [headers = [], ...values] = sheetResponse.values || [];
+
+  return values
+    .filter((row) => row.some((value) => String(value).trim()))
+    .map((row, index) => {
+      const mapped = { __rowNumber: String(index + 2) };
+      headers.forEach((header, columnIndex) => {
+        const name = String(header).trim();
+        if (name && mapped[name] === undefined) {
+          mapped[name] = String(row[columnIndex] ?? "").trim();
+        }
+      });
+      return mapped;
+    });
 }

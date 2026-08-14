@@ -55,6 +55,10 @@ export type KaraokeEventListing = {
   eventNotes?: string;
   eventConfidenceScore: number | null;
   reviewStatus?: string;
+  generated: boolean;
+  source1?: string;
+  source2?: string;
+  lastVerified?: string;
 };
 
 export type HostWeekday =

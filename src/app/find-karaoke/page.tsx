@@ -1,5 +1,5 @@
 import { FindKaraokeExperience } from "@/components/find/FindKaraokeExperience";
-import { groupKaraokeEventsByVenueSlug } from "@/lib/eventData";
+import { getKaraokeEventData, groupKaraokeEvents } from "@/lib/eventData";
 import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getVenueListings } from "@/lib/venueData";
 
@@ -25,7 +25,8 @@ function getSearchParamValue(value: string | string[] | undefined) {
 export default async function FindKaraokePage({ searchParams }: FindKaraokePageProps) {
   const resolvedSearchParams = await searchParams;
   const venues = getPublicVenues(await getVenueListings());
-  const eventsByVenueSlug = await groupKaraokeEventsByVenueSlug();
+  const eventData = await getKaraokeEventData();
+  const eventsByVenueSlug = groupKaraokeEvents(eventData.events);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
@@ -41,6 +42,24 @@ export default async function FindKaraokePage({ searchParams }: FindKaraokePageP
           Use location, night, venue type, and trust filters to find the right mic.
         </p>
       </section>
+
+      {eventData.status.degraded ? (
+        <section className="mt-8 rounded-2xl border border-amber-300/40 bg-amber-300/10 p-4 text-sm leading-6 text-amber-50">
+          <p className="font-black">Schedule snapshot needs a refresh.</p>
+          <p className="mt-1 text-amber-100/90">
+            SingHUB is showing the last validated schedule snapshot
+            {eventData.status.lastSynced
+              ? ` from ${new Date(eventData.status.lastSynced).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                  timeZone: "America/Los_Angeles",
+                })}`
+              : ""}
+            . Confirm with the venue before heading out.
+          </p>
+        </section>
+      ) : null}
 
       <FindKaraokeExperience
         venues={venues}
