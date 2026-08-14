@@ -277,6 +277,7 @@ function buildVenues(sourceRows, report) {
     const venueId = clean(row.venue_id);
     const venueName = clean(row.venue_name);
     const status = key(row.listing_status);
+    if (!venueId && !venueName && !clean(row.slug)) continue;
 
     if (clean(row.app_visible) && !isBooleanCell(row.app_visible)) {
       report.venuesInvalidAppVisibility.push(
@@ -356,6 +357,7 @@ function buildEvents(sourceRows, venueRows, report) {
   const events = [];
 
   for (const row of sourceRows) {
+    if (!clean(row.event_id) && !clean(row.venue_id)) continue;
     if (clean(row.app_visible) && !isBooleanCell(row.app_visible)) {
       report.eventsInvalidAppVisibility.push(
         `event row ${row.__rowNumber}: ${row.event_id} has non-boolean app_visible value`,
