@@ -16,10 +16,20 @@ The service account needs read-only access to the canonical workbook.
 
 1. Run the `Sync public karaoke data` GitHub Action.
 2. Download the `singhub-public-data-candidate` artifact.
-3. Review `sync-validation-report.md`, `sync-diff-report.md`, and `generated_events_review.tsv`.
+3. Review `sync-validation-report.md`, `sync-diff-report.md`,
+   `generated_events_review.tsv`, and `live_only_events_review.tsv`.
 4. Fix canonical Sheet rows if guardrails fail. Do not lower thresholds merely to make CI green.
 
 Generated venue schedule candidates are review-only. Promote a candidate by creating or correcting the corresponding row in `Events_Canonical`, not by copying it directly into `events_by_night.tsv`.
+
+Rows in `live_only_events_review.tsv` exist in the committed public snapshot but not
+in the authoritative candidate. Preserve intentional retirements in the canonical
+workbook's `Live_Only_Event_Review` tab. A hand-entered event may disappear only
+when its event ID is recorded in `config/approved-live-only-removals.json`.
+
+The sync also rejects stable venue IDs that switch to a different slug and address.
+Assign a new venue ID for a new venue, then update the corresponding
+`Events_Canonical` references.
 
 ## Publish validated data
 

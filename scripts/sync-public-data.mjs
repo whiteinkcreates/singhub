@@ -24,6 +24,11 @@ const EVENTS_SHEET =
   SOURCE_CONFIG.tabs.events;
 const PUBLIC_DATA_DIR = path.join(ROOT, "public", "data");
 const COORDINATES_PATH = path.join(ROOT, "scripts", "data-sync", "venue-coordinates.json");
+const APPROVED_LIVE_ONLY_REMOVALS_PATH = path.join(
+  ROOT,
+  "config",
+  "approved-live-only-removals.json",
+);
 
 const EXCLUDED_STATUSES = new Set([
   "closed",
@@ -128,6 +133,33 @@ function loadCoordinates() {
 function tsv(rows, columns) {
   const body = rows.map((row) => columns.map((column) => clean(row[column])).join("\t")).join("\n");
   return `${columns.join("\t")}\n${body}${body ? "\n" : ""}`;
+}
+
+function parseTsv(text) {
+  const lines = text.trimEnd().split(/\r?\n/);
+  if (!lines.length || !lines[0]) return [];
+  const headers = lines[0].split("\t");
+  return lines.slice(1).filter(Boolean).map((line, index) => {
+    const values = line.split("\t");
+    return Object.fromEntries([
+      ...headers.map((header, column) => [header, values[column] || ""]),
+      ["__rowNumber", index + 2],
+    ]);
+  });
+}
+
+function readPublicRows(fileName) {
+  const filePath = path.join(PUBLIC_DATA_DIR, fileName);
+  if (!fs.existsSync(filePath)) return [];
+  return parseTsv(fs.readFileSync(filePath, "utf8"));
+}
+
+function loadApprovedLiveOnlyRemovals() {
+  if (!fs.existsSync(APPROVED_LIVE_ONLY_REMOVALS_PATH)) return new Set();
+  const configured = JSON.parse(
+    fs.readFileSync(APPROVED_LIVE_ONLY_REMOVALS_PATH, "utf8"),
+  );
+  return new Set((configured.eventIds || []).map(clean));
 }
 
 function canonicalDay(token) {
@@ -393,6 +425,47 @@ function eventDayKey(event) {
   return `${event.venue_id}::${event.karaoke_day}`;
 }
 
+function eventSlugDayKey(event) {
+  return `${clean(event.venue_slug)}::${clean(event.karaoke_day)}`;
+}
+
+function buildLiveOnlyReview(candidateEvents) {
+  const candidateKeys = new Set(candidateEvents.map(eventSlugDayKey));
+  return readPublicRows("events_by_night.tsv")
+    .filter((event) => !candidateKeys.has(eventSlugDayKey(event)))
+    .map((event) => ({
+      ...event,
+      source_class: clean(event.event_notes).startsWith(
+        "Generated from Venues_Canonical",
+      )
+        ? "legacy_generated"
+        : "hand_entered",
+      sync_action: "remove_from_public_snapshot",
+    }));
+}
+
+function reportStableVenueIdentityChanges(candidateVenues) {
+  const currentById = new Map(
+    readPublicRows("venues.tsv").map((venue) => [clean(venue.id), venue]),
+  );
+  return candidateVenues.flatMap((candidate) => {
+    const current = currentById.get(clean(candidate.id));
+    if (!current || clean(current.slug) === clean(candidate.slug)) return [];
+    const currentAddress = key(current.address);
+    const candidateAddress = key(candidate.address);
+    if (
+      currentAddress &&
+      candidateAddress &&
+      currentAddress === candidateAddress
+    ) {
+      return [];
+    }
+    return [
+      `${candidate.id}: ${clean(current.venue_name)} / ${clean(current.slug)} -> ${candidate.venue_name} / ${candidate.slug}`,
+    ];
+  });
+}
+
 function buildGeneratedVenueScheduleCandidates(venues, events, report) {
   const existingVenueDays = new Set(events.map(eventDayKey));
   const generated = [];
@@ -521,6 +594,11 @@ function reportMarkdown(report, venues, events) {
     section("Public Rows With TBD Address/Time/Host", report.publicRowsWithTbd),
     section("Public Venues Missing Coordinates", report.publicVenuesMissingCoordinates),
     section("Closed/Hidden/Archived Rows Excluded", report.closedHiddenWouldExport),
+    section("Stable Venue Identity Changes", report.stableVenueIdentityChanges),
+    section(
+      "Unapproved Hand-Entered Event Removals",
+      report.unapprovedHandEnteredRemovals,
+    ),
     "",
   ].join("\n");
 }
@@ -650,6 +728,8 @@ async function main() {
     publicRowsWithTbd: [],
     publicVenuesMissingCoordinates: [],
     closedHiddenWouldExport: [],
+    stableVenueIdentityChanges: [],
+    unapprovedHandEnteredRemovals: [],
   };
 
   const [venueSourceRows, eventSourceRows] = await Promise.all([
@@ -663,6 +743,19 @@ async function main() {
     events,
     report,
   );
+  const liveOnlyReview = buildLiveOnlyReview(events);
+  report.stableVenueIdentityChanges = reportStableVenueIdentityChanges(venues);
+  const approvedLiveOnlyRemovals = loadApprovedLiveOnlyRemovals();
+  report.unapprovedHandEnteredRemovals = liveOnlyReview
+    .filter(
+      (event) =>
+        event.source_class === "hand_entered" &&
+        !approvedLiveOnlyRemovals.has(clean(event.event_id)),
+    )
+    .map(
+      (event) =>
+        `${event.event_id}: ${event.venue_name} ${event.karaoke_day}`,
+    );
 
   hydrateVenueSchedules(venues, events);
   reportMissingEventRows(venues, events, report);
@@ -698,6 +791,14 @@ async function main() {
   fs.writeFileSync(
     path.join(options.outputDir, "generated_events_review.tsv"),
     tsv(generatedCandidates, EVENT_COLUMNS),
+  );
+  fs.writeFileSync(
+    path.join(options.outputDir, "live_only_events_review.tsv"),
+    tsv(liveOnlyReview, [
+      ...EVENT_COLUMNS.filter((column) => column !== "generated"),
+      "source_class",
+      "sync_action",
+    ]),
   );
   fs.writeFileSync(
     path.join(options.outputDir, "venue_slug_aliases.tsv"),
@@ -741,6 +842,16 @@ async function main() {
   if (report.eventSlugMismatches.length) {
     sourceFailures.push(
       `${report.eventSlugMismatches.length} active event row(s) disagree with their venue canonical slug.`,
+    );
+  }
+  if (report.stableVenueIdentityChanges.length) {
+    sourceFailures.push(
+      `${report.stableVenueIdentityChanges.length} stable venue ID(s) map to a different venue identity than the committed snapshot.`,
+    );
+  }
+  if (report.unapprovedHandEnteredRemovals.length) {
+    sourceFailures.push(
+      `${report.unapprovedHandEnteredRemovals.length} hand-entered live event(s) would disappear without an approved archival record.`,
     );
   }
   if (sourceFailures.length) {
