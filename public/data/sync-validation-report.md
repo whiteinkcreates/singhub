@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 54.
-Exported events: 111.
+Exported venues: 57.
+Exported events: 116.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -75,6 +75,9 @@ Exported events: 111.
 - venue-0098 The White Bull Tavern
 - venue-0099 Bell in Hand Tavern
 - venue-0100 VIVA Karaoke x Studios
+- venue-0083 Tony’s Martini Bar
+- venue-0084 Side Piece
+- venue-0085 Hennessey’s La Jolla
 ## Venues Skipped Because App Hidden
 - row 6: venue-0015 Carriage House Cocktails & Karaoke
 - row 7: venue-0022 Cat Eye Club
@@ -160,6 +163,8 @@ Exported events: 111.
 - event row 98: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
 - event row 98: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
 - event row 98: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
+- event row 104: event-0021 Tony’s Martini Bar
+- event row 105: event-0022 Tony’s Martini Bar
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
@@ -176,6 +181,9 @@ Exported events: 111.
 - venue-0090 JP's Pub
 - venue-0091 Harbor Town Pub
 - venue-0092 Neon Moon
+- venue-0083 Tony’s Martini Bar
+- venue-0084 Side Piece
+- venue-0085 Hennessey’s La Jolla
 ## Closed/Hidden/Archived Rows Excluded
 - None
 ## Stable Venue Identity Changes
@@ -189,17 +197,17 @@ Exported events: 111.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 54
-Authoritative events: 111
+Public venues: 57
+Authoritative events: 116
 Legacy venue slug aliases: 0
 
 PASS Monday: 9 authoritative / 8 expected minimum
 PASS Tuesday: 17 authoritative / 8 expected minimum
-PASS Wednesday: 19 authoritative / 9 expected minimum
-PASS Thursday: 24 authoritative / 14 expected minimum
+PASS Wednesday: 21 authoritative / 9 expected minimum
+PASS Thursday: 25 authoritative / 14 expected minimum
 PASS Friday: 19 authoritative / 10 expected minimum
 PASS Saturday: 14 authoritative / 10 expected minimum
-PASS Sunday: 9 authoritative / 7 expected minimum
+PASS Sunday: 11 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
