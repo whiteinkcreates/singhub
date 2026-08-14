@@ -4,162 +4,80 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 73
-- Candidate non-empty lines: 55
-- Added/changed lines: 54
-- Removed/changed lines: 72
+- Previous non-empty lines: 55
+- Candidate non-empty lines: 58
+- Added/changed lines: 4
+- Removed/changed lines: 1
 
 ### Added or changed sample
 
 ```text
-venue-0051	#1 Fifth Avenue	1-fifth-avenue	basic	verified	live_bar	San Diego	Hillcrest	3845 Fifth Ave, San Diego, CA 92103	32.7482	-117.1603		@numberonefifth				Thursday	10:00 PM	12:00 AM	Navy Nick & JP	Hillcrest, Thursday karaoke, live karaoke	Classic San Diego karaoke institution with Thursday karaoke from 10 PM-midnight hosted by Navy Nick & JP, plus Friday karaoke from 9 PM-2 AM.											FALSE	96	Nickalus Randle / @navynickaraoke provided Thursday schedule: Navy Nick & JP, 10 PM-midnight. Existing Friday listing retained.	Navy Nick response 2026-07-15	Corey direct update 2026-07-03		2026-07-15
-venue-0062	710 Beach Club	710-beach-club	basic	ai_scouted	live_bar	San Diego	Pacific Beach	710 Garnet Ave, San Diego (Pacific Beach)	32.7971	-117.2562	https://www.710bc.com/	@710beachclub				Thursday	8:00 PM	12:00 AM	Two of Clubs	Pacific Beach, Thursday karaoke, live karaoke	Thursday karaoke with Two of Clubs starting 8pm until 12am.											FALSE	85	Synced from completed Weekly_Grid roundup schedule.				2026-07-13
-venue-0018	BLVD	blvd	basic	ai_scouted	live_bar	San Diego	Grantville	6628 Mission Gorge Rd, San Diego, CA 92120	32.7803	-117.0951	https://theblvdbarsd.com/	@theblvdbarsd				Saturday	9:00 PM	TBD	DJ Glyph	Grantville, Saturday karaoke, live karaoke	Grantville / Mission Gorge venue with a reported Saturday karaoke lead. Current start time, host, and recurring status still need verification before using in roundups.											FALSE	85	Synced from completed Weekly_Grid roundup schedule.				2026-07-13
-venue-0013	Camels Bar & Grill	camels-bar-grill	basic	verified	live_bar	San Diego	Mission Valley	10330 Friars Rd, San Diego, CA 92120	32.7938	-117.1082	https://camelsbarandgrill.com/	@camelsbarandgrill				Saturday	9:00 PM	TBD	DJ Meth	Mission Valley, Saturday karaoke, live karaoke	Mission Valley karaoke listing. Thursday time confirmed as 9 PM; host details still listed as DJ Mike / DJ Meth until corrected.											FALSE	90	Corey confirmed Camels Bar & Grill / Camel Bar for Thursday roundup with DJ Mike. Time still TBD.	Corey direct update 2026-07-02			2026-07-09
-venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	basic	verified	live_bar	San Diego	University Heights	1839 Adams Avenue, San Diego, CA, USA	32.7634	-117.1455	https://cheerssandiego.com	cheersbarsandiego				Monday, Wednesday	8:00 PM	1:00 AM	Ed&Katie	University Heights, Monday karaoke, Wednesday karaoke, live karaoke	University Heights neighborhood bar with karaoke Monday and Wednesday from 8 PM-1 AM, hosted by Ed and Katie.										info@cheerssandiego.com	FALSE	95	Official site confirms Cheers Bar San Diego at 1839 Adams Ave and its University Heights history.	Official Cheers Bar San Diego website/history	Corey correction 2026-08-12		2026-08-12
-venue-0009	Deano's Pub - La Mesa	deanos-pub	basic	verified	live_bar	La Mesa	La Mesa / East County	5286 Baltimore Dr, La Mesa, CA 91942	32.7754	-117.0327	https://deanospub.com/	@deanospub				Wednesday	8:00 PM	12:00 AM	KJ Smash	La Mesa / East County, Wednesday karaoke, live karaoke	La Mesa neighborhood pub with Wednesday karaoke from 8 PM to midnight hosted by KJ Smash.											TRUE	98	Direct confirmation and current Deano's post confirm Wednesday karaoke with KJ Smash from 8 PM to midnight.	Corey direct confirmation 2026-08-14	https://www.facebook.com/deanospub/posts/kj-smash-in-the-deanos-pub-soundbooth-karaoke-wednesdays-with-kj-smash-deanos-pu/1553844863420206/		2026-08-14
-venue-0082	Deano's East	deanos-east	basic	ai_scouted	live_bar	Santee	Santee / East County	11541 Woodside Ave Ste d, Santee, CA 92071	32.8384	-116.9723						Saturday	8:00 PM	12:00 AM	KJ Lolo	Santee / East County, Saturday karaoke, live karaoke	Santee Deano's location for review. DJ Lolo reportedly hosts Saturday karaoke. Need exact venue name/address, start/end time, and form confirmation before public listing or roundup use.											FALSE	85	Synced from completed Weekly_Grid roundup schedule.				2026-07-13
-venue-0077	Clark Cabaret	clark-cabaret	basic	verified	live_bar	San Diego	University Heights	4545 Park Blvd #101, San Diego, CA 92116	32.7604	-117.1462	https://www.diversionary.org/events/karaoke-night-7	@clarkcabaret				Friday	10:00 PM	TBD	TBD	University Heights, Friday karaoke, live karaoke	University Heights LGBTQIA+ theatre/cabaret bar venue with Friday Karaoke Night starting at 10 PM. Use public listing name Clark Cabaret.											FALSE	92	Corey confirmed Diversionary Friday karaoke starts at 10 PM on 2026-06-29. Diversionary karaoke archive lists Karaoke Night on multiple Fridays. End time and host still need confirmation.	https://www.diversionary.org/mec-category/karaoke	https://www.diversionary.org/events/karaoke-night-7		2026-06-30
-venue-0073	Dock's Cocktail Lounge	docks-cocktail-lounge	basic	ai_scouted	live_bar	Chula Vista	Downtown Chula Vista / South Bay	317 3rd Ave, Chula Vista, CA	32.6409	-117.0805										Downtown Chula Vista / South Bay, live karaoke	Remove Dock's from tonight's Thursday roundup. Current karaoke schedule needs direct confirmation before future roundup use.											FALSE	50	New row added from Karaoke Venues SD 9/17 List. Needs verification before verified status.	Karaoke Venues SD - 9/17 List			2026-07-09
-venue-0020	Don's Cocktails	dons-cocktails	basic	ai_scouted	live_bar	El Cajon	East County	13321 Hwy 8 Bus, El Cajon, CA 92021	32.8171	-116.9002	https://dons-cocktail-lounge.edan.io/	@dons_cocktail_lounge)				Thursday, Friday	9pm-last call	TBD	DJ Savadelic	East County, Thursday karaoke, Friday karaoke, live karaoke	El Cajon karaoke bar with Thursday and Friday karaoke. Exact times still need confirmation.											FALSE	78	Corey confirmed Don's Cocktails has Thursday / Friday karaoke. Removed misplaced Cordova event/media data from canonical row.				2026-07-11
-venue-0005	Double Deuce	double-deuce	basic	verified	live_bar	San Diego	Gaslamp Quarter	528 F St, San Diego, CA 92101	32.7139	-117.1603	https://doubledeucesd.com/	@doubledeucesandiego				Thursday, Friday, Saturday	8:00 PM / 7:00 PM	10:00 PM	Savor Entertainment, Navy Nick	Gaslamp, Country Karaoke, Weekly Karaoke	Gaslamp Quarter bar with Thursday-Saturday karaoke. Thursday runs 8-10 PM with Savor Entertainment; Friday and Saturday run 7-10 PM with Savor Entertainment, with Navy Nick covering Friday 7/17.											FALSE	95	Nickalus Randle / @navynickaraoke provided recurring Double Deuce karaoke schedule. Flyer confirms Navy Nick country collab with Savor Entertainment on 07.11 and 07.17, 7-10 PM.	Navy Nick response 2026-07-15	Navy Nick / Savor Entertainment flyer		2026-07-15
-venue-0014	Flicks	flicks	basic	verified	live_bar	San Diego	Hillcrest	1017 University Ave, San Diego, CA 92103	32.7483	-117.1546	https://www.sdflicks.com/	https://www.instagram.com/flicks_sd/?hl=enn				Tuesday	8:30 PM	1:30 AM	Thonie Lee	Hillcrest, Late Night, Weekly Karaoke	Hillcrest bar/nightlife venue with Tuesday karaoke from 8:30 PM-1:30 AM hosted by Thonie Lee.											FALSE	95	Nickalus Randle / @navynickaraoke provided Tuesday schedule: Flicks, 8:30 PM-1:30 AM, host Thonie Lee.	Navy Nick response 2026-07-15	Karaoke Venues SD - Full_Karaoke_Venue_List__Rebuilt_.csv		2026-07-15
-venue-0058	Gaslamp Lumpia Factory	gaslamp-lumpia-factory	basic	ai_scouted	live_bar	San Diego	Gaslamp Quarter	423 F Street, San Diego, CA	32.7106	-117.1594		@eqsandiego				Thursday, Saturday	7:00 PM / 8:00 PM	12:00 AM / TBD	KJ Glenn, TBD	Gaslamp restaurant and bar serving food, cocktails, and drink specials throughout Thursday karaoke.	Formerly The Merrow, now EQ. No current karaoke found; do not include in SingHUBSD roundups unless separately verified.											FALSE	100	Venue confirmed recurring Thursday karaoke with KJ Glenn, 7 PM-midnight, plus food, cocktails, and drink specials throughout the night.	Direct venue submission via Instagram	Corey follow-up with venue details 2026-08-05		2026-08-05
-venue-0042	Gaslamplighter Karaoke Cocktail Bar	gaslamplighter	basic	ai_scouted	live_bar	San Diego	Gaslamp Quarter	536 Market St, San Diego, CA 92101	32.7111	-117.1604		@gaslamplighter				Tuesday, Wednesday, Friday, Sunday	9:00 PM	close	TBD	Gaslamp Quarter, Tuesday karaoke, Wednesday karaoke, Friday karaoke, Sunday karaoke, live karaoke	Gaslamp karaoke cocktail bar with karaoke Tuesday-Sunday from 9 PM-close. Hours and availability may occasionally vary due to private events or full venue buyouts.											FALSE	85	Corey confirmed Gaslamplighter Karaoke Cocktail Bar schedule: Tuesday-Sunday 9p-close. Note: hours and availability may vary for private events or full venue buyouts. Removed Monday from lineup.	Corey direct update 2026-06-28			2026-07-13
-venue-0056	Gingers	gingers	basic	verified	live_bar	San Diego	Gaslamp Quarter	600 Fifth Ave (below Barleymash), San Diego (Gaslamp Quarter)	32.7119	-117.1604		@gingersgaslamp				Thursday	9:00 PM	12:00 AM	Mikey Mic	Gaslamp Quarter, Thursday karaoke, live karaoke	Gaslamp karaoke at Ginger's on Thursdays from 9 PM-12 AM.											FALSE	90	Corey confirmed Ginger's Thursday karaoke is 9 PM-12 AM. Host remains Mikey Mic from existing row unless corrected.	Corey direct correction 2026-07-02			2026-07-02
-venue-0054	Happy Does	happy-does	basic	verified	live_bar	San Diego	Gaslamp Quarter	340 5th Ave, San Diego, CA 92101	32.7109	-117.1585		@happydoesbar				Thursday, Friday, Saturday	8:30 PM	12:30 AM / 1:30 AM	Veronica, TBD	Gaslamp Quarter, Thursday karaoke, Friday karaoke, Saturday karaoke, live karaoke	Gaslamp Quarter karaoke on Thursday, Friday, and Saturday starting at 8:30 PM. Thursday and Friday run to 12:30 AM; Saturday runs to 1:30 AM.											TRUE	92	Official Happy Does site lists 340 5th Ave, San Diego, CA 92101 in the Gaslamp Quarter and karaoke Thursday-Saturday at 8:30 PM.	Official Happy Does website	Corey correction 2026-08-12		2026-08-12
-venue-0003	Hearth House	hearth-house	basic	verified	live_bar	San Diego	La Mesa	5505 Jackson Dr, La Mesa, CA 91942	32.7734	-117.0326	https://hearthhousebar.com	@hearthcocktails				Tuesday, Wednesday, Thursday	9:00 PM	close	James	La Mesa, Tuesday karaoke, Wednesday karaoke, Thursday karaoke, live karaoke	La Mesa / East County karaoke listing with verified Tuesday-Thursday schedule from 9 PM-close. Thursday host confirmed as James.											FALSE	92	Corey confirmed Hearth House Tuesday-Thursday, 9 PM-close. Thursday host confirmed as James on 2026-07-02.	Corey direct update 2026-07-02			2026-07-02
-venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearny Mesa / Convoy	4428 Convoy St Jury Classroom / Gallery, San Diego, CA 92111	32.8244	-117.1541		@hivesandiego								Kearny Mesa / Convoy, private rooms												FALSE	60					46175
-venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San Diego	Kearny Mesa / Convoy	4690 Convoy St #110, San Diego (Kearny Mesa)	32.8311	-117.1537										Kearny Mesa / Convoy, private rooms	Kearny Mesa / Convoy private-room karaoke studio lead with daily evening availability reported. Room details, hours, and reservation info still need current verification.											FALSE	75	Enriched from Karaoke Venues SD 9/17 List. Nightly karaoke and host details need current verification.	Karaoke Venues SD - 9/17 List			46175
-venue-0081	Joycee's Cocktails	joycees-cocktails	basic	verified	live_bar	Spring Valley	Spring Valley	1025 Elkelton Blvd, Spring Valley, CA 91977	32.7169	-116.9842						Wednesday	8:00 PM	12:00 AM	Javier / DJ Harvest	Spring Valley, Wednesday karaoke, live karaoke	Every other Wednesday karaoke at Joycee's Cocktails from 8 PM to midnight, hosted by Javier / DJ Harvest. Cash only.											FALSE	92					2026-07-01
+venue-0047	Star Bar	star-bar	basic	verified	live_bar	San Diego	Gaslamp Quarter	423 E St, San Diego, CA 92101	32.7133	-117.1601	https://starbarsd.com/	@starbarsandiego) · San Diego, CA				Monday, Tuesday, Wednesday, Thursday, Sunday	9:00 PM	1:00 AM / 1:30 AM / close	Art, TBD, Teddy, Art Ruiz	Gaslamp Quarter, Monday karaoke, Tuesday karaoke, Wednesday karaoke, Thursday karaoke, Sunday karaoke	Gaslamp karaoke Sunday through Thursday from 9 PM-1:30 AM. Thursday host confirmed as Teddy.											FALSE	94	Corey confirmed Star Bar schedule is verified schedule-wise: Sunday-Thursday, 9 PM-1:30 AM. Monday specifically hosted by Art Ruiz / @art2se / The Art Show. Other hosts TBD but schedule is usable for roundups.	Corey direct update 2026-06-30			2026-07-09
+venue-0083	Tony’s Martini Bar	tonys-martini-bar	basic	verified	live_bar	San Diego	Ocean Beach	5034 Newport Ave, San Diego, CA 92107			https://www.tonysob.com/	@tonysmartinibar				Sunday, Wednesday	9:00 PM	1:00 AM	TBD	Ocean Beach, Martinis, Late Night, Weekly Karaoke	Ocean Beach martini bar with weekly karaoke Sunday and Wednesday nights from 9 PM to 1 AM.											FALSE	98	Official venue website confirms address, phone, hours, and Sunday and Wednesday karaoke from 9 PM to 1 AM.	https://www.tonysob.com/	https://www.instagram.com/tonysmartinibar/		2026-08-14
+venue-0084	Side Piece	side-piece-bar	basic	verified	live_bar	San Diego	Clairemont	3010 Clairemont Dr, San Diego, CA 92117			https://www.bemysidepiece.com/	@bemysidepiecesd				Wednesday	7:00 PM	11:00 PM	All Mic Long	Clairemont, Neighborhood Bar, Pool, Weekly Karaoke	Clairemont neighborhood bar with weekly Wednesday karaoke from 7 PM to 11 PM hosted by All Mic Long.											FALSE	99	Official venue website confirms address, phone, Wednesday karaoke hours, and All Mic Long as host.	https://www.bemysidepiece.com/	https://www.instagram.com/bemysidepiecesd/		2026-08-14
+venue-0085	Hennessey’s La Jolla	hennesseys-la-jolla	basic	verified	live_bar	San Diego	La Jolla	7811 Herschel Ave, La Jolla, CA 92037			https://www.hennesseystavern.com/locations-la-jolla	@hennesseys_lajolla				Thursday	9:00 PM	1:00 AM	All Mic Long	La Jolla, Tavern, Late Night, Karaoke	La Jolla tavern with twice-monthly Thursday karaoke from 9 PM to 1 AM hosted by All Mic Long.											FALSE	96	Official venue page confirms identity, address, phone, and hours. Current host schedule confirms August 6 and 20 karaoke from 9 PM to 1 AM.	https://www.hennesseystavern.com/locations-la-jolla	https://www.instagram.com/singsallnight/p/Dbt-Tups5D5/		2026-08-14
 ```
 
 ### Removed or changed sample
 
 ```text
-venue-0062	710 Beach Club	710-beach-club	basic	ai_scouted	live_bar	San Diego	Pacific Beach	710 Garnet Ave, San Diego (Pacific Beach)	32.7977	-117.2565	https://www.710bc.com/					Thursday	8:00 PM	12:00 AM	Rotating Two of Clubs KJs	Pacific Beach, Thursday karaoke, live karaoke	Generated from Venues_Canonical schedule: Karaoke Every Thursday, 8 PM-12 AM											FALSE	78					2026-06-02
-venue-0018	BLVD	blvd	basic	ai_scouted	live_bar	San Diego	Grantville	6628 Mission Gorge Rd, San Diego, CA 92120	32.7893	-117.0996	https://theblvdbarsd.com/	https://www.instagram.com/theblvdbarsd/				Saturday	TBD	TBD	TBD	Grantville, Saturday karaoke, live karaoke	Grantville / Mission Gorge venue with a reported Saturday karaoke lead. Current start time, host, and recurring status still need verification before using in roundups.											FALSE	57					2026-06-02
-venue-0013	Camels Bar & Grill	camels-bar-grill	basic	verified	live_bar	San Diego	Mission Valley	10330 Friars Rd, San Diego, CA 92120	32.7909	-117.1024	https://camelsbarandgrill.com/	https://www.instagram.com/camelsbarandgrill/?hl=en				Thursday, Saturday	9:00 PM	TBD	DJ Mike / DJ Meth	Mission Valley, Thursday karaoke, Saturday karaoke, live karaoke	Mission Valley karaoke listing. Thursday time confirmed as 9 PM; host details still listed as DJ Mike / DJ Meth until corrected.											FALSE	90	Corey confirmed Camels Bar & Grill / Camel Bar for Thursday roundup with DJ Mike. Time still TBD.	Corey direct update 2026-07-02			
-venue-0015	Carriage House Cocktails & Karaoke	carriage-house-cocktails-karaoke	basic	ai_scouted	live_bar	San Diego	Kearny Mesa / Convoy	4690 Convoy St, San Diego, CA 92111	32.8251	-117.1542		@carriagehousekaraokesd				Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday	TBD	TBD	Rotating / in-house KJs	Kearny Mesa / Convoy, Sunday karaoke, Monday karaoke, Tuesday karaoke, Wednesday karaoke, Thursday karaoke	Convoy / Kearny Mesa dedicated karaoke spot with karaoke seven nights a week. Strong nightly-roundup anchor for Convoy groups, regular singers, and karaoke-first nights.											FALSE	85	Corey confirmed Carriage House Cocktails & Karaoke on Convoy has karaoke 7 nights/wk. Existing Tuesday-only/trivia copy replaced.	Corey direct update 2026-06-28			
-venue-0022	Cat Eye Club	cat-eye-club	basic	ai_scouted	live_bar	San Diego	East Village / Ballpark	370 7th Ave, San Diego, CA 92101	32.7089	-117.1585										East Village / Ballpark, live karaoke	Live-band karaoke producer tied to San Diego event nights, including beach-bar and larger venue settings. This should be treated as an event producer profile as much as a venue listing because the value is in pop-ups, collabs, and special karaoke events.											FALSE	60					2026-06-02
-venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	basic	verified	live_bar	San Diego	University Heights	1839 Adams Avenue, San Diego, CA, USA			https://cheerssandiego.com					Monday, Wednesday	8:00 PM	1:00 AM	Ed and Katie	University Heights, Monday karaoke, Wednesday karaoke, live karaoke	University Heights neighborhood bar with karaoke Monday and Wednesday from 8 PM-1 AM, hosted by Ed and Katie.											FALSE	95	Canonical neighborhood confirmed: University Heights.	Official Cheers Bar San Diego website/history	Corey correction 2026-08-12		2026-08-12
-venue-0075	Chula Vista Brewery	chula-vista-brewery	basic	ai_scouted	live_bar	Chula Vista	Downtown Chula Vista / South Bay	294 3rd Ave, Chula Vista, CA												Downtown Chula Vista / South Bay, live karaoke	Downtown Chula Vista brewery with reported early Friday karaoke, craft beer, and a family-friendly start-time window. Good option for singers who want karaoke before the late-night bar crawl begins.											FALSE		New row added from Karaoke Venues SD 9/17 List. Needs verification before verified status.	Karaoke Venues SD - 9/17 List			
-venue-0059	Coin-Op Game Room	coin-op-game-room	basic	verified	live_bar	San Diego	La Mesa	5961 El Cajon Blvd, San Diego, CA 92115								Friday	9:00 PM	1:00 AM	Rosemarie	La Mesa, Friday karaoke, live karaoke	Potential identity mismatch: this row name is Coin-Op Game Room, but the address, schedule, host notes, and source notes point to The Regal Bar in La Mesa. Do not surface publicly until the venue identity is resolved.											FALSE	88	Corey confirmed The Regal Bar is La Mesa, Friday 9 PM-1 AM, hosted by Rosemarie. Not College Area.	Corey direct update 2026-07-03			
-venue-0082	Deano's Pub - Santee	deanos-pub-santee	basic	ai_scouted	live_bar	Santee	Santee / East County	11541 Woodside Ave Ste d, Santee, CA 92071				@deanospubeast				Saturday	TBD	TBD	DJ Lolo	Santee / East County, Saturday karaoke, live karaoke	Santee Deano's location for review. DJ Lolo reportedly hosts Saturday karaoke. Need exact venue name/address, start/end time, and form confirmation before public listing or roundup use.											FALSE	60					
-venue-0069	Dirk's Niteclub	east-county-dirks-niteclub	basic	ai_scouted	live_bar	Lemon Grove	East County	7662 Broadway, Lemon Grove (East County)	32.7421	-117.0355										East County, live karaoke												FALSE	82					2026-06-02
-venue-0077	Clark Cabaret	clark-cabaret	basic	verified	live_bar	San Diego	University Heights	4545 Park Blvd #101, San Diego, CA 92116			https://www.diversionary.org/events/karaoke-night-7					Friday	10:00 PM	TBD	TBD	University Heights, Friday karaoke, live karaoke	University Heights LGBTQIA+ theatre/cabaret bar venue with Friday Karaoke Night starting at 10 PM. Use public listing name Clark Cabaret.											FALSE	92	Corey confirmed Diversionary Friday karaoke starts at 10 PM on 2026-06-29. Diversionary karaoke archive lists Karaoke Night on multiple Fridays. End time and host still need confirmation.	https://www.diversionary.org/mec-category/karaoke	https://www.diversionary.org/events/karaoke-night-7	https://www.diversionary.org/	
-venue-0073	Dock's Cocktail Lounge	docks-cocktail-lounge	basic	ai_scouted	live_bar	Chula Vista	Downtown Chula Vista / South Bay	317 3rd Ave, Chula Vista, CA												Downtown Chula Vista / South Bay, live karaoke	Remove Dock's from tonight's Thursday roundup. Current karaoke schedule needs direct confirmation before future roundup use.											FALSE	50	New row added from Karaoke Venues SD 9/17 List. Needs verification before verified status.	Karaoke Venues SD - 9/17 List			
-venue-0020	Don's Cocktails	dons-cocktails	basic	ai_scouted	live_bar	El Cajon	East County	13321 Hwy 8 Bus, El Cajon, CA 92021	32.8265	-116.8986	https://dons-cocktail-lounge.edan.io/	@dons_cocktail_lounge)								East County, live karaoke		Summer Karaoke Contest on Tuesday, July 14 from 8 PM-midnight, hosted by Savor Entertainment. Flyer graphics received by email; add public asset URL when uploaded.	Tuesday-Friday 5-7 PM: $10 classic martinis, $5 beers/wells/wine.									FALSE	78	Cordova shared Summer Karaoke Contest flyer graphics and happy hour details by email on 2026-07-05. Event added as soft feature, not paid/enhanced profile commitment.				2026-06-02
-venue-0042	Gaslamplighter Karaoke Cocktail Bar	gaslamplighter	basic	ai_scouted	live_bar	San Diego	Gaslamp Quarter	536 Market St, San Diego, CA 92101				https://www.instagram.com/gaslamplighter?igsh=MzRlODBiNWFlZA==				Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday	9:00 PM	close	TBD	Gaslamp Quarter, Tuesday karaoke, Wednesday karaoke, Thursday karaoke, Friday karaoke, Saturday karaoke	Gaslamp karaoke cocktail bar with karaoke Tuesday-Sunday from 9 PM-close. Hours and availability may occasionally vary due to private events or full venue buyouts.											FALSE	85	Corey confirmed Gaslamplighter Karaoke Cocktail Bar schedule: Tuesday-Sunday 9p-close. Note: hours and availability may vary for private events or full venue buyouts. Removed Monday from lineup.	Corey direct update 2026-06-28			
-venue-0056	Gingers	gingers	basic	verified	live_bar	San Diego	Gaslamp Quarter	600 Fifth Ave (below Barleymash), San Diego (Gaslamp Quarter)	32.711	-117.1602						Thursday	9:00 PM	12:00 AM	Mikey Mic	Gaslamp Quarter, Thursday karaoke, live karaoke	Gaslamp karaoke at Ginger's on Thursdays from 9 PM-12 AM.											FALSE	90	Corey confirmed Ginger's Thursday karaoke is 9 PM-12 AM. Host remains Mikey Mic from existing row unless corrected.	Corey direct correction 2026-07-02			
-venue-0078	Good News Bar	good-news-bar	basic	verified	live_bar	San Diego	University Heights / Park Blvd	3821 Park Blvd, San Diego, CA								Wednesday	6:00 PM	10:00 PM	TBD	University Heights / Park Blvd, Wednesday karaoke, live karaoke	Park Blvd karaoke night on the 1st and 3rd Wednesday of the month from 6 PM to 10 PM. Add public note to check ahead because this is not every Wednesday.											FALSE	90					
-venue-0055	Good Night John Boy	good-night-john-boy	basic	ai_scouted	live_bar	San Diego	Gaslamp Quarter	645 Fifth Ave, San Diego (Gaslamp Quarter)	32.712	-117.1603										Gaslamp Quarter, live karaoke	Gaslamp Quarter venue with a reported Wednesday karaoke lead around 8 PM. Current recurring status and host still need verification before treating as a confirmed weekly listing.											FALSE	80					2026-06-02
-venue-0054	Happy Does	happy-does	basic	verified	live_bar	San Diego	Gaslamp Quarter	340 5th Ave, San Diego, CA 92101	32.7089	-117.1585						Thursday, Friday, Saturday	8:30 PM	12:30 AM	Veronica	Gaslamp Quarter, Thursday karaoke, Friday karaoke, Saturday karaoke, live karaoke	Gaslamp Quarter karaoke on Thursday, Friday, and Saturday starting at 8:30 PM. Thursday and Friday run to 12:30 AM; Saturday runs to 1:30 AM.											FALSE	92	Official site confirms Gaslamp Quarter location at 340 5th Ave.	Official Happy Does website	Corey correction 2026-08-12		2026-08-12
-venue-0003	Hearth House	hearth-house	basic	verified	live_bar	San Diego	La Mesa	5505 Jackson Dr, La Mesa, CA 91942			https://hearthhousebar.com	@hearthcocktails				Tuesday, Wednesday, Thursday	9:00 PM	close	James	La Mesa, Tuesday karaoke, Wednesday karaoke, Thursday karaoke, live karaoke	La Mesa / East County karaoke listing with verified Tuesday-Thursday schedule from 9 PM-close. Thursday host confirmed as James.											FALSE	92	Corey confirmed Hearth House Tuesday-Thursday, 9 PM-close. Thursday host confirmed as James on 2026-07-02.	Corey direct update 2026-07-02			
-venue-0048	Hive Karaoke	hive-karaoke	basic	ai_scouted	private_room	San Diego	Kearny Mesa / Convoy	4428 Convoy St Jury Classroom / Gallery, San Diego, CA 92111												Kearny Mesa / Convoy, private rooms												FALSE	60					2026-06-02
+venue-0047	Star Bar	star-bar	basic	verified	live_bar	San Diego	Gaslamp Quarter	423 E St, San Diego, CA 92101	32.7133	-117.1601	https://starbarsd.com/	@starbarsandiego) · San Diego, CA				Monday, Tuesday, Wednesday, Thursday	9:00 PM	1:00 AM / 1:30 AM	Art, TBD, Teddy	Gaslamp Quarter, Monday karaoke, Tuesday karaoke, Wednesday karaoke, Thursday karaoke, live karaoke	Gaslamp karaoke Sunday through Thursday from 9 PM-1:30 AM. Thursday host confirmed as Teddy.											FALSE	94	Corey confirmed Star Bar schedule is verified schedule-wise: Sunday-Thursday, 9 PM-1:30 AM. Monday specifically hosted by Art Ruiz / @art2se / The Art Show. Other hosts TBD but schedule is usable for roundups.	Corey direct update 2026-06-30			2026-07-09
 ```
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 157
-- Candidate non-empty lines: 112
-- Added/changed lines: 112
-- Removed/changed lines: 157
+- Previous non-empty lines: 112
+- Candidate non-empty lines: 117
+- Added/changed lines: 5
+- Removed/changed lines: 0
 
 ### Added or changed sample
 
 ```text
-event_id	venue_id	venue_name	venue_slug	karaoke_day	start_time	end_time	host_name	recurring	active_status	event_notes	event_confidence_score	source_1	source_2	last_verified	review_status	generated
-weekly-dons-cocktails-thursday	venue-0020	Don's Cocktails	dons-cocktails	Thursday	9pm-last call	TBD	DJ Savadelic	TRUE	active	Thursday karaoke with DJ Savadelic starting 9pm-last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-dons-cocktails-friday	venue-0020	Don's Cocktails	dons-cocktails	Friday	9pm-last call	TBD	DJ Savadelic	TRUE	active	Friday karaoke with DJ Savadelic starting 9pm-last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-blvd-saturday	venue-0018	BLVD	blvd	Saturday	9:00 PM	TBD	DJ Glyph	TRUE	active	Saturday karaoke with DJ Glyph starting 9pm.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-camels-bar-grill-saturday	venue-0013	Camels Bar & Grill	camels-bar-grill	Saturday	9:00 PM	TBD	DJ Meth	TRUE	active	Saturday karaoke with DJ Meth starting 9pm.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-cheers-bar-san-diego-monday	venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	Monday	8:00 PM	1:00 AM	Ed&Katie	TRUE	active	Monday karaoke with Ed&Katie starting 8pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-cheers-bar-san-diego-wednesday	venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	Wednesday	8:00 PM	1:00 AM	Ed&Katie	TRUE	active	Wednesday karaoke with Ed&Katie starting 8pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-cordova-bar-tuesday	venue-0016	The Cordova Bar	cordova-bar	Tuesday	8:00 PM	12:00 AM	Savor Ent.	TRUE	active	Tuesday karaoke with Savor Ent. starting 8pm until 12am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-deanos-pub-wednesday	venue-0009	Deano's Pub - La Mesa	deanos-pub	Wednesday	8:00 PM	12:00 AM	KJ Smash	TRUE	active	Wednesday karaoke from 8 PM to midnight with KJ Smash.	98	Corey direct confirmation 2026-08-14	https://www.facebook.com/deanospub/posts/kj-smash-in-the-deanos-pub-soundbooth-karaoke-wednesdays-with-kj-smash-deanos-pu/1553844863420206/	2026-08-14	verified_direct_confirmation	FALSE
-weekly-hearth-house-tuesday	venue-0003	Hearth House	hearth-house	Tuesday	9:00 PM	close	James	TRUE	active	Tuesday karaoke with James starting 9pm until close.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-hearth-house-wednesday	venue-0003	Hearth House	hearth-house	Wednesday	9:00 PM	close	James	TRUE	active	Wednesday karaoke with James starting 9pm until close.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-hearth-house-thursday	venue-0003	Hearth House	hearth-house	Thursday	9:00 PM	close	James	TRUE	active	Thursday karaoke with James starting 9pm until close.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-jts-tavern-monday	venue-0006	JT's Tavern	jts-tavern	Monday	9:00 PM	last call	Brian The Lion	TRUE	active	Monday karaoke from 9 PM until last call with Brian The Lion.	85	Corey direct correction 2026-08-10	Prior Weekly_Grid entry	2026-08-10	weekly_grid_sync	FALSE
-weekly-jts-tavern-tuesday	venue-0006	JT's Tavern	jts-tavern	Tuesday	9:00 PM	last call	Chad	TRUE	active	Tuesday karaoke with Chad starting 9pm until last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-jts-tavern-wednesday	venue-0006	JT's Tavern	jts-tavern	Wednesday	9:00 PM	last call	Chad	TRUE	active	Wednesday karaoke with Chad starting 9pm until last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-jts-tavern-thursday	venue-0006	JT's Tavern	jts-tavern	Thursday	9:00 PM	last call	Chad	TRUE	active	Thursday karaoke with Chad starting 9pm until last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-pal-joeys-thursday	venue-0017	Pal Joey's Cocktail Lounge	pal-joeys	Thursday	9:00 PM	1:00 AM	Trini	TRUE	active	Thursday karaoke with Trini starting 9pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-regal-friday	venue-0010	The Regal Bar	regal	Friday	9:00 PM	1:00 AM	Rosemarie	TRUE	active	Friday karaoke with Rosemarie starting 9pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-the-lamplighter-monday	venue-0002	The Lamplighter	the-lamplighter	Monday	9:00 PM	2:00 AM	Jared	TRUE	active	Monday karaoke from 9 PM to 2 AM with Jared.	100	Leo direct update via Corey 2026-08-04	Prior Weekly_Grid entry	2026-08-04	verified_direct_schedule	FALSE
-weekly-the-lamplighter-tuesday	venue-0002	The Lamplighter	the-lamplighter	Tuesday	9:00 PM	2:00 AM	Raya	TRUE	active	Tuesday karaoke from 9 PM to 2 AM with Raya.	100	Leo direct update via Corey 2026-08-04	Prior temporary override	2026-08-04	verified_direct_schedule	FALSE
+event-0010-sunday	venue-0047	Star Bar	star-bar	Sunday	9:00 PM	close	Art Ruiz	TRUE	active	Sunday karaoke with Art starting at 9 PM.	99	https://starbarsd.com/events/	https://www.instagram.com/starbarsandiego/	2026-08-14	venue_web_verified_current_schedule	FALSE
+event-0021	venue-0083	Tony’s Martini Bar	tonys-martini-bar	Sunday	9:00 PM	1:00 AM	TBD	TRUE	active	Sunday karaoke from 9 PM to 1 AM.	98	https://www.tonysob.com/	https://www.instagram.com/tonysmartinibar/	2026-08-14	venue_web_verified_current_schedule_needs_host	FALSE
+event-0022	venue-0083	Tony’s Martini Bar	tonys-martini-bar	Wednesday	9:00 PM	1:00 AM	TBD	TRUE	active	Wednesday karaoke from 9 PM to 1 AM.	98	https://www.tonysob.com/	https://www.instagram.com/tonysmartinibar/	2026-08-14	venue_web_verified_current_schedule_needs_host	FALSE
+event-0023	venue-0084	Side Piece	side-piece-bar	Wednesday	7:00 PM	11:00 PM	All Mic Long	TRUE	active	Wednesday karaoke from 7 PM to 11 PM hosted by All Mic Long.	99	https://www.bemysidepiece.com/	https://www.instagram.com/bemysidepiecesd/	2026-08-14	venue_web_verified_current_schedule	FALSE
+event-0024	venue-0085	Hennessey’s La Jolla	hennesseys-la-jolla	Thursday	9:00 PM	1:00 AM	All Mic Long	Twice monthly	active	Twice-monthly Thursday karaoke from 9 PM to 1 AM. Check the current host schedule before going.	96	https://www.instagram.com/singsallnight/p/Dbt-Tups5D5/	https://www.hennesseystavern.com/locations-la-jolla	2026-08-14	host_verified_current_month_schedule	FALSE
+```
+
+## generated_events_review.tsv
+
+- Previous non-empty lines: 1
+- Candidate non-empty lines: 1
+- Added/changed lines: 0
+- Removed/changed lines: 0
+
+- No content changes.
+
+## venue_slug_aliases.tsv
+
+- Previous non-empty lines: 1
+- Candidate non-empty lines: 1
+- Added/changed lines: 0
+- Removed/changed lines: 0
+
+- No content changes.
+
+## sync-metadata.json
+
+- Previous non-empty lines: 10
+- Candidate non-empty lines: 10
+- Added/changed lines: 3
+- Removed/changed lines: 3
+
+### Added or changed sample
+
+```text
+  "generatedAt": "2026-08-14T21:36:51.935Z",
+  "venues": 57,
+  "authoritativeEvents": 116,
 ```
 
 ### Removed or changed sample
 
 ```text
-event_id	venue_id	venue_name	venue_slug	karaoke_day	start_time	end_time	host_name	recurring	active_status	event_notes	event_confidence_score	source_1	source_2	last_verified	review_status
-event-0001	venue-0002	The Lamplighter	the-lamplighter	Sunday	9:00 PM	2:00 AM	America	TRUE	active	Lamplighter weekday karaoke schedule confirmed. Host roster supplied by user; some nights may rotate.	90	User direct update 2026-06-30	Lamplighter host roster	2026-06-30	verified
-event-0002	venue-0002	The Lamplighter	the-lamplighter	Monday	9:00 PM	2:00 AM	America	TRUE	active	Lamplighter weekday karaoke schedule confirmed. Host roster supplied by user.	90	User direct update 2026-06-30	Lamplighter host roster	2026-06-30	verified
-event-0003	venue-0002	The Lamplighter	the-lamplighter	Tuesday	9:00 PM	2:00 AM	Raya	TRUE	active	Lamplighter weekday karaoke schedule confirmed. Host roster supplied by user.	90	User direct update 2026-06-30	Lamplighter host roster	2026-06-30	verified
-event-0004	venue-0002	The Lamplighter	the-lamplighter	Wednesday	9:00 PM	2:00 AM	Leo	TRUE	active	Leo set night. Weekday schedule confirmed as 9 PM to 2 AM.	95	User direct update 2026-06-30	Leo host answers	2026-06-30	verified
-event-0005	venue-0002	The Lamplighter	the-lamplighter	Thursday	9:00 PM	2:00 AM	America / Leo	TRUE	active	Thursday may be America or Leo depending rotation. Public app can show host varies if needed.	85	User direct update 2026-06-30	Lamplighter host roster	2026-06-30	verified_rotation
-event-0006	venue-0002	The Lamplighter	the-lamplighter	Friday	8:00 PM	2:00 AM	Ryan / Leo	TRUE	active	Weekend karaoke confirmed as 8 PM to 2 AM. Friday may be Ryan or Leo depending rotation.	85	User direct update 2026-06-30	Lamplighter host roster	2026-06-30	verified_rotation
-event-0007	venue-0002	The Lamplighter	the-lamplighter	Saturday	8:00 PM	2:00 AM	Ryan / Leo	TRUE	active	Weekend karaoke confirmed as 8 PM to 2 AM. Saturday may be Ryan or Leo depending rotation.		User direct update 2026-06-30	Lamplighter host roster	2026-06-30	verified_rotation
-event-0008	venue-0039	Redwing Bar & Grill	redwing-bar-grill	Friday	8:00 PM	last call	Bryon.Bea	TRUE	active	Popular North Park venue; Friday karaoke runs 8 PM to last call with Bryon.Bea.		User direct update 2026-06-30	Host info from Bryon.Bea	2026-06-30	verified
-event-0009	venue-0039	Redwing Bar & Grill	redwing-bar-grill	Saturday	8:00 PM	last call	Bryon.Bea	TRUE	active	Popular North Park venue; Saturday karaoke runs 8 PM to last call with Bryon.Bea.		User direct update 2026-06-30	Host info from Bryon.Bea	2026-06-30	verified
-event-0010-sunday	venue-0047	Star Bar	star-bar	Sunday	9:00 PM	1:30 AM	Art Ruiz (@art2se) Mondays; other hosts TBD	TRUE	active	Star Bar karaoke runs Sunday through Thursday 9 PM to 1:30 AM. Mondays are The Art Show hosted by Art Ruiz.		User direct update 2026-06-30	Host IG @art2se	2026-06-30	verified_partial_host
-event-0010-monday	venue-0047	Star Bar	star-bar	Monday	9:00 PM	1:30 AM	Art Ruiz (@art2se) Mondays; other hosts TBD	TRUE	active	Star Bar karaoke runs Sunday through Thursday 9 PM to 1:30 AM. Mondays are The Art Show hosted by Art Ruiz.		User direct update 2026-06-30	Host IG @art2se	2026-06-30	verified_partial_host
-event-0010-tuesday	venue-0047	Star Bar	star-bar	Tuesday	9:00 PM	1:30 AM	Art Ruiz (@art2se) Mondays; other hosts TBD	TRUE	active	Star Bar karaoke runs Sunday through Thursday 9 PM to 1:30 AM. Mondays are The Art Show hosted by Art Ruiz.		User direct update 2026-06-30	Host IG @art2se	2026-06-30	verified_partial_host
-event-0010-wednesday	venue-0047	Star Bar	star-bar	Wednesday	9:00 PM	1:30 AM	Art Ruiz (@art2se) Mondays; other hosts TBD	TRUE	active	Star Bar karaoke runs Sunday through Thursday 9 PM to 1:30 AM. Mondays are The Art Show hosted by Art Ruiz.		User direct update 2026-06-30	Host IG @art2se	2026-06-30	verified_partial_host
-event-0010-thursday	venue-0047	Star Bar	star-bar	Thursday	9:00 PM	1:30 AM	Art Ruiz (@art2se) Mondays; other hosts TBD	TRUE	active	Star Bar karaoke runs Sunday through Thursday 9 PM to 1:30 AM. Mondays are The Art Show hosted by Art Ruiz.		User direct update 2026-06-30	Host IG @art2se	2026-06-30	verified_partial_host
-event-0012	venue-0078	Good News Bar	good-news-bar	Wednesday	6:00 PM	10:00 PM	TBD	Monthly	active	Runs 1st and 3rd Wednesday only. Public note should say check ahead.	90	User direct update 2026-06-30	Address: 3821 Park Blvd	2026-06-30	verified_monthly
-event-0013	venue-0079	The Scoreboard Imperial Beach Sports Bar & Grill	the-scoreboard-imperial-beach-sports-bar-grill	Friday	8:00 PM	12:00 AM	DJ 2Cold (@Noel_Colding)	TRUE	active	Dive bar, all-welcoming vibe. Good for first timers and karaoke veterans.	95	User direct update 2026-06-30	Host IG @Noel_Colding	2026-06-30	verified
-event-0014	venue-0030	Winstons Beach Club	winstons-beach-club	Friday	9:30 PM	TBD	Corey Glasper	TRUE	active	Ocean Beach Friday karaoke starts at 9:30 PM with Corey Glasper. End time still needs confirmation.		User direct update 2026-06-30	Host info from Corey Glasper	2026-06-30	verified_needs_end_time
-event-0015	venue-0080	The Mesa	the-mesa-la-mesa	Wednesday	8:00 PM	last call	Bryon.Bea (@Bryon.Bea)	TRUE	active	Wednesday karaoke at The Mesa starts at 8 PM and runs until last call. Address confirmed: 6164 El Cajon Blvd.		User direct update 2026-06-30	Host info from Bryon.Bea	2026-06-30	verified
-event-0016	venue-0081	Joycee's Cocktails	joycees-cocktails	Wednesday	8:00 PM	12:00 AM	Javier / DJ Harvest	Every other Wednesday	active	Every other Wednesday karaoke 8 PM-midnight with Javier / DJ Harvest. Cash only.	92	User direct update 2026-07-01	Scout Queue row scout-joycees-001	2026-07-01	verified
-```
-
-## generated_events_review.tsv
-
-- Previous non-empty lines: 0
-- Candidate non-empty lines: 1
-- Added/changed lines: 1
-- Removed/changed lines: 0
-
-### Added or changed sample
-
-```text
-event_id	venue_id	venue_name	venue_slug	karaoke_day	start_time	end_time	host_name	recurring	active_status	event_notes	event_confidence_score	source_1	source_2	last_verified	review_status	generated
-```
-
-## venue_slug_aliases.tsv
-
-- Previous non-empty lines: 0
-- Candidate non-empty lines: 1
-- Added/changed lines: 1
-- Removed/changed lines: 0
-
-### Added or changed sample
-
-```text
-old_slug	canonical_id	canonical_slug
-```
-
-## sync-metadata.json
-
-- Previous non-empty lines: 0
-- Candidate non-empty lines: 10
-- Added/changed lines: 10
-- Removed/changed lines: 0
-
-### Added or changed sample
-
-```text
-{
   "generatedAt": "2026-08-14T05:47:13.307Z",
-  "source": "google_sheets_api",
-  "sourceWorkbook": "canonical",
-  "venueTab": "Venues_Canonical",
-  "eventTab": "Events_Canonical",
   "venues": 54,
   "authoritativeEvents": 111,
-  "generatedCandidates": 0
-}
 ```
