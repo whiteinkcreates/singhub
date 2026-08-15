@@ -115,6 +115,7 @@ Exported events: 116.
 - None
 ## Events Skipped Because App Hidden
 - event row 4: weekly-the-search-bar-thursday
+- event row 69: event-cordova-summer-pride-2026-07-14
 - event row 67: event-good-news-1st-3rd-wed
 - event row 85: weekly-the-ould-sod-friday
 ## Events With Invalid App Visibility
@@ -131,7 +132,6 @@ Exported events: 116.
 - event row 37: weekly-whiskey-girl-sunday Whiskey Girl
 - event row 38: weekly-wongs-golden-palace-friday Wong's Golden Palace
 - event row 39: weekly-wongs-golden-palace-sunday Wong's Golden Palace
-- event row 102: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
 ## Public Rows With TBD Address/Time/Host
 - event row 2: weekly-dons-cocktails-thursday Don's Cocktails
 - event row 3: weekly-dons-cocktails-friday Don's Cocktails
@@ -163,6 +163,7 @@ Exported events: 116.
 - event row 98: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
 - event row 98: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
 - event row 98: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
+- event row 103: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
 - event row 104: event-0021 Tony’s Martini Bar
 - event row 105: event-0022 Tony’s Martini Bar
 - venue: venue-0073 Dock's Cocktail Lounge
@@ -202,9 +203,9 @@ Authoritative events: 116
 Legacy venue slug aliases: 0
 
 PASS Monday: 9 authoritative / 8 expected minimum
-PASS Tuesday: 17 authoritative / 8 expected minimum
+PASS Tuesday: 16 authoritative / 8 expected minimum
 PASS Wednesday: 21 authoritative / 9 expected minimum
-PASS Thursday: 25 authoritative / 14 expected minimum
+PASS Thursday: 26 authoritative / 14 expected minimum
 PASS Friday: 19 authoritative / 10 expected minimum
 PASS Saturday: 14 authoritative / 10 expected minimum
 PASS Sunday: 11 authoritative / 7 expected minimum
