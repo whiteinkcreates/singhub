@@ -7,8 +7,9 @@ import "./globals.css";
 const GA_MEASUREMENT_ID = "G-NQGPSYB6Q7";
 
 export const metadata: Metadata = {
-  title: "SingHUB | Find Karaoke Tonight",
-  description: "Find karaoke nights in San Diego by day, neighborhood, venue, and vibe.",
+  title: "SingHUB | Find Karaoke Near You",
+  description:
+    "SingHUB helps you find karaoke near you. Search karaoke nights by day, neighborhood, venue, or host, starting in San Diego.",
   icons: {
     icon: [{ url: "/icon.png", sizes: "512x512", type: "image/png" }],
     shortcut: [{ url: "/icon.png", sizes: "512x512", type: "image/png" }],
