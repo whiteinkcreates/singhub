@@ -7,6 +7,8 @@ import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getFeaturedVenueListings } from "@/lib/venueData";
 
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header";
+const HERO_IMAGE_URL =
+  "https://res.cloudinary.com/dy3lyejkk/image/upload/v1786839114/file_00000000bc6081fd9e63561226afdd01_kldtkz.png";
 
 const SAN_DIEGO_REGION_CITIES = new Set([
   "San Diego",
@@ -35,15 +37,8 @@ const onboardingTickerItems = [
   "Welcome to SingHUB. Let's get started.",
   "Choose Tonight to see current San Diego karaoke options.",
   "Search by night, neighborhood, venue, or host.",
-  "Use Karaoke Places to explore the wider map without assuming karaoke is happening tonight.",
+  "Use SingHUB Radar to explore karaoke venues across San Diego.",
   "See a schedule change? Send it to SingHUB and help keep San Diego accurate.",
-];
-
-const heroQuickLinks = [
-  { href: "/find-karaoke?day=tonight", label: "Tonight", tone: "coral" },
-  { href: "/places", label: "Karaoke Places", tone: "gold" },
-  { href: "/find-karaoke?type=live", label: "Live karaoke", tone: "fuchsia" },
-  { href: "/find-karaoke?type=private-room", label: "Private rooms", tone: "cyan" },
 ];
 
 const actionCards = [
@@ -56,9 +51,9 @@ const actionCards = [
   },
   {
     href: "/places",
-    icon: "📡",
-    label: "Karaoke Places",
-    helper: "Explore the Venue Index and map layers.",
+    icon: "RD",
+    label: "SingHUB Radar",
+    helper: "Explore karaoke venues across San Diego.",
     tone: "violet",
   },
   {
@@ -76,17 +71,17 @@ const actionCards = [
     tone: "fuchsia",
   },
   {
-    href: "/community/san-diego",
-    icon: "SD",
-    label: "Community",
-    helper: "Enter the San Diego karaoke room.",
+    href: "/find-karaoke?type=live",
+    icon: "LV",
+    label: "Live Karaoke",
+    helper: "Find spots with live band karaoke.",
     tone: "coral",
   },
   {
-    href: "/find-karaoke",
-    icon: "VN",
-    label: "Venues",
-    helper: "Bars, pubs, and lounges with karaoke.",
+    href: "/find-karaoke?type=private-room",
+    icon: "PR",
+    label: "Private Rooms",
+    helper: "Find karaoke rooms for your crew.",
     tone: "cyan",
   },
 ];
@@ -170,80 +165,38 @@ export default async function Home() {
       <section className="mx-auto max-w-7xl px-3 py-4 sm:px-4 md:py-8">
         <div className="relative max-w-full overflow-hidden rounded-[1.15rem] border border-fuchsia-300/40 bg-slate-950 shadow-2xl shadow-fuchsia-950/30 sm:rounded-[1.75rem] md:rounded-[2.25rem]">
           <div
-            className="absolute inset-0 bg-cover bg-center opacity-50 sm:opacity-80"
-            style={{ backgroundImage: "url('/images/hero/san-diego-skyline-vector.svg')" }}
+            className="absolute inset-0 bg-cover bg-center opacity-85 sm:opacity-100"
+            style={{ backgroundImage: `url('${HERO_IMAGE_URL}')` }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/72 via-slate-950/88 to-slate-950" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/85 to-slate-950/50" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,transparent,rgba(34,211,238,0.13),rgba(2,6,23,0.98))] sm:h-40" />
-          <div className="absolute -right-16 top-8 h-32 w-32 rounded-full bg-red-500/20 blur-3xl sm:h-48 sm:w-48" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/25 via-slate-950/35 to-slate-950/90" />
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/95 via-slate-950/70 to-slate-950/10" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,transparent,rgba(34,211,238,0.08),rgba(2,6,23,0.96))] sm:h-32" />
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-300 via-cyan-300 to-red-400" />
 
-          <div className="relative min-w-0 px-4 py-5 sm:px-6 sm:py-7 md:px-10 md:py-10 lg:px-14 lg:py-12">
-            <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center xl:grid-cols-[minmax(0,1fr)_22rem]">
-              <div className="min-w-0 max-w-3xl">
-                <p className="max-w-full text-[0.68rem] font-black uppercase tracking-[0.16em] text-cyan-200 sm:text-xs sm:tracking-[0.28em]">
-                  San Diego Karaoke Starts Here
-                </p>
+          <div className="relative min-w-0 px-4 py-7 sm:px-6 sm:py-9 md:px-10 md:py-12 lg:px-14 lg:py-16">
+            <div className="min-w-0 max-w-3xl">
+              <p className="max-w-full text-[0.68rem] font-black uppercase tracking-[0.16em] text-cyan-200 sm:text-xs sm:tracking-[0.28em]">
+                San Diego Karaoke Starts Here
+              </p>
 
-                <h1 className="mt-4 max-w-full text-3xl font-black leading-[1.02] text-white drop-shadow-[0_0_24px_rgba(255,255,255,0.18)] min-[380px]:text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
-                  Find karaoke in San Diego.
-                </h1>
+              <h1 className="mt-4 max-w-full text-3xl font-black leading-[1.02] text-white drop-shadow-[0_0_24px_rgba(255,255,255,0.18)] min-[380px]:text-4xl sm:text-5xl md:text-6xl lg:text-7xl">
+                Find karaoke in San Diego.
+              </h1>
 
-                <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-100 sm:text-base sm:leading-7 md:mt-5 md:text-lg md:leading-8">
-                  Search by night, neighborhood, venue, or host and see where to sing tonight.
-                </p>
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-100 sm:text-base sm:leading-7 md:mt-5 md:text-lg md:leading-8">
+                Search by night, neighborhood, venue, or host and see where to sing tonight.
+              </p>
 
-                <div className="mt-5 grid gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-3">
-                  <Button href="/find-karaoke?day=tonight" className="w-full sm:w-auto">
-                    Find Karaoke Tonight
-                  </Button>
-                  <Button href="/places" variant="secondary" className="w-full sm:w-auto">
-                    Explore Karaoke Places
-                  </Button>
-                  <Button href="/community/san-diego" variant="ghost" className="w-full sm:w-auto">
-                    Enter the SD Room
-                  </Button>
-                </div>
-
-                <div className="mt-4 flex max-w-full flex-wrap gap-2 text-xs font-semibold text-slate-100 sm:gap-3 sm:text-sm">
-                  {heroQuickLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className={`rounded-full border px-3 py-2 backdrop-blur transition hover:-translate-y-0.5 hover:bg-slate-950/80 sm:px-4 ${
-                        link.tone === "cyan"
-                          ? "border-cyan-300/50 bg-slate-950/55 text-cyan-100 hover:border-cyan-200"
-                          : link.tone === "coral"
-                            ? "border-red-300/50 bg-red-400/10 text-red-100 hover:border-red-200"
-                            : link.tone === "gold"
-                              ? "border-yellow-300/50 bg-yellow-300/10 text-yellow-100 hover:border-yellow-200"
-                              : "border-fuchsia-300/50 bg-slate-950/55 text-fuchsia-100 hover:border-fuchsia-200"
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-
-                <KaraokeTicker items={onboardingTickerItems} />
+              <div className="mt-5 grid gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-3">
+                <Button href="/find-karaoke?day=tonight" className="w-full sm:w-auto">
+                  Find Karaoke Tonight
+                </Button>
+                <Button href="/hosts" variant="secondary" className="w-full sm:w-auto">
+                  Find a Karaoke Host
+                </Button>
               </div>
 
-              <div className="hidden lg:flex lg:justify-center">
-                <div className="relative w-full max-w-xs rounded-[1.75rem] border-2 border-fuchsia-300/55 bg-slate-950/58 p-5 text-center shadow-[0_0_42px_rgba(217,70,239,0.42)] backdrop-blur">
-                  <div className="absolute -inset-3 rounded-[2.25rem] border border-cyan-300/20 blur-sm" />
-                  <p className="relative text-5xl font-black uppercase leading-none text-fuchsia-200 drop-shadow-[0_0_24px_rgba(217,70,239,0.95)] xl:text-6xl">
-                    Karaoke
-                  </p>
-                  <p className="relative mt-3 text-2xl font-black uppercase tracking-[0.12em] text-cyan-100 drop-shadow-[0_0_22px_rgba(34,211,238,0.85)]">
-                    Tonight
-                  </p>
-                  <div className="relative mx-auto mt-5 h-1 w-24 rounded-full bg-red-300 shadow-[0_0_28px_rgba(248,113,113,0.95)]" />
-                  <p className="relative mt-5 text-xs font-bold uppercase tracking-[0.28em] text-red-100">
-                    SingHUB
-                  </p>
-                </div>
-              </div>
+              <KaraokeTicker items={onboardingTickerItems} />
             </div>
           </div>
         </div>
