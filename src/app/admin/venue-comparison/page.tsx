@@ -1,4 +1,5 @@
 import { VenueComparisonExportShell } from "@/components/admin/VenueComparisonExportShell";
+import { VenueShareImageExport } from "@/components/admin/VenueShareImageExport";
 import { getKaraokeEventListings } from "@/lib/eventData";
 import { getVenueListings } from "@/lib/venueData";
 
@@ -38,6 +39,7 @@ export default async function AdminVenueComparisonPage() {
       </section>
 
       <VenueComparisonExportShell venues={sortedVenues} events={events} />
+      <VenueShareImageExport venues={sortedVenues} events={events} />
     </main>
   );
 }
