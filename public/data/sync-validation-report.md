@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 57.
-Exported events: 116.
+Exported venues: 58.
+Exported events: 126.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -19,12 +19,12 @@ Exported events: 116.
 - venue-0048 Hive Karaoke
 - venue-0065 Jin Music Studios
 - venue-0041 The Ould Sod
-- venue-0036 Wong's Golden Palace
 ## Public Venues Missing Schedule
 - venue-0051 #1 Fifth Avenue
 - venue-0062 710 Beach Club
 - venue-0018 BLVD
 - venue-0013 Camels Bar & Grill
+- venue-0015 Carriage House Cocktails & Karaoke
 - venue-0027 Cheers Bar San Diego
 - venue-0009 Deano's Pub - La Mesa
 - venue-0082 Deano's East
@@ -79,7 +79,6 @@ Exported events: 116.
 - venue-0084 Side Piece
 - venue-0085 Hennessey’s La Jolla
 ## Venues Skipped Because App Hidden
-- row 6: venue-0015 Carriage House Cocktails & Karaoke
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
 - row 12: venue-0069 Dirk's Niteclub
@@ -115,8 +114,8 @@ Exported events: 116.
 - None
 ## Events Skipped Because App Hidden
 - event row 4: weekly-the-search-bar-thursday
-- event row 69: event-cordova-summer-pride-2026-07-14
 - event row 67: event-good-news-1st-3rd-wed
+- event row 69: event-cordova-summer-pride-2026-07-14
 - event row 85: weekly-the-ould-sod-friday
 ## Events With Invalid App Visibility
 - None
@@ -130,7 +129,6 @@ Exported events: 116.
 - event row 6: weekly-camels-bar-grill-thursday Camels Bar & Grill
 - event row 35: weekly-whiskey-girl-monday Whiskey Girl
 - event row 37: weekly-whiskey-girl-sunday Whiskey Girl
-- event row 38: weekly-wongs-golden-palace-friday Wong's Golden Palace
 - event row 39: weekly-wongs-golden-palace-sunday Wong's Golden Palace
 ## Public Rows With TBD Address/Time/Host
 - event row 2: weekly-dons-cocktails-thursday Don's Cocktails
@@ -163,14 +161,13 @@ Exported events: 116.
 - event row 98: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
 - event row 98: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
 - event row 98: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
-- event row 103: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
+- event row 102: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
 - event row 104: event-0021 Tony’s Martini Bar
 - event row 105: event-0022 Tony’s Martini Bar
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
 - venue: venue-0041 The Ould Sod
-- venue: venue-0036 Wong's Golden Palace
 ## Public Venues Missing Coordinates
 - venue-0101 Urban Mo’s Bar & Grill
 - venue-0102 Three Stags Irish Pub and Restaurant
@@ -197,18 +194,18 @@ Exported events: 116.
 ```text
 SingHUB public data guardrails
 
-Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 57
-Authoritative events: 116
+Data directory: /tmp/singhub-data-sync-IS49MP
+Public venues: 58
+Authoritative events: 126
 Legacy venue slug aliases: 0
 
-PASS Monday: 9 authoritative / 8 expected minimum
-PASS Tuesday: 16 authoritative / 8 expected minimum
-PASS Wednesday: 21 authoritative / 9 expected minimum
-PASS Thursday: 26 authoritative / 14 expected minimum
-PASS Friday: 19 authoritative / 10 expected minimum
-PASS Saturday: 14 authoritative / 10 expected minimum
-PASS Sunday: 11 authoritative / 7 expected minimum
+PASS Monday: 10 authoritative / 8 expected minimum
+PASS Tuesday: 17 authoritative / 8 expected minimum
+PASS Wednesday: 22 authoritative / 9 expected minimum
+PASS Thursday: 28 authoritative / 14 expected minimum
+PASS Friday: 21 authoritative / 10 expected minimum
+PASS Saturday: 15 authoritative / 10 expected minimum
+PASS Sunday: 13 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
