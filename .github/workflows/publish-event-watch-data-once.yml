@@ -3,7 +3,7 @@ name: Publish event-watch karaoke data once
 on:
   push:
     branches:
-      - sync-event-watch-public-data
+      - main
     paths:
       - ".github/workflows/publish-event-watch-data-once.yml"
   workflow_dispatch:
@@ -36,10 +36,11 @@ jobs:
           GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
         run: npm run sync:data -- --write --no-backup --output-dir .data-sync-output
 
-      - name: Commit public data snapshot
+      - name: Commit public data snapshot and remove one-time workflow
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/publish-event-watch-data-once.yml
           git add public/data/venues.tsv public/data/events_by_night.tsv public/data/generated_events_review.tsv public/data/venue_slug_aliases.tsv public/data/sync-metadata.json public/data/sync-validation-report.md public/data/sync-diff-report.md
           git status --short
           if git diff --cached --quiet; then
