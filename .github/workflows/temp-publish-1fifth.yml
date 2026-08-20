@@ -1,0 +1,77 @@
+name: Publish #1 Fifth public data
+
+on:
+  push:
+    branches:
+      - sync-1fifth-public-data-v2
+    paths:
+      - ".github/workflows/temp-publish-1fifth.yml"
+      - ".github/sync-1fifth-publish-trigger.txt"
+
+permissions:
+  contents: write
+
+jobs:
+  patch-public-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: sync-1fifth-public-data-v2
+
+      - name: Patch #1 Fifth rows only
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+
+          venue = base64.b64decode('dmVudWUtMDA1MQkjMSBGaWZ0aCBBdmVudWUJMS1maWZ0aC1hdmVudWUJYmFzaWMJdmVyaWZpZWQJbGl2ZV9iYXIJU2FuIERpZWdvCUhpbGxjcmVzdAkzODQ1IEZpZnRoIEF2ZSwgU2FuIERpZWdvLCBDQSA5MjEwMwkzMi43NDgyCS0xMTcuMTYwMwkJQG51bWJlcm9uZWZpZnRoCQkJCVRodXJzZGF5LCBUdWVzZGF5CTEwOjAwIFBNIC8gODowMCBQTQkxMjozMCBBTSAvIDEyOjAwIEFNCU5hdnkgTmljayAvIERKIEpQIHJvdGF0aW9uLCBCb2JiaSBhbmQgRGFubnkJSGlsbGNyZXN0LCBUaHVyc2RheSBrYXJhb2tlLCBUdWVzZGF5IGthcmFva2UsIGxpdmUga2FyYW9rZQlIaWxsY3Jlc3Qga2FyYW9rZSB2ZW51ZSB3aXRoIHZlcmlmaWVkIFR1ZXNkYXkga2FyYW9rZSBmcm9tIDggUE0gdG8gbWlkbmlnaHQgaG9zdGVkIGJ5IEJvYmJpIGFuZCBEYW5ueSwgcGx1cyBUaHVyc2RheSBsYXRlLW5pZ2h0IGthcmFva2UgZnJvbSAxMCBQTSB0byAxMjozMCBBTSB3aXRoIGEgTmF2eSBOaWNrIC8gREogSlAgcm90YXRpb24uCQkJCQkJCQkJCQlGQUxTRQkxMDAJRGllZ28gZGlyZWN0bHkgY29uZmlybWVkIFR1ZXNkYXkga2FyYW9rZSA4IFBNLW1pZG5pZ2h0IGhvc3RlZCBieSBCb2JiaSBhbmQgRGFubnkgYW5kIGNsYXJpZmllZCB0aGF0IHRoZSAxMCBQTS0xMjozMCBBTSBsYXRlLW5pZ2h0IE5hdnkgTmljayAvIERKIEpQIHJvdGF0aW9uIGlzIG9uIFRodXJzZGF5cy4JRGlyZWN0IHZlbnVlIHJlc3BvbnNlIGZyb20gRGllZ28gLyAjMSBGaWZ0aAlDb3JleSB2ZXJpZmljYXRpb24gb3V0cmVhY2ggMjAyNi0wOC0xOTsgTmF2eSBOaWNrIHJlc3BvbnNlIDIwMjYtMDctMTUJCTIwMjYtMDgtMTk=').decode()
+          thursday = base64.b64decode('d2Vla2x5LTEtZmlmdGgtYXZlbnVlLXRodXJzZGF5CXZlbnVlLTAwNTEJIzEgRmlmdGggQXZlbnVlCTEtZmlmdGgtYXZlbnVlCVRodXJzZGF5CTEwOjAwIFBNCTEyOjMwIEFNCU5hdnkgTmljayAvIERKIEpQIHJvdGF0aW9uCVRSVUUJYWN0aXZlCVRodXJzZGF5IGthcmFva2UgYXQgIzEgRmlmdGggQXZlbnVlIGZyb20gMTAgUE0tMTI6MzAgQU0gd2l0aCBhIE5hdnkgTmljayAvIERKIEpQIHJvdGF0aW9uLgkxMDAJRGlyZWN0IHZlbnVlIHJlc3BvbnNlIGZyb20gRGllZ28gLyAjMSBGaWZ0aAlOYXZ5IE5pY2sgcmVzcG9uc2UgMjAyNi0wNy0xNQkyMDI2LTA4LTE5CXZlcmlmaWVkX2RpcmVjdF9zY2hlZHVsZQlGQUxTRQ==').decode()
+          tuesday = base64.b64decode('d2Vla2x5LTEtZmlmdGgtYXZlbnVlLXR1ZXNkYXkJdmVudWUtMDA1MQkjMSBGaWZ0aCBBdmVudWUJMS1maWZ0aC1hdmVudWUJVHVlc2RheQk4OjAwIFBNCTEyOjAwIEFNCUJvYmJpIGFuZCBEYW5ueQlUUlVFCWFjdGl2ZQlUdWVzZGF5IGthcmFva2UgZnJvbSA4IFBNIHRvIG1pZG5pZ2h0IHdpdGggQm9iYmkgYW5kIERhbm55LgkxMDAJRGlyZWN0IHZlbnVlIHJlc3BvbnNlIGZyb20gRGllZ28gLyAjMSBGaWZ0aAlDb3JleSB2ZXJpZmljYXRpb24gb3V0cmVhY2ggMjAyNi0wOC0xNwkyMDI2LTA4LTE3CXZlcmlmaWVkX2RpcmVjdF9zdWJtaXNzaW9uCUZBTFNF').decode()
+
+          vp = Path('public/data/venues.tsv')
+          lines = vp.read_text().splitlines()
+          found = False
+          for i, line in enumerate(lines):
+              if line.startswith('venue-0051\t'):
+                  lines[i] = venue
+                  found = True
+                  break
+          if not found:
+              raise SystemExit('venue-0051 not found in venues.tsv')
+          vp.write_text('\n'.join(lines) + '\n')
+
+          ep = Path('public/data/events_by_night.tsv')
+          lines = ep.read_text().splitlines()
+          replacements = {
+              'weekly-1-fifth-avenue-thursday\t': thursday,
+              'weekly-1-fifth-avenue-tuesday\t': tuesday,
+          }
+          seen = set()
+          for i, line in enumerate(lines):
+              for prefix, replacement in replacements.items():
+                  if line.startswith(prefix):
+                      lines[i] = replacement
+                      seen.add(prefix)
+                      break
+          if 'weekly-1-fifth-avenue-thursday\t' not in seen:
+              raise SystemExit('Thursday #1 Fifth event not found')
+          if 'weekly-1-fifth-avenue-tuesday\t' not in seen:
+              lines.append(tuesday)
+          ep.write_text('\n'.join(lines) + '\n')
+          PY
+
+      - name: Commit patched public data
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/venues.tsv public/data/events_by_night.tsv
+          if git diff --cached --quiet; then
+            echo "No public data changes needed."
+            exit 0
+          fi
+          git commit -m "Publish verified #1 Fifth karaoke schedule"
+          git push origin HEAD:sync-1fifth-public-data-v2
