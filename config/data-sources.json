@@ -1,8 +1,8 @@
 {
-    "defaultSourceSheetId": "1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc",
-    "tabs": {
-        "venues": "Venues_Canonical",
-        "events": "Events_Canonical",
-        "hosts": "Hosts_Canonical"
-    }
+  "defaultSourceSheetId": "1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc",
+  "tabs": {
+    "venues": "Venues_Canonical",
+    "events": "Events_Canonical",
+    "hosts": "Hosts_Canonical"
+  }
 }
