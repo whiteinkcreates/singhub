@@ -1,1 +1,0 @@
-Trigger #1 Fifth public-data publish after canonical verification.
