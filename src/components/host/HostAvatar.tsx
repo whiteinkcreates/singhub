@@ -22,7 +22,7 @@ export function HostAvatar({ host, large = false }: { host: HostProfile; large?:
       <img
         src={imageUrl}
         alt={`${host.publicDisplayName} profile image`}
-        className={`${sizeClasses} rounded-2xl border border-cyan-300/40 object-cover shadow-lg shadow-cyan-950/40`}
+        className={`${sizeClasses} aspect-square shrink-0 rounded-full border border-cyan-300/40 object-cover shadow-lg shadow-cyan-950/40`}
         loading="lazy"
       />
     );
@@ -30,7 +30,7 @@ export function HostAvatar({ host, large = false }: { host: HostProfile; large?:
 
   return (
     <div
-      className={`${sizeClasses} flex shrink-0 items-center justify-center rounded-2xl border border-fuchsia-300/45 bg-slate-950 text-center font-black text-cyan-100 shadow-[0_0_24px_rgba(34,211,238,0.25)]`}
+      className={`${sizeClasses} flex shrink-0 items-center justify-center rounded-full border border-fuchsia-300/45 bg-slate-950 text-center font-black text-cyan-100 shadow-[0_0_24px_rgba(34,211,238,0.25)]`}
       aria-label={`${host.publicDisplayName} initials`}
     >
       {getInitials(host.publicDisplayName)}

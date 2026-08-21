@@ -91,7 +91,7 @@ export function HostDirectoryCard({ host }: { host: HostProfile }) {
 
       <div className="relative z-10">
         <div className="flex items-start gap-4">
-          <div className="rounded-2xl bg-gradient-to-br from-fuchsia-400/25 to-cyan-300/20 p-1">
+          <div className="shrink-0 rounded-full bg-gradient-to-br from-fuchsia-400/25 to-cyan-300/20 p-1">
             <HostAvatar host={host} />
           </div>
 
