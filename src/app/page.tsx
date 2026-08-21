@@ -157,8 +157,7 @@ export default async function Home() {
     SAN_DIEGO_REGION_CITIES.has(venue.city),
   );
   const featuredHosts = await getFeaturedHosts();
-  const featuredHost =
-    featuredHosts.find((host) => host.slug === "bryon-bea") ?? featuredHosts[0];
+  const featuredHost = featuredHosts[0];
 
   return (
     <main className="overflow-x-hidden">
