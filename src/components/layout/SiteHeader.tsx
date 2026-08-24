@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 const navItems = [
   { href: "/karaoke-near-me", label: "Karaoke Near Me", mobile: false },
   { href: "/find-karaoke", label: "Find Karaoke", mobile: true },
+  { href: "/singboard", label: "SingBoard", mobile: true },
   { href: "/places", label: "Places", mobile: true },
   { href: "/neighborhoods", label: "Neighborhoods", mobile: false },
   { href: "/hosts", label: "Hosts", mobile: false },
