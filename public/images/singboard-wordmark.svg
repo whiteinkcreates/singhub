@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2450 620" role="img" aria-labelledby="title desc">
+  <title id="title">SingBOARD</title>
+  <desc id="desc">Sing in the SingHUB script style with BOARD in blue neon block letters.</desc>
+  <defs>
+    <clipPath id="singClip"><rect x="0" y="0" width="1320" height="620"/></clipPath>
+    <filter id="boardGlow" x="-30%" y="-60%" width="170%" height="220%">
+      <feGaussianBlur stdDeviation="14" result="b1"/>
+      <feGaussianBlur stdDeviation="28" result="b2"/>
+      <feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g clip-path="url(#singClip)">
+    <image href="/images/header-singhub-logo.png" x="0" y="10" width="2400" height="600" preserveAspectRatio="xMinYMid meet"/>
+  </g>
+  <text x="1260" y="465" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="390" font-weight="900" letter-spacing="-20" fill="#f8fdff" stroke="#36cfff" stroke-width="20" paint-order="stroke fill" filter="url(#boardGlow)">BOARD</text>
+</svg>
