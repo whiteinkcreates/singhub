@@ -2,6 +2,7 @@ import { getKaraokeEventData } from "@/lib/eventData";
 import { getHosts } from "@/lib/hostData";
 import { getVenueListings } from "@/lib/venueData";
 import type { KaraokeEventListing, VenueListing } from "@/types";
+import { isSanDiegoMarketVenue } from "@/lib/roundups/market";
 import type {
   LockedRoundupPayload,
   RoundupDraft,
@@ -48,6 +49,10 @@ function timeSortValue(value: string) {
   return hour * 60 + minute;
 }
 
+function venueForEvent(event: KaraokeEventListing, venues: VenueListing[]) {
+  return venues.find((venue) => venue.id === event.venueId || venue.slug === event.venueSlug);
+}
+
 function buildGroups(rows: RoundupVenueRow[], size = DEFAULT_ROWS_PER_GROUP): RoundupSlideGroup[] {
   const groups: RoundupSlideGroup[] = [];
   for (let index = 0; index < rows.length; index += size) {
@@ -92,6 +97,14 @@ function materializeRows(events: KaraokeEventListing[], venues: VenueListing[]) 
     .map((row, index) => ({ ...row, number: index + 1 }));
 }
 
+function eligibleSanDiegoEvents(events: KaraokeEventListing[], venues: VenueListing[], weekday: string) {
+  return events.filter((event) => {
+    if (!eventRunsOnWeekday(event, weekday)) return false;
+    const venue = venueForEvent(event, venues);
+    return isSanDiegoMarketVenue(venue);
+  });
+}
+
 export async function buildRoundupDraft(date: string): Promise<RoundupDraft> {
   const weekday = weekdayForDate(date);
   const [{ events, status }, venues, hosts] = await Promise.all([
@@ -100,7 +113,7 @@ export async function buildRoundupDraft(date: string): Promise<RoundupDraft> {
     getHosts(),
   ]);
 
-  const eligibleEvents = events.filter((event) => eventRunsOnWeekday(event, weekday));
+  const eligibleEvents = eligibleSanDiegoEvents(events, venues, weekday);
   const rows = materializeRows(eligibleEvents, venues);
   const validation = validateRoundup({
     weekday,
@@ -128,7 +141,7 @@ export async function revalidateRoundupDraft(draft: RoundupDraft): Promise<Round
     getVenueListings(),
     getHosts(),
   ]);
-  const eligibleEvents = events.filter((event) => eventRunsOnWeekday(event, draft.weekday));
+  const eligibleEvents = eligibleSanDiegoEvents(events, venues, draft.weekday);
   const sourceRows = materializeRows(eligibleEvents, venues);
   const validation = validateRoundup({
     weekday: draft.weekday,
