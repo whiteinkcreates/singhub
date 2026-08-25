@@ -163,13 +163,10 @@ export function SingBoard() {
 
       <div className="rounded-[2rem] bg-[linear-gradient(135deg,#3d2412,#8b5529_20%,#5c361a_48%,#9f6733_78%,#3e2413)] p-3 shadow-[0_28px_80px_rgba(0,0,0,.65)] sm:p-5 lg:p-6">
         <div ref={boardRef} className="relative min-h-[900px] overflow-hidden rounded-[1.1rem] border border-amber-950/60 bg-[#ae7041] shadow-[inset_0_0_55px_rgba(69,34,10,.35)] sm:min-h-[960px] lg:min-h-[1020px]" style={{ backgroundImage: "radial-gradient(circle at 12% 18%, rgba(80,42,15,.22) 0 1px, transparent 1.7px), radial-gradient(circle at 61% 33%, rgba(255,238,205,.18) 0 1px, transparent 1.7px), radial-gradient(circle at 77% 81%, rgba(85,47,19,.18) 0 1px, transparent 1.5px), linear-gradient(105deg, rgba(255,255,255,.035), transparent 38%, rgba(77,39,12,.05))", backgroundSize: "13px 17px, 19px 23px, 29px 31px, 100% 100%" }} aria-label={`${activeLabel} SingBoard`}>
-          <div className="absolute left-1/2 top-3 z-40 flex w-[72%] max-w-[760px] -translate-x-1/2 items-center justify-center sm:top-4">
-            <div className="relative h-[72px] w-[43%] overflow-hidden sm:h-[102px] lg:h-[118px]">
-              {/* Render the original SingHUB wordmark directly so the Sing script cannot disappear inside a nested SVG. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/images/header-singhub-logo.png" alt="Sing" className="absolute left-0 top-0 h-full w-auto max-w-none" />
-            </div>
-            <span className="-ml-5 text-[2.9rem] font-black leading-none tracking-[-0.07em] text-white sm:-ml-8 sm:text-[4.8rem] lg:text-[5.7rem]" style={{ WebkitTextStroke: "2px #59ccff", textShadow: "0 0 5px #59ccff, 0 0 13px #2060ff, 0 0 25px #203cff" }}>BOARD</span>
+          <div className="absolute left-1/2 top-3 z-40 w-[76%] max-w-[880px] -translate-x-1/2 sm:top-4">
+            {/* Use the approved SingBOARD artwork as one asset. Do not reconstruct or overlay the wordmark in code. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://res.cloudinary.com/dy3lyejkk/image/upload/v1787617301/ChatGPT_Image_Aug_24_2026_05_19_59_PM_r1ttcs.png" alt="SingBOARD" className="h-auto w-full object-contain" draggable={false} />
           </div>
 
           <div className="absolute right-[4%] top-[16%] z-20 rotate-[3deg] bg-[#ffe89a] px-4 py-4 text-center text-slate-950 shadow-[0_10px_18px_rgba(63,31,10,.35)] sm:right-[6%] sm:w-[190px]">
