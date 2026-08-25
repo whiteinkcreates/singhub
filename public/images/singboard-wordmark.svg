@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 430" role="img" aria-labelledby="title desc">
+  <title id="title">SingBOARD</title>
+  <desc id="desc">SingBOARD neon wordmark using the SingHUB mark and Sing script with BOARD in blue neon.</desc>
+  <defs>
+    <linearGradient id="frame" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff2aa1"/>
+      <stop offset="0.45" stop-color="#d92cff"/>
+      <stop offset="1" stop-color="#38cfff"/>
+    </linearGradient>
+    <filter id="pinkGlow" x="-30%" y="-60%" width="160%" height="220%">
+      <feGaussianBlur stdDeviation="10" result="b1"/>
+      <feGaussianBlur stdDeviation="22" result="b2"/>
+      <feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="blueGlow" x="-30%" y="-60%" width="160%" height="220%">
+      <feGaussianBlur stdDeviation="9" result="b1"/>
+      <feGaussianBlur stdDeviation="20" result="b2"/>
+      <feMerge><feMergeNode in="b2"/><feMergeNode in="b1"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="singOnly">
+      <rect x="0" y="0" width="1085" height="620" rx="0"/>
+    </clipPath>
+  </defs>
+
+  <image href="/images/singhub-mark.png" x="10" y="68" width="210" height="292" preserveAspectRatio="xMidYMid meet"/>
+
+  <rect x="220" y="67" width="1545" height="298" rx="18" fill="none" stroke="url(#frame)" stroke-width="10" filter="url(#blueGlow)"/>
+
+  <g transform="translate(195 0) scale(.62)" clip-path="url(#singOnly)" filter="url(#pinkGlow)">
+    <image href="/images/header-singhub-logo.png" x="0" y="0" width="2000" height="620" preserveAspectRatio="xMinYMid meet"/>
+  </g>
+
+  <text x="835" y="315" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="260" font-weight="900" letter-spacing="-10" fill="#ffffff" stroke="#5fd8ff" stroke-width="10" paint-order="stroke fill" filter="url(#blueGlow)">BOARD</text>
+</svg>
