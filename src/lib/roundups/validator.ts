@@ -1,29 +1,9 @@
 import type { HostProfile, KaraokeEventListing, VenueListing } from "@/types";
+import { isSanDiegoMarketVenue } from "@/lib/roundups/market";
 import type {
   RoundupValidationIssue,
   RoundupVenueRow,
 } from "@/lib/roundups/types";
-
-const SAN_DIEGO_CITY_NAMES = new Set([
-  "san diego",
-  "la mesa",
-  "national city",
-  "chula vista",
-  "el cajon",
-  "lemon grove",
-  "santee",
-  "coronado",
-  "imperial beach",
-  "poway",
-  "encinitas",
-  "carlsbad",
-  "oceanside",
-  "vista",
-  "san marcos",
-  "escondido",
-  "solana beach",
-  "del mar",
-]);
 
 const RETIRED_HOST_STATUSES = new Set([
   "retired",
@@ -87,8 +67,7 @@ export function validateRoundup(input: {
     }
 
     const venue = venuesById.get(row.venueId) || venuesBySlug.get(row.venueSlug);
-    const city = normalized(venue?.city || row.city);
-    if (!city || !SAN_DIEGO_CITY_NAMES.has(city)) {
+    if (!isSanDiegoMarketVenue(venue)) {
       issues.push({
         code: "non_san_diego_venue",
         severity: "blocker",
@@ -201,7 +180,6 @@ export function validateRoundup(input: {
     }
   }
 
-  // Protect against an event object disappearing between candidate creation and review.
   const canonicalEventIds = new Set(events.map((event) => event.eventId));
   for (const row of reviewedRows) {
     if (!canonicalEventIds.has(row.eventId)) {
