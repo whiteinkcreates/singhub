@@ -18,6 +18,13 @@ const tools = [
       "Review karaoke leads and turn messy discovery signals into verified venue and event data.",
   },
   {
+    href: "/admin/roundups",
+    eyebrow: "Publishing",
+    title: "Roundup Generator",
+    description:
+      "Build, validate, review, lock, and render deterministic daily karaoke roundups from canonical SingHUB data.",
+  },
+  {
     href: "/admin/venue-comparison",
     eyebrow: "Venue Partnerships",
     title: "Venue Sales Comparison",
