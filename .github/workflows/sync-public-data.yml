@@ -7,6 +7,7 @@ on:
       - ".github/workflows/sync-public-data.yml"
       - "config/data-sources.json"
       - "config/public-data-thresholds.json"
+      - "scripts/check-canonical-integrity.mjs"
       - "scripts/check-public-data.mjs"
       - "scripts/google-sheets-api.mjs"
       - "scripts/sync-public-data.mjs"
@@ -29,6 +30,13 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Validate canonical venue/event integrity
+        env:
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+          GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
+        run: node scripts/check-canonical-integrity.mjs
 
       - name: Generate and validate candidate data
         env:
