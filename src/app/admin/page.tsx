@@ -25,6 +25,13 @@ const tools = [
       "Build, validate, review, lock, and render deterministic daily karaoke roundups from canonical SingHUB data.",
   },
   {
+    href: "/admin/singboard-access",
+    eyebrow: "Community Access",
+    title: "SingBOARD Access",
+    description:
+      "Create posting codes, see who has SingBOARD access, replace codes, and revoke or restore posting privileges.",
+  },
+  {
     href: "/admin/venue-comparison",
     eyebrow: "Venue Partnerships",
     title: "Venue Sales Comparison",
