@@ -1,3 +1,4 @@
+# Triggered after locking event-watch rows on 2026-08-27
 name: Publish event-watch karaoke data once
 
 on:
