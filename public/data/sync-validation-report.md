@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 58.
-Exported events: 126.
+Exported venues: 76.
+Exported events: 167.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -15,10 +15,8 @@ Exported events: 126.
 ## Legacy Slug Mappings
 - None
 ## Public Venues Missing Events Row
-- venue-0073 Dock's Cocktail Lounge
 - venue-0048 Hive Karaoke
 - venue-0065 Jin Music Studios
-- venue-0041 The Ould Sod
 ## Public Venues Missing Schedule
 - venue-0051 #1 Fifth Avenue
 - venue-0062 710 Beach Club
@@ -43,15 +41,18 @@ Exported events: 126.
 - venue-0081 Joycee's Cocktails
 - venue-0006 JT's Tavern
 - venue-0071 Kaminski's Sports Lounge
+- venue-0025 McGuffie's Live
+- venue-0067 Grand Comedy Club and Pizzeria
 - venue-0076 Novo Brazil Brewing - Lane Ave
 - venue-0017 Pal Joey's Cocktail Lounge
 - venue-0038 Peter D's
+- venue-0060 Punch Bowl Social San Diego
 - venue-0039 Redwing Bar & Grill
+- venue-0026 Shooters Cocktails
 - venue-0047 Star Bar
 - venue-0016 The Cordova Bar
 - venue-0002 The Lamplighter
 - venue-0080 The Mesa
-- venue-0041 The Ould Sod
 - venue-0010 The Regal Bar
 - venue-0079 The Scoreboard Imperial Beach Sports Bar & Grill
 - venue-0101 Urban Mo’s Bar & Grill
@@ -78,6 +79,21 @@ Exported events: 126.
 - venue-0083 Tony’s Martini Bar
 - venue-0084 Side Piece
 - venue-0085 Hennessey’s La Jolla
+- venue-0105 De Oro Mine Co.
+- venue-0106 Silver Dollar
+- venue-0107 Coyote Bar & Grill Carlsbad
+- venue-0108 The North Bar
+- venue-0109 N City Sports Lounge
+- venue-0110 BNS Brewing and Distilling Co.
+- venue-0111 D O T Cocktail Lounge
+- venue-0112 Cow Shed Bar & Grill
+- venue-0113 Full Circle Saloon
+- venue-0114 Casino Inn Bar & Grill
+- venue-0115 Market on 8th
+- venue-0116 Filippi's Pizza Grotto - Santee
+- venue-0117 Rosie O'Grady's
+- venue-0118 Chief's Da Tiki Bar
+- venue-0119 Rich's San Diego
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -90,30 +106,27 @@ Exported events: 126.
 - row 33: venue-0040 Melody Karaoke & Cafe
 - row 34: venue-0032 Mikami Bar & Revolving Sushi
 - row 35: venue-0057 Moxy San Diego (Hotel)
-- row 36: venue-0025 McGuffie's (formerly Navajo Live)
 - row 37: venue-0004 Norms
 - row 38: venue-0068 North County - CoLab Public House
-- row 39: venue-0067 North County - Grand Comedy Club
 - row 40: venue-0066 North County - Larrys Beach Club
 - row 42: venue-0033 Off Base Bar
 - row 43: venue-0074 On The Rocks Cocktails
 - row 45: venue-0034 Paradise Lounge
 - row 46: venue-0028 Parkys Saloon
-- row 48: venue-0060 Punch Bowl Social
 - row 50: venue-0023 Rock Out Karaoke
 - row 51: venue-0050 Saddle Bar
-- row 52: venue-0026 Shooters Cocktails
-- row 53: venue-0011 Silver Dollar
-- row 54: venue-0064 Spot KTV & Restaurant
-- row 58: venue-0035 The Luau
-- row 64: venue-0024 Tremont St. Bar & Grill
-- row 78: venue-0093 Rosie O'Grady's
+- row 53: venue-0064 Spot KTV & Restaurant
+- row 57: venue-0035 The Luau
+- row 59: venue-0041 The Ould Sod
+- row 63: venue-0024 Tremont St. Bar & Grill
+- row 77: venue-0093 Rosie O'Grady's
 ## Venues With Invalid App Visibility
 - None
 ## Venues Skipped As Not Public-Usable
 - None
 ## Events Skipped Because App Hidden
 - event row 4: weekly-the-search-bar-thursday
+- event row 39: weekly-wongs-golden-palace-sunday
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
 - event row 85: weekly-the-ould-sod-friday
@@ -126,10 +139,7 @@ Exported events: 126.
 ## Events Skipped Because Inactive
 - None
 ## Events Skipped Because Missing Day Or Start Time
-- event row 6: weekly-camels-bar-grill-thursday Camels Bar & Grill
-- event row 35: weekly-whiskey-girl-monday Whiskey Girl
-- event row 37: weekly-whiskey-girl-sunday Whiskey Girl
-- event row 39: weekly-wongs-golden-palace-sunday Wong's Golden Palace
+- None
 ## Public Rows With TBD Address/Time/Host
 - event row 2: weekly-dons-cocktails-thursday Don's Cocktails
 - event row 3: weekly-dons-cocktails-friday Don's Cocktails
@@ -164,10 +174,23 @@ Exported events: 126.
 - event row 102: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
 - event row 104: event-0021 Tony’s Martini Bar
 - event row 105: event-0022 Tony’s Martini Bar
-- venue: venue-0073 Dock's Cocktail Lounge
+- event row 118: weekly-de-oro-mine-co-monday De Oro Mine Co.
+- event row 119: weekly-silver-dollar-chula-vista-tuesday Silver Dollar
+- event row 123: weekly-grand-comedy-club-monday Grand Comedy Club and Pizzeria
+- event row 124: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
+- event row 132: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
+- event row 134: event-0041 Full Circle Saloon
+- event row 135: event-0042 Full Circle Saloon
+- event row 136: event-0043 Full Circle Saloon
+- event row 139: event-0046 Market on 8th
+- event row 146: weekly-redwing-bar-grill-sunday Redwing Bar & Grill
+- event row 147: weekly-redwing-bar-grill-monday Redwing Bar & Grill
+- event row 148: weekly-redwing-bar-grill-tuesday Redwing Bar & Grill
+- event row 149: weekly-redwing-bar-grill-wednesday Redwing Bar & Grill
+- event row 153: weekly-docks-cocktail-lounge-friday Dock's Cocktail Lounge
+- event row 154: weekly-docks-cocktail-lounge-saturday Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
-- venue: venue-0041 The Ould Sod
 ## Public Venues Missing Coordinates
 - venue-0101 Urban Mo’s Bar & Grill
 - venue-0102 Three Stags Irish Pub and Restaurant
@@ -182,6 +205,21 @@ Exported events: 126.
 - venue-0083 Tony’s Martini Bar
 - venue-0084 Side Piece
 - venue-0085 Hennessey’s La Jolla
+- venue-0105 De Oro Mine Co.
+- venue-0106 Silver Dollar
+- venue-0107 Coyote Bar & Grill Carlsbad
+- venue-0108 The North Bar
+- venue-0109 N City Sports Lounge
+- venue-0110 BNS Brewing and Distilling Co.
+- venue-0111 D O T Cocktail Lounge
+- venue-0112 Cow Shed Bar & Grill
+- venue-0113 Full Circle Saloon
+- venue-0114 Casino Inn Bar & Grill
+- venue-0115 Market on 8th
+- venue-0116 Filippi's Pizza Grotto - Santee
+- venue-0117 Rosie O'Grady's
+- venue-0118 Chief's Da Tiki Bar
+- venue-0119 Rich's San Diego
 ## Closed/Hidden/Archived Rows Excluded
 - None
 ## Stable Venue Identity Changes
@@ -194,18 +232,18 @@ Exported events: 126.
 ```text
 SingHUB public data guardrails
 
-Data directory: /tmp/singhub-data-sync-IS49MP
-Public venues: 58
-Authoritative events: 126
+Data directory: /home/runner/work/singhub/singhub/.data-sync-output
+Public venues: 76
+Authoritative events: 167
 Legacy venue slug aliases: 0
 
-PASS Monday: 10 authoritative / 8 expected minimum
-PASS Tuesday: 17 authoritative / 8 expected minimum
-PASS Wednesday: 22 authoritative / 9 expected minimum
-PASS Thursday: 28 authoritative / 14 expected minimum
-PASS Friday: 21 authoritative / 10 expected minimum
-PASS Saturday: 15 authoritative / 10 expected minimum
-PASS Sunday: 13 authoritative / 7 expected minimum
+PASS Monday: 16 authoritative / 8 expected minimum
+PASS Tuesday: 25 authoritative / 8 expected minimum
+PASS Wednesday: 29 authoritative / 9 expected minimum
+PASS Thursday: 34 authoritative / 14 expected minimum
+PASS Friday: 26 authoritative / 10 expected minimum
+PASS Saturday: 18 authoritative / 10 expected minimum
+PASS Sunday: 19 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
