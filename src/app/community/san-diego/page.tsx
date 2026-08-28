@@ -3,7 +3,7 @@ import { SanDiegoRoom } from "@/components/community/SanDiegoRoom";
 export const metadata = {
   title: "San Diego Karaoke Room | SingHUB",
   description:
-    "The SingHUB San Diego community room for tonight plans, new karaoke finds, schedule checks, and Scout operations.",
+    "The SingHUB San Diego community room for tonight plans, new karaoke finds, and schedule checks.",
 };
 
 export default function SanDiegoCommunityPage() {
@@ -14,10 +14,10 @@ export default function SanDiegoCommunityPage() {
           San Diego Karaoke Community
         </p>
         <h1 className="mt-3 max-w-4xl text-4xl font-black text-white md:text-6xl">
-          The room where the local scene keeps SingHUB alive.
+          The room where the local scene keeps SingHUB accurate.
         </h1>
         <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 md:text-lg">
-          Coordinate tonight, surface new spots, report schedule changes, and help human SingHUB Scouts verify the city. San Diego remains the laboratory for the repeatable expansion model.
+          Coordinate tonight, surface new spots, report schedule changes, and help keep San Diego karaoke information current.
         </p>
       </section>
 
