@@ -4,34 +4,12 @@ import { Button } from "@/components/ui/Button";
 import { VenueCard } from "@/components/venue/VenueCard";
 import { getFeaturedHosts } from "@/lib/hostData";
 import { getPublicVenues } from "@/lib/publicVenueFilters";
-import { getFeaturedVenueListings } from "@/lib/venueData";
+import { getSanDiegoRegionHosts } from "@/lib/sanDiegoMarket";
+import { getFeaturedVenueListings, getVenueListings } from "@/lib/venueData";
 
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header";
 const HERO_IMAGE_URL =
   "https://res.cloudinary.com/dy3lyejkk/image/upload/v1786839114/file_00000000bc6081fd9e63561226afdd01_kldtkz.png";
-
-const SAN_DIEGO_REGION_CITIES = new Set([
-  "San Diego",
-  "La Mesa",
-  "Chula Vista",
-  "National City",
-  "Imperial Beach",
-  "Santee",
-  "El Cajon",
-  "Lakeside",
-  "Poway",
-  "Oceanside",
-  "Vista",
-  "Escondido",
-  "Carlsbad",
-  "Encinitas",
-  "San Marcos",
-  "Spring Valley",
-  "Lemon Grove",
-  "Coronado",
-  "Solana Beach",
-  "Del Mar",
-]);
 
 const onboardingTickerItems = [
   "Welcome to SingHUB. Let's get started.",
@@ -74,7 +52,7 @@ const actionCards = [
     href: "/find-karaoke?type=live",
     icon: "LV",
     label: "Live Karaoke",
-    helper: "Find spots with live band karaoke.",
+    helper: "Find bars and venues with hosted karaoke nights.",
     tone: "coral",
   },
   {
@@ -153,10 +131,14 @@ function KaraokeTicker({ items, label = "Welcome to SingHUB" }: { items: string[
 }
 
 export default async function Home() {
-  const featuredVenues = getPublicVenues(await getFeaturedVenueListings()).filter((venue) =>
-    SAN_DIEGO_REGION_CITIES.has(venue.city),
-  );
-  const featuredHosts = await getFeaturedHosts();
+  const [venueListings, featuredVenueListings, featuredHostListings] = await Promise.all([
+    getVenueListings(),
+    getFeaturedVenueListings(),
+    getFeaturedHosts(),
+  ]);
+  const publicVenues = getPublicVenues(venueListings);
+  const featuredVenues = getPublicVenues(featuredVenueListings);
+  const featuredHosts = getSanDiegoRegionHosts(featuredHostListings, publicVenues);
   const featuredHost = featuredHosts[0];
 
   return (
