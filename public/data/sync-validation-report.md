@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 76.
-Exported events: 167.
+Exported venues: 77.
+Exported events: 171.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -52,6 +52,7 @@ Exported events: 167.
 - venue-0047 Star Bar
 - venue-0016 The Cordova Bar
 - venue-0002 The Lamplighter
+- venue-0035 The Luau
 - venue-0080 The Mesa
 - venue-0010 The Regal Bar
 - venue-0079 The Scoreboard Imperial Beach Sports Bar & Grill
@@ -116,7 +117,6 @@ Exported events: 167.
 - row 50: venue-0023 Rock Out Karaoke
 - row 51: venue-0050 Saddle Bar
 - row 53: venue-0064 Spot KTV & Restaurant
-- row 57: venue-0035 The Luau
 - row 59: venue-0041 The Ould Sod
 - row 63: venue-0024 Tremont St. Bar & Grill
 - row 77: venue-0093 Rosie O'Grady's
@@ -189,6 +189,10 @@ Exported events: 167.
 - event row 149: weekly-redwing-bar-grill-wednesday Redwing Bar & Grill
 - event row 153: weekly-docks-cocktail-lounge-friday Dock's Cocktail Lounge
 - event row 154: weekly-docks-cocktail-lounge-saturday Dock's Cocktail Lounge
+- event row 155: weekly-the-luau-thursday The Luau
+- event row 156: weekly-the-luau-saturday The Luau
+- event row 157: weekly-the-luau-sunday The Luau
+- event row 158: weekly-the-luau-friday The Luau
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
 ## Public Venues Missing Coordinates
@@ -233,17 +237,17 @@ Exported events: 167.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 76
-Authoritative events: 167
+Public venues: 77
+Authoritative events: 171
 Legacy venue slug aliases: 0
 
 PASS Monday: 16 authoritative / 8 expected minimum
 PASS Tuesday: 25 authoritative / 8 expected minimum
 PASS Wednesday: 29 authoritative / 9 expected minimum
-PASS Thursday: 34 authoritative / 14 expected minimum
-PASS Friday: 26 authoritative / 10 expected minimum
-PASS Saturday: 18 authoritative / 10 expected minimum
-PASS Sunday: 19 authoritative / 7 expected minimum
+PASS Thursday: 35 authoritative / 14 expected minimum
+PASS Friday: 27 authoritative / 10 expected minimum
+PASS Saturday: 19 authoritative / 10 expected minimum
+PASS Sunday: 20 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
