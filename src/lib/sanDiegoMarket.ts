@@ -1,3 +1,4 @@
+import { isPublicVenue } from "@/lib/publicVenueFilters";
 import type { HostProfile, VenueListing } from "@/types";
 
 const SAN_DIEGO_REGION_CITIES = new Set([
@@ -35,6 +36,10 @@ export function isSanDiegoRegionVenue(venue: Pick<VenueListing, "city">) {
 
 export function getSanDiegoRegionVenues<T extends Pick<VenueListing, "city">>(venues: T[]) {
   return venues.filter(isSanDiegoRegionVenue);
+}
+
+export function getSanDiegoPublicVenues(venues: VenueListing[]) {
+  return venues.filter((venue) => isPublicVenue(venue) && isSanDiegoRegionVenue(venue));
 }
 
 export function isSanDiegoRegionHost(host: HostProfile, venues: VenueListing[]) {
