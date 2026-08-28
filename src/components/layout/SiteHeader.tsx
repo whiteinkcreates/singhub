@@ -34,7 +34,7 @@ export function SiteHeader() {
           />
         </Link>
 
-        <nav className="hidden min-w-0 items-center justify-end gap-1.5 text-sm font-semibold text-slate-200 md:flex md:gap-2">
+        <nav className="hidden min-w-0 items-center justify-end gap-1.5 text-sm font-semibold text-slate-200 lg:flex lg:gap-2">
           {primaryNavItems.map((item) => (
             <Link
               key={item.href}
@@ -47,13 +47,13 @@ export function SiteHeader() {
           <Button
             href="/venues/premium"
             variant="secondary"
-            className="px-3 py-1.5 md:px-4 md:py-2"
+            className="px-3 py-1.5 lg:px-4 lg:py-2"
           >
             For Venues
           </Button>
         </nav>
 
-        <details className="group relative md:hidden">
+        <details className="group relative lg:hidden">
           <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-sm font-black text-white transition hover:bg-white/10 [&::-webkit-details-marker]:hidden">
             Menu
             <svg
