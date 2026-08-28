@@ -1,5 +1,15 @@
 import Link from "next/link";
 
+const footerLinks = [
+  { href: "/find-karaoke", label: "Find Karaoke" },
+  { href: "/places", label: "Venue Index" },
+  { href: "/hosts", label: "Hosts" },
+  { href: "/singboard", label: "SingBoard" },
+  { href: "/submit-listing", label: "Submit Listing" },
+  { href: "/claim-listing", label: "Claim Listing" },
+  { href: "/venues/premium", label: "For Venues" },
+];
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-white/10 bg-slate-950/70">
@@ -11,31 +21,17 @@ export function SiteFooter() {
             as we verify schedules, add venues, and build the local karaoke
             community.
           </p>
-          <p className="mt-3 text-xs font-bold uppercase tracking-[0.22em] text-cyan-200">
-            Karaoke entries powered by{" "}
-            <Link href="/scout" className="text-fuchsia-200 hover:text-white">
-              SingHUB Scout
+        </div>
+        <nav
+          aria-label="Footer navigation"
+          className="flex max-w-xl flex-wrap gap-x-4 gap-y-3 font-semibold text-slate-300 md:justify-end"
+        >
+          {footerLinks.map((item) => (
+            <Link key={item.href} href={item.href} className="hover:text-white">
+              {item.label}
             </Link>
-            .
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-x-4 gap-y-3 font-semibold text-slate-300">
-          <Link href="/find-karaoke" className="hover:text-white">
-            Find Karaoke
-          </Link>
-          <Link href="/places" className="hover:text-white">
-            Karaoke Places
-          </Link>
-          <Link href="/community/san-diego" className="hover:text-white">
-            San Diego Room
-          </Link>
-          <Link href="/submit-listing" className="hover:text-white">
-            Submit
-          </Link>
-          <Link href="/claim-listing" className="hover:text-white">
-            Claim
-          </Link>
-        </div>
+          ))}
+        </nav>
       </div>
     </footer>
   );
