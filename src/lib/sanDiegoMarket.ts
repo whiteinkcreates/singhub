@@ -4,6 +4,7 @@ const SAN_DIEGO_REGION_CITIES = new Set([
   "san diego",
   "la mesa",
   "chula vista",
+  "bonita",
   "national city",
   "imperial beach",
   "santee",
