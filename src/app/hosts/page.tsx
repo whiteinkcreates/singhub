@@ -1,8 +1,7 @@
 import { HostDirectoryCard } from "@/components/host/HostCard";
 import { Button } from "@/components/ui/Button";
 import { getActiveHosts } from "@/lib/hostData";
-import { getPublicVenues } from "@/lib/publicVenueFilters";
-import { getSanDiegoRegionHosts } from "@/lib/sanDiegoMarket";
+import { getSanDiegoPublicVenues, getSanDiegoRegionHosts } from "@/lib/sanDiegoMarket";
 import { getVenueListings } from "@/lib/venueData";
 
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header";
@@ -17,7 +16,7 @@ export default async function HostsPage() {
     getActiveHosts(),
     getVenueListings(),
   ]);
-  const publicVenues = getPublicVenues(venueListings);
+  const publicVenues = getSanDiegoPublicVenues(venueListings);
   const hosts = getSanDiegoRegionHosts(activeHosts, publicVenues);
 
   return (
