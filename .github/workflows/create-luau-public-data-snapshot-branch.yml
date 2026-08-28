@@ -1,3 +1,4 @@
+# Trigger Luau public data snapshot publisher after canonical sheet lock
 name: Create Luau public data snapshot branch
 
 on:
