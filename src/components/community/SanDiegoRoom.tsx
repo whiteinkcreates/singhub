@@ -52,7 +52,7 @@ const initialMessages: RoomMessage[] = [
     author: "MadHatter",
     badge: "🎩",
     time: "Mission",
-    body: "San Diego stays the laboratory. We max out this scene, document the process, then human Scouts help take the same system city by city.",
+    body: "Spot a new karaoke night or a schedule that looks wrong? Drop the details here so it can be checked before the Finder is updated.",
   },
 ];
 
@@ -89,7 +89,7 @@ export function SanDiegoRoom() {
   return (
     <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-950/80 shadow-2xl shadow-black/30">
       <div className="border-b border-amber-300/20 bg-amber-300/[0.07] px-5 py-3 text-sm leading-6 text-amber-100">
-        Phase 1.5 mobile room preview. Messages you add are visible in this browser session only until accounts and persistent community posts are connected.
+        Community room preview. Messages you add are visible in this browser session only and are not saved after you leave.
       </div>
 
       <div className="grid min-h-[42rem] lg:grid-cols-[17rem_minmax(0,1fr)]">
