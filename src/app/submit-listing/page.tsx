@@ -2,7 +2,7 @@ import { SubmitListingForm } from "@/components/submit/SubmitListingForm";
 
 export const metadata = {
   title: "Submit a Karaoke Listing | SingHUB",
-  description: "Suggest a San Diego karaoke venue or karaoke night for SingHUB Phase 1. Incomplete tips are welcome.",
+  description: "Suggest a San Diego karaoke venue or karaoke night for SingHUB. Incomplete tips are welcome.",
 };
 
 export default function SubmitListingPage() {

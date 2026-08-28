@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { VenueMiniCard } from "@/components/seo/SeoCards";
 import { getNeighborhoodSeoPage, neighborhoodSeoPages } from "@/lib/seoContent";
-import { getPublicVenues } from "@/lib/publicVenueFilters";
+import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { getVenueListings } from "@/lib/venueData";
 
 export function generateStaticParams() {
@@ -54,7 +54,7 @@ export default async function NeighborhoodPage({ params }: NeighborhoodPageProps
     notFound();
   }
 
-  const venues = getPublicVenues(await getVenueListings()).filter((venue) =>
+  const venues = getSanDiegoPublicVenues(await getVenueListings()).filter((venue) =>
     venueMatchesNeighborhood(venue.neighborhood || "", page.name, page.slug),
   );
 

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { VenueMiniCard } from "@/components/seo/SeoCards";
 import { daySeoPages, getDaySeoPage } from "@/lib/seoContent";
 import { getKaraokeEventListings } from "@/lib/eventData";
-import { getPublicVenues } from "@/lib/publicVenueFilters";
+import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { getVenueListings } from "@/lib/venueData";
 
 export function generateStaticParams() {
@@ -50,7 +50,7 @@ export default async function DayKaraokePage({ params }: DayPageProps) {
     eventMatchesDay(event.karaokeDay, page.day),
   );
   const eventVenueSlugs = new Set(events.map((event) => event.venueSlug));
-  const venues = getPublicVenues(await getVenueListings()).filter((venue) =>
+  const venues = getSanDiegoPublicVenues(await getVenueListings()).filter((venue) =>
     eventVenueSlugs.has(venue.slug) || eventMatchesDay(venue.karaokeDay, page.day),
   );
 
