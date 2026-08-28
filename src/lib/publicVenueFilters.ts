@@ -1,5 +1,4 @@
 import type { VenueListing } from "@/types";
-import { isSanDiegoRegionVenue } from "@/lib/sanDiegoMarket";
 
 const HIDDEN_PUBLIC_VENUE_IDS = new Set([
   "venue-0025", // Navajo Live is now McGuffie's Live.
@@ -36,7 +35,6 @@ export function isPublicVenue(venue: VenueListing) {
   const normalizedVenueName = normalizeName(venue.venueName);
 
   return (
-    isSanDiegoRegionVenue(venue) &&
     !HIDDEN_PUBLIC_VENUE_IDS.has(venue.id) &&
     !HIDDEN_PUBLIC_SLUGS.has(venue.slug) &&
     !HIDDEN_PUBLIC_NAME_MATCHES.some((hiddenName) =>
