@@ -1,6 +1,9 @@
 import { HostDirectoryCard } from "@/components/host/HostCard";
 import { Button } from "@/components/ui/Button";
 import { getActiveHosts } from "@/lib/hostData";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
+import { getSanDiegoRegionHosts } from "@/lib/sanDiegoMarket";
+import { getVenueListings } from "@/lib/venueData";
 
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header";
 
@@ -10,7 +13,12 @@ export const metadata = {
 };
 
 export default async function HostsPage() {
-  const hosts = await getActiveHosts();
+  const [activeHosts, venueListings] = await Promise.all([
+    getActiveHosts(),
+    getVenueListings(),
+  ]);
+  const publicVenues = getPublicVenues(venueListings);
+  const hosts = getSanDiegoRegionHosts(activeHosts, publicVenues);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
