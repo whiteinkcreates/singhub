@@ -1,5 +1,5 @@
 import { KaraokePlacesExperience } from "@/components/places/KaraokePlacesExperience";
-import { getPublicVenues } from "@/lib/publicVenueFilters";
+import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { getVenueListings } from "@/lib/venueData";
 
 export const metadata = {
@@ -9,7 +9,7 @@ export const metadata = {
 };
 
 export default async function KaraokePlacesPage() {
-  const venues = getPublicVenues(await getVenueListings());
+  const venues = getSanDiegoPublicVenues(await getVenueListings());
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
