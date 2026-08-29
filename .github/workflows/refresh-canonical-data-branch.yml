@@ -1,3 +1,4 @@
+# Temporary branch-only publisher used to validate canonical source corrections before merge.
 name: Refresh canonical data branch
 
 on:
