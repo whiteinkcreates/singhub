@@ -1,7 +1,8 @@
 {
   "archivedOn": "2026-08-14",
-  "archiveTab": "Live_Only_Event_Review",
-  "reason": "Archived for source verification before any corrected event is promoted back into Events_Canonical.",
+  "lastUpdated": "2026-08-29",
+  "archiveTab": "Live_Only_Event_Review / Events_Canonical",
+  "reason": "Explicitly approved public snapshot removals after archival, expiry, or source verification. Date-specific rows must be re-promoted as separate recurring canonical events only after recurrence is verified.",
   "eventIds": [
     "event-0010-sunday",
     "event-0012",
@@ -9,6 +10,7 @@
     "event-0022",
     "event-0023",
     "event-0024",
-    "event-0026"
+    "event-0026",
+    "event-n-city-sports-lounge-thursday-karaoke-party"
   ]
 }
