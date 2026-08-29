@@ -4,7 +4,7 @@ Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
 Exported venues: 78.
-Exported events: 170.
+Exported events: 171.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -17,7 +17,6 @@ Exported events: 170.
 ## Public Venues Missing Events Row
 - venue-0048 Hive Karaoke
 - venue-0065 Jin Music Studios
-- venue-0109 N City Sports Lounge
 ## Public Venues Missing Schedule
 - venue-0051 #1 Fifth Avenue
 - venue-0062 710 Beach Club
@@ -198,7 +197,6 @@ Exported events: 170.
 - event row 159: weekly-the-luau-friday The Luau
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
-- venue: venue-0109 N City Sports Lounge
 ## Public Venues Missing Coordinates
 - venue-0101 Urban Mo’s Bar & Grill
 - venue-0102 Three Stags Irish Pub and Restaurant
@@ -240,15 +238,15 @@ Exported events: 170.
 ```text
 SingHUB public data guardrails
 
-Data directory: /tmp/singhub-data-sync-5GOxuF
+Data directory: /tmp/singhub-data-sync-AOTqzc
 Public venues: 78
-Authoritative events: 170
+Authoritative events: 171
 Legacy venue slug aliases: 0
 
 PASS Monday: 16 authoritative / 8 expected minimum
 PASS Tuesday: 25 authoritative / 8 expected minimum
 PASS Wednesday: 30 authoritative / 9 expected minimum
-PASS Thursday: 34 authoritative / 14 expected minimum
+PASS Thursday: 35 authoritative / 14 expected minimum
 PASS Friday: 26 authoritative / 10 expected minimum
 PASS Saturday: 19 authoritative / 10 expected minimum
 PASS Sunday: 20 authoritative / 7 expected minimum
