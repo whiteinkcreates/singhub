@@ -17,6 +17,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: data-integrity-audit-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   AUDIT_DIR: .data-sync-audit
 
