@@ -163,19 +163,21 @@ export default async function Home() {
                 </Button>
               </div>
 
-              <div className="mt-7 flex flex-wrap items-center gap-2.5">
-                <span className="mr-1 text-xs font-black uppercase tracking-[0.2em] text-slate-200 drop-shadow-[0_1px_8px_rgba(2,6,23,0.8)]">
+              <div className="mt-7">
+                <span className="block text-xs font-black uppercase tracking-[0.2em] text-slate-200 drop-shadow-[0_1px_8px_rgba(2,6,23,0.8)]">
                   Search by
                 </span>
-                {searchLinks.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className="rounded-full border border-white/20 bg-slate-950/42 px-3 py-2 text-xs font-bold text-white backdrop-blur transition hover:border-cyan-300/60 hover:bg-cyan-300/10 hover:text-cyan-100"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                <div className="mt-2.5 grid grid-cols-4 gap-1.5 sm:flex sm:flex-wrap sm:gap-2.5">
+                  {searchLinks.map((link) => (
+                    <Link
+                      key={link.label}
+                      href={link.href}
+                      className="min-w-0 rounded-full border border-white/20 bg-slate-950/42 px-1.5 py-2 text-center text-[0.62rem] font-bold tracking-tight text-white backdrop-blur transition hover:border-cyan-300/60 hover:bg-cyan-300/10 hover:text-cyan-100 min-[380px]:px-2.5 min-[380px]:text-xs sm:px-3"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
