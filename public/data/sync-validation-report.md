@@ -3,7 +3,7 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 77.
+Exported venues: 78.
 Exported events: 171.
 
 ## Generated Venue Schedule Candidates (Review Only)
@@ -42,6 +42,7 @@ Exported events: 171.
 - venue-0006 JT's Tavern
 - venue-0071 Kaminski's Sports Lounge
 - venue-0025 McGuffie's Live
+- venue-0004 Norms
 - venue-0067 Grand Comedy Club and Pizzeria
 - venue-0076 Novo Brazil Brewing - Lane Ave
 - venue-0017 Pal Joey's Cocktail Lounge
@@ -107,7 +108,6 @@ Exported events: 171.
 - row 33: venue-0040 Melody Karaoke & Cafe
 - row 34: venue-0032 Mikami Bar & Revolving Sushi
 - row 35: venue-0057 Moxy San Diego (Hotel)
-- row 37: venue-0004 Norms
 - row 38: venue-0068 North County - CoLab Public House
 - row 40: venue-0066 North County - Larrys Beach Club
 - row 42: venue-0033 Off Base Bar
@@ -129,7 +129,9 @@ Exported events: 171.
 - event row 39: weekly-wongs-golden-palace-sunday
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
+- event row 76: event-double-deuce-2026-07-17-navy-nick-cover
 - event row 85: weekly-the-ould-sod-friday
+- event row 152: event-n-city-sports-lounge-thursday-karaoke-party
 ## Events With Invalid App Visibility
 - None
 ## Event References Missing Exported Venues
@@ -189,10 +191,10 @@ Exported events: 171.
 - event row 149: weekly-redwing-bar-grill-wednesday Redwing Bar & Grill
 - event row 153: weekly-docks-cocktail-lounge-friday Dock's Cocktail Lounge
 - event row 154: weekly-docks-cocktail-lounge-saturday Dock's Cocktail Lounge
-- event row 155: weekly-the-luau-thursday The Luau
-- event row 156: weekly-the-luau-saturday The Luau
-- event row 157: weekly-the-luau-sunday The Luau
-- event row 158: weekly-the-luau-friday The Luau
+- event row 156: weekly-the-luau-thursday The Luau
+- event row 157: weekly-the-luau-saturday The Luau
+- event row 158: weekly-the-luau-sunday The Luau
+- event row 159: weekly-the-luau-friday The Luau
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
 ## Public Venues Missing Coordinates
@@ -236,16 +238,16 @@ Exported events: 171.
 ```text
 SingHUB public data guardrails
 
-Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 77
+Data directory: /tmp/singhub-data-sync-AOTqzc
+Public venues: 78
 Authoritative events: 171
 Legacy venue slug aliases: 0
 
 PASS Monday: 16 authoritative / 8 expected minimum
 PASS Tuesday: 25 authoritative / 8 expected minimum
-PASS Wednesday: 29 authoritative / 9 expected minimum
+PASS Wednesday: 30 authoritative / 9 expected minimum
 PASS Thursday: 35 authoritative / 14 expected minimum
-PASS Friday: 27 authoritative / 10 expected minimum
+PASS Friday: 26 authoritative / 10 expected minimum
 PASS Saturday: 19 authoritative / 10 expected minimum
 PASS Sunday: 20 authoritative / 7 expected minimum
 
