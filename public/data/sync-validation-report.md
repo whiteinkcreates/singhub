@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 78.
-Exported events: 171.
+Exported venues: 79.
+Exported events: 172.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -55,6 +55,7 @@ Exported events: 171.
 - venue-0002 The Lamplighter
 - venue-0035 The Luau
 - venue-0080 The Mesa
+- venue-0041 The Ould Sod
 - venue-0010 The Regal Bar
 - venue-0079 The Scoreboard Imperial Beach Sports Bar & Grill
 - venue-0101 Urban Mo’s Bar & Grill
@@ -117,7 +118,6 @@ Exported events: 171.
 - row 50: venue-0023 Rock Out Karaoke
 - row 51: venue-0050 Saddle Bar
 - row 53: venue-0064 Spot KTV & Restaurant
-- row 59: venue-0041 The Ould Sod
 - row 63: venue-0024 Tremont St. Bar & Grill
 - row 77: venue-0093 Rosie O'Grady's
 ## Venues With Invalid App Visibility
@@ -130,7 +130,6 @@ Exported events: 171.
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
 - event row 76: event-double-deuce-2026-07-17-navy-nick-cover
-- event row 85: weekly-the-ould-sod-friday
 - event row 152: event-n-city-sports-lounge-thursday-karaoke-party
 ## Events With Invalid App Visibility
 - None
@@ -238,16 +237,16 @@ Exported events: 171.
 ```text
 SingHUB public data guardrails
 
-Data directory: /tmp/singhub-data-sync-AOTqzc
-Public venues: 78
-Authoritative events: 171
+Data directory: /tmp/singhub-data-sync-vl9HeH
+Public venues: 79
+Authoritative events: 172
 Legacy venue slug aliases: 0
 
 PASS Monday: 16 authoritative / 8 expected minimum
 PASS Tuesday: 25 authoritative / 8 expected minimum
 PASS Wednesday: 30 authoritative / 9 expected minimum
 PASS Thursday: 35 authoritative / 14 expected minimum
-PASS Friday: 26 authoritative / 10 expected minimum
+PASS Friday: 27 authoritative / 10 expected minimum
 PASS Saturday: 19 authoritative / 10 expected minimum
 PASS Sunday: 20 authoritative / 7 expected minimum
 
