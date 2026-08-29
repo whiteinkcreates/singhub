@@ -3,11 +3,15 @@ name: Data integrity audit
 on:
   push:
     branches:
+      - main
       - fix/data-integrity-guardrails
     paths:
       - ".github/workflows/data-integrity-audit.yml"
       - "scripts/**"
       - "config/**"
+      - "public/data/**"
+  schedule:
+    - cron: "37 14 * * *"
   workflow_dispatch:
 
 permissions:
@@ -32,6 +36,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Reject expired dated canonical events
+        id: freshness
+        continue-on-error: true
+        env:
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+          GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
+        run: node scripts/check-canonical-freshness.mjs
+
       - name: Generate candidate snapshot without publishing
         id: dryrun
         continue-on-error: true
@@ -40,6 +53,19 @@ jobs:
           GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
           GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
         run: npm run sync:data -- --dry-run --output-dir "$AUDIT_DIR"
+
+      - name: Detect unpublished canonical drift
+        id: drift
+        continue-on-error: true
+        run: |
+          status=0
+          for file in venues.tsv events_by_night.tsv generated_events_review.tsv venue_slug_aliases.tsv; do
+            if ! cmp -s "public/data/$file" "$AUDIT_DIR/$file"; then
+              echo "DRIFT: public/data/$file differs from the current canonical candidate."
+              status=1
+            fi
+          done
+          exit "$status"
 
       - name: Print validation report
         if: always()
@@ -63,6 +89,20 @@ jobs:
             ${{ env.AUDIT_DIR }}/sync-metadata.json
           if-no-files-found: warn
 
-      - name: Fail if guardrails failed
-        if: steps.dryrun.outcome != 'success'
-        run: exit 1
+      - name: Enforce audit result
+        if: always()
+        run: |
+          failed=0
+          if [ "${{ steps.freshness.outcome }}" != "success" ]; then
+            echo "Freshness guardrail failed."
+            failed=1
+          fi
+          if [ "${{ steps.dryrun.outcome }}" != "success" ]; then
+            echo "Canonical sync guardrails failed."
+            failed=1
+          fi
+          if [ "${{ steps.drift.outcome }}" != "success" ]; then
+            echo "Committed public snapshot is not synchronized with canonical data."
+            failed=1
+          fi
+          exit "$failed"
