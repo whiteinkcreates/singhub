@@ -4,38 +4,44 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 77
-- Candidate non-empty lines: 78
-- Added/changed lines: 2
-- Removed/changed lines: 1
+- Previous non-empty lines: 78
+- Candidate non-empty lines: 79
+- Added/changed lines: 3
+- Removed/changed lines: 2
 
 ### Added or changed sample
 
 ```text
-venue-0017	Pal Joey's Cocktail Lounge	pal-joeys	basic	verified	live_bar	San Diego		Allied Gardens	32.7928	-117.0828	https://paljoeys.net/	https://www.instagram.com/pal_joeys_sd/				Thursday, Sunday	9:00 PM	1:00 AM	Trini, DJ Harvest	Thursday karaoke, Sunday karaoke, live karaoke	Allied Gardens karaoke listing confirmed for Thursday with Trini, 9 PM-1 AM.											FALSE	90	Corey confirmed Pal Joeys for Thursday roundup with Trini. Time still TBD. This supersedes older Saturday/DJ Glyph lead data for the Thursday roundup.	Corey direct update 2026-07-02			2026-07-09
-venue-0035	The Luau	the-luau	basic	ai_scouted	live_bar	San Diego	College Area	7123 El Cajon Blvd, San Diego, CA 92115	32.7563	-117.0421	https://www.theluaubar.com/	@luausd				Thursday, Saturday, Sunday, Friday	9:00 PM / 8:00 PM	12:30 AM / 11:00 PM	TBD	College Area, Surf Tiki Bar, Thursday Karaoke, Friday Karaoke, Saturday Karaoke, Sunday Karaoke	College Area surf-tiki bar with karaoke Thursday through Saturday 9 PM-12:30 AM, plus Sunday 8 PM-11 PM.											FALSE	98	Flyer confirms karaoke Thursday-Saturday 9 PM-12:30 AM and Sunday 8 PM-11 PM at 7123 El Cajon Blvd.	Instagram story screenshot shared by Corey 2026-08-27	The Luau official website / @luausd		2026-08-27
+venue-0005	Double Deuce	double-deuce	basic	verified	live_bar	San Diego	Gaslamp Quarter	528 F St, San Diego, CA 92101	32.7139	-117.1603	https://doubledeucesd.com/	@doubledeucesandiego				Thursday, Friday, Saturday	8:00 PM / 7:00 PM	10:00 PM	Savor Entertainment	Gaslamp, Country Karaoke, Weekly Karaoke	Gaslamp Quarter bar with Thursday-Saturday karaoke. Thursday runs 8-10 PM with Savor Entertainment; Friday and Saturday run 7-10 PM with Savor Entertainment, with Navy Nick covering Friday 7/17.											FALSE	95	Nickalus Randle / @navynickaraoke provided recurring Double Deuce karaoke schedule. Flyer confirms Navy Nick country collab with Savor Entertainment on 07.11 and 07.17, 7-10 PM.	Navy Nick response 2026-07-15	Navy Nick / Savor Entertainment flyer		2026-07-15
+venue-0004	Norms	norms	basic	verified	live_bar	La Mesa	La Mesa	7403 El Cajon Blvd, La Mesa, CA 91942	32.7674	-117.0363	https://share.google/QyOe4EwNijpQLcYyX	https://www.instagram.com/normscocktailz/				Wednesday	8:00 PM	12:00 AM	Trini	La Mesa, Wednesday karaoke, live karaoke	La Mesa karaoke at Norms every Wednesday from 8 PM to midnight with Trini.											FALSE	100	Direct correction confirms Wednesday karaoke 8 PM-midnight with Trini. Prior scout-only Wednesday lead is now verified.	Corey direct update 2026-08-27	Karaoke Venues SD - 9/17 List		2026-08-27
+venue-0109	N City Sports Lounge	n-city-sports-lounge	basic	verified	live_bar	National City	South Bay / National City	2511 Sweetwater Rd, National City, CA 91950			https://ncitysportslounge.com/national-city-n-city-sports-lounge-events									South Bay, National City, Sports Lounge, Pool, DJ Nights, Thursday Karaoke	National City sports bar and lounge with Thursday Night Karaoke Party hosted by Lady Nancy from 9 PM to 2 AM.										ncitysportsloungellc@gmail.com	FALSE	98	Official events page confirms Thursday Night Karaoke Party hosted by Lady Nancy on Aug. 27, 2026 from 9 PM to 2 AM.	Official N City Sports Lounge events calendar	SingHUB event watch 2026-08-27		2026-08-27
 ```
 
 ### Removed or changed sample
 
 ```text
-venue-0017	Pal Joey's Cocktail Lounge	pal-joeys	basic	verified	live_bar	San Diego		5147 Waring Rd, San Diego, CA 92120	32.7928	-117.0828	https://paljoeys.net/	https://www.instagram.com/pal_joeys_sd/				Thursday, Sunday	9:00 PM	1:00 AM	Trini, DJ Harvest	Thursday karaoke, Sunday karaoke, live karaoke	Allied Gardens karaoke listing confirmed for Thursday with Trini, 9 PM-1 AM.											FALSE	90	Corey confirmed Pal Joeys for Thursday roundup with Trini. Time still TBD. This supersedes older Saturday/DJ Glyph lead data for the Thursday roundup.	Corey direct update 2026-07-02			2026-07-09
+venue-0005	Double Deuce	double-deuce	basic	verified	live_bar	San Diego	Gaslamp Quarter	528 F St, San Diego, CA 92101	32.7139	-117.1603	https://doubledeucesd.com/	@doubledeucesandiego				Thursday, Friday, Saturday	8:00 PM / 7:00 PM	10:00 PM	Savor Entertainment, Navy Nick	Gaslamp, Country Karaoke, Weekly Karaoke	Gaslamp Quarter bar with Thursday-Saturday karaoke. Thursday runs 8-10 PM with Savor Entertainment; Friday and Saturday run 7-10 PM with Savor Entertainment, with Navy Nick covering Friday 7/17.											FALSE	95	Nickalus Randle / @navynickaraoke provided recurring Double Deuce karaoke schedule. Flyer confirms Navy Nick country collab with Savor Entertainment on 07.11 and 07.17, 7-10 PM.	Navy Nick response 2026-07-15	Navy Nick / Savor Entertainment flyer		2026-07-15
+venue-0109	N City Sports Lounge	n-city-sports-lounge	basic	verified	live_bar	National City	South Bay / National City	2511 Sweetwater Rd, National City, CA 91950			https://ncitysportslounge.com/national-city-n-city-sports-lounge-events					Thursday	9:00 PM	2:00 AM	Lady Nancy	South Bay, National City, Sports Lounge, Pool, DJ Nights, Thursday Karaoke	National City sports bar and lounge with Thursday Night Karaoke Party hosted by Lady Nancy from 9 PM to 2 AM.										ncitysportsloungellc@gmail.com	FALSE	98	Official events page confirms Thursday Night Karaoke Party hosted by Lady Nancy on Aug. 27, 2026 from 9 PM to 2 AM.	Official N City Sports Lounge events calendar	SingHUB event watch 2026-08-27		2026-08-27
 ```
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 168
-- Candidate non-empty lines: 172
-- Added/changed lines: 4
-- Removed/changed lines: 0
+- Previous non-empty lines: 172
+- Candidate non-empty lines: 171
+- Added/changed lines: 1
+- Removed/changed lines: 2
 
 ### Added or changed sample
 
 ```text
-weekly-the-luau-thursday	venue-0035	The Luau	the-luau	Thursday	9:00 PM	12:30 AM	TBD	TRUE	active	Thursday karaoke at The Luau from 9 PM to 12:30 AM.	98	Instagram story screenshot shared by Corey 2026-08-27	@luausd flyer	2026-08-27	flyer_verified_current_schedule	FALSE
-weekly-the-luau-saturday	venue-0035	The Luau	the-luau	Saturday	9:00 PM	12:30 AM	TBD	TRUE	active	Saturday karaoke at The Luau from 9 PM to 12:30 AM.	98	Instagram story screenshot shared by Corey 2026-08-27	@luausd flyer	2026-08-27	flyer_verified_current_schedule	FALSE
-weekly-the-luau-sunday	venue-0035	The Luau	the-luau	Sunday	8:00 PM	11:00 PM	TBD	TRUE	active	Sunday karaoke at The Luau from 8 PM to 11 PM.	98	Instagram story screenshot shared by Corey 2026-08-27	@luausd flyer	2026-08-27	flyer_verified_current_schedule	FALSE
-weekly-the-luau-friday	venue-0035	The Luau	the-luau	Friday	9:00 PM	12:30 AM	TBD	TRUE	active	Friday karaoke at The Luau from 9 PM to 12:30 AM.	98	Instagram story screenshot shared by Corey 2026-08-27	@luausd flyer	2026-08-27	flyer_verified_current_schedule	FALSE
+weekly-norms-wednesday	venue-0004	Norms	norms	Wednesday	8:00 PM	12:00 AM	Trini	TRUE	active	Wednesday karaoke from 8 PM to midnight with Trini.	100	Corey direct update 2026-08-27	SingHUB canonical correction	2026-08-27	verified_direct_schedule	FALSE
+```
+
+### Removed or changed sample
+
+```text
+event-double-deuce-2026-07-17-navy-nick-cover	venue-0005	Double Deuce	double-deuce	Friday	7:00 PM	10:00 PM	Navy Nick	One-time cover	active	Navy Nick covers Double Deuce karaoke Friday July 17 from 7-10 PM.	96	Navy Nick / Savor Entertainment flyer	Navy Nick response 2026-07-15	2026-07-15	verified_event	FALSE
+event-n-city-sports-lounge-thursday-karaoke-party	venue-0109	N City Sports Lounge	n-city-sports-lounge	Thursday	9:00 PM	2:00 AM	Lady Nancy	Date-specific / recurring to confirm	active	Thursday Night Karaoke Party hosted by Lady Nancy from 9 PM to 2 AM.	98	https://ncitysportslounge.com/national-city-n-city-sports-lounge-events	SingHUB event watch 2026-08-27	2026-08-27	web_verified_current_schedule	FALSE
 ```
 
 ## generated_events_review.tsv
@@ -66,15 +72,15 @@ weekly-the-luau-friday	venue-0035	The Luau	the-luau	Friday	9:00 PM	12:30 AM	TBD	
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-08-28T05:33:17.206Z",
-  "venues": 77,
-  "authoritativeEvents": 171,
+  "generatedAt": "2026-08-29T22:10:52.764Z",
+  "venues": 78,
+  "authoritativeEvents": 170,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-08-27T23:16:53.754Z",
-  "venues": 76,
-  "authoritativeEvents": 167,
+  "generatedAt": "2026-08-28T05:33:17.206Z",
+  "venues": 77,
+  "authoritativeEvents": 171,
 ```
