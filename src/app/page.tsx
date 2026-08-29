@@ -129,29 +129,28 @@ export default async function Home() {
       <section className="mx-auto max-w-7xl px-3 pb-8 pt-4 sm:px-4 md:pb-12 md:pt-8">
         <div className="relative min-h-[34rem] max-w-full overflow-hidden rounded-[1.35rem] border border-fuchsia-300/35 bg-slate-950 shadow-2xl shadow-fuchsia-950/30 sm:rounded-[1.9rem] md:min-h-[38rem] md:rounded-[2.5rem]">
           <div
-            className="absolute inset-0 bg-cover bg-[position:58%_center] opacity-95 sm:bg-center md:opacity-100"
+            className="absolute inset-0 bg-cover bg-[position:58%_center] sm:bg-center"
             style={{ backgroundImage: `url('${HERO_IMAGE_URL}')` }}
           />
-          <div className="absolute inset-0 bg-slate-950/28" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/72 to-slate-950/15 md:via-slate-950/55 md:to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-slate-950/55" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,0.82)_0%,rgba(2,6,23,0.5)_34%,rgba(2,6,23,0.18)_58%,rgba(2,6,23,0.03)_78%,transparent_100%)] md:bg-[linear-gradient(90deg,rgba(2,6,23,0.76)_0%,rgba(2,6,23,0.38)_34%,rgba(2,6,23,0.1)_56%,transparent_76%)]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-slate-950/5 to-transparent md:from-slate-950/24" />
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-400 via-violet-400 to-cyan-300" />
-          <div className="absolute -left-20 top-16 h-72 w-72 rounded-full bg-fuchsia-500/10 blur-3xl" />
+          <div className="absolute -left-20 top-16 h-72 w-72 rounded-full bg-fuchsia-500/8 blur-3xl" />
 
           <div className="relative flex min-h-[34rem] items-end px-4 py-7 sm:px-7 sm:py-9 md:min-h-[38rem] md:items-center md:px-12 md:py-14 lg:px-16">
             <div className="min-w-0 max-w-3xl">
-              <p className="inline-flex rounded-full border border-cyan-300/35 bg-slate-950/55 px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.18em] text-cyan-100 backdrop-blur sm:text-xs sm:tracking-[0.26em]">
+              <p className="inline-flex rounded-full border border-cyan-300/35 bg-slate-950/48 px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.18em] text-cyan-100 backdrop-blur sm:text-xs sm:tracking-[0.26em]">
                 San Diego Karaoke Starts Here
               </p>
 
-              <h1 className="mt-5 max-w-3xl text-4xl font-black leading-[0.96] tracking-tight text-white drop-shadow-[0_0_28px_rgba(255,255,255,0.12)] min-[380px]:text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
+              <h1 className="mt-5 max-w-3xl text-4xl font-black leading-[0.96] tracking-tight text-white drop-shadow-[0_2px_18px_rgba(2,6,23,0.7)] min-[380px]:text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
                 Find karaoke
                 <span className="block bg-gradient-to-r from-white via-cyan-100 to-fuchsia-200 bg-clip-text text-transparent">
                   in San Diego.
                 </span>
               </h1>
 
-              <p className="mt-5 max-w-2xl text-base font-medium leading-7 text-slate-100 sm:text-lg sm:leading-8 md:text-xl">
+              <p className="mt-5 max-w-2xl text-base font-medium leading-7 text-slate-100 drop-shadow-[0_1px_12px_rgba(2,6,23,0.8)] sm:text-lg sm:leading-8 md:text-xl">
                 Search by night, neighborhood, venue, or host and see where to sing tonight.
               </p>
 
@@ -165,14 +164,14 @@ export default async function Home() {
               </div>
 
               <div className="mt-7 flex flex-wrap items-center gap-2.5">
-                <span className="mr-1 text-xs font-black uppercase tracking-[0.2em] text-slate-300">
+                <span className="mr-1 text-xs font-black uppercase tracking-[0.2em] text-slate-200 drop-shadow-[0_1px_8px_rgba(2,6,23,0.8)]">
                   Search by
                 </span>
                 {searchLinks.map((link) => (
                   <Link
                     key={link.label}
                     href={link.href}
-                    className="rounded-full border border-white/15 bg-black/30 px-3 py-2 text-xs font-bold text-white backdrop-blur transition hover:border-cyan-300/60 hover:bg-cyan-300/10 hover:text-cyan-100"
+                    className="rounded-full border border-white/20 bg-slate-950/42 px-3 py-2 text-xs font-bold text-white backdrop-blur transition hover:border-cyan-300/60 hover:bg-cyan-300/10 hover:text-cyan-100"
                   >
                     {link.label}
                   </Link>
