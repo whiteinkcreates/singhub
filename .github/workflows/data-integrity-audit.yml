@@ -1,0 +1,68 @@
+name: Data integrity audit
+
+on:
+  push:
+    branches:
+      - fix/data-integrity-guardrails
+    paths:
+      - ".github/workflows/data-integrity-audit.yml"
+      - "scripts/**"
+      - "config/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  AUDIT_DIR: .data-sync-audit
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate candidate snapshot without publishing
+        id: dryrun
+        continue-on-error: true
+        env:
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+          GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
+        run: npm run sync:data -- --dry-run --output-dir "$AUDIT_DIR"
+
+      - name: Print validation report
+        if: always()
+        run: |
+          echo "===== VALIDATION ====="
+          cat "$AUDIT_DIR/sync-validation-report.md" || true
+          echo "===== DIFF ====="
+          cat "$AUDIT_DIR/sync-diff-report.md" || true
+
+      - name: Upload audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: singhub-data-integrity-audit
+          path: |
+            ${{ env.AUDIT_DIR }}/sync-validation-report.md
+            ${{ env.AUDIT_DIR }}/sync-diff-report.md
+            ${{ env.AUDIT_DIR }}/events_by_night.tsv
+            ${{ env.AUDIT_DIR }}/venues.tsv
+            ${{ env.AUDIT_DIR }}/live_only_events_review.tsv
+            ${{ env.AUDIT_DIR }}/sync-metadata.json
+          if-no-files-found: warn
+
+      - name: Fail if guardrails failed
+        if: steps.dryrun.outcome != 'success'
+        run: exit 1
