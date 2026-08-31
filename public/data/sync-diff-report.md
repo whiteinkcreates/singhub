@@ -4,28 +4,28 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 79
-- Candidate non-empty lines: 80
+- Previous non-empty lines: 80
+- Candidate non-empty lines: 81
 - Added/changed lines: 1
 - Removed/changed lines: 0
 
 ### Added or changed sample
 
 ```text
-venue-0041	The Ould Sod	the-ould-sod	basic	verified	live_bar	San Diego	Normal Heights	3373 Adams Ave, San Diego, CA 92116	32.7634	-117.1231	https://theouldsod.com/	@theouldsod				Friday	9:00 PM	Last Call	Fernando	Normal Heights, Friday karaoke, live karaoke	Authentic Irish neighborhood pub in Normal Heights with darts, foosball, a back patio, sports, and Friday karaoke hosted by Fernando from 9 PM to last call.											FALSE	100	Corey directly confirmed Friday karaoke runs 9 PM to last call. Existing Friday/Fernando schedule is now complete.	Corey direct update 2026-08-29	Fernando / @thereal_grandfernand		2026-08-29
+venue-0120	Eastbound Bar & Grill	eastbound-bar-grill	basic	verified	live_bar	Lakeside	Lakeside / East County	10053 Maine Ave, Lakeside, CA 92040			https://eastboundbarandgrill.com/	@eastboundbarandgrill				Thursday	8:00 PM	11:00 PM	All Mic Long	Lakeside, East County, Bar & Grill, Thursday Karaoke, All Mic Long	Lakeside bar and grill with Thursday karaoke from 8 PM to 11 PM hosted by All Mic Long.											FALSE	98	All Mic Long directly confirmed they were hired to take over weekly Thursday karaoke at Eastbound Bar & Grill, 8 PM-11 PM.	All Mic Long direct message to Corey 2026-08-30	Official Eastbound Bar & Grill website		2026-08-30
 ```
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 172
-- Candidate non-empty lines: 173
+- Previous non-empty lines: 173
+- Candidate non-empty lines: 174
 - Added/changed lines: 1
 - Removed/changed lines: 0
 
 ### Added or changed sample
 
 ```text
-weekly-the-ould-sod-friday	venue-0041	The Ould Sod	the-ould-sod	Friday	9:00 PM	Last Call	Fernando	TRUE	active	Friday karaoke with Fernando from 9 PM to last call.	100	Corey direct update 2026-08-29	Fernando / @thereal_grandfernand	2026-08-29	verified_direct_schedule	FALSE
+weekly-eastbound-bar-grill-thursday	venue-0120	Eastbound Bar & Grill	eastbound-bar-grill	Thursday	8:00 PM	11:00 PM	All Mic Long	TRUE	active	Thursday karaoke from 8 PM to 11 PM hosted by All Mic Long.	100	All Mic Long direct message to Corey 2026-08-30	Official Eastbound Bar & Grill website	2026-08-30	verified_direct_host_submission	FALSE
 ```
 
 ## generated_events_review.tsv
@@ -56,15 +56,15 @@ weekly-the-ould-sod-friday	venue-0041	The Ould Sod	the-ould-sod	Friday	9:00 PM	L
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-08-29T23:34:04.136Z",
-  "venues": 79,
-  "authoritativeEvents": 172,
+  "generatedAt": "2026-08-31T00:52:38.050Z",
+  "venues": 80,
+  "authoritativeEvents": 173,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-08-29T22:13:58.462Z",
-  "venues": 78,
-  "authoritativeEvents": 171,
+  "generatedAt": "2026-08-29T23:34:04.136Z",
+  "venues": 79,
+  "authoritativeEvents": 172,
 ```
