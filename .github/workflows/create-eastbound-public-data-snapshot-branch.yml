@@ -54,3 +54,4 @@ jobs:
           fi
 
 # trigger: 2026-08-30 eastbound snapshot
+# refresh: regenerate after merge conflict
