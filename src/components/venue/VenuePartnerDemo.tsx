@@ -57,6 +57,40 @@ function buildEnhancedDemoVenue(venue: VenueListing) {
   };
 }
 
+function DemoStateHeader({
+  eyebrow,
+  title,
+  copy,
+  enhanced = false,
+}: {
+  eyebrow: string;
+  title: string;
+  copy: string;
+  enhanced?: boolean;
+}) {
+  return (
+    <div
+      className={`mb-4 rounded-2xl border p-5 ${
+        enhanced
+          ? "border-fuchsia-300/35 bg-fuchsia-300/[0.08]"
+          : "border-white/10 bg-white/[0.04]"
+      }`}
+    >
+      <p
+        className={`text-xs font-black uppercase tracking-[0.2em] ${
+          enhanced ? "text-fuchsia-200" : "text-slate-400"
+        }`}
+      >
+        {eyebrow}
+      </p>
+      <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">{title}</h2>
+      <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-300 md:text-base">
+        {copy}
+      </p>
+    </div>
+  );
+}
+
 export function VenuePartnerDemo({
   venues,
   events,
@@ -71,7 +105,9 @@ export function VenuePartnerDemo({
     venues[0]?.slug ||
     "";
   const [selectedSlug, setSelectedSlug] = useState(
-    venues.some((venue) => venue.slug === initialSlug) ? initialSlug || fallbackSlug : fallbackSlug,
+    venues.some((venue) => venue.slug === initialSlug)
+      ? initialSlug || fallbackSlug
+      : fallbackSlug,
   );
 
   const selectedVenue = useMemo(
@@ -102,7 +138,7 @@ export function VenuePartnerDemo({
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <section className="rounded-[2rem] border border-white/10 bg-slate-950/80 p-5 shadow-2xl shadow-black/30 md:p-7">
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
           <label className="block">
@@ -131,61 +167,69 @@ export function VenuePartnerDemo({
         </div>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-2 xl:items-start">
-        <div>
-          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">
-              Live today
-            </p>
-            <h2 className="mt-2 text-2xl font-black text-white">Current SingHUB listing</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-300">
-              This is the same standard venue profile singers can see now. Core karaoke information stays free and useful.
-            </p>
-          </div>
-          <VenueProfile
-            venue={{ ...selectedVenue, profileTier: "basic", isFeatured: false }}
-            events={venueEvents}
-          />
-        </div>
-
-        <div>
-          <div className="mb-4 rounded-2xl border border-fuchsia-300/35 bg-fuchsia-300/[0.08] p-4">
-            <p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-200">
-              Founding Venue demo
-            </p>
-            <h2 className="mt-2 text-2xl font-black text-white">Enhanced SingHUB presence</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-200">
-              This side uses the same premium profile component SingHUB already ships. The difference is richer venue information, stronger presentation, and partnership support.
-            </p>
-          </div>
-
-          {(usesDemoImage || hasVenueSpecificEnrichment) && (
-            <div className="mb-4 rounded-2xl border border-amber-300/25 bg-amber-300/[0.06] p-4 text-sm leading-6 text-amber-50">
-              {usesDemoImage
-                ? "Demo note: the hero image is a placeholder until the venue provides or approves photography. "
-                : ""}
-              {hasVenueSpecificEnrichment
-                ? "The extra venue details shown here are demo-only enrichment from current public venue information and are not being written into the live listing without venue confirmation."
-                : "Missing enhanced fields simply stay hidden until the venue supplies them."}
-            </div>
-          )}
-
-          <VenueProfile venue={enhancedVenue} events={venueEvents} />
-        </div>
+      <section>
+        <DemoStateHeader
+          eyebrow="Live today"
+          title="Current SingHUB listing"
+          copy="This is the same standard venue profile singers can see now. Core karaoke information stays free and useful."
+        />
+        <VenueProfile
+          venue={{ ...selectedVenue, profileTier: "basic", isFeatured: false }}
+          events={venueEvents}
+        />
       </section>
 
-      <section className="rounded-[2rem] border border-cyan-300/20 bg-cyan-300/[0.05] p-5 md:p-7">
+      <section className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/30 bg-gradient-to-r from-fuchsia-300/[0.08] via-slate-950 to-cyan-300/[0.08] p-6 text-center md:p-8">
+        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-300 via-cyan-300 to-violet-400" />
+        <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-200">
+          Now add the partnership
+        </p>
+        <h2 className="mt-3 text-3xl font-black text-white md:text-5xl">
+          Same venue. More reasons to choose it.
+        </h2>
+        <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-slate-300 md:text-base">
+          The enhanced experience uses the same karaoke schedule and venue identity, then adds stronger presentation, richer decision-making information, and more ways to move a singer from browsing to showing up.
+        </p>
+      </section>
+
+      <section>
+        <DemoStateHeader
+          eyebrow="Founding Venue demo"
+          title="Enhanced SingHUB presence"
+          copy="This is the real premium profile component already built into SingHUB, rendered as if this venue joined the Founding Venue Pilot."
+          enhanced
+        />
+
+        {(usesDemoImage || hasVenueSpecificEnrichment) && (
+          <div className="mb-4 flex flex-wrap gap-2 text-xs font-bold text-amber-100">
+            {usesDemoImage && (
+              <span className="rounded-full border border-amber-300/25 bg-amber-300/[0.06] px-3 py-2">
+                Demo hero image until venue photography is approved
+              </span>
+            )}
+            {hasVenueSpecificEnrichment && (
+              <span className="rounded-full border border-amber-300/25 bg-amber-300/[0.06] px-3 py-2">
+                Demo-only venue enrichment shown for discussion
+              </span>
+            )}
+          </div>
+        )}
+
+        <VenueProfile venue={enhancedVenue} events={venueEvents} />
+      </section>
+
+      <section className="rounded-[2rem] border border-cyan-300/20 bg-cyan-300/[0.05] p-5 md:p-8">
         <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-200">
           The upgrade also changes discovery
         </p>
-        <h2 className="mt-3 text-3xl font-black text-white md:text-4xl">
+        <h2 className="mt-3 text-3xl font-black text-white md:text-5xl">
           The profile is only half the story.
         </h2>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300 md:text-base">
-          Founding Venue treatment also changes how the venue can appear while singers browse. These cards below are the actual SingHUB finder-card components, rendered with the same venue data.
+        <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-300 md:text-base">
+          Founding Venue treatment also changes how the venue can appear while singers browse. These are the actual SingHUB finder-card components, not separate sales artwork.
         </p>
 
-        <div className="mt-7 grid gap-6 xl:grid-cols-2 xl:items-start">
+        <div className="mt-8 space-y-8">
           <div>
             <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-slate-400">
               Standard finder card
@@ -195,7 +239,8 @@ export function VenuePartnerDemo({
               events={venueEvents}
             />
           </div>
-          <div>
+
+          <div className="rounded-[2rem] border border-fuchsia-300/20 bg-fuchsia-300/[0.04] p-4 md:p-6">
             <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-200">
               Enhanced finder card
             </p>
@@ -227,14 +272,17 @@ export function VenuePartnerDemo({
             "Available profile-view, outbound-click, and engagement signals packaged into a useful venue conversation.",
           ],
         ].map(([title, body]) => (
-          <article key={title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+          <article
+            key={title}
+            className="rounded-2xl border border-white/10 bg-white/[0.04] p-5"
+          >
             <h3 className="text-base font-black text-white">{title}</h3>
             <p className="mt-2 text-sm leading-6 text-slate-400">{body}</p>
           </article>
         ))}
       </section>
 
-      <section className="rounded-[2rem] border border-fuchsia-300/35 bg-slate-950 p-6 text-center shadow-2xl shadow-fuchsia-950/25 md:p-9">
+      <section className="rounded-[2rem] border border-fuchsia-300/35 bg-slate-950 p-6 text-center shadow-2xl shadow-fuchsia-950/25 md:p-10">
         <p className="text-xs font-black uppercase tracking-[0.24em] text-fuchsia-200">
           Founding Venue Pilot
         </p>
@@ -245,9 +293,15 @@ export function VenuePartnerDemo({
           The demo shows the product structure. The partnership is where SingHUB fills it with the venue's real photography, offers, personality, updates, and promotional priorities.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3 text-xs font-black uppercase tracking-[0.14em]">
-          <span className="rounded-full border border-white/15 px-4 py-2 text-white">90 days</span>
-          <span className="rounded-full border border-fuchsia-300/35 bg-fuchsia-300/10 px-4 py-2 text-fuchsia-100">$149 founding pilot</span>
-          <span className="rounded-full border border-cyan-300/35 bg-cyan-300/10 px-4 py-2 text-cyan-100">Hands-on setup</span>
+          <span className="rounded-full border border-white/15 px-4 py-2 text-white">
+            90 days
+          </span>
+          <span className="rounded-full border border-fuchsia-300/35 bg-fuchsia-300/10 px-4 py-2 text-fuchsia-100">
+            $149 founding pilot
+          </span>
+          <span className="rounded-full border border-cyan-300/35 bg-cyan-300/10 px-4 py-2 text-cyan-100">
+            Hands-on setup
+          </span>
         </div>
       </section>
     </div>
