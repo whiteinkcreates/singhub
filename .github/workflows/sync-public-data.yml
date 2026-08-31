@@ -2,6 +2,13 @@ name: Sync public karaoke data
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "15 10 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/sync-public-data.yml"
   pull_request:
     paths:
       - ".github/workflows/sync-public-data.yml"
@@ -12,10 +19,15 @@ on:
       - "scripts/sync-public-data.mjs"
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: sync-public-data
+  cancel-in-progress: false
 
 jobs:
   dry-run:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -42,6 +54,54 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: singhub-public-data-candidate
+          path: .data-sync-output
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate and publish validated data
+        env:
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+          GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
+        run: npm run sync:data -- --write --no-backup --output-dir .data-sync-output
+
+      - name: Commit public data snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/venues.tsv public/data/events_by_night.tsv public/data/generated_events_review.tsv public/data/venue_slug_aliases.tsv public/data/sync-metadata.json public/data/sync-validation-report.md public/data/sync-diff-report.md
+          git status --short
+          if git diff --cached --quiet; then
+            echo "No public data changes to commit."
+          else
+            git commit -m "data: nightly canonical sync"
+            git push
+          fi
+
+      - name: Upload sync artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: singhub-public-data-sync
           path: .data-sync-output
           include-hidden-files: true
           if-no-files-found: error
