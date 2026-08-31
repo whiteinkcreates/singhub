@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 79.
-Exported events: 172.
+Exported venues: 80.
+Exported events: 173.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -97,6 +97,7 @@ Exported events: 172.
 - venue-0117 Rosie O'Grady's
 - venue-0118 Chief's Da Tiki Bar
 - venue-0119 Rich's San Diego
+- venue-0120 Eastbound Bar & Grill
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -225,6 +226,7 @@ Exported events: 172.
 - venue-0117 Rosie O'Grady's
 - venue-0118 Chief's Da Tiki Bar
 - venue-0119 Rich's San Diego
+- venue-0120 Eastbound Bar & Grill
 ## Closed/Hidden/Archived Rows Excluded
 - None
 ## Stable Venue Identity Changes
@@ -237,15 +239,15 @@ Exported events: 172.
 ```text
 SingHUB public data guardrails
 
-Data directory: /tmp/singhub-data-sync-vl9HeH
-Public venues: 79
-Authoritative events: 172
+Data directory: /home/runner/work/singhub/singhub/.data-sync-output
+Public venues: 80
+Authoritative events: 173
 Legacy venue slug aliases: 0
 
 PASS Monday: 16 authoritative / 8 expected minimum
 PASS Tuesday: 25 authoritative / 8 expected minimum
 PASS Wednesday: 30 authoritative / 9 expected minimum
-PASS Thursday: 35 authoritative / 14 expected minimum
+PASS Thursday: 36 authoritative / 14 expected minimum
 PASS Friday: 27 authoritative / 10 expected minimum
 PASS Saturday: 19 authoritative / 10 expected minimum
 PASS Sunday: 20 authoritative / 7 expected minimum
