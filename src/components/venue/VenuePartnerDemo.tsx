@@ -57,36 +57,22 @@ function buildEnhancedDemoVenue(venue: VenueListing) {
   };
 }
 
-function DemoStateHeader({
-  eyebrow,
+function ComparisonLabel({
   title,
-  copy,
   enhanced = false,
 }: {
-  eyebrow: string;
   title: string;
-  copy: string;
   enhanced?: boolean;
 }) {
   return (
     <div
-      className={`mb-4 rounded-2xl border p-5 ${
+      className={`mb-3 rounded-xl border px-4 py-3 ${
         enhanced
-          ? "border-fuchsia-300/35 bg-fuchsia-300/[0.08]"
-          : "border-white/10 bg-white/[0.04]"
+          ? "border-fuchsia-300/35 bg-fuchsia-300/[0.08] text-fuchsia-100"
+          : "border-white/10 bg-white/[0.04] text-slate-300"
       }`}
     >
-      <p
-        className={`text-xs font-black uppercase tracking-[0.2em] ${
-          enhanced ? "text-fuchsia-200" : "text-slate-400"
-        }`}
-      >
-        {eyebrow}
-      </p>
-      <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">{title}</h2>
-      <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-300 md:text-base">
-        {copy}
-      </p>
+      <p className="text-xs font-black uppercase tracking-[0.18em]">{title}</p>
     </div>
   );
 }
@@ -129,6 +115,11 @@ export function VenuePartnerDemo({
 
   const usesDemoImage = !cleanValue(selectedVenue.bannerImageUrl);
   const hasVenueSpecificEnrichment = Boolean(DEMO_ENRICHMENTS[selectedVenue.slug]);
+  const basicVenue = {
+    ...selectedVenue,
+    profileTier: "basic" as const,
+    isFeatured: false,
+  };
 
   function handleVenueChange(slug: string) {
     setSelectedSlug(slug);
@@ -167,38 +158,36 @@ export function VenuePartnerDemo({
         </div>
       </section>
 
-      <section>
-        <DemoStateHeader
-          eyebrow="Live today"
-          title="Current SingHUB listing"
-          copy="This is the same standard venue profile singers can see now. Core karaoke information stays free and useful."
-        />
-        <VenueProfile
-          venue={{ ...selectedVenue, profileTier: "basic", isFeatured: false }}
-          events={venueEvents}
-        />
-      </section>
-
-      <section className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/30 bg-gradient-to-r from-fuchsia-300/[0.08] via-slate-950 to-cyan-300/[0.08] p-6 text-center md:p-8">
-        <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-300 via-cyan-300 to-violet-400" />
+      <section className="rounded-[2rem] border border-cyan-300/20 bg-cyan-300/[0.05] p-5 md:p-8">
         <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-200">
-          Now add the partnership
+          1. Win the click
         </p>
         <h2 className="mt-3 text-3xl font-black text-white md:text-5xl">
-          Same venue. More reasons to choose it.
+          How singers see you in search results
         </h2>
-        <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-slate-300 md:text-base">
-          The enhanced experience uses the same karaoke schedule and venue identity, then adds stronger presentation, richer decision-making information, and more ways to move a singer from browsing to showing up.
-        </p>
+
+        <div className="mt-8 grid grid-cols-1 gap-6 landscape:min-[640px]:grid-cols-2">
+          <div className="min-w-0">
+            <ComparisonLabel title="Standard venue card" />
+            <VenueCard venue={basicVenue} events={venueEvents} />
+          </div>
+
+          <div className="min-w-0 rounded-[2rem] border border-fuchsia-300/20 bg-fuchsia-300/[0.04] p-4">
+            <ComparisonLabel title="Enhanced venue card" enhanced />
+            <VenueCard venue={enhancedVenue} events={venueEvents} />
+          </div>
+        </div>
       </section>
 
       <section>
-        <DemoStateHeader
-          eyebrow="Founding Venue demo"
-          title="Enhanced SingHUB presence"
-          copy="This is the real premium profile component already built into SingHUB, rendered as if this venue joined the Founding Venue Pilot."
-          enhanced
-        />
+        <div className="mb-6">
+          <p className="text-xs font-black uppercase tracking-[0.24em] text-fuchsia-200">
+            2. Win the visit
+          </p>
+          <h2 className="mt-3 text-3xl font-black text-white md:text-5xl">
+            What singers see after they open your venue
+          </h2>
+        </div>
 
         {(usesDemoImage || hasVenueSpecificEnrichment) && (
           <div className="mb-4 flex flex-wrap gap-2 text-xs font-bold text-amber-100">
@@ -215,36 +204,15 @@ export function VenuePartnerDemo({
           </div>
         )}
 
-        <VenueProfile venue={enhancedVenue} events={venueEvents} />
-      </section>
-
-      <section className="rounded-[2rem] border border-cyan-300/20 bg-cyan-300/[0.05] p-5 md:p-8">
-        <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-200">
-          The upgrade also changes discovery
-        </p>
-        <h2 className="mt-3 text-3xl font-black text-white md:text-5xl">
-          The profile is only half the story.
-        </h2>
-        <p className="mt-3 max-w-4xl text-sm leading-7 text-slate-300 md:text-base">
-          Founding Venue treatment also changes how the venue can appear while singers browse. These are the actual SingHUB finder-card components, not separate sales artwork.
-        </p>
-
-        <div className="mt-8 space-y-8">
-          <div>
-            <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-slate-400">
-              Standard finder card
-            </p>
-            <VenueCard
-              venue={{ ...selectedVenue, profileTier: "basic", isFeatured: false }}
-              events={venueEvents}
-            />
+        <div className="grid grid-cols-1 gap-6 landscape:min-[640px]:grid-cols-2">
+          <div className="min-w-0">
+            <ComparisonLabel title="Current SingHUB profile" />
+            <VenueProfile venue={basicVenue} events={venueEvents} />
           </div>
 
-          <div className="rounded-[2rem] border border-fuchsia-300/20 bg-fuchsia-300/[0.04] p-4 md:p-6">
-            <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-fuchsia-200">
-              Enhanced finder card
-            </p>
-            <VenueCard venue={enhancedVenue} events={venueEvents} />
+          <div className="min-w-0 rounded-[2rem] border border-fuchsia-300/20 bg-fuchsia-300/[0.04] p-3 md:p-4">
+            <ComparisonLabel title="Enhanced SingHUB profile" enhanced />
+            <VenueProfile venue={enhancedVenue} events={venueEvents} />
           </div>
         </div>
       </section>
