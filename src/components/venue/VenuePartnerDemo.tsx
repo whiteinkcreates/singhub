@@ -290,7 +290,7 @@ export function VenuePartnerDemo({
           Build the version that actually represents {selectedVenue.venueName}.
         </h2>
         <p className="mx-auto mt-4 max-w-3xl text-base leading-7 text-slate-300">
-          The demo shows the product structure. The partnership is where SingHUB fills it with the venue's real photography, offers, personality, updates, and promotional priorities.
+          The demo shows the product structure. The partnership is where SingHUB fills it with the venue&apos;s real photography, offers, personality, updates, and promotional priorities.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3 text-xs font-black uppercase tracking-[0.14em]">
           <span className="rounded-full border border-white/15 px-4 py-2 text-white">
