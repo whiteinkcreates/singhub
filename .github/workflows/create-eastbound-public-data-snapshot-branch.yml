@@ -1,4 +1,4 @@
-name: Create Eastbound public data snapshot branch
+name: Create Eastbound public data snapshot branch v2
 
 on:
   push:
@@ -39,7 +39,7 @@ jobs:
       - name: Commit public data snapshot to branch
         run: |
           set -euo pipefail
-          BRANCH="generated-eastbound-public-data-snapshot-2026-08-30"
+          BRANCH="generated-eastbound-public-data-snapshot-v2-2026-08-30"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -B "$BRANCH"
@@ -49,9 +49,8 @@ jobs:
           if git diff --cached --quiet; then
             echo "No public data changes to commit."
           else
-            git commit -m "data: publish Eastbound karaoke snapshot"
+            git commit -m "data: publish Eastbound karaoke snapshot v2"
             git push --force origin "$BRANCH"
           fi
 
-# trigger: 2026-08-30 eastbound snapshot
-# refresh: regenerate after merge conflict
+# v2: unique generated branch to avoid stale workflow collision
