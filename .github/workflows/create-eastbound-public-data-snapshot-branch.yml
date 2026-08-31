@@ -52,3 +52,5 @@ jobs:
             git commit -m "data: publish Eastbound karaoke snapshot"
             git push --force origin "$BRANCH"
           fi
+
+# trigger: 2026-08-30 eastbound snapshot
