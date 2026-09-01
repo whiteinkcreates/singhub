@@ -6,7 +6,7 @@ import {
   HOST_WEEKDAYS,
   getTodayInLosAngeles,
   isHostConfirmed,
-} from "@/lib/hostData";
+} from "@/lib/hostPresentation";
 
 function getWeeklyNightCount(host: HostProfile) {
   return Object.values(host.schedule).filter((gigs) => gigs.length > 0).length;
