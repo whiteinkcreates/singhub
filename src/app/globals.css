@@ -37,6 +37,11 @@ select {
   font: inherit;
 }
 
+/* Give the homepage hero title enough line box for descenders like the g in Diego. */
+main > section:first-child h1 {
+  line-height: 1.02;
+}
+
 /* Keep the homepage karaoke ticker readable as the live event list grows. */
 .animate-\[marquee_34s_linear_infinite\] {
   animation-duration: 96s !important;
