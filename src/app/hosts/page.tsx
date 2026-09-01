@@ -1,4 +1,4 @@
-import { HostDirectoryCard } from "@/components/host/HostCard";
+import { HostDirectory } from "@/components/host/HostDirectory";
 import { Button } from "@/components/ui/Button";
 import { getActiveHosts } from "@/lib/hostData";
 import { getSanDiegoPublicVenues, getSanDiegoRegionHosts } from "@/lib/sanDiegoMarket";
@@ -44,11 +44,7 @@ export default async function HostsPage() {
       </section>
 
       {hosts.length > 0 ? (
-        <section className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {hosts.map((host) => (
-            <HostDirectoryCard key={host.slug} host={host} />
-          ))}
-        </section>
+        <HostDirectory hosts={hosts} />
       ) : (
         <section className="mt-10 rounded-2xl border border-white/10 bg-slate-950/70 p-6 text-slate-200">
           <h2 className="text-2xl font-black text-white">Hosts are coming soon.</h2>
