@@ -11,13 +11,33 @@ export type PersistedSingBoardPost = { id:string; postType:SingBoardPostType; ti
 export type SingBoardEvent = Omit<PersistedSingBoardPost,"pinned"> & { status:"active"|"archived" };
 export type SingBoardMetricType = "event_page_view" | "outbound_click";
 export type SingBoardAccessMember = { id:string; displayName:string; posterType:SingBoardPosterType; venueId?:string; hostId?:string; active:boolean; createdAt:string; updatedAt:string };
+type SingBoardPostRow = {
+  id:string;
+  post_type:string|null;
+  title:string;
+  venue_name:string;
+  neighborhood:string;
+  region:string;
+  detail:string|null;
+  image_url:string|null;
+  note_text:string|null;
+  note_color:string|null;
+  event_date:string;
+  start_time:string|null;
+  host_name:string|null;
+  link_url:string|null;
+  x:number|string;
+  y:number|string;
+  rotation:number|string;
+  status?:string|null;
+};
 
 function hashAccessCode(code:string){return createHash("sha256").update(code.trim()).digest("hex")}
 function sanDiegoDate(){const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());const values=Object.fromEntries(parts.map(part=>[part.type,part.value]));return `${values.year}-${values.month}-${values.day}`}
-function mapPost(row:any){return {id:row.id,postType:(row.post_type||"image") as SingBoardPostType,title:row.title,venue:row.venue_name,neighborhood:row.neighborhood,region:row.region as SingBoardRegion,detail:row.detail||"",x:Number(row.x),y:Number(row.y),rotation:Number(row.rotation),imageUrl:row.image_url||undefined,noteText:row.note_text||undefined,noteColor:row.note_color as SingBoardNoteColor|undefined,eventDate:row.event_date,startTime:row.start_time||undefined,hostName:row.host_name||undefined,linkUrl:row.link_url||undefined}}
+function mapPost(row:SingBoardPostRow){return {id:row.id,postType:(row.post_type||"image") as SingBoardPostType,title:row.title,venue:row.venue_name,neighborhood:row.neighborhood,region:row.region as SingBoardRegion,detail:row.detail||"",x:Number(row.x),y:Number(row.y),rotation:Number(row.rotation),imageUrl:row.image_url||undefined,noteText:row.note_text||undefined,noteColor:row.note_color as SingBoardNoteColor|undefined,eventDate:row.event_date,startTime:row.start_time||undefined,hostName:row.host_name||undefined,linkUrl:row.link_url||undefined}}
 
-export async function getActiveSingBoardFlyers():Promise<PersistedSingBoardPost[]> {const supabase=createAdminClient();const today=sanDiegoDate();const{error:archiveError}=await supabase.from("singboard_flyers").update({status:"archived",archived_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("status","active").lt("event_date",today);if(archiveError)throw new Error(`Failed to archive expired SingBOARD posts: ${archiveError.message}`);const{data,error}=await supabase.from("singboard_flyers").select("id,post_type,title,venue_name,neighborhood,region,detail,image_url,note_text,note_color,event_date,start_time,host_name,link_url,x,y,rotation").eq("status","active").order("pinned_at",{ascending:true});if(error)throw new Error(`Failed to load SingBOARD posts: ${error.message}`);return(data||[]).map(row=>({...mapPost(row),pinned:true as const}))}
-export async function getSingBoardEvent(id:string):Promise<SingBoardEvent|null>{const supabase=createAdminClient();const{data,error}=await supabase.from("singboard_flyers").select("id,post_type,title,venue_name,neighborhood,region,detail,image_url,note_text,note_color,event_date,start_time,host_name,link_url,x,y,rotation,status").eq("id",id).maybeSingle();if(error)throw new Error(`Failed to load SingBOARD event: ${error.message}`);if(!data)return null;const status=(data.status==="archived"||data.event_date<sanDiegoDate())?"archived":"active";return {...mapPost(data),status}}
+export async function getActiveSingBoardFlyers():Promise<PersistedSingBoardPost[]> {const supabase=createAdminClient();const today=sanDiegoDate();const{error:archiveError}=await supabase.from("singboard_flyers").update({status:"archived",archived_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("status","active").lt("event_date",today);if(archiveError)throw new Error(`Failed to archive expired SingBOARD posts: ${archiveError.message}`);const{data,error}=await supabase.from("singboard_flyers").select("id,post_type,title,venue_name,neighborhood,region,detail,image_url,note_text,note_color,event_date,start_time,host_name,link_url,x,y,rotation").eq("status","active").order("pinned_at",{ascending:true});if(error)throw new Error(`Failed to load SingBOARD posts: ${error.message}`);return(data||[]).map(row=>({...mapPost(row as SingBoardPostRow),pinned:true as const}))}
+export async function getSingBoardEvent(id:string):Promise<SingBoardEvent|null>{const supabase=createAdminClient();const{data,error}=await supabase.from("singboard_flyers").select("id,post_type,title,venue_name,neighborhood,region,detail,image_url,note_text,note_color,event_date,start_time,host_name,link_url,x,y,rotation,status").eq("id",id).maybeSingle();if(error)throw new Error(`Failed to load SingBOARD event: ${error.message}`);if(!data)return null;const row=data as SingBoardPostRow;const status=(row.status==="archived"||row.event_date<sanDiegoDate())?"archived":"active";return {...mapPost(row),status}}
 export async function recordSingBoardEventMetric(flyerId:string,metricType:SingBoardMetricType){const supabase=createAdminClient();const{error}=await supabase.from("singboard_event_metrics").insert({flyer_id:flyerId,metric_type:metricType});if(error)console.error(`Failed to record SingBOARD metric ${metricType}:`,error.message)}
 
 export async function getAuthorizedSingBoardPoster(accessCode:string){const supabase=createAdminClient();const{data,error}=await supabase.from("singboard_posters").select("id,display_name,poster_type,venue_id,host_id").eq("access_code_hash",hashAccessCode(accessCode)).eq("active",true).maybeSingle();if(error)throw new Error(`Failed to verify SingBOARD access: ${error.message}`);return data}
