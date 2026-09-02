@@ -20,6 +20,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: sync-public-data
@@ -84,18 +85,59 @@ jobs:
           GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
         run: npm run sync:data -- --write --no-backup --output-dir .data-sync-output
 
-      - name: Commit public data snapshot
+      - name: Validate generated snapshot
+        run: |
+          npm run check:data
+          npm run lint
+          npm run build
+
+      - name: Create automated data pull request
+        id: data_pr
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/venues.tsv public/data/events_by_night.tsv public/data/generated_events_review.tsv public/data/venue_slug_aliases.tsv public/data/sync-metadata.json public/data/sync-validation-report.md public/data/sync-diff-report.md
+
+          git add \
+            public/data/venues.tsv \
+            public/data/events_by_night.tsv \
+            public/data/generated_events_review.tsv \
+            public/data/venue_slug_aliases.tsv \
+            public/data/sync-metadata.json \
+            public/data/sync-validation-report.md \
+            public/data/sync-diff-report.md
+
           git status --short
+
           if git diff --cached --quiet; then
-            echo "No public data changes to commit."
-          else
-            git commit -m "data: nightly canonical sync"
-            git push
+            echo "No public data changes to publish."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
+
+          BRANCH="automation/data-sync-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git checkout -b "$BRANCH"
+          git commit -m "data: nightly canonical sync"
+          git push -u origin "$BRANCH"
+
+          PR_URL=$(gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "data: nightly canonical sync" \
+            --body "Automated SingHUB canonical-to-public data sync. Data guardrails, committed-data checks, lint, and build passed before this pull request was created.")
+
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
+
+      - name: Merge automated data pull request
+        if: steps.data_pr.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr merge "${{ steps.data_pr.outputs.pr_url }}" \
+            --squash \
+            --delete-branch
 
       - name: Upload sync artifacts
         if: always()
@@ -106,5 +148,3 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
-
-# Manual canonical sync check: Moxy direct verification 2026-09-01
