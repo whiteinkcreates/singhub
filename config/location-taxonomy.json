@@ -1,0 +1,10 @@
+{
+  "markets": {
+    "Downtown": ["Gaslamp Quarter", "East Village"],
+    "Central San Diego": ["North Park", "University Heights", "Hillcrest", "Normal Heights", "Mission Hills", "Mission Valley", "Grantville", "Kearny Mesa / Convoy", "Clairemont", "Bay Park", "College Area", "Tierrasanta", "Allied Gardens", "San Carlos"],
+    "Coastal San Diego": ["Pacific Beach", "Ocean Beach", "Point Loma", "La Jolla"],
+    "East County": ["La Mesa", "El Cajon", "Santee", "Lemon Grove", "Spring Valley", "Casa de Oro", "Lakeside"],
+    "South Bay": ["Downtown Chula Vista", "Eastlake", "West Chula Vista", "Imperial Beach"],
+    "North County": ["Poway", "Vista", "Escondido", "Oceanside", "Solana Beach"]
+  }
+}
