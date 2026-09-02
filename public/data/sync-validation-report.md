@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 80.
-Exported events: 173.
+Exported venues: 81.
+Exported events: 174.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -41,6 +41,7 @@ Exported events: 173.
 - venue-0081 Joycee's Cocktails
 - venue-0006 JT's Tavern
 - venue-0071 Kaminski's Sports Lounge
+- venue-0057 Moxy San Diego (Hotel)
 - venue-0025 McGuffie's Live
 - venue-0004 Norms
 - venue-0067 Grand Comedy Club and Pizzeria
@@ -109,7 +110,6 @@ Exported events: 173.
 - row 32: venue-0031 Manhattan Bar
 - row 33: venue-0040 Melody Karaoke & Cafe
 - row 34: venue-0032 Mikami Bar & Revolving Sushi
-- row 35: venue-0057 Moxy San Diego (Hotel)
 - row 38: venue-0068 North County - CoLab Public House
 - row 40: venue-0066 North County - Larrys Beach Club
 - row 42: venue-0033 Off Base Bar
@@ -240,11 +240,11 @@ Exported events: 173.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 80
-Authoritative events: 173
+Public venues: 81
+Authoritative events: 174
 Legacy venue slug aliases: 0
 
-PASS Monday: 16 authoritative / 8 expected minimum
+PASS Monday: 17 authoritative / 8 expected minimum
 PASS Tuesday: 25 authoritative / 8 expected minimum
 PASS Wednesday: 30 authoritative / 9 expected minimum
 PASS Thursday: 36 authoritative / 14 expected minimum
