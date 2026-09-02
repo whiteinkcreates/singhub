@@ -42,6 +42,12 @@ main > section:first-child h1 {
   line-height: 1.02;
 }
 
+/* Chrome can clip descenders on transparent gradient text to the span's paint box. */
+main > section:first-child h1 > span {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
 /* Keep the homepage karaoke ticker readable as the live event list grows. */
 .animate-\[marquee_34s_linear_infinite\] {
   animation-duration: 96s !important;
