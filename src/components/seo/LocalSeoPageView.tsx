@@ -1,19 +1,38 @@
 import Link from "next/link";
-import { NeighborhoodCard, VenueMiniCard } from "@/components/seo/SeoCards";
-import type { GuidePost, LocalSeoPage, NeighborhoodSeoPage } from "@/lib/seoContent";
+import { VenueMiniCard } from "@/components/seo/SeoCards";
+import type { GuidePost, LocalSeoPage } from "@/lib/seoContent";
 import type { VenueListing } from "@/types";
 
 type LocalSeoPageViewProps = {
   page: LocalSeoPage;
   venues: VenueListing[];
   guides?: GuidePost[];
-  neighborhoods?: NeighborhoodSeoPage[];
 };
 
 const dayLinks = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-export function LocalSeoPageView({ page, venues, neighborhoods = [] }: LocalSeoPageViewProps) {
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+export function LocalSeoPageView({ page, venues }: LocalSeoPageViewProps) {
   const featuredVenues = venues.slice(0, 6);
+  const neighborhoodCounts = new Map<string, number>();
+  for (const venue of venues) {
+    if (!venue.neighborhood || venue.neighborhood === "Multiple venues") continue;
+    neighborhoodCounts.set(
+      venue.neighborhood,
+      (neighborhoodCounts.get(venue.neighborhood) || 0) + 1,
+    );
+  }
+  const neighborhoods = [...neighborhoodCounts.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+    .slice(0, 6);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
@@ -73,10 +92,28 @@ export function LocalSeoPageView({ page, venues, neighborhoods = [] }: LocalSeoP
 
       {neighborhoods.length > 0 ? (
         <section className="mt-16">
-          <p className="text-sm font-black uppercase tracking-[0.25em] text-cyan-300">Neighborhoods</p>
-          <h2 className="mt-2 text-3xl font-black text-white">Browse by San Diego area</h2>
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <p className="text-sm font-black uppercase tracking-[0.25em] text-cyan-300">Neighborhoods</p>
+              <h2 className="mt-2 text-3xl font-black text-white">Browse by San Diego area</h2>
+            </div>
+            <Link href="/neighborhoods" className="text-sm font-bold text-cyan-200 hover:text-cyan-100">All neighborhoods →</Link>
+          </div>
           <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {neighborhoods.slice(0, 6).map((neighborhood) => <NeighborhoodCard key={neighborhood.slug} neighborhood={neighborhood} />)}
+            {neighborhoods.map((neighborhood) => (
+              <Link
+                key={neighborhood.name}
+                href={`/neighborhoods/${slugify(neighborhood.name)}`}
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 transition hover:-translate-y-0.5 hover:border-cyan-300/50"
+              >
+                <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">Neighborhood</p>
+                <h3 className="mt-3 text-2xl font-black text-white">{neighborhood.name}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-300">
+                  {neighborhood.count} {neighborhood.count === 1 ? "venue" : "venues"} in the current SingHUB index.
+                </p>
+                <p className="mt-4 text-sm font-bold text-fuchsia-200">Explore {neighborhood.name} →</p>
+              </Link>
+            ))}
           </div>
         </section>
       ) : null}

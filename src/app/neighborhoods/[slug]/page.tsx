@@ -1,8 +1,13 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { VenueMiniCard } from "@/components/seo/SeoCards";
 import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { getVenueListings } from "@/lib/venueData";
+
+const LEGACY_NEIGHBORHOOD_SLUGS: Record<string, string> = {
+  gaslamp: "gaslamp-quarter",
+  "east-county-la-mesa": "la-mesa",
+};
 
 function slugify(value: string) {
   return value
@@ -42,20 +47,24 @@ async function getNeighborhood(slug: string) {
 
 export async function generateMetadata({ params }: NeighborhoodPageProps) {
   const resolvedParams = await params;
-  const page = await getNeighborhood(resolvedParams.slug);
+  const canonicalSlug = LEGACY_NEIGHBORHOOD_SLUGS[resolvedParams.slug] || resolvedParams.slug;
+  const page = await getNeighborhood(canonicalSlug);
   if (!page) return {};
 
   return {
     title: `${page.name} Karaoke | SingHUB`,
     description: `Find karaoke nights in ${page.name}, grouped within the ${page.market} SingHUB market.`,
     alternates: {
-      canonical: `/neighborhoods/${resolvedParams.slug}`,
+      canonical: `/neighborhoods/${canonicalSlug}`,
     },
   };
 }
 
 export default async function NeighborhoodPage({ params }: NeighborhoodPageProps) {
   const resolvedParams = await params;
+  const legacyTarget = LEGACY_NEIGHBORHOOD_SLUGS[resolvedParams.slug];
+  if (legacyTarget) redirect(`/neighborhoods/${legacyTarget}`);
+
   const page = await getNeighborhood(resolvedParams.slug);
   if (!page) notFound();
 
@@ -107,7 +116,7 @@ export default async function NeighborhoodPage({ params }: NeighborhoodPageProps
           Known karaoke around {page.name}
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
-          Neighborhoods now use one canonical location value, so venues in this list match {page.name} exactly instead of relying on fuzzy text matching.
+          Neighborhoods use one canonical location value, so venues in this list match {page.name} exactly instead of relying on fuzzy text matching.
         </p>
         <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {page.venues.slice(0, 18).map((venue) => (
