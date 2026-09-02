@@ -12,11 +12,14 @@ on:
   pull_request:
     paths:
       - ".github/workflows/sync-public-data.yml"
+      - "package.json"
       - "config/data-sources.json"
       - "config/public-data-thresholds.json"
+      - "config/location-taxonomy.json"
       - "scripts/check-public-data.mjs"
       - "scripts/google-sheets-api.mjs"
       - "scripts/sync-public-data.mjs"
+      - "scripts/sync-public-data-with-taxonomy.mjs"
 
 permissions:
   contents: write

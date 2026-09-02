@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "seed:scout": "node scripts/seed-scout-leads.mjs",
-    "sync:data": "node scripts/sync-public-data.mjs",
+    "sync:data": "node scripts/sync-public-data-with-taxonomy.mjs",
     "check:data": "node scripts/check-public-data.mjs",
     "smoke:admin": "node scripts/smoke-admin-auth.mjs"
   },

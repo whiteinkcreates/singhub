@@ -164,6 +164,7 @@ function rowToVenueListing(
     venueType: normalizeVenueType(getAny(row, fallback, ["venue_type"])),
     city: getAny(row, fallback, ["city"]) || "",
     neighborhood: getAny(row, fallback, ["neighborhood"]) || "",
+    market: getAny(row, fallback, ["market"]) || "",
     address: getAny(row, fallback, ["address"]) || "",
     latitude:
       parseNumber(getAny(row, fallback, ["latitude"])) ??
@@ -176,8 +177,6 @@ function rowToVenueListing(
     bannerImageUrl: getAny(row, fallback, ["banner_image_url"]),
     bannerImageAlt: getAny(row, fallback, ["banner_image_alt"]),
     tickerText: getAny(row, fallback, ["ticker_text"]),
-    // Event rows are canonical for day/time/host. Legacy venue schedule fields
-    // are used only when the canonical workbook is unavailable altogether.
     karaokeDay: useLegacyScheduleFallback
       ? getOptionalValue(fallback?.karaoke_day) || ""
       : "",
