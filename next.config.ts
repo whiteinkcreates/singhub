@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async redirects() {
+    return [
+      {
+        source: "/venues/diversionary-theatre-clark-cabaret-bar",
+        destination: "/venues/clark-cabaret",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;
