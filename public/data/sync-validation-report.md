@@ -226,7 +226,6 @@ Exported events: 174.
 - venue-0117 Rosie O'Grady's
 - venue-0118 Chief's Da Tiki Bar
 - venue-0119 Rich's San Diego
-- venue-0120 Eastbound Bar & Grill
 ## Closed/Hidden/Archived Rows Excluded
 - None
 ## Stable Venue Identity Changes
