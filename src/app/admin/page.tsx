@@ -25,6 +25,13 @@ const tools = [
       "Build, validate, review, lock, and render deterministic daily karaoke roundups from canonical SingHUB data.",
   },
   {
+    href: "/admin/links",
+    eyebrow: "Campaign Infrastructure",
+    title: "Links + QR",
+    description:
+      "Create and track intentional /go/ links for QR placements, social posts, partners, collabs, Reddit CTAs, hotels, and campaigns.",
+  },
+  {
     href: "/admin/singboard-access",
     eyebrow: "Community Access",
     title: "SingBOARD Access",
