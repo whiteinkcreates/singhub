@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { connection } from "next/server";
 import type { KaraokeEventListing } from "@/types";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
 
@@ -141,6 +142,7 @@ export async function getKaraokeEventListings(): Promise<KaraokeEventListing[]> 
 }
 
 export async function getKaraokeEventsHostingToday(): Promise<KaraokeEventListing[]> {
+  await connection();
   const today = getTodayInLosAngeles();
   return (await getKaraokeEventListings()).filter((event) =>
     eventRunsToday(event, today),
