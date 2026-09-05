@@ -12,6 +12,12 @@ type PollPayload = {
   options: PollOption[];
 };
 type ApiPayload = { poll: PollPayload; previous?: PollPayload };
+type VotePayload = {
+  poll: PollPayload;
+  selectedOptionId?: string;
+  alreadyVoted?: boolean;
+  error?: string;
+};
 
 function getClientId() {
   const key = "singhub-poll-client";
@@ -52,6 +58,7 @@ export function PollOfTheDay() {
     if (!data || voting || selected) return;
     setVoting(true);
     setMessage(null);
+
     try {
       const response = await fetch("/api/polls/current", {
         method: "POST",
@@ -62,14 +69,26 @@ export function PollOfTheDay() {
           clientId: getClientId(),
         }),
       });
-      const payload = await response.json();
+      const payload = (await response.json()) as VotePayload;
       if (!response.ok) throw new Error(payload.error || "Vote failed");
-      setSelected(optionId);
-      window.localStorage.setItem(`singhub-poll-vote:${data.poll.slug}`, optionId);
-      setData((current) => current ? { ...current, poll: payload.poll } : current);
-      if (payload.alreadyVoted) setMessage("Already counted. Democracy survives another night.");
+
+      const lockedOptionId = payload.selectedOptionId || optionId;
+      setSelected(lockedOptionId);
+      window.localStorage.setItem(
+        `singhub-poll-vote:${data.poll.slug}`,
+        lockedOptionId,
+      );
+      setData((current) =>
+        current ? { ...current, poll: payload.poll } : current,
+      );
+
+      if (payload.alreadyVoted) {
+        setMessage("Already counted. Showing your original vote.");
+      }
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Vote could not be saved.");
+      setMessage(
+        error instanceof Error ? error.message : "Vote could not be saved.",
+      );
     } finally {
       setVoting(false);
     }
