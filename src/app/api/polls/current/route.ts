@@ -1,32 +1,56 @@
 import { createHash } from "node:crypto";
+import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { getPollBySlug, getPollForDate, getPreviousPoll } from "@/lib/pollBank";
-import { createAdminClient } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 
-type VoteRow = { option_id: string };
+type ResultRow = { option_id: string; votes: number | string };
+type SubmitRow = { selected_option_id: string | null; inserted: boolean };
+
+function createPollClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const publishableKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !publishableKey) return null;
+
+  return createClient(supabaseUrl, publishableKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  });
+}
 
 async function getResults(slug: string) {
+  const supabase = createPollClient();
+  if (!supabase) return {} as Record<string, number>;
+
   try {
-    const supabase = createAdminClient();
-    const { data, error } = await supabase
-      .from("poll_votes")
-      .select("option_id")
-      .eq("poll_slug", slug);
+    const { data, error } = await supabase.rpc("poll_results", {
+      p_poll_slug: slug,
+    });
     if (error) throw error;
-    const rows = (data || []) as VoteRow[];
-    return rows.reduce<Record<string, number>>((totals, row) => {
-      totals[row.option_id] = (totals[row.option_id] || 0) + 1;
-      return totals;
-    }, {});
+
+    return ((data || []) as ResultRow[]).reduce<Record<string, number>>(
+      (totals, row) => {
+        totals[row.option_id] = Number(row.votes) || 0;
+        return totals;
+      },
+      {},
+    );
   } catch (error) {
     console.error("Poll results unavailable", error);
     return {};
   }
 }
 
-function resultPayload(poll: ReturnType<typeof getPollForDate>, results: Record<string, number>) {
+function resultPayload(
+  poll: ReturnType<typeof getPollForDate>,
+  results: Record<string, number>,
+) {
   const totalVotes = Object.values(results).reduce((sum, value) => sum + value, 0);
   return {
     ...poll,
@@ -34,7 +58,9 @@ function resultPayload(poll: ReturnType<typeof getPollForDate>, results: Record<
     options: poll.options.map((option) => ({
       ...option,
       votes: results[option.id] || 0,
-      percentage: totalVotes ? Math.round(((results[option.id] || 0) / totalVotes) * 100) : 0,
+      percentage: totalVotes
+        ? Math.round(((results[option.id] || 0) / totalVotes) * 100)
+        : 0,
     })),
   };
 }
@@ -61,31 +87,58 @@ export async function POST(request: Request) {
       clientId?: string;
     };
     const poll = body.pollSlug ? getPollBySlug(body.pollSlug) : undefined;
+
     if (!poll || poll.slug !== getPollForDate().slug) {
-      return NextResponse.json({ error: "That poll is no longer active." }, { status: 400 });
+      return NextResponse.json(
+        { error: "That poll is no longer active." },
+        { status: 400 },
+      );
     }
+
     if (!body.optionId || !poll.options.some((option) => option.id === body.optionId)) {
       return NextResponse.json({ error: "Invalid poll option." }, { status: 400 });
     }
+
     if (!body.clientId || body.clientId.length < 12) {
       return NextResponse.json({ error: "Missing voter token." }, { status: 400 });
     }
 
+    const supabase = createPollClient();
+    if (!supabase) {
+      return NextResponse.json(
+        { error: "Voting is not configured yet." },
+        { status: 503 },
+      );
+    }
+
     const voterHash = createHash("sha256")
-      .update(`${poll.slug}:${body.clientId}:${process.env.POLL_HASH_SALT || "singhub-poll"}`)
+      .update(
+        `${poll.slug}:${body.clientId}:${process.env.POLL_HASH_SALT || "singhub-poll-v1"}`,
+      )
       .digest("hex");
-    const supabase = createAdminClient();
-    const { error } = await supabase.from("poll_votes").insert({
-      poll_slug: poll.slug,
-      option_id: body.optionId,
-      voter_hash: voterHash,
+
+    const { data, error } = await supabase.rpc("submit_poll_vote", {
+      p_poll_slug: poll.slug,
+      p_option_id: body.optionId,
+      p_voter_hash: voterHash,
     });
 
-    if (error && error.code !== "23505") throw error;
+    if (error) throw error;
+
+    const submission = ((data || []) as SubmitRow[])[0];
+    const selectedOptionId = submission?.selected_option_id || body.optionId;
     const results = await getResults(poll.slug);
-    return NextResponse.json({ poll: resultPayload(poll, results), alreadyVoted: error?.code === "23505" });
+
+    return NextResponse.json({
+      poll: resultPayload(poll, results),
+      selectedOptionId,
+      alreadyVoted: submission ? !submission.inserted : false,
+    });
   } catch (error) {
     console.error("Poll vote failed", error);
-    return NextResponse.json({ error: "Vote could not be saved." }, { status: 500 });
+    return NextResponse.json(
+      { error: "Vote could not be saved. Try again in a moment." },
+      { status: 500 },
+    );
   }
 }
