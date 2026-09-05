@@ -61,12 +61,18 @@ export function KaraokeForecastCard({ forecast }: { forecast: KaraokeForecast })
             </div>
 
             <div className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4">
-              <div className="flex h-24 items-end gap-2" aria-label="Karaoke intensity by hour">
+              <div className="flex h-28 items-end gap-2" aria-label="Karaoke intensity by hour">
                 {forecast.intensity.map((value, index) => {
-                  const height = 18 + Math.round((value / max) * 74);
+                  const heightPx = value > 0 ? 10 + Math.round((value / max) * 66) : 0;
                   return (
                     <div key={hours[index]} className="flex min-w-0 flex-1 flex-col items-center justify-end gap-2">
-                      <div className="w-full max-w-10 rounded-t-md bg-gradient-to-t from-cyan-400 via-violet-400 to-fuchsia-400 shadow-[0_0_20px_rgba(217,70,239,0.16)]" style={{ height: `${height}%` }} />
+                      <div className="flex h-20 w-full items-end justify-center">
+                        <div
+                          className="w-full max-w-10 rounded-t-md bg-gradient-to-t from-cyan-400 via-violet-400 to-fuchsia-400 shadow-[0_0_20px_rgba(217,70,239,0.16)] transition-[height] duration-500"
+                          style={{ height: `${heightPx}px` }}
+                          title={`${hours[index]}: ${value} active karaoke event${value === 1 ? "" : "s"}`}
+                        />
+                      </div>
                       <span className="whitespace-nowrap text-[0.6rem] font-bold text-slate-500 sm:text-[0.68rem]">{hours[index]}</span>
                     </div>
                   );
