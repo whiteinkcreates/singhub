@@ -5,8 +5,8 @@ Candidate output compared with the currently committed public data.
 ## venues.tsv
 
 - Previous non-empty lines: 82
-- Candidate non-empty lines: 82
-- Added/changed lines: 82
+- Candidate non-empty lines: 87
+- Added/changed lines: 87
 - Removed/changed lines: 82
 
 ### Added or changed sample
@@ -16,11 +16,11 @@ id	venue_name	slug	profile_tier	listing_status	venue_type	city	neighborhood	addr
 venue-0051	#1 Fifth Avenue	1-fifth-avenue	basic	verified	live_bar	San Diego	Hillcrest	3845 Fifth Ave, San Diego, CA 92103	32.7482	-117.1603		@numberonefifth				Thursday, Tuesday	10:00 PM / 8:00 PM	12:30 AM / 12:00 AM	Navy Nick / DJ JP rotation, Bobbi and Danny	Hillcrest, Thursday karaoke, Tuesday karaoke, live karaoke	Hillcrest karaoke venue with verified Tuesday karaoke from 8 PM to midnight hosted by Bobbi and Danny, plus Thursday late-night karaoke from 10 PM to 12:30 AM with a Navy Nick / DJ JP rotation.											FALSE	100	Diego directly confirmed Tuesday karaoke 8 PM-midnight hosted by Bobbi and Danny and clarified that the 10 PM-12:30 AM late-night Navy Nick / DJ JP rotation is on Thursdays.	Direct venue response from Diego / #1 Fifth	Corey verification outreach 2026-08-19; Navy Nick response 2026-07-15		2026-08-19
 venue-0062	710 Beach Club	710-beach-club	basic	ai_scouted	live_bar	San Diego	Pacific Beach	710 Garnet Ave, San Diego (Pacific Beach)	32.7971	-117.2562	https://www.710bc.com/	@710beachclub				Thursday	8:00 PM	12:00 AM	Two of Clubs	Pacific Beach, Thursday karaoke, live karaoke	Thursday karaoke with Two of Clubs starting 8pm until 12am.											FALSE	85	Synced from completed Weekly_Grid roundup schedule.				2026-07-13
 venue-0018	BLVD	blvd	basic	ai_scouted	live_bar	San Diego	Grantville	6628 Mission Gorge Rd, San Diego, CA 92120	32.7803	-117.0951	https://theblvdbarsd.com/	@theblvdbarsd				Saturday	9:00 PM	TBD	DJ Glyph	Grantville, Saturday karaoke, live karaoke	Grantville / Mission Gorge venue with a reported Saturday karaoke lead. Current start time, host, and recurring status still need verification before using in roundups.											FALSE	85	Synced from completed Weekly_Grid roundup schedule.				2026-07-13
-venue-0013	Camels Bar & Grill	camels-bar-grill	basic	verified	live_bar	San Diego	Mission Valley	10330 Friars Rd, San Diego, CA 92120	32.7938	-117.1082	https://camelsbarandgrill.com/	@camelsbarandgrill				Thursday, Saturday	9:00 PM	1:00 AM / TBD	DJ Mike, DJ Meth	Mission Valley, Thursday karaoke, Saturday karaoke, live karaoke	Mission Valley karaoke listing. Thursday time confirmed as 9 PM; host details still listed as DJ Mike / DJ Meth until corrected.											FALSE	90	Corey confirmed Camels Bar & Grill / Camel Bar for Thursday roundup with DJ Mike. Time still TBD.	Corey direct update 2026-07-02			2026-07-09
+venue-0013	Camels Bar & Grill	camels-bar-grill	basic	verified	live_bar	San Diego	Mission Valley	10330 Friars Rd, San Diego, CA 92120	32.7938	-117.1082	https://camelsbarandgrill.com/	@camelsbarandgrill				Thursday, Saturday	9:00 PM / 8:30 PM	1:00 AM / close	DJ Mike, KJ Meth	Mission Valley, Thursday karaoke, Saturday karaoke, live karaoke	Mission Valley karaoke venue with Thursday karaoke hosted by DJ Mike and Saturday karaoke from 8:30 PM to close with KJ Meth of A.I. Entertainment.											FALSE	100	A.I. Entertainment directly confirms the Saturday schedule and KJ Meth affiliation.	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Corey direct Camels Thursday confirmation		2026-09-04
 venue-0015	Carriage House Cocktails & Karaoke	carriage-house-cocktails-karaoke	basic	verified	live_bar	San Diego	Kearny Mesa / Convoy	4690 Convoy St, San Diego, CA 92111	32.8311	-117.1539		@carriagehousekaraokesd				Monday, Tuesday, Wednesday, Sunday, Thursday, Friday, Saturday	9:00 PM	1:30 AM	Amy "Miss Pond", Brian "MP", Amy "Miss Pond" / Lindsey, Lindsey	Kearny Mesa / Convoy, Monday karaoke, Tuesday karaoke, Wednesday karaoke, Sunday karaoke, Thursday karaoke	Kearny Mesa / Convoy dedicated karaoke bar with karaoke seven nights a week from 9 PM to 1:30 AM. Wednesday programming also includes Bingo on the 1st Wednesday and trivia on the 3rd Wednesday before karaoke.											FALSE	100	Venue directly confirmed karaoke 7 nights/week, 9 PM-1:30 AM. Hosts: Amy "Miss Pond" Monday, Thursday, Friday, Saturday, plus 1st/3rd Wednesdays; Brian "MP" Tuesday; Lindsey Sunday plus 2nd/4th/5th Wednesdays. Bingo 1st Wednesday 5:30-8:30 PM; trivia 3rd Wednesday 5:30-8:30 PM.	Direct venue response via Instagram	Corey verification outreach 2026-08-16		2026-08-16
 venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	basic	verified	live_bar	San Diego	University Heights	1839 Adams Avenue, San Diego, CA, USA	32.7634	-117.1455	https://cheerssandiego.com	cheersbarsandiego				Monday, Wednesday	8:00 PM	1:00 AM	Ed&Katie	University Heights, Monday karaoke, Wednesday karaoke, live karaoke	University Heights neighborhood bar with karaoke Monday and Wednesday from 8 PM-1 AM, hosted by Ed and Katie.										info@cheerssandiego.com	FALSE	95	Official site confirms Cheers Bar San Diego at 1839 Adams Ave and its University Heights history.	Official Cheers Bar San Diego website/history	Corey correction 2026-08-12		2026-08-12
-venue-0009	Deano's Pub - La Mesa	deanos-pub	basic	verified	live_bar	La Mesa	La Mesa	5286 Baltimore Dr, La Mesa, CA 91942	32.7754	-117.0327	https://deanospub.com/	@deanospub				Wednesday	8:00 PM	12:00 AM	KJ Smash	La Mesa, Wednesday karaoke, live karaoke	La Mesa neighborhood pub with Wednesday karaoke from 8 PM to midnight hosted by KJ Smash.											TRUE	98	Direct confirmation and current Deano's post confirm Wednesday karaoke with KJ Smash from 8 PM to midnight.	Corey direct confirmation 2026-08-14	https://www.facebook.com/deanospub/posts/kj-smash-in-the-deanos-pub-soundbooth-karaoke-wednesdays-with-kj-smash-deanos-pu/1553844863420206/		2026-08-14
-venue-0082	Deano's East	deanos-east	basic	ai_scouted	live_bar	Santee	Santee	11541 Woodside Ave Ste d, Santee, CA 92071	32.8384	-116.9723						Saturday	8:00 PM	12:00 AM	KJ Lolo	Santee, Saturday karaoke, live karaoke	Santee Deano's location for review. DJ Lolo reportedly hosts Saturday karaoke. Need exact venue name/address, start/end time, and form confirmation before public listing or roundup use.											FALSE	85	Synced from completed Weekly_Grid roundup schedule.				2026-07-13
+venue-0009	Deano's Pub - La Mesa	deanos-pub	basic	verified	live_bar	La Mesa	La Mesa	5286 Baltimore Dr, La Mesa, CA 91942	32.7754	-117.0327	https://deanospub.com/	@deanospub				Wednesday	8:00 PM	12:00 AM	KJ Smash	La Mesa, Wednesday karaoke, live karaoke	La Mesa neighborhood pub with Wednesday karaoke from 8 PM to midnight hosted by KJ Smash of A.I. Entertainment.											TRUE	100	A.I. Entertainment confirms the current Wednesday schedule and KJ Smash affiliation.	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Current Deano's venue post		2026-09-04
+venue-0082	Deano's East	deanos-east	basic	verified	live_bar	Santee	Santee	11541 Woodside Ave Ste d, Santee, CA 92071	32.8384	-116.9723						Saturday	8:00 PM	12:00 AM	KJ Lolo	Santee, Saturday karaoke, live karaoke	Santee karaoke venue with Saturday karaoke from 8 PM to midnight hosted by KJ Lolo of A.I. Entertainment.											FALSE	100	A.I. Entertainment confirms the Saturday schedule, address, and KJ Lolo affiliation.	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	KJ Lolo direct profile submission		2026-09-04
 venue-0077	Clark Cabaret	clark-cabaret	basic	verified	live_bar	San Diego	University Heights	4545 Park Blvd #101, San Diego, CA 92116	32.7604	-117.1462	https://www.diversionary.org/events/karaoke-night-7	@clarkcabaret				Friday	10:00 PM	TBD	TBD	University Heights, Friday karaoke, live karaoke	University Heights LGBTQIA+ theatre/cabaret bar venue with Friday Karaoke Night starting at 10 PM. Use public listing name Clark Cabaret.											FALSE	92	Corey confirmed Diversionary Friday karaoke starts at 10 PM on 2026-06-29. Diversionary karaoke archive lists Karaoke Night on multiple Fridays. End time and host still need confirmation.	https://www.diversionary.org/mec-category/karaoke	https://www.diversionary.org/events/karaoke-night-7		2026-06-30
 venue-0073	Dock's Cocktail Lounge	docks-cocktail-lounge	basic	ai_scouted	live_bar	Chula Vista	Downtown Chula Vista	317 3rd Ave, Chula Vista, CA	32.6409	-117.0805						Friday, Saturday	9:00 PM	TBD	TBD	Downtown Chula Vista, Friday karaoke, Saturday karaoke, live karaoke	Remove Dock's from tonight's Thursday roundup. Current karaoke schedule needs direct confirmation before future roundup use.											FALSE	50	New row added from Karaoke Venues SD 9/17 List. Needs verification before verified status.	Karaoke Venues SD - 9/17 List			2026-07-09
 venue-0020	Don's Cocktails	dons-cocktails	basic	ai_scouted	live_bar	El Cajon	El Cajon	13321 Hwy 8 Bus, El Cajon, CA 92021	32.8171	-116.9002	https://dons-cocktail-lounge.edan.io/	@dons_cocktail_lounge)				Thursday, Friday	9pm-last call	TBD	DJ Savadelic	El Cajon, Thursday karaoke, Friday karaoke, live karaoke	El Cajon karaoke bar with Thursday and Friday karaoke. Exact times still need confirmation.											FALSE	78	Corey confirmed Don's Cocktails has Thursday / Friday karaoke. Removed misplaced Cordova event/media data from canonical row.				2026-07-11
@@ -62,20 +62,50 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 ## events_by_night.tsv
 
 - Previous non-empty lines: 175
-- Candidate non-empty lines: 175
-- Added/changed lines: 1
-- Removed/changed lines: 1
+- Candidate non-empty lines: 184
+- Added/changed lines: 21
+- Removed/changed lines: 12
 
 ### Added or changed sample
 
 ```text
-weekly-richs-san-diego-thursday	venue-0119	Rich's San Diego	richs-san-diego	Thursday	9:00 PM	2:00 AM	DJ Niko	Date-specific September 2026	active	September 2026: Sep 3 10 PM-2 AM; Sep 10 9 PM-2 AM; Sep 17 10 PM-2 AM; no karaoke Sep 24. DJ Niko hosts front-room karaoke during Pop Rocks.	100	Direct email from Ryan Bedrosian, Owner - Rich's San Diego, 2026-09-02	Rich's official Pop Rocks / events calendar	2026-09-02	verified_direct_owner_schedule	FALSE
+weekly-camels-bar-grill-saturday	venue-0013	Camels Bar & Grill	camels-bar-grill	Saturday	8:30 PM	close	KJ Meth	TRUE	active	Saturday karaoke from 8:30 PM to close with KJ Meth.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Prior Weekly_Grid	2026-09-04	verified_direct_provider_schedule	FALSE
+weekly-deanos-pub-wednesday	venue-0009	Deano's Pub - La Mesa	deanos-pub	Wednesday	8:00 PM	12:00 AM	KJ Smash	TRUE	active	Wednesday karaoke from 8 PM to midnight with KJ Smash.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Current Deano's venue post	2026-09-04	verified_direct_provider_schedule	FALSE
+weekly-pal-joeys-thursday	venue-0017	Pal Joey's Cocktail Lounge	pal-joeys	Thursday	9:00 PM	1:00 AM	Trini	TRUE	active	Thursday karaoke from 9 PM to 1 AM with Trini.	100	Corey direct confirmation 2026-09-03	SingHUB canonical correction	2026-09-03	verified_direct_user_confirmation	FALSE
+weekly-novo-brazil-brewing-lane-ave-thursday	venue-0076	Novo Brazil Brewing - Lane Ave	novo-brazil-brewing-lane-ave	Thursday	6:30 PM	TBD	DJ Loy	TRUE	active	Thursday karaoke with DJ Loy starting at 6:30 PM.	85	Weekly_Grid	Corey confirmed KJ Loy is the existing DJ Loy profile 2026-09-03	2026-09-03	weekly_grid_sync_needs_detail	FALSE
+weekly-deanos-east-saturday	venue-0082	Deano's East	deanos-east	Saturday	8:00 PM	12:00 AM	KJ Lolo	TRUE	active	Saturday karaoke from 8 PM to midnight with KJ Lolo.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	KJ Lolo direct profile submission	2026-09-04	verified_direct_provider_schedule	FALSE
+event-0022	venue-0083	Tony’s Martini Bar	tonys-martini-bar	Wednesday	9:00 PM	1:00 AM	Devyn Conover	TRUE	active	Wednesday karaoke from 9 PM to 1 AM with Devyn Conover.	100	https://www.tonysob.com/	Direct message from Devyn Conover to Corey 2026-09-03	2026-09-03	verified_direct_host_confirmation	FALSE
+weekly-silver-dollar-chula-vista-tuesday	venue-0106	Silver Dollar	silver-dollar-chula-vista	Tuesday	10:00 PM	1:00 AM	KJ Jester	TRUE	active	Tuesday DJ Bingo from 8 PM to 9:45 PM, followed by karaoke from 10 PM to 1 AM with KJ Jester.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Corey direct Silver Dollar confirmation 2026-08-18	2026-09-04	verified_direct_provider_schedule	FALSE
+event-0047	venue-0116	Filippi's Pizza Grotto - Santee	filippis-pizza-grotto-santee	Saturday	7:00 PM	11:00 PM	Trini	TRUE	active	Saturday karaoke from 7 PM to 11 PM with Trini.	100	https://www.instagram.com/reel/DbEuPJEoBr9/	Corey direct reconfirmation 2026-09-03	2026-09-03	verified_direct_user_confirmation	FALSE
+event-0048	venue-0117	Rosie O'Grady's	rosie-ogradys	Wednesday	9:00 PM	12:00 AM	DJ Loy	TRUE	active	Wednesday karaoke from 9 PM to midnight with DJ Loy.	100	https://www.instagram.com/rosieogradyspubsd/	Corey confirmed KJ Loy is the existing DJ Loy profile 2026-09-03	2026-09-03	verified_identity_link	FALSE
+event-0049	venue-0118	Chief's Da Tiki Bar	chiefs-da-tiki-bar	Sunday	3:00 PM	7:30 PM	DJ Loy	TRUE	active	Sunday Ohana Karaoke from 3 PM to 7:30 PM with DJ Loy.	100	https://www.instagram.com/reel/DZSBlz7oPHd/	Corey confirmed KJ Loy is the existing DJ Loy profile 2026-09-03	2026-09-03	verified_identity_link	FALSE
+weekly-norms-wednesday	venue-0004	Norms	norms	Wednesday	8:00 PM	12:00 AM	Trini	TRUE	active	Wednesday karaoke from 8 PM to midnight with Trini.	100	Corey direct confirmation 2026-09-03	SingHUB canonical correction	2026-09-03	verified_direct_user_confirmation	FALSE
+weekly-vogue-tavern-tuesday	venue-0121	Vogue Tavern	vogue-tavern	Tuesday	9:00 PM	10:30 PM	Devyn Conover	TRUE	active	Tuesday karaoke from 9 PM to 10:30 PM with Devyn Conover.	100	Direct message from Devyn Conover to Corey 2026-09-03	https://www.instagram.com/voguetav/	2026-09-03	verified_direct_host_and_venue_sources	FALSE
+weekly-vogue-tavern-saturday	venue-0121	Vogue Tavern	vogue-tavern	Saturday	9:00 PM	11:30 PM	Devyn Conover	TRUE	active	Saturday karaoke from 9 PM to 11:30 PM with Devyn Conover.	100	Direct message from Devyn Conover to Corey 2026-09-03	https://www.instagram.com/voguetav/	2026-09-03	verified_direct_host_and_venue_sources	FALSE
+weekly-stoneys-bar-grill-thursday	venue-0122	Stoney's Bar & Grill	stoneys-bar-grill	Thursday	7:30 PM	12:00 AM	Rick's Karaoke & DJ	TRUE	active	Thursday karaoke from 7:30 PM to midnight with Rick's Karaoke & DJ.	100	https://www.facebook.com/LikeRicksKaraoke/posts/stoneys-karaoke-every-thursday-730-to-12a-last-call-show-up-early-and-sing-from-/1328474179274380/	https://www.facebook.com/p/Stoneys-Bar-and-Grill-100054543066992/	2026-09-03	verified_direct_kj_post	FALSE
+event-kaminskis-sports-lounge-karaoke-2026-09-04	venue-0071	Kaminski's Sports Lounge	kaminskis-sports-lounge	Friday	8:00 PM	11:00 PM	Devyn Conover	Date-specific	active	Friday, September 4 karaoke from 8 PM to 11 PM with Devyn Conover.	100	Corey direct confirmation 2026-09-03	Direct schedule from Devyn Conover 2026-09-03	2026-09-03	verified_direct_user_confirmation	FALSE
+weekly-mr-peabodys-tuesday	venue-0123	Mr. Peabody's Bar & Grill	mr-peabodys-bar-grill	Tuesday	8:30 PM	TBD	KJ Mike	TRUE	active	Tuesday karaoke starting at 8:30 PM with KJ Mike.	100	https://www.peabodysrocks.com/	Current weekly venue schedule supplied by Corey 2026-09-03	2026-09-03	verified_official_current_schedule_needs_end_time	FALSE
+monthly-main-tap-tavern-third-tuesday	venue-0012	Main Tap Tavern	main-tap-tavern	Tuesday	7:30 PM	12:00 AM	DJ V	3rd Tuesday monthly	active	Every third Tuesday: trivia and karaoke from 7:30 PM to midnight with DJ V.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Prior Karaoke Venues SD import	2026-09-04	verified_direct_provider_schedule_needs_segment_time	FALSE
+weekly-main-tap-tavern-friday	venue-0012	Main Tap Tavern	main-tap-tavern	Friday	9:00 PM	close	KJ Jester	TRUE	active	Friday karaoke from 9 PM to close with KJ Jester.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Prior Karaoke Venues SD import	2026-09-04	verified_direct_provider_schedule	FALSE
+weekly-main-tap-tavern-saturday	venue-0012	Main Tap Tavern	main-tap-tavern	Saturday	9:00 PM	close	KJ Jester	TRUE	active	Saturday karaoke from 9 PM to close with KJ Jester.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Prior Karaoke Venues SD import	2026-09-04	verified_direct_provider_schedule	FALSE
+weekly-de-oro-mine-co-wednesday	venue-0105	De Oro Mine Co.	de-oro-mine-co	Wednesday	8:00 PM	12:00 AM	KJ Jester	TRUE	active	Wednesday karaoke from 8 PM to midnight with KJ Jester. Second and fourth Wednesdays also include DJ Bingo. $10 shot and beer special.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Corey direct De Oro venue update 2026-08-18	2026-09-04	verified_direct_provider_schedule	FALSE
 ```
 
 ### Removed or changed sample
 
 ```text
-weekly-richs-san-diego-thursday	venue-0119	Rich's San Diego	richs-san-diego	Thursday	9:00 PM	2:00 AM	DJ Niko	TRUE	active	Thursday Pop Rocks includes karaoke in the front room with DJ Niko from 9 PM to 2 AM.	98	Rich's official calendar / Pop Rocks listing	SingHUB event watch 2026-08-27	2026-08-27	web_verified_current_schedule	FALSE
+weekly-camels-bar-grill-saturday	venue-0013	Camels Bar & Grill	camels-bar-grill	Saturday	9:00 PM	TBD	DJ Meth	TRUE	active	Saturday karaoke with DJ Meth starting 9pm.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
+weekly-deanos-pub-wednesday	venue-0009	Deano's Pub - La Mesa	deanos-pub	Wednesday	8:00 PM	12:00 AM	KJ Smash	TRUE	active	Wednesday karaoke from 8 PM to midnight with KJ Smash.	98	Corey direct confirmation 2026-08-14	https://www.facebook.com/deanospub/posts/kj-smash-in-the-deanos-pub-soundbooth-karaoke-wednesdays-with-kj-smash-deanos-pu/1553844863420206/	2026-08-14	verified_direct_confirmation	FALSE
+weekly-pal-joeys-thursday	venue-0017	Pal Joey's Cocktail Lounge	pal-joeys	Thursday	9:00 PM	1:00 AM	Trini	TRUE	active	Thursday karaoke with Trini starting 9pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
+weekly-novo-brazil-brewing-lane-ave-thursday	venue-0076	Novo Brazil Brewing - Lane Ave	novo-brazil-brewing-lane-ave	Thursday	6:30 PM	TBD	DJ Loy	TRUE	active	Thursday karaoke with DJ Loy starting 6:30pm.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
+weekly-kaminskis-sports-lounge-friday	venue-0071	Kaminski's Sports Lounge	kaminskis-sports-lounge	Friday	8:00 PM	close	All Mic Long	TRUE	active	Friday karaoke with All Mic Long starting 8pm until close.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
+weekly-deanos-east-saturday	venue-0082	Deano's East	deanos-east	Saturday	8:00 PM	12:00 AM	KJ Lolo	TRUE	active	Saturday karaoke with KJ Lolo starting 8pm until 12am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
+event-0022	venue-0083	Tony’s Martini Bar	tonys-martini-bar	Wednesday	9:00 PM	1:00 AM	TBD	TRUE	active	Wednesday karaoke from 9 PM to 1 AM.	98	https://www.tonysob.com/	https://www.instagram.com/tonysmartinibar/	2026-08-14	venue_web_verified_current_schedule_needs_host	FALSE
+weekly-silver-dollar-chula-vista-tuesday	venue-0106	Silver Dollar	silver-dollar-chula-vista	Tuesday	10:00 PM	1:00 AM	TBD	TRUE	active	Tuesday karaoke from 10 PM to 1 AM.	100	Corey direct update 2026-08-18	SingHUB canonical correction	2026-08-18	verified_direct_schedule_needs_host	FALSE
+event-0047	venue-0116	Filippi's Pizza Grotto - Santee	filippis-pizza-grotto-santee	Saturday	7:00 PM	11:00 PM	Trini	TRUE	active	Saturday night karaoke from 7 PM to 11 PM hosted by Trini.	99	https://www.instagram.com/reel/DbEuPJEoBr9/	Corey-provided flyer 2026-08-21	2026-08-21	verified	FALSE
+event-0048	venue-0117	Rosie O'Grady's	rosie-ogradys	Wednesday	9:00 PM	12:00 AM	KJ Loy Monsanto	TRUE	active	Wednesday karaoke from 9 PM to midnight hosted by KJ Loy Monsanto.	96	https://www.instagram.com/rosieogradyspubsd/	Corey Facebook community recommendations 2026-08-21	2026-08-21	verified	FALSE
+event-0049	venue-0118	Chief's Da Tiki Bar	chiefs-da-tiki-bar	Sunday	3:00 PM	7:30 PM	KJ Loy	TRUE	active	Sunday Ohana Karaoke from 3 PM to 7:30 PM hosted by KJ Loy.	99	https://www.instagram.com/reel/DZSBlz7oPHd/	Corey-provided flyer 2026-08-21	2026-08-21	verified	FALSE
+weekly-norms-wednesday	venue-0004	Norms	norms	Wednesday	8:00 PM	12:00 AM	Trini	TRUE	active	Wednesday karaoke from 8 PM to midnight with Trini.	100	Corey direct update 2026-08-27	SingHUB canonical correction	2026-08-27	verified_direct_schedule	FALSE
 ```
 
 ## generated_events_review.tsv
@@ -100,17 +130,21 @@ weekly-richs-san-diego-thursday	venue-0119	Rich's San Diego	richs-san-diego	Thur
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 1
-- Removed/changed lines: 1
+- Added/changed lines: 3
+- Removed/changed lines: 3
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-03T14:32:45.568Z",
+  "generatedAt": "2026-09-05T04:00:48.198Z",
+  "venues": 86,
+  "authoritativeEvents": 183,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-02T19:33:39.208Z",
+  "generatedAt": "2026-09-03T14:32:45.568Z",
+  "venues": 81,
+  "authoritativeEvents": 174,
 ```

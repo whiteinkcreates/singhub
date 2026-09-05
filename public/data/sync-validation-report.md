@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 81.
-Exported events: 174.
+Exported venues: 86.
+Exported events: 183.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -41,6 +41,7 @@ Exported events: 174.
 - venue-0081 Joycee's Cocktails
 - venue-0006 JT's Tavern
 - venue-0071 Kaminski's Sports Lounge
+- venue-0012 Main Tap Tavern
 - venue-0057 Moxy San Diego (Hotel)
 - venue-0025 McGuffie's Live
 - venue-0004 Norms
@@ -99,6 +100,10 @@ Exported events: 174.
 - venue-0118 Chief's Da Tiki Bar
 - venue-0119 Rich's San Diego
 - venue-0120 Eastbound Bar & Grill
+- venue-0121 Vogue Tavern
+- venue-0122 Stoney's Bar & Grill
+- venue-0123 Mr. Peabody's Bar & Grill
+- venue-0124 The Rabbit Hole
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -106,7 +111,6 @@ Exported events: 174.
 - row 21: venue-0078 Good News Bar
 - row 22: venue-0055 Good Night John Boy
 - row 25: venue-0053 Henrys Pub
-- row 31: venue-0012 Main Tap Tavern
 - row 32: venue-0031 Manhattan Bar
 - row 33: venue-0040 Melody Karaoke & Cafe
 - row 34: venue-0032 Mikami Bar & Revolving Sushi
@@ -128,6 +132,7 @@ Exported events: 174.
 ## Events Skipped Because App Hidden
 - event row 4: weekly-the-search-bar-thursday
 - event row 39: weekly-wongs-golden-palace-sunday
+- event row 63: weekly-kaminskis-sports-lounge-friday
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
 - event row 76: event-double-deuce-2026-07-17-navy-nick-cover
@@ -146,7 +151,6 @@ Exported events: 174.
 - event row 2: weekly-dons-cocktails-thursday Don's Cocktails
 - event row 3: weekly-dons-cocktails-friday Don's Cocktails
 - event row 5: weekly-blvd-saturday BLVD
-- event row 7: weekly-camels-bar-grill-saturday Camels Bar & Grill
 - event row 40: weekly-novo-brazil-brewing-lane-ave-thursday Novo Brazil Brewing - Lane Ave
 - event row 41: weekly-peter-ds-thursday Peter D's
 - event row 42: weekly-peter-ds-friday Peter D's
@@ -175,9 +179,7 @@ Exported events: 174.
 - event row 98: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
 - event row 102: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
 - event row 104: event-0021 Tony’s Martini Bar
-- event row 105: event-0022 Tony’s Martini Bar
 - event row 118: weekly-de-oro-mine-co-monday De Oro Mine Co.
-- event row 119: weekly-silver-dollar-chula-vista-tuesday Silver Dollar
 - event row 123: weekly-grand-comedy-club-monday Grand Comedy Club and Pizzeria
 - event row 124: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
 - event row 132: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
@@ -195,6 +197,7 @@ Exported events: 174.
 - event row 157: weekly-the-luau-saturday The Luau
 - event row 158: weekly-the-luau-sunday The Luau
 - event row 159: weekly-the-luau-friday The Luau
+- event row 167: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
 ## Public Venues Missing Coordinates
@@ -239,16 +242,16 @@ Exported events: 174.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 81
-Authoritative events: 174
+Public venues: 86
+Authoritative events: 183
 Legacy venue slug aliases: 0
 
 PASS Monday: 17 authoritative / 8 expected minimum
-PASS Tuesday: 25 authoritative / 8 expected minimum
-PASS Wednesday: 30 authoritative / 9 expected minimum
-PASS Thursday: 36 authoritative / 14 expected minimum
-PASS Friday: 27 authoritative / 10 expected minimum
-PASS Saturday: 19 authoritative / 10 expected minimum
+PASS Tuesday: 28 authoritative / 8 expected minimum
+PASS Wednesday: 31 authoritative / 9 expected minimum
+PASS Thursday: 37 authoritative / 14 expected minimum
+PASS Friday: 29 authoritative / 10 expected minimum
+PASS Saturday: 21 authoritative / 10 expected minimum
 PASS Sunday: 20 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
