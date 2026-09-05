@@ -1,5 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/Button";
 
 const primaryNavItems = [
@@ -16,6 +20,17 @@ const utilityNavItems = [
 ];
 
 export function SiteHeader() {
+  const pathname = usePathname();
+  const mobileMenuRef = useRef<HTMLDetailsElement>(null);
+
+  function closeMobileMenu() {
+    mobileMenuRef.current?.removeAttribute("open");
+  }
+
+  useEffect(() => {
+    closeMobileMenu();
+  }, [pathname]);
+
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 md:gap-5 md:py-3">
@@ -53,7 +68,7 @@ export function SiteHeader() {
           </Button>
         </nav>
 
-        <details className="group relative lg:hidden">
+        <details ref={mobileMenuRef} className="group relative lg:hidden">
           <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-sm font-black text-white transition hover:bg-white/10 [&::-webkit-details-marker]:hidden">
             Menu
             <svg
@@ -78,6 +93,7 @@ export function SiteHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={closeMobileMenu}
                   className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm font-bold text-slate-100 transition hover:bg-white/10 hover:text-white"
                 >
                   {item.label}
@@ -88,6 +104,7 @@ export function SiteHeader() {
 
               <Link
                 href="/venues/premium"
+                onClick={closeMobileMenu}
                 className="flex min-h-11 items-center rounded-xl bg-fuchsia-300/10 px-3 py-2 text-sm font-black text-fuchsia-100 transition hover:bg-fuchsia-300/15 hover:text-white"
               >
                 For Venues
@@ -97,6 +114,7 @@ export function SiteHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={closeMobileMenu}
                   className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
                 >
                   {item.label}
