@@ -1,8 +1,12 @@
 import Link from "next/link";
+import { KaraokeForecastCard } from "@/components/home/KaraokeForecastCard";
+import { PollOfTheDay } from "@/components/home/PollOfTheDay";
 import { HostDirectoryCard } from "@/components/host/HostCard";
 import { Button } from "@/components/ui/Button";
 import { VenueCard } from "@/components/venue/VenueCard";
+import { getKaraokeEventsHostingToday } from "@/lib/eventData";
 import { getFeaturedHosts } from "@/lib/hostData";
+import { buildKaraokeForecast } from "@/lib/homepageForecast";
 import { getSanDiegoPublicVenues, getSanDiegoRegionHosts } from "@/lib/sanDiegoMarket";
 import { getFeaturedVenueListings, getVenueListings } from "@/lib/venueData";
 
@@ -11,150 +15,90 @@ const HERO_IMAGE_URL =
   "https://res.cloudinary.com/dy3lyejkk/image/upload/v1786839114/file_00000000bc6081fd9e63561226afdd01_kldtkz.png";
 
 const searchLinks = [
-  { href: "/find-karaoke?day=tonight", label: "Night" },
+  { href: "/find-karaoke?day=tonight", label: "Tonight" },
   { href: "/neighborhoods", label: "Neighborhood" },
   { href: "/places", label: "Venue" },
   { href: "/hosts", label: "Host" },
+  { href: "/find-karaoke?type=live", label: "Live Band" },
+  { href: "/find-karaoke?type=private-room", label: "Private Rooms" },
 ];
 
 const actionCards = [
   {
     href: "/find-karaoke?day=tonight",
-    icon: "NOW",
-    label: "Tonight",
-    helper: "See the karaoke options happening around San Diego tonight.",
-    tone: "coral",
-    emphasis: true,
+    eyebrow: "RIGHT NOW",
+    title: "Tonight",
+    helper: "See every verified karaoke option happening around San Diego tonight.",
+    classes: "border-fuchsia-300/30 bg-[linear-gradient(145deg,rgba(134,25,143,.28),rgba(15,23,42,.42))]",
   },
   {
     href: "/places",
-    icon: "MAP",
-    label: "SingHUB Radar",
-    helper: "Browse the San Diego Venue Index and find a karaoke spot worth knowing.",
-    tone: "violet",
-    emphasis: true,
+    eyebrow: "VENUE INDEX",
+    title: "SingHUB Radar",
+    helper: "Browse local rooms, bars, stages, and private karaoke spots worth knowing.",
+    classes: "border-violet-300/30 bg-[linear-gradient(145deg,rgba(91,33,182,.26),rgba(15,23,42,.42))]",
   },
   {
     href: "/neighborhoods",
-    icon: "AREA",
-    label: "Neighborhoods",
-    helper: "Find karaoke by the part of town you are already in.",
-    tone: "blue",
-    emphasis: false,
+    eyebrow: "BY AREA",
+    title: "Neighborhoods",
+    helper: "Start with the part of town you are already in and find the nearest mic.",
+    classes: "border-cyan-300/25 bg-[linear-gradient(145deg,rgba(8,145,178,.22),rgba(15,23,42,.42))]",
   },
   {
     href: "/hosts",
-    icon: "KJ",
-    label: "Hosts",
-    helper: "Find the KJs and hosts who run your favorite rooms.",
-    tone: "fuchsia",
-    emphasis: false,
-  },
-  {
-    href: "/find-karaoke?type=live",
-    icon: "LIVE",
-    label: "Live Karaoke",
-    helper: "Find bars and venues with hosted karaoke nights.",
-    tone: "coral",
-    emphasis: false,
-  },
-  {
-    href: "/find-karaoke?type=private-room",
-    icon: "ROOM",
-    label: "Private Rooms",
-    helper: "Find karaoke rooms for your crew, party, or private session.",
-    tone: "cyan",
-    emphasis: false,
+    eyebrow: "WHO RUNS THE ROOM",
+    title: "KJs & Hosts",
+    helper: "Follow the people and crews who make your favorite karaoke nights work.",
+    classes: "border-pink-300/25 bg-[linear-gradient(145deg,rgba(190,24,93,.2),rgba(15,23,42,.42))]",
   },
 ];
 
-function getActionCardClasses(tone: string) {
-  if (tone === "coral") {
-    return {
-      card: "border-red-300/45 bg-[linear-gradient(145deg,rgba(127,29,29,0.48),rgba(69,10,10,0.22))] shadow-red-950/30 hover:border-red-200/80",
-      icon: "border-red-300/60 bg-red-400/18 text-red-100 shadow-[0_0_24px_rgba(248,113,113,0.18)]",
-      eyebrow: "text-red-200",
-      glow: "bg-red-400/15",
-    };
-  }
-
-  if (tone === "blue") {
-    return {
-      card: "border-blue-300/40 bg-[linear-gradient(145deg,rgba(30,64,175,0.34),rgba(15,23,42,0.2))] shadow-blue-950/30 hover:border-blue-200/75",
-      icon: "border-blue-300/55 bg-blue-400/15 text-blue-100 shadow-[0_0_24px_rgba(96,165,250,0.18)]",
-      eyebrow: "text-blue-200",
-      glow: "bg-blue-400/12",
-    };
-  }
-
-  if (tone === "cyan") {
-    return {
-      card: "border-cyan-300/40 bg-[linear-gradient(145deg,rgba(8,145,178,0.28),rgba(15,23,42,0.2))] shadow-cyan-950/30 hover:border-cyan-200/75",
-      icon: "border-cyan-300/55 bg-cyan-300/15 text-cyan-100 shadow-[0_0_24px_rgba(34,211,238,0.18)]",
-      eyebrow: "text-cyan-200",
-      glow: "bg-cyan-300/12",
-    };
-  }
-
-  if (tone === "violet") {
-    return {
-      card: "border-violet-300/45 bg-[linear-gradient(145deg,rgba(91,33,182,0.46),rgba(46,16,101,0.2))] shadow-violet-950/35 hover:border-violet-200/80",
-      icon: "border-violet-300/60 bg-violet-300/15 text-violet-100 shadow-[0_0_24px_rgba(167,139,250,0.2)]",
-      eyebrow: "text-violet-200",
-      glow: "bg-violet-400/15",
-    };
-  }
-
-  return {
-    card: "border-fuchsia-300/40 bg-[linear-gradient(145deg,rgba(134,25,143,0.34),rgba(15,23,42,0.2))] shadow-fuchsia-950/30 hover:border-fuchsia-200/75",
-    icon: "border-fuchsia-300/55 bg-fuchsia-300/15 text-fuchsia-100 shadow-[0_0_24px_rgba(217,70,239,0.18)]",
-    eyebrow: "text-fuchsia-200",
-    glow: "bg-fuchsia-400/12",
-  };
-}
-
 export default async function Home() {
-  const [venueListings, featuredVenueListings, featuredHostListings] = await Promise.all([
+  const [venueListings, featuredVenueListings, featuredHostListings, todaysEvents] = await Promise.all([
     getVenueListings(),
     getFeaturedVenueListings(),
     getFeaturedHosts(),
+    getKaraokeEventsHostingToday(),
   ]);
+
   const publicVenues = getSanDiegoPublicVenues(venueListings);
   const featuredVenues = getSanDiegoPublicVenues(featuredVenueListings);
   const featuredHosts = getSanDiegoRegionHosts(featuredHostListings, publicVenues);
   const featuredHost = featuredHosts[0];
+  const forecast = buildKaraokeForecast(todaysEvents, publicVenues);
 
   return (
-    <main className="overflow-x-hidden">
-      <section className="mx-auto max-w-7xl px-3 pb-8 pt-4 sm:px-4 md:pb-12 md:pt-8">
-        <div className="relative min-h-[34rem] max-w-full overflow-hidden rounded-[1.35rem] border border-fuchsia-300/35 bg-slate-950 shadow-2xl shadow-fuchsia-950/30 sm:rounded-[1.9rem] md:min-h-[38rem] md:rounded-[2.5rem]">
+    <main className="overflow-x-hidden bg-slate-950">
+      <section className="mx-auto max-w-7xl px-3 pb-5 pt-4 sm:px-4 md:pb-7 md:pt-7">
+        <div className="relative min-h-[34rem] overflow-hidden rounded-[1.5rem] border border-fuchsia-300/30 bg-slate-950 shadow-[0_32px_100px_rgba(2,6,23,.58)] sm:rounded-[2rem] md:min-h-[39rem] md:rounded-[2.6rem]">
           <div
             className="absolute inset-0 bg-cover bg-[position:58%_center] sm:bg-center"
             style={{ backgroundImage: `url('${HERO_IMAGE_URL}')` }}
           />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,0.82)_0%,rgba(2,6,23,0.5)_34%,rgba(2,6,23,0.18)_58%,rgba(2,6,23,0.03)_78%,transparent_100%)] md:bg-[linear-gradient(90deg,rgba(2,6,23,0.76)_0%,rgba(2,6,23,0.38)_34%,rgba(2,6,23,0.1)_56%,transparent_76%)]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-slate-950/5 to-transparent md:from-slate-950/24" />
-          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-400 via-violet-400 to-cyan-300" />
-          <div className="absolute -left-20 top-16 h-72 w-72 rounded-full bg-fuchsia-500/8 blur-3xl" />
+          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,6,23,.93)_0%,rgba(2,6,23,.72)_37%,rgba(2,6,23,.3)_64%,rgba(2,6,23,.08)_100%)]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-slate-950/10" />
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-cyan-300 via-fuchsia-400 to-violet-400" />
+          <div className="absolute -left-28 top-16 h-80 w-80 rounded-full bg-fuchsia-500/10 blur-3xl" />
 
-          <div className="relative flex min-h-[34rem] items-end px-4 py-7 sm:px-7 sm:py-9 md:min-h-[38rem] md:items-center md:px-12 md:py-14 lg:px-16">
-            <div className="min-w-0 max-w-3xl">
-              <p className="inline-flex rounded-full border border-cyan-300/35 bg-slate-950/48 px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.18em] text-cyan-100 backdrop-blur sm:text-xs sm:tracking-[0.26em]">
-                San Diego Karaoke Starts Here
+          <div className="relative flex min-h-[34rem] items-end px-5 py-8 sm:px-8 md:min-h-[39rem] md:items-center md:px-12 md:py-14 lg:px-16">
+            <div className="max-w-3xl">
+              <p className="inline-flex rounded-full border border-cyan-300/30 bg-slate-950/55 px-4 py-2 text-[0.68rem] font-black uppercase tracking-[0.22em] text-cyan-100 backdrop-blur sm:text-xs">
+                Real people. Real stages. A louder San Diego.
               </p>
 
-              <h1 className="mt-5 max-w-3xl text-4xl font-black leading-[0.96] tracking-tight text-white drop-shadow-[0_2px_18px_rgba(2,6,23,0.7)] min-[380px]:text-5xl sm:text-6xl md:text-7xl lg:text-8xl">
-                Find karaoke
-                <span className="block bg-gradient-to-r from-white via-cyan-100 to-fuchsia-200 bg-clip-text text-transparent">
+              <h1 className="mt-5 max-w-3xl text-5xl font-black leading-[0.93] tracking-[-0.04em] text-white drop-shadow-[0_4px_22px_rgba(2,6,23,.65)] sm:text-6xl md:text-7xl lg:text-8xl">
+                Find Karaoke Tonight
+                <span className="block bg-gradient-to-r from-fuchsia-300 via-pink-300 to-cyan-200 bg-clip-text text-transparent">
                   in San Diego.
                 </span>
               </h1>
 
-              <p className="mt-5 max-w-2xl text-base font-medium leading-7 text-slate-100 drop-shadow-[0_1px_12px_rgba(2,6,23,0.8)] sm:text-lg sm:leading-8 md:text-xl">
-                Search by night, neighborhood, venue, or host and see where to sing tonight.
+              <p className="mt-5 max-w-2xl text-base font-medium leading-7 text-slate-200 sm:text-lg md:text-xl md:leading-8">
+                Search by night, neighborhood, venue, or host and see where San Diego is singing tonight.
               </p>
 
-              <div className="mt-6 grid gap-3 sm:flex sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-3">
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Button href="/find-karaoke?day=tonight" className="w-full sm:w-auto">
                   Find Karaoke Tonight
                 </Button>
@@ -163,91 +107,70 @@ export default async function Home() {
                 </Button>
               </div>
 
-              <div className="mt-7">
-                <span className="block text-xs font-black uppercase tracking-[0.2em] text-slate-200 drop-shadow-[0_1px_8px_rgba(2,6,23,0.8)]">
-                  Search by
-                </span>
-                <div className="mt-2.5 grid grid-cols-4 gap-1.5 sm:flex sm:flex-wrap sm:gap-2.5">
-                  {searchLinks.map((link) => (
-                    <Link
-                      key={link.label}
-                      href={link.href}
-                      className="min-w-0 rounded-full border border-white/20 bg-slate-950/42 px-1.5 py-2 text-center text-[0.62rem] font-bold tracking-tight text-white backdrop-blur transition hover:border-cyan-300/60 hover:bg-cyan-300/10 hover:text-cyan-100 min-[380px]:px-2.5 min-[380px]:text-xs sm:px-3"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
+              <div className="mt-7 flex flex-wrap gap-2">
+                {searchLinks.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="rounded-full border border-white/15 bg-slate-950/48 px-3 py-2 text-xs font-bold text-slate-100 backdrop-blur transition hover:border-cyan-300/50 hover:bg-cyan-300/[0.08] hover:text-cyan-100"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="relative border-y border-cyan-300/10 bg-cyan-950/10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_8%_30%,rgba(34,211,238,0.08),transparent_22rem),radial-gradient(circle_at_92%_70%,rgba(217,70,239,0.08),transparent_24rem)]" />
-        <div className="relative mx-auto max-w-7xl px-4 py-12 md:py-16">
-          <div className="mb-7 max-w-3xl">
-            <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-300">
-              Find Your Way In
-            </p>
-            <h2 className="mt-3 text-3xl font-black text-white md:text-5xl">
-              Start with what you know.
-            </h2>
-            <p className="mt-3 max-w-2xl text-base leading-7 text-slate-300 md:text-lg">
-              Know the night, the neighborhood, the venue, or the host? SingHUB gets you from there to the mic.
+      <section className="relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(34,211,238,.07),transparent_28rem),radial-gradient(circle_at_85%_70%,rgba(217,70,239,.08),transparent_30rem)]" />
+        <div className="relative mx-auto max-w-7xl space-y-5 px-3 pb-8 sm:px-4 md:space-y-6 md:pb-12">
+          <KaraokeForecastCard forecast={forecast} />
+          <PollOfTheDay />
+        </div>
+      </section>
+
+      <section className="relative border-y border-white/[0.06] bg-white/[0.015]">
+        <div className="mx-auto max-w-7xl px-4 py-14 md:py-18">
+          <div className="mb-8 max-w-3xl">
+            <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300">Pick your path</p>
+            <h2 className="mt-3 text-3xl font-black tracking-tight text-white md:text-5xl">Know what kind of night you want?</h2>
+            <p className="mt-3 max-w-2xl text-base leading-7 text-slate-400 md:text-lg">
+              Go straight to tonight, browse the Venue Index, hunt by neighborhood, or follow the host who runs the room right.
             </p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {actionCards.map((card) => {
-              const classes = getActionCardClasses(card.tone);
-              return (
-                <Link
-                  key={card.href}
-                  href={card.href}
-                  className={`group relative isolate overflow-hidden rounded-3xl border p-5 shadow-xl transition hover:-translate-y-1 ${classes.card} ${card.emphasis ? "min-h-52 lg:col-span-2 lg:min-h-60 lg:p-7" : "min-h-44"}`}
-                >
-                  <div className={`absolute -right-10 -top-10 h-36 w-36 rounded-full blur-3xl transition group-hover:scale-125 ${classes.glow}`} />
-                  <div className="relative flex h-full flex-col justify-between">
-                    <span className={`inline-flex w-fit rounded-xl border px-3 py-2 text-xs font-black uppercase tracking-[0.14em] ${classes.icon}`}>
-                      {card.icon}
-                    </span>
-                    <div className="mt-8">
-                      <p className={`text-xs font-black uppercase tracking-[0.2em] ${classes.eyebrow}`}>
-                        Find Karaoke
-                      </p>
-                      <h3 className={`${card.emphasis ? "mt-2 text-3xl md:text-4xl" : "mt-2 text-2xl"} font-black text-white`}>
-                        {card.label}
-                      </h3>
-                      <p className={`mt-3 max-w-xl leading-6 text-slate-200 ${card.emphasis ? "text-base" : "text-sm"}`}>
-                        {card.helper}
-                      </p>
-                      <p className="mt-5 text-sm font-black text-white transition group-hover:text-cyan-100">
-                        Explore →
-                      </p>
-                    </div>
+            {actionCards.map((card) => (
+              <Link
+                key={card.href}
+                href={card.href}
+                className={`group min-h-56 rounded-3xl border p-5 shadow-xl transition hover:-translate-y-1 hover:border-white/30 ${card.classes}`}
+              >
+                <div className="flex h-full flex-col justify-between">
+                  <p className="text-[0.68rem] font-black uppercase tracking-[0.22em] text-slate-400">{card.eyebrow}</p>
+                  <div className="mt-12">
+                    <h3 className="text-2xl font-black text-white">{card.title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-slate-300">{card.helper}</p>
+                    <p className="mt-5 text-sm font-black text-cyan-200 transition group-hover:translate-x-1">Explore →</p>
                   </div>
-                </Link>
-              );
-            })}
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="relative overflow-hidden border-b border-fuchsia-300/10 bg-[linear-gradient(135deg,rgba(46,16,101,0.32),rgba(2,6,23,0.94)_48%,rgba(8,47,73,0.3))]">
+      <section className="relative overflow-hidden border-b border-fuchsia-300/10 bg-[linear-gradient(135deg,rgba(46,16,101,.28),rgba(2,6,23,.96)_48%,rgba(8,47,73,.26))]">
         <div className="absolute -left-28 top-16 h-80 w-80 rounded-full bg-fuchsia-500/10 blur-3xl" />
         <div className="absolute -right-28 bottom-0 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
         <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-14 md:py-20 lg:grid-cols-[0.78fr_1.22fr] lg:items-center lg:gap-12">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.3em] text-fuchsia-300">
-              Featured KJ
-            </p>
-            <h2 className="mt-3 text-4xl font-black leading-tight text-white md:text-5xl">
-              Who&apos;s running the room?
-            </h2>
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-fuchsia-300">Featured KJ</p>
+            <h2 className="mt-3 text-4xl font-black leading-tight text-white md:text-5xl">Who’s running the room?</h2>
             <p className="mt-4 max-w-xl text-base leading-7 text-slate-300 md:text-lg">
-              Meet the local KJs and karaoke crews who shape the room, the rotation, and the night.
+              Meet the local KJs and karaoke crews who shape the rotation, the room, and the night.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Button href="/hosts">Browse All Hosts</Button>
@@ -260,35 +183,27 @@ export default async function Home() {
               <HostDirectoryCard host={featuredHost} />
             </div>
           ) : (
-            <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-6 shadow-2xl shadow-black/30 md:p-8">
+            <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-6 shadow-2xl md:p-8">
               <h3 className="text-2xl font-black text-white">Know a host who should be featured?</h3>
               <p className="mt-3 text-slate-300">Send us the info and we will review it for SingHUB.</p>
-              <div className="mt-5">
-                <Button href={FORM_URL}>Send KJ Info</Button>
-              </div>
+              <div className="mt-5"><Button href={FORM_URL}>Send KJ Info</Button></div>
             </div>
           )}
         </div>
       </section>
 
-      <section className="relative bg-slate-950/72">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/35 to-transparent" />
+      <section className="relative bg-slate-950/80">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/30 to-transparent" />
         <div className="mx-auto max-w-7xl px-4 py-14 md:py-20">
           <div className="mb-8 flex flex-col justify-between gap-5 md:flex-row md:items-end">
             <div className="max-w-3xl">
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-300">
-                Featured Nights
-              </p>
-              <h2 className="mt-3 text-4xl font-black text-white md:text-5xl">
-                A few good places to start.
-              </h2>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-cyan-300">Featured Nights</p>
+              <h2 className="mt-3 text-4xl font-black text-white md:text-5xl">A few good places to start.</h2>
               <p className="mt-3 max-w-2xl text-base leading-7 text-slate-300">
                 Local karaoke nights worth knowing when you want a recommendation instead of another search box.
               </p>
             </div>
-            <Button href="/find-karaoke" variant="secondary">
-              View All Karaoke Nights
-            </Button>
+            <Button href="/find-karaoke" variant="secondary">View All Karaoke Nights</Button>
           </div>
 
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
