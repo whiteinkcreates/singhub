@@ -4,6 +4,7 @@ export const metadata = {
   title: "San Diego Karaoke Room | SingHUB",
   description:
     "The SingHUB San Diego community room for tonight plans, new karaoke finds, and schedule checks.",
+  alternates: { canonical: "/community/san-diego" },
 };
 
 export default function SanDiegoCommunityPage() {

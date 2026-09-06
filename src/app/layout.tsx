@@ -7,6 +7,7 @@ import "./globals.css";
 const GA_MEASUREMENT_ID = "G-NQGPSYB6Q7";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://singhub.app"),
   title: "SingHUB | Find Karaoke Near You",
   description:
     "SingHUB helps you find karaoke near you. Search karaoke nights by day, neighborhood, venue, or host, starting in San Diego.",

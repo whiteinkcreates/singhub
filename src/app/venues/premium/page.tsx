@@ -8,6 +8,7 @@ export const metadata = {
   title: "Founding Venue Program | SingHUB",
   description:
     "Help more San Diego karaoke singers discover your venue with a verified, enhanced SingHUB presence and focused promotional support.",
+  alternates: { canonical: "/venues/premium" },
 };
 
 const outcomes = [

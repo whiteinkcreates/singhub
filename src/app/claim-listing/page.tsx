@@ -6,6 +6,7 @@ import { getVenueListings } from "@/lib/venueData";
 export const metadata = {
   title: "Claim a Karaoke Listing | SingHUB",
   description: "Claim, update, or upgrade a SingHUB karaoke venue listing.",
+  alternates: { canonical: "/claim-listing" },
 };
 
 type ClaimListingPageProps = {

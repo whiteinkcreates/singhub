@@ -1,9 +1,28 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSingBoardEvent, recordSingBoardEventMetric } from "@/lib/singboard/repository";
 
 function prettyDate(value:string){
   return new Intl.DateTimeFormat("en-US",{timeZone:"America/Los_Angeles",weekday:"long",month:"long",day:"numeric",year:"numeric"}).format(new Date(`${value}T12:00:00-07:00`));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const event = await getSingBoardEvent(id);
+
+  if (!event) {
+    return {
+      title: "Event Not Found | SingHUB",
+      robots: { index: false, follow: false },
+    };
+  }
+
+  return {
+    title: `${event.title} | SingHUB`,
+    description: `${event.title} at ${event.venue} on ${prettyDate(event.eventDate)}.`,
+    alternates: { canonical: `/events/${id}` },
+  };
 }
 
 export default async function EventPage({params}:{params:Promise<{id:string}>}){

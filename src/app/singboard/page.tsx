@@ -5,6 +5,7 @@ import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
 export const metadata: Metadata = {
   title: "SingBoard | SingHUB",
   description: "See what is happening around San Diego karaoke and pin your own event flyer to the SingBoard.",
+  alternates: { canonical: "/singboard" },
 };
 
 export const dynamic = "force-dynamic";

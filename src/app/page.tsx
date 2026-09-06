@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { KaraokeForecastCard } from "@/components/home/KaraokeForecastCard";
 import { PollOfTheDay } from "@/components/home/PollOfTheDay";
@@ -13,6 +14,10 @@ import { getFeaturedVenueListings, getVenueListings } from "@/lib/venueData";
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header";
 const HERO_IMAGE_URL =
   "https://res.cloudinary.com/dy3lyejkk/image/upload/v1786839114/file_00000000bc6081fd9e63561226afdd01_kldtkz.png";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const searchLinks = [
   { href: "/find-karaoke?day=tonight", label: "Tonight" },

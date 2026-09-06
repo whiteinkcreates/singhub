@@ -33,12 +33,12 @@ const dayLinks = [
 ];
 
 const neighborhoodLinks = [
-  { label: "Gaslamp", href: "/neighborhoods/gaslamp" },
+  { label: "Gaslamp", href: "/neighborhoods/gaslamp-quarter" },
   { label: "North Park", href: "/neighborhoods/north-park" },
   { label: "Pacific Beach", href: "/neighborhoods/pacific-beach" },
   { label: "Hillcrest", href: "/neighborhoods/hillcrest" },
   { label: "Ocean Beach", href: "/neighborhoods/ocean-beach" },
-  { label: "La Mesa / East County", href: "/neighborhoods/east-county-la-mesa" },
+  { label: "La Mesa / East County", href: "/neighborhoods/la-mesa" },
   { label: "Point Loma", href: "/find-karaoke?q=Point%20Loma" },
   { label: "Bay Park", href: "/find-karaoke?q=Bay%20Park" },
   { label: "Kearny Mesa", href: "/find-karaoke?q=Kearny%20Mesa" },

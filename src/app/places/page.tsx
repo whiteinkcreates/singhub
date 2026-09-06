@@ -6,6 +6,7 @@ export const metadata = {
   title: "San Diego Karaoke Venue Index | SingHUB",
   description:
     "Explore the SingHUB Venue Index for karaoke spots across San Diego, including verified schedules, recent finds, and places worth knowing.",
+  alternates: { canonical: "/places" },
 };
 
 export default async function KaraokePlacesPage() {

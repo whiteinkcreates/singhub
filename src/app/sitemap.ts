@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { daySeoPages, guidePosts, localSeoPages } from "@/lib/seoContent";
+import { getActiveHosts } from "@/lib/hostData";
 import { getVenueListings } from "@/lib/venueData";
 
 const SITE_URL = "https://singhub.app";
@@ -21,8 +22,22 @@ function slugify(value: string) {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const venues = await getVenueListings();
+  const hosts = await getActiveHosts();
 
-  const staticRoutes = ["/", "/find-karaoke", "/submit-listing", "/claim-listing", "/venues/premium", "/guides", "/neighborhoods"];
+  const staticRoutes = [
+    "/",
+    "/find-karaoke",
+    "/places",
+    "/hosts",
+    "/singboard",
+    "/scout",
+    "/community/san-diego",
+    "/submit-listing",
+    "/claim-listing",
+    "/venues/premium",
+    "/guides",
+    "/neighborhoods",
+  ];
   const localRoutes = localSeoPages.map((page) => page.path);
   const dayRoutes = daySeoPages.map((page) => `/karaoke/${page.slug}`);
   const neighborhoodRoutes = [
@@ -37,8 +52,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const venueRoutes = getPublicVenues(venues)
     .filter((venue) => venue.slug && venue.venueName && !venue.venueName.toLowerCase().includes("tbd"))
     .map((venue) => `/venues/${venue.slug}`);
+  const hostRoutes = hosts.map((host) => `/hosts/${host.slug}`);
 
-  return [...staticRoutes, ...localRoutes, ...dayRoutes, ...neighborhoodRoutes, ...guideRoutes, ...venueRoutes].map((path) => ({
+  return [...staticRoutes, ...localRoutes, ...dayRoutes, ...neighborhoodRoutes, ...guideRoutes, ...venueRoutes, ...hostRoutes].map((path) => ({
     url: absoluteUrl(path),
     lastModified: now,
     changeFrequency: path.startsWith("/guides") ? "weekly" : "daily",

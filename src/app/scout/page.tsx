@@ -4,6 +4,7 @@ export const metadata = {
   title: "SingHUB Scout | Karaoke Data Engine",
   description:
     "SingHUB Scout turns city karaoke signals into useful venue and event entries.",
+  alternates: { canonical: "/scout" },
 };
 
 const signals = [

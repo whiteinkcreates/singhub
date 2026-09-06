@@ -9,6 +9,7 @@ const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-u
 export const metadata = {
   title: "San Diego Karaoke Hosts | SingHUB",
   description: "Meet the KJs and karaoke hosts running rooms across San Diego.",
+  alternates: { canonical: "/hosts" },
 };
 
 export default async function HostsPage() {
