@@ -96,11 +96,11 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-05T13:27:21.597Z",
+  "generatedAt": "2026-09-06T13:40:15.194Z",
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-05T04:00:48.198Z",
+  "generatedAt": "2026-09-05T13:27:21.597Z",
 ```
