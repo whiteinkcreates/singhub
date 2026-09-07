@@ -4,7 +4,7 @@ Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
 Exported venues: 86.
-Exported events: 183.
+Exported events: 184.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -243,7 +243,7 @@ SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
 Public venues: 86
-Authoritative events: 183
+Authoritative events: 184
 Legacy venue slug aliases: 0
 
 PASS Monday: 17 authoritative / 8 expected minimum
@@ -252,7 +252,7 @@ PASS Wednesday: 31 authoritative / 9 expected minimum
 PASS Thursday: 37 authoritative / 14 expected minimum
 PASS Friday: 29 authoritative / 10 expected minimum
 PASS Saturday: 21 authoritative / 10 expected minimum
-PASS Sunday: 20 authoritative / 7 expected minimum
+PASS Sunday: 21 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
