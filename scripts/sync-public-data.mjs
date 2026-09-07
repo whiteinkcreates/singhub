@@ -81,7 +81,7 @@ const VENUE_COLUMNS = [
 ];
 
 const EVENT_COLUMNS = [
-  "event_id", "venue_id", "venue_name", "venue_slug", "karaoke_day", "start_time", "end_time", "host_name", "recurring", "active_status",
+  "event_id", "venue_id", "venue_name", "venue_slug", "karaoke_day", "start_time", "end_time", "host_id", "host_display_name", "host_name", "recurring", "active_status",
   "event_notes", "event_confidence_score", "source_1", "source_2", "last_verified", "review_status", "generated",
 ];
 
@@ -402,6 +402,8 @@ function buildEvents(sourceRows, venueRows, report) {
         karaoke_day: day,
         start_time: clean(row.start_time),
         end_time: clean(row.end_time),
+        host_id: clean(row.host_id),
+        host_display_name: clean(row.host_display_name),
         host_name: clean(row.host_display_name),
         recurring: truthy(row.recurring) || /^weekly$/i.test(clean(row.recurring)) ? "TRUE" : clean(row.recurring || "TRUE"),
         active_status: "active",
