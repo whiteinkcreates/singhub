@@ -5,6 +5,12 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
+    const configuredKey = process.env.DAILY_MIC_UPLOAD_KEY;
+    const suppliedKey = request.headers.get("x-daily-mic-upload-key");
+    if (!configuredKey || suppliedKey !== configuredKey) {
+      return NextResponse.json({ error: "Template upload is not authorized." }, { status: 401 });
+    }
+
     const form = await request.formData();
     const category = String(form.get("category") || "");
     const file = form.get("file");
