@@ -325,6 +325,22 @@ async function buildJpg(
   return canvas;
 }
 
+function canvasToJpeg(canvas: HTMLCanvasElement) {
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (!blob || blob.type !== "image/jpeg") {
+          reject(new Error("The browser did not create a valid JPEG."));
+          return;
+        }
+        resolve(blob);
+      },
+      "image/jpeg",
+      0.94,
+    );
+  });
+}
+
 export function VenueShareImageExport({ venues, events }: Props) {
   const [isExporting, setIsExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -338,12 +354,16 @@ export function VenueShareImageExport({ venues, events }: Props) {
     setError(null);
     try {
       const canvas = await buildJpg(venue, venueEvents(events, venue.slug));
+      const jpeg = await canvasToJpeg(canvas);
+      const downloadUrl = URL.createObjectURL(jpeg);
       const link = document.createElement("a");
-      link.download = `${safeName(venue.venueName)}-SingHUB-DM-Preview.jpg`;
-      link.href = canvas.toDataURL("image/jpeg", 0.94);
+      link.download = `${safeName(venue.venueName)}-SingHUB-Instagram-Feed-1080x1350.jpg`;
+      link.href = downloadUrl;
+      link.type = "image/jpeg";
       document.body.appendChild(link);
       link.click();
       link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(downloadUrl), 60_000);
     } catch (exportError) {
       console.error(exportError);
       setError("Could not create the JPG in this browser. Try the PDF export instead.");
@@ -400,10 +420,10 @@ export function VenueShareImageExport({ venues, events }: Props) {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-200">
-              DM / social export
+              Instagram feed export
             </p>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-              Downloads a 1080 x 1350 JPG for the venue currently selected above. The PDF stays the full two-page packet; the JPG is the quick visual you can send directly in Instagram or Facebook messages.
+              Downloads a true 1080 x 1350 JPEG for the venue currently selected above. It is sized for a portrait Instagram feed post and can also be sent in Instagram or Facebook messages.
             </p>
           </div>
           <button
@@ -412,7 +432,7 @@ export function VenueShareImageExport({ venues, events }: Props) {
             disabled={isExporting}
             className="shrink-0 rounded-full border border-cyan-300/40 bg-cyan-300/10 px-5 py-3 text-sm font-black uppercase tracking-[0.12em] text-cyan-100 transition hover:bg-cyan-300/20 disabled:cursor-wait disabled:opacity-60"
           >
-            {isExporting ? "Building JPG..." : "Export DM JPG"}
+            {isExporting ? "Building JPEG..." : "Download Instagram JPEG"}
           </button>
         </div>
         {error && <p className="mt-3 text-sm font-semibold text-rose-300">{error}</p>}
