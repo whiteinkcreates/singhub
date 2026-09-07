@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { Archivo_Black } from "next/font/google";
 import { useMemo, useState } from "react";
 import type { PollQuestion } from "@/lib/pollBank";
 import {
@@ -10,10 +11,16 @@ import {
   type NormalizedBox,
 } from "@/lib/dailyMicBrand";
 
+const archivoBlack = Archivo_Black({ weight: "400", subsets: ["latin"] });
+const DISPLAY_FONT = archivoBlack.style.fontFamily;
+const OPTION_LETTERS = ["A", "B", "C", "D"] as const;
+
 const CARD_DIMENSIONS = {
   feed: { width: 1080, height: 1350 },
   story: { width: 1080, height: 1920 },
 } as const;
+
+type AbsoluteBox = { x: number; y: number; width: number; height: number };
 
 function loadCanvasImage(src: string) {
   return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -47,11 +54,11 @@ function imageRect(image: HTMLImageElement, width: number, height: number) {
   return { x: (width - drawWidth) / 2, y: (height - drawHeight) / 2, width: drawWidth, height: drawHeight };
 }
 
-function absoluteBox(box: NormalizedBox, master: ReturnType<typeof imageRect>) {
+function absoluteBox(box: NormalizedBox, master: ReturnType<typeof imageRect>): AbsoluteBox {
   return { x: master.x + box.x * master.width, y: master.y + box.y * master.height, width: box.width * master.width, height: box.height * master.height };
 }
 
-function insetBox(box: ReturnType<typeof absoluteBox>, insetX: number, insetY = insetX) {
+function insetBox(box: AbsoluteBox, insetX: number, insetY = insetX): AbsoluteBox {
   return {
     x: box.x + insetX,
     y: box.y + insetY,
@@ -60,7 +67,18 @@ function insetBox(box: ReturnType<typeof absoluteBox>, insetX: number, insetY = 
   };
 }
 
-function paintCleanPanel(ctx: CanvasRenderingContext2D, box: ReturnType<typeof absoluteBox>) {
+function roundedRect(ctx: CanvasRenderingContext2D, box: AbsoluteBox, radius: number) {
+  const r = Math.min(radius, box.width / 2, box.height / 2);
+  ctx.beginPath();
+  ctx.moveTo(box.x + r, box.y);
+  ctx.arcTo(box.x + box.width, box.y, box.x + box.width, box.y + box.height, r);
+  ctx.arcTo(box.x + box.width, box.y + box.height, box.x, box.y + box.height, r);
+  ctx.arcTo(box.x, box.y + box.height, box.x, box.y, r);
+  ctx.arcTo(box.x, box.y, box.x + box.width, box.y, r);
+  ctx.closePath();
+}
+
+function paintCleanPanel(ctx: CanvasRenderingContext2D, box: AbsoluteBox) {
   ctx.save();
   ctx.fillStyle = DAILY_MIC_BRAND.paper;
   ctx.fillRect(box.x + 3, box.y + 3, box.width - 6, box.height - 6);
@@ -70,44 +88,43 @@ function paintCleanPanel(ctx: CanvasRenderingContext2D, box: ReturnType<typeof a
 function drawFitText(
   ctx: CanvasRenderingContext2D,
   text: string,
-  box: ReturnType<typeof absoluteBox>,
+  box: AbsoluteBox,
   options?: {
     maxLines?: number;
     align?: "left" | "center";
     minSize?: number;
     maxSize?: number;
-    weight?: number;
     lineHeight?: number;
     padRatio?: number;
+    color?: string;
   },
 ) {
   const maxLines = options?.maxLines ?? 4;
   const align = options?.align ?? "center";
   const minSize = options?.minSize ?? 20;
   const maxSize = options?.maxSize ?? 52;
-  const weight = options?.weight ?? 900;
   const lineHeightRatio = options?.lineHeight ?? 1.08;
   const padRatio = options?.padRatio ?? 0.055;
-  const inset = Math.max(12, box.width * padRatio);
+  const inset = Math.max(8, box.width * padRatio);
   const usableWidth = Math.max(1, box.width - inset * 2);
-  const usableHeight = Math.max(1, box.height - inset * 1.5);
+  const usableHeight = Math.max(1, box.height - inset * 1.2);
   let size = maxSize;
   let lines: string[] = [];
 
   while (size >= minSize) {
-    ctx.font = `${weight} ${size}px Arial, Helvetica, sans-serif`;
+    ctx.font = `${size}px ${DISPLAY_FONT}`;
     lines = wrapLines(ctx, text, usableWidth);
     const lineHeight = size * lineHeightRatio;
     if (lines.length <= maxLines && lines.length * lineHeight <= usableHeight) break;
-    size -= 2;
+    size -= 1;
   }
 
   if (!lines.length) return;
   const lineHeight = size * lineHeightRatio;
   const blockHeight = lines.length * lineHeight;
-  const firstBaseline = box.y + (box.height - blockHeight) / 2 + size * 0.82;
+  const firstBaseline = box.y + (box.height - blockHeight) / 2 + size * 0.83;
 
-  ctx.fillStyle = "#101014";
+  ctx.fillStyle = options?.color ?? "#101014";
   ctx.textAlign = align;
   ctx.textBaseline = "alphabetic";
   lines.slice(0, maxLines).forEach((line, index) => {
@@ -116,11 +133,92 @@ function drawFitText(
   ctx.textAlign = "left";
 }
 
-function drawQuestionPanel(
-  ctx: CanvasRenderingContext2D,
-  poll: PollQuestion,
-  box: ReturnType<typeof absoluteBox>,
-) {
+function drawWildCardPanel(ctx: CanvasRenderingContext2D, poll: PollQuestion, box: AbsoluteBox) {
+  const question = poll.socialQuestion || poll.question;
+  const choices = poll.options.filter((option) => option.label.trim()).slice(0, 4);
+  const panel = insetBox(box, box.width * 0.035, box.height * 0.08);
+  const questionHeight = panel.height * 0.39;
+  const gap = panel.height * 0.045;
+  const questionBox: AbsoluteBox = {
+    x: panel.x,
+    y: panel.y,
+    width: panel.width,
+    height: questionHeight,
+  };
+  const gridBox: AbsoluteBox = {
+    x: panel.x,
+    y: panel.y + questionHeight + gap,
+    width: panel.width,
+    height: panel.height - questionHeight - gap,
+  };
+
+  drawFitText(ctx, question, questionBox, {
+    maxLines: 3,
+    minSize: Math.max(22, Math.floor(box.width * 0.038)),
+    maxSize: Math.max(44, Math.floor(box.width * 0.064)),
+    lineHeight: 1.0,
+    padRatio: 0.02,
+  });
+
+  if (choices.length < 2) return;
+
+  const colGap = gridBox.width * 0.025;
+  const rowGap = gridBox.height * 0.10;
+  const cellWidth = (gridBox.width - colGap) / 2;
+  const cellHeight = (gridBox.height - rowGap) / 2;
+
+  choices.forEach((choice, index) => {
+    const row = Math.floor(index / 2);
+    const col = index % 2;
+    const cell: AbsoluteBox = {
+      x: gridBox.x + col * (cellWidth + colGap),
+      y: gridBox.y + row * (cellHeight + rowGap),
+      width: cellWidth,
+      height: cellHeight,
+    };
+
+    ctx.save();
+    roundedRect(ctx, cell, cell.height * 0.28);
+    ctx.fillStyle = "rgba(255,255,255,0.34)";
+    ctx.fill();
+    ctx.lineWidth = Math.max(2, box.width * 0.0028);
+    ctx.strokeStyle = "#a80064";
+    ctx.stroke();
+
+    const circleRadius = cell.height * 0.34;
+    const circleX = cell.x + cell.height * 0.52;
+    const circleY = cell.y + cell.height / 2;
+    ctx.beginPath();
+    ctx.arc(circleX, circleY, circleRadius, 0, Math.PI * 2);
+    ctx.fillStyle = "#cf0a67";
+    ctx.fill();
+
+    ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    const letterSize = Math.max(16, circleRadius * 1.18);
+    ctx.font = `${letterSize}px ${DISPLAY_FONT}`;
+    ctx.fillText(OPTION_LETTERS[index] ?? String.fromCharCode(65 + index), circleX, circleY + 1);
+
+    const textBox: AbsoluteBox = {
+      x: cell.x + cell.height * 0.95,
+      y: cell.y,
+      width: cell.width - cell.height * 1.05,
+      height: cell.height,
+    };
+    drawFitText(ctx, choice.label, textBox, {
+      maxLines: 2,
+      align: "left",
+      minSize: Math.max(15, Math.floor(box.width * 0.021)),
+      maxSize: Math.max(26, Math.floor(box.width * 0.036)),
+      lineHeight: 1.0,
+      padRatio: 0.025,
+    });
+    ctx.restore();
+  });
+}
+
+function drawQuestionPanel(ctx: CanvasRenderingContext2D, poll: PollQuestion, box: AbsoluteBox) {
   const question = poll.socialQuestion || poll.question;
   const choices = poll.options.filter((option) => option.label.trim());
   const hasChoices = choices.length > 1;
@@ -137,20 +235,10 @@ function drawQuestionPanel(
     return;
   }
 
-  const questionHeight = outer.height * (choices.length >= 4 ? 0.46 : 0.54);
+  const questionHeight = outer.height * 0.46;
   const gap = Math.max(8, outer.height * 0.035);
-  const questionBox = {
-    x: outer.x,
-    y: outer.y,
-    width: outer.width,
-    height: questionHeight,
-  };
-  const choicesBox = {
-    x: outer.x,
-    y: outer.y + questionHeight + gap,
-    width: outer.width,
-    height: Math.max(1, outer.height - questionHeight - gap),
-  };
+  const questionBox = { x: outer.x, y: outer.y, width: outer.width, height: questionHeight };
+  const choicesBox = { x: outer.x, y: outer.y + questionHeight + gap, width: outer.width, height: Math.max(1, outer.height - questionHeight - gap) };
 
   drawFitText(ctx, question, questionBox, {
     maxLines: 4,
@@ -160,27 +248,20 @@ function drawQuestionPanel(
     padRatio: 0.02,
   });
 
-  const columns = choices.length === 2 ? 2 : 2;
-  const rows = Math.ceil(choices.length / columns);
+  const rows = Math.ceil(choices.length / 2);
   const colGap = Math.max(8, choicesBox.width * 0.018);
   const rowGap = Math.max(6, choicesBox.height * 0.08);
-  const cellWidth = (choicesBox.width - colGap * (columns - 1)) / columns;
+  const cellWidth = (choicesBox.width - colGap) / 2;
   const cellHeight = (choicesBox.height - rowGap * (rows - 1)) / rows;
 
   choices.forEach((choice, index) => {
-    const row = Math.floor(index / columns);
-    const col = index % columns;
-    const cell = {
-      x: choicesBox.x + col * (cellWidth + colGap),
-      y: choicesBox.y + row * (cellHeight + rowGap),
-      width: cellWidth,
-      height: cellHeight,
-    };
-    drawFitText(ctx, `${index + 1}. ${choice.label}`, cell, {
+    const row = Math.floor(index / 2);
+    const col = index % 2;
+    const cell = { x: choicesBox.x + col * (cellWidth + colGap), y: choicesBox.y + row * (cellHeight + rowGap), width: cellWidth, height: cellHeight };
+    drawFitText(ctx, `${OPTION_LETTERS[index] ?? String.fromCharCode(65 + index)}. ${choice.label}`, cell, {
       maxLines: 2,
       minSize: 18,
       maxSize: choices.length >= 4 ? 30 : 34,
-      weight: 800,
       lineHeight: 1.03,
       padRatio: 0.018,
     });
@@ -194,6 +275,8 @@ async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplat
   canvas.height = height;
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas is unavailable in this browser.");
+
+  await document.fonts.ready;
 
   const [masterImage, officialWordmark] = await Promise.all([
     loadCanvasImage(template.masterPath),
@@ -231,7 +314,9 @@ async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplat
   if (template.questionBox) {
     const box = absoluteBox(template.questionBox, master);
     if (template.clearDynamicBoxes) paintCleanPanel(ctx, box);
-    if (template.mode === "question-panel") {
+    if (poll.category === "wild-card") {
+      drawWildCardPanel(ctx, poll, box);
+    } else if (template.mode === "question-panel") {
       drawQuestionPanel(ctx, poll, box);
     } else {
       drawFitText(ctx, poll.socialQuestion || poll.question, box, {
@@ -265,7 +350,7 @@ async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplat
 }
 
 function captionVariants(poll: PollQuestion) {
-  const options = poll.options.length > 1 ? `\n\n${poll.options.map((o) => o.label).join(" • ")}` : "";
+  const options = poll.options.length > 1 ? `\n\n${poll.options.map((o, index) => `${OPTION_LETTERS[index] ?? String.fromCharCode(65 + index)}. ${o.label}`).join(" • ")}` : "";
   const question = poll.socialQuestion || poll.question;
   return {
     Punchy: `${poll.socialHook}\n\n${question}${options}\n\nPick one. Then go see what everyone else chose.\n\nVote + see results → ${DAILY_MIC_BRAND.voteUrl}`,
@@ -275,14 +360,39 @@ function captionVariants(poll: PollQuestion) {
 }
 
 function PreviewText({ poll, template }: { poll: PollQuestion; template: DailyMicTemplate }) {
-  const renderBox = (box: NormalizedBox, text: string, clear = false, className = "") => (
+  const renderBox = (box: NormalizedBox, text: string, clear = false) => (
     <div
-      className={`absolute flex items-center justify-center overflow-hidden px-[2.2%] text-center font-black leading-[1.04] text-zinc-950 ${clear ? "bg-[#f4efe6]" : ""} ${className}`}
-      style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%`, fontSize: "clamp(9px,2.25vw,20px)" }}
+      className={`absolute flex items-center justify-center overflow-hidden px-[2.2%] text-center leading-[1.04] text-zinc-950 ${clear ? "bg-[#f4efe6]" : ""}`}
+      style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%`, fontSize: "clamp(9px,2.25vw,20px)", fontFamily: DISPLAY_FONT }}
     >
       {text}
     </div>
   );
+
+  const renderWildCard = (box: NormalizedBox) => {
+    const question = poll.socialQuestion || poll.question;
+    const choices = poll.options.filter((option) => option.label.trim()).slice(0, 4);
+    return (
+      <div
+        className="absolute overflow-hidden text-zinc-950"
+        style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%`, fontFamily: DISPLAY_FONT }}
+      >
+        <div className="grid h-full grid-rows-[39%_1fr] gap-[4.5%] px-[3.5%] py-[8%]">
+          <div className="flex items-center justify-center text-center leading-none" style={{ fontSize: "clamp(12px,2.8vw,24px)" }}>{question}</div>
+          <div className="grid grid-cols-2 grid-rows-2 gap-x-[2.5%] gap-y-[10%]">
+            {choices.map((choice, index) => (
+              <div key={choice.id} className="flex min-w-0 items-center rounded-[999px] border border-[#a80064] bg-white/35 px-[3%] shadow-sm">
+                <span className="mr-[4%] flex aspect-square h-[72%] shrink-0 items-center justify-center rounded-full bg-[#cf0a67] text-white" style={{ fontSize: "clamp(10px,2vw,18px)" }}>
+                  {OPTION_LETTERS[index] ?? String.fromCharCode(65 + index)}
+                </span>
+                <span className="min-w-0 text-left leading-none" style={{ fontSize: "clamp(9px,1.8vw,16px)" }}>{choice.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const renderQuestionPanel = (box: NormalizedBox) => {
     const question = poll.socialQuestion || poll.question;
@@ -291,15 +401,15 @@ function PreviewText({ poll, template }: { poll: PollQuestion; template: DailyMi
     return (
       <div
         className={`absolute overflow-hidden text-zinc-950 ${template.clearDynamicBoxes ? "bg-[#f4efe6]" : ""}`}
-        style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%` }}
+        style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%`, fontFamily: DISPLAY_FONT }}
       >
         <div className={`grid h-full px-[3%] py-[4%] ${hasChoices ? "grid-rows-[1.05fr_.95fr] gap-[3%]" : "place-items-center"}`}>
-          <div className="flex items-center justify-center text-center font-black leading-[1.02]" style={{ fontSize: "clamp(11px,2.55vw,22px)" }}>{question}</div>
+          <div className="flex items-center justify-center text-center leading-[1.02]" style={{ fontSize: "clamp(11px,2.55vw,22px)" }}>{question}</div>
           {hasChoices && (
             <div className="grid grid-cols-2 content-center gap-x-[3%] gap-y-[6%]">
               {choices.map((choice, index) => (
-                <div key={choice.id} className="flex items-center justify-center text-center font-extrabold leading-[1.03]" style={{ fontSize: "clamp(8px,1.75vw,15px)" }}>
-                  {index + 1}. {choice.label}
+                <div key={choice.id} className="flex items-center justify-center text-center leading-[1.03]" style={{ fontSize: "clamp(8px,1.75vw,15px)" }}>
+                  {OPTION_LETTERS[index] ?? String.fromCharCode(65 + index)}. {choice.label}
                 </div>
               ))}
             </div>
@@ -311,9 +421,11 @@ function PreviewText({ poll, template }: { poll: PollQuestion; template: DailyMi
 
   return (
     <>
-      {template.questionBox && (template.mode === "question-panel"
-        ? renderQuestionPanel(template.questionBox)
-        : renderBox(template.questionBox, poll.socialQuestion || poll.question, Boolean(template.clearDynamicBoxes)))}
+      {template.questionBox && (poll.category === "wild-card"
+        ? renderWildCard(template.questionBox)
+        : template.mode === "question-panel"
+          ? renderQuestionPanel(template.questionBox)
+          : renderBox(template.questionBox, poll.socialQuestion || poll.question, Boolean(template.clearDynamicBoxes)))}
       {template.optionBoxes?.map((box, index) => poll.options[index] ? (
         <div key={poll.options[index].id}>{renderBox(box, poll.options[index].label, Boolean(template.clearDynamicBoxes))}</div>
       ) : null)}
