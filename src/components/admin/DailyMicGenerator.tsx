@@ -51,9 +51,18 @@ function absoluteBox(box: NormalizedBox, master: ReturnType<typeof imageRect>) {
   return { x: master.x + box.x * master.width, y: master.y + box.y * master.height, width: box.width * master.width, height: box.height * master.height };
 }
 
+function insetBox(box: ReturnType<typeof absoluteBox>, insetX: number, insetY = insetX) {
+  return {
+    x: box.x + insetX,
+    y: box.y + insetY,
+    width: Math.max(1, box.width - insetX * 2),
+    height: Math.max(1, box.height - insetY * 2),
+  };
+}
+
 function paintCleanPanel(ctx: CanvasRenderingContext2D, box: ReturnType<typeof absoluteBox>) {
   ctx.save();
-  ctx.fillStyle = "#f4efe6";
+  ctx.fillStyle = DAILY_MIC_BRAND.paper;
   ctx.fillRect(box.x + 3, box.y + 3, box.width - 6, box.height - 6);
   ctx.restore();
 }
@@ -62,44 +71,120 @@ function drawFitText(
   ctx: CanvasRenderingContext2D,
   text: string,
   box: ReturnType<typeof absoluteBox>,
-  options?: { maxLines?: number; align?: "left" | "center"; minSize?: number; maxSize?: number },
+  options?: {
+    maxLines?: number;
+    align?: "left" | "center";
+    minSize?: number;
+    maxSize?: number;
+    weight?: number;
+    lineHeight?: number;
+    padRatio?: number;
+  },
 ) {
   const maxLines = options?.maxLines ?? 4;
   const align = options?.align ?? "center";
   const minSize = options?.minSize ?? 20;
   const maxSize = options?.maxSize ?? 52;
-  const inset = Math.max(16, box.width * 0.055);
-  const usableWidth = box.width - inset * 2;
-  const usableHeight = box.height - inset * 1.4;
+  const weight = options?.weight ?? 900;
+  const lineHeightRatio = options?.lineHeight ?? 1.08;
+  const padRatio = options?.padRatio ?? 0.055;
+  const inset = Math.max(12, box.width * padRatio);
+  const usableWidth = Math.max(1, box.width - inset * 2);
+  const usableHeight = Math.max(1, box.height - inset * 1.5);
   let size = maxSize;
   let lines: string[] = [];
 
   while (size >= minSize) {
-    ctx.font = `900 ${size}px Arial, Helvetica, sans-serif`;
+    ctx.font = `${weight} ${size}px Arial, Helvetica, sans-serif`;
     lines = wrapLines(ctx, text, usableWidth);
-    const lineHeight = size * 1.08;
+    const lineHeight = size * lineHeightRatio;
     if (lines.length <= maxLines && lines.length * lineHeight <= usableHeight) break;
     size -= 2;
   }
+
   if (!lines.length) return;
-  lines = lines.slice(0, maxLines);
-  const lineHeight = size * 1.08;
+  const lineHeight = size * lineHeightRatio;
   const blockHeight = lines.length * lineHeight;
-  const top = box.y + (box.height - blockHeight) / 2 + size * 0.82;
+  const firstBaseline = box.y + (box.height - blockHeight) / 2 + size * 0.82;
 
   ctx.fillStyle = "#101014";
   ctx.textAlign = align;
   ctx.textBaseline = "alphabetic";
-  lines.forEach((line, index) => {
-    ctx.fillText(line, align === "center" ? box.x + box.width / 2 : box.x + inset, top + index * lineHeight);
+  lines.slice(0, maxLines).forEach((line, index) => {
+    ctx.fillText(line, align === "center" ? box.x + box.width / 2 : box.x + inset, firstBaseline + index * lineHeight);
   });
   ctx.textAlign = "left";
 }
 
-function panelCopy(poll: PollQuestion) {
+function drawQuestionPanel(
+  ctx: CanvasRenderingContext2D,
+  poll: PollQuestion,
+  box: ReturnType<typeof absoluteBox>,
+) {
   const question = poll.socialQuestion || poll.question;
-  if (poll.options.length <= 1) return question;
-  return `${question}\n${poll.options.map((option, index) => `${index + 1}. ${option.label}`).join("  •  ")}`;
+  const choices = poll.options.filter((option) => option.label.trim());
+  const hasChoices = choices.length > 1;
+  const outer = insetBox(box, Math.max(12, box.width * 0.025), Math.max(10, box.height * 0.06));
+
+  if (!hasChoices) {
+    drawFitText(ctx, question, outer, {
+      maxLines: 5,
+      minSize: 24,
+      maxSize: 58,
+      lineHeight: 1.05,
+      padRatio: 0.02,
+    });
+    return;
+  }
+
+  const questionHeight = outer.height * (choices.length >= 4 ? 0.46 : 0.54);
+  const gap = Math.max(8, outer.height * 0.035);
+  const questionBox = {
+    x: outer.x,
+    y: outer.y,
+    width: outer.width,
+    height: questionHeight,
+  };
+  const choicesBox = {
+    x: outer.x,
+    y: outer.y + questionHeight + gap,
+    width: outer.width,
+    height: Math.max(1, outer.height - questionHeight - gap),
+  };
+
+  drawFitText(ctx, question, questionBox, {
+    maxLines: 4,
+    minSize: 24,
+    maxSize: 56,
+    lineHeight: 1.03,
+    padRatio: 0.02,
+  });
+
+  const columns = choices.length === 2 ? 2 : 2;
+  const rows = Math.ceil(choices.length / columns);
+  const colGap = Math.max(8, choicesBox.width * 0.018);
+  const rowGap = Math.max(6, choicesBox.height * 0.08);
+  const cellWidth = (choicesBox.width - colGap * (columns - 1)) / columns;
+  const cellHeight = (choicesBox.height - rowGap * (rows - 1)) / rows;
+
+  choices.forEach((choice, index) => {
+    const row = Math.floor(index / columns);
+    const col = index % columns;
+    const cell = {
+      x: choicesBox.x + col * (cellWidth + colGap),
+      y: choicesBox.y + row * (cellHeight + rowGap),
+      width: cellWidth,
+      height: cellHeight,
+    };
+    drawFitText(ctx, `${index + 1}. ${choice.label}`, cell, {
+      maxLines: 2,
+      minSize: 18,
+      maxSize: choices.length >= 4 ? 30 : 34,
+      weight: 800,
+      lineHeight: 1.03,
+      padRatio: 0.018,
+    });
+  });
 }
 
 async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplate, format: "feed" | "story") {
@@ -146,11 +231,16 @@ async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplat
   if (template.questionBox) {
     const box = absoluteBox(template.questionBox, master);
     if (template.clearDynamicBoxes) paintCleanPanel(ctx, box);
-    drawFitText(ctx, panelCopy(poll), box, {
-      maxLines: template.mode === "question-panel" ? 6 : 4,
-      minSize: 18,
-      maxSize: template.mode === "question-panel" ? 42 : 46,
-    });
+    if (template.mode === "question-panel") {
+      drawQuestionPanel(ctx, poll, box);
+    } else {
+      drawFitText(ctx, poll.socialQuestion || poll.question, box, {
+        maxLines: 4,
+        minSize: 22,
+        maxSize: 50,
+        lineHeight: 1.04,
+      });
+    }
   }
 
   if (template.optionBoxes?.length) {
@@ -161,8 +251,10 @@ async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplat
       if (template.clearDynamicBoxes) paintCleanPanel(ctx, box);
       drawFitText(ctx, option.label, box, {
         maxLines: 4,
-        minSize: 18,
-        maxSize: template.optionBoxes!.length === 4 ? 34 : 44,
+        minSize: 20,
+        maxSize: template.optionBoxes!.length === 4 ? 38 : 50,
+        lineHeight: 1.04,
+        padRatio: 0.04,
       });
     });
   }
@@ -183,18 +275,45 @@ function captionVariants(poll: PollQuestion) {
 }
 
 function PreviewText({ poll, template }: { poll: PollQuestion; template: DailyMicTemplate }) {
-  const renderBox = (box: NormalizedBox, text: string, clear = false) => (
+  const renderBox = (box: NormalizedBox, text: string, clear = false, className = "") => (
     <div
-      className={`absolute flex items-center justify-center overflow-hidden px-[2.2%] text-center font-black leading-[1.04] text-zinc-950 ${clear ? "bg-[#f4efe6]" : ""}`}
-      style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%`, fontSize: "clamp(8px,2.1vw,18px)" }}
+      className={`absolute flex items-center justify-center overflow-hidden px-[2.2%] text-center font-black leading-[1.04] text-zinc-950 ${clear ? "bg-[#f4efe6]" : ""} ${className}`}
+      style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%`, fontSize: "clamp(9px,2.25vw,20px)" }}
     >
       {text}
     </div>
   );
 
+  const renderQuestionPanel = (box: NormalizedBox) => {
+    const question = poll.socialQuestion || poll.question;
+    const choices = poll.options.filter((option) => option.label.trim());
+    const hasChoices = choices.length > 1;
+    return (
+      <div
+        className={`absolute overflow-hidden text-zinc-950 ${template.clearDynamicBoxes ? "bg-[#f4efe6]" : ""}`}
+        style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%` }}
+      >
+        <div className={`grid h-full px-[3%] py-[4%] ${hasChoices ? "grid-rows-[1.05fr_.95fr] gap-[3%]" : "place-items-center"}`}>
+          <div className="flex items-center justify-center text-center font-black leading-[1.02]" style={{ fontSize: "clamp(11px,2.55vw,22px)" }}>{question}</div>
+          {hasChoices && (
+            <div className="grid grid-cols-2 content-center gap-x-[3%] gap-y-[6%]">
+              {choices.map((choice, index) => (
+                <div key={choice.id} className="flex items-center justify-center text-center font-extrabold leading-[1.03]" style={{ fontSize: "clamp(8px,1.75vw,15px)" }}>
+                  {index + 1}. {choice.label}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <>
-      {template.questionBox && renderBox(template.questionBox, panelCopy(poll), Boolean(template.clearDynamicBoxes))}
+      {template.questionBox && (template.mode === "question-panel"
+        ? renderQuestionPanel(template.questionBox)
+        : renderBox(template.questionBox, poll.socialQuestion || poll.question, Boolean(template.clearDynamicBoxes)))}
       {template.optionBoxes?.map((box, index) => poll.options[index] ? (
         <div key={poll.options[index].id}>{renderBox(box, poll.options[index].label, Boolean(template.clearDynamicBoxes))}</div>
       ) : null)}
