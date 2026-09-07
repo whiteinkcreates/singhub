@@ -5,6 +5,155 @@ import { useMemo, useState } from "react";
 import type { PollQuestion } from "@/lib/pollBank";
 import { DAILY_MIC_BRAND, DAILY_MIC_TEMPLATES } from "@/lib/dailyMicBrand";
 
+const CARD_DIMENSIONS = {
+  feed: { width: 1080, height: 1350 },
+  story: { width: 1080, height: 1920 },
+} as const;
+
+function loadCanvasImage(src: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new window.Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error(`Could not load ${src}`));
+    image.src = src;
+  });
+}
+
+function roundedRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  radius: number,
+) {
+  ctx.beginPath();
+  ctx.roundRect(x, y, width, height, radius);
+}
+
+function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number) {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let line = "";
+
+  words.forEach((word) => {
+    const next = line ? `${line} ${word}` : word;
+    if (ctx.measureText(next).width <= maxWidth || !line) {
+      line = next;
+    } else {
+      lines.push(line);
+      line = word;
+    }
+  });
+  if (line) lines.push(line);
+  return lines;
+}
+
+async function renderDailyMicImage(
+  poll: PollQuestion,
+  label: string,
+  format: "feed" | "story",
+) {
+  const { width, height } = CARD_DIMENSIONS[format];
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas is unavailable in this browser.");
+
+  ctx.fillStyle = "#09090b";
+  ctx.fillRect(0, 0, width, height);
+
+  const pinkGlow = ctx.createRadialGradient(245, 230, 0, 245, 230, 510);
+  pinkGlow.addColorStop(0, "rgba(255,42,163,.26)");
+  pinkGlow.addColorStop(1, "rgba(255,42,163,0)");
+  ctx.fillStyle = pinkGlow;
+  ctx.fillRect(0, 0, width, height);
+
+  const purpleGlow = ctx.createRadialGradient(860, height * 0.7, 0, 860, height * 0.7, 560);
+  purpleGlow.addColorStop(0, "rgba(139,92,246,.22)");
+  purpleGlow.addColorStop(1, "rgba(139,92,246,0)");
+  ctx.fillStyle = purpleGlow;
+  ctx.fillRect(0, 0, width, height);
+
+  const inset = 70;
+  const wordmark = await loadCanvasImage(DAILY_MIC_BRAND.wordmark);
+  const wordmarkWidth = 420;
+  const wordmarkHeight = wordmarkWidth * (wordmark.naturalHeight / wordmark.naturalWidth);
+  ctx.drawImage(wordmark, inset, inset, wordmarkWidth, wordmarkHeight);
+
+  const badgeY = inset + wordmarkHeight + 72;
+  ctx.font = "900 28px Arial, sans-serif";
+  const badgeWidth = ctx.measureText(label.toUpperCase()).width + 58;
+  roundedRect(ctx, inset, badgeY, badgeWidth, 64, 32);
+  ctx.fillStyle = "rgba(217,70,239,.12)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(240,171,252,.45)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.fillStyle = "#f5d0fe";
+  ctx.fillText(label.toUpperCase(), inset + 29, badgeY + 42);
+
+  const question = poll.socialQuestion || poll.question;
+  let fontSize = format === "story" ? 82 : 76;
+  let questionLines: string[] = [];
+  do {
+    ctx.font = `900 ${fontSize}px Arial, sans-serif`;
+    questionLines = wrapLines(ctx, question, width - inset * 2);
+    fontSize -= 2;
+  } while (questionLines.length > (format === "story" ? 6 : 5) && fontSize > 52);
+
+  ctx.fillStyle = "#ffffff";
+  const lineHeight = fontSize * 0.98;
+  const questionY = badgeY + 145;
+  questionLines.forEach((line, index) => {
+    ctx.fillText(line, inset, questionY + index * lineHeight);
+  });
+
+  const footerY = height - 70;
+  if (poll.options.length > 1) {
+    const gap = 18;
+    const cardWidth = (width - inset * 2 - gap) / 2;
+    const rows = Math.ceil(poll.options.length / 2);
+    const cardHeight = 108;
+    const optionsTop = footerY - 70 - rows * cardHeight - (rows - 1) * gap;
+
+    poll.options.forEach((option, index) => {
+      const column = index % 2;
+      const row = Math.floor(index / 2);
+      const x = inset + column * (cardWidth + gap);
+      const y = optionsTop + row * (cardHeight + gap);
+      roundedRect(ctx, x, y, cardWidth, cardHeight, 24);
+      ctx.fillStyle = "rgba(255,255,255,.055)";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,.18)";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = "#ffffff";
+      ctx.font = "800 27px Arial, sans-serif";
+      const optionLines = wrapLines(ctx, option.label, cardWidth - 44).slice(0, 2);
+      const optionLineHeight = 31;
+      const textTop = y + (cardHeight - optionLines.length * optionLineHeight) / 2 + 24;
+      optionLines.forEach((line, lineIndex) => {
+        ctx.fillText(line, x + 22, textTop + lineIndex * optionLineHeight);
+      });
+    });
+  }
+
+  ctx.font = "900 23px Arial, sans-serif";
+  ctx.fillStyle = "#cbd5e1";
+  ctx.fillText("CAST YOUR VOTE", inset, footerY);
+  const url = "SINGHUB.APP/VOTE";
+  ctx.fillText(url, width - inset - ctx.measureText(url).width, footerY);
+
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => blob?.type === "image/png" ? resolve(blob) : reject(new Error("Could not create a PNG image.")),
+      "image/png",
+    );
+  });
+}
+
 function captionVariants(poll: PollQuestion) {
   const options = poll.options.length > 1 ? `\n\n${poll.options.map((o) => o.label).join(" • ")}` : "";
   const question = poll.socialQuestion || poll.question;
@@ -19,6 +168,8 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
   const [format, setFormat] = useState<"feed" | "story">("feed");
   const [captionStyle, setCaptionStyle] = useState<"Punchy" | "Funny" | "Argument Starter">("Punchy");
   const [copied, setCopied] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportMessage, setExportMessage] = useState<string | null>(null);
   const template = DAILY_MIC_TEMPLATES[poll.category];
   const captions = useMemo(() => captionVariants(poll), [poll]);
   const caption = captions[captionStyle];
@@ -29,9 +180,52 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
     window.setTimeout(() => setCopied(false), 1500);
   }
 
-  async function share() {
-    if (!navigator.share) return copyCaption();
-    await navigator.share({ title: `${template.label} | SingHUB`, text: caption, url: DAILY_MIC_BRAND.voteUrl });
+  function imageFilename() {
+    return `SingHUB-Daily-Mic-${poll.slug}-${format}-${CARD_DIMENSIONS[format].width}x${CARD_DIMENSIONS[format].height}.png`;
+  }
+
+  async function downloadImage() {
+    setExporting(true);
+    setExportMessage(null);
+    try {
+      const blob = await renderDailyMicImage(poll, template.label, format);
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = imageFilename();
+      link.type = "image/png";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
+      setExportMessage(`Image saved as ${imageFilename()}. Look in Downloads.`);
+    } catch (error) {
+      console.error(error);
+      setExportMessage("Could not create the image in this browser.");
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  async function shareImage() {
+    setExporting(true);
+    setExportMessage(null);
+    try {
+      const blob = await renderDailyMicImage(poll, template.label, format);
+      const file = new File([blob], imageFilename(), { type: "image/png" });
+      const shareData = { files: [file], title: `${template.label} | SingHUB`, text: caption };
+      if (!navigator.share || !navigator.canShare?.(shareData)) {
+        setExportMessage("This browser cannot share image files directly. Use Download Image instead.");
+        return;
+      }
+      await navigator.share(shareData);
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      console.error(error);
+      setExportMessage("Could not share the image. Use Download Image instead.");
+    } finally {
+      setExporting(false);
+    }
   }
 
   return (
@@ -68,10 +262,12 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
         <p className="text-xs font-black uppercase tracking-[.22em] text-cyan-300">Caption bait</p>
         <div className="mt-4 flex flex-wrap gap-2">{(["Punchy", "Funny", "Argument Starter"] as const).map((style) => <button key={style} type="button" onClick={() => setCaptionStyle(style)} className={`rounded-full border px-3 py-2 text-xs font-black ${captionStyle === style ? "border-fuchsia-300 bg-fuchsia-300/15 text-white" : "border-white/10 text-slate-400"}`}>{style}</button>)}</div>
         <textarea readOnly value={caption} className="mt-4 min-h-72 w-full rounded-2xl border border-white/10 bg-slate-950 p-4 text-sm leading-6 text-slate-200" />
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <button type="button" onClick={copyCaption} className="min-h-11 rounded-xl border border-white/15 px-4 text-sm font-black">{copied ? "Copied" : "Copy caption"}</button>
-          <button type="button" onClick={share} className="min-h-11 rounded-xl bg-fuchsia-300 px-4 text-sm font-black text-slate-950">Share</button>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <button type="button" onClick={downloadImage} disabled={exporting} className="min-h-11 rounded-xl bg-fuchsia-300 px-4 text-sm font-black text-slate-950 disabled:opacity-50">{exporting ? "Creating image..." : "Download image"}</button>
+          <button type="button" onClick={shareImage} disabled={exporting} className="min-h-11 rounded-xl border border-fuchsia-300/40 px-4 text-sm font-black text-fuchsia-100 disabled:opacity-50">Share image</button>
+          <button type="button" onClick={copyCaption} className="min-h-11 rounded-xl border border-white/15 px-4 text-sm font-black sm:col-span-2">{copied ? "Caption copied" : "Copy caption"}</button>
         </div>
+        {exportMessage && <p className="mt-3 text-sm font-semibold text-cyan-200">{exportMessage}</p>}
         <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4">
           <p className="text-xs font-black uppercase tracking-[.18em] text-slate-500">Template direction</p>
           <p className="mt-2 text-sm leading-6 text-slate-300">{template.visualDirection}</p>
