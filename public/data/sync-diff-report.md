@@ -62,11 +62,15 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 ## events_by_night.tsv
 
 - Previous non-empty lines: 184
-- Candidate non-empty lines: 184
-- Added/changed lines: 0
+- Candidate non-empty lines: 185
+- Added/changed lines: 1
 - Removed/changed lines: 0
 
-- No content changes.
+### Added or changed sample
+
+```text
+weekly-winstons-sunday	venue-0030	Winstons Beach Club	winstons-beach-club	Sunday	8:00 PM	close	K-Rud	TRUE	active	Sunday OBoke Karaoke from 8 PM to close with K-Rud. No cover.	100	https://winstonsob.com/calendar/week/oboke-karaoke	https://winstonsob.com/website-section/specials	2026-09-07	verified_official_venue_schedule	FALSE
+```
 
 ## generated_events_review.tsv
 
@@ -90,17 +94,19 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 1
-- Removed/changed lines: 1
+- Added/changed lines: 2
+- Removed/changed lines: 2
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-06T13:40:15.194Z",
+  "generatedAt": "2026-09-07T03:45:17.073Z",
+  "authoritativeEvents": 184,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-05T13:27:21.597Z",
+  "generatedAt": "2026-09-06T13:40:15.194Z",
+  "authoritativeEvents": 183,
 ```
