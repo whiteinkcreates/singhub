@@ -5,8 +5,8 @@ Candidate output compared with the currently committed public data.
 ## venues.tsv
 
 - Previous non-empty lines: 87
-- Candidate non-empty lines: 87
-- Added/changed lines: 87
+- Candidate non-empty lines: 89
+- Added/changed lines: 89
 - Removed/changed lines: 87
 
 ### Added or changed sample
@@ -61,15 +61,29 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 184
-- Candidate non-empty lines: 185
-- Added/changed lines: 1
-- Removed/changed lines: 0
+- Previous non-empty lines: 185
+- Candidate non-empty lines: 187
+- Added/changed lines: 6
+- Removed/changed lines: 4
 
 ### Added or changed sample
 
 ```text
-weekly-winstons-sunday	venue-0030	Winstons Beach Club	winstons-beach-club	Sunday	8:00 PM	close	K-Rud	TRUE	active	Sunday OBoke Karaoke from 8 PM to close with K-Rud. No cover.	100	https://winstonsob.com/calendar/week/oboke-karaoke	https://winstonsob.com/website-section/specials	2026-09-07	verified_official_venue_schedule	FALSE
+weekly-jps-pub-tuesday	venue-0090	JP's Pub	jps-pub-tierrasanta	Tuesday	9:00 PM	1:00 AM	DJ Steve-O	TRUE	active	Tuesday karaoke from 9 PM to 1 AM with DJ Steve-O.	100	https://jpspubsd.com/	Reno G. direct schedule to Corey 2026-09-07	2026-09-07	verified_official_venue_and_trusted_scout	FALSE
+weekly-jps-pub-wednesday	venue-0090	JP's Pub	jps-pub-tierrasanta	Wednesday	9:00 PM	1:00 AM	DJ Steve-O	TRUE	active	Wednesday karaoke from 9 PM to 1 AM with DJ Steve-O.	100	https://jpspubsd.com/	Reno G. direct schedule to Corey 2026-09-07	2026-09-07	verified_official_venue_and_trusted_scout	FALSE
+weekly-jps-pub-thursday	venue-0090	JP's Pub	jps-pub-tierrasanta	Thursday	9:00 PM	1:00 AM	DJ Steve-O	TRUE	active	Thursday karaoke from 9 PM to 1 AM with DJ Steve-O. $1 wings.	100	https://jpspubsd.com/	Reno G. direct schedule to Corey 2026-09-07	2026-09-07	verified_official_venue_and_trusted_scout	FALSE
+weekly-jps-pub-friday	venue-0090	JP's Pub	jps-pub-tierrasanta	Friday	9:00 PM	1:00 AM	DJ Steve-O	TRUE	active	Friday karaoke from 9 PM to 1 AM with DJ Steve-O.	100	https://jpspubsd.com/	Reno G. direct schedule to Corey 2026-09-07	2026-09-07	verified_official_venue_and_trusted_scout	FALSE
+weekly-poways-irish-pub-tuesday	venue-0125	Poway's Irish Pub	poways-irish-pub	Tuesday	8:00 PM	12:00 AM	KJ Danielle Dolphin	TRUE	active	Tuesday karaoke from 8 PM to midnight with Danielle Dolphin.	100	https://powaypub.com/	Reno G. direct schedule to Corey 2026-09-07	2026-09-07	verified_official_venue_and_trusted_scout	FALSE
+weekly-way-point-saloon-thursday	venue-0126	Way Point Saloon	way-point-saloon	Thursday	8:00 PM	12:00 AM	Danielle Dolphin and Cody	TRUE	active	Thursday karaoke from 8 PM to midnight with Danielle Dolphin and Cody.	100	https://www.waypointsaloon.com/events	Reno G. direct schedule to Corey 2026-09-07	2026-09-07	verified_official_venue_and_trusted_scout	FALSE
+```
+
+### Removed or changed sample
+
+```text
+weekly-jps-pub-tuesday	venue-0090	JP's Pub	jps-pub-tierrasanta	Tuesday	9:00 PM	Close	TBD	TRUE	active	Tuesday karaoke from 9 PM until close.	92	Corey direct update 2026-07-20		2026-07-20	verified_direct_schedule_needs_host	FALSE
+weekly-jps-pub-wednesday	venue-0090	JP's Pub	jps-pub-tierrasanta	Wednesday	9:00 PM	Close	TBD	TRUE	active	Wednesday karaoke from 9 PM until close.	92	Corey direct update 2026-07-20		2026-07-20	verified_direct_schedule_needs_host	FALSE
+weekly-jps-pub-thursday	venue-0090	JP's Pub	jps-pub-tierrasanta	Thursday	9:00 PM	Close	TBD	TRUE	active	Thursday karaoke from 9 PM until close. $1 wings.	92	Corey direct update 2026-07-20		2026-07-20	verified_direct_schedule_needs_host	FALSE
+weekly-jps-pub-friday	venue-0090	JP's Pub	jps-pub-tierrasanta	Friday	9:00 PM	Close	TBD	TRUE	active	Friday karaoke from 9 PM until close.	92	Corey direct update 2026-07-20		2026-07-20	verified_direct_schedule_needs_host	FALSE
 ```
 
 ## generated_events_review.tsv
@@ -94,19 +108,21 @@ weekly-winstons-sunday	venue-0030	Winstons Beach Club	winstons-beach-club	Sunday
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 2
-- Removed/changed lines: 2
+- Added/changed lines: 3
+- Removed/changed lines: 3
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-07T03:45:17.073Z",
-  "authoritativeEvents": 184,
+  "generatedAt": "2026-09-07T06:00:44.073Z",
+  "venues": 88,
+  "authoritativeEvents": 186,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-06T13:40:15.194Z",
-  "authoritativeEvents": 183,
+  "generatedAt": "2026-09-07T03:45:17.073Z",
+  "venues": 86,
+  "authoritativeEvents": 184,
 ```

@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 86.
-Exported events: 184.
+Exported venues: 88.
+Exported events: 186.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -99,6 +99,8 @@ Exported events: 184.
 - venue-0117 Rosie O'Grady's
 - venue-0118 Chief's Da Tiki Bar
 - venue-0119 Rich's San Diego
+- venue-0125 Poway's Irish Pub
+- venue-0126 Way Point Saloon
 - venue-0120 Eastbound Bar & Grill
 - venue-0121 Vogue Tavern
 - venue-0122 Stoney's Bar & Grill
@@ -167,10 +169,6 @@ Exported events: 184.
 - event row 70: event-winstons-friday Winstons Beach Club
 - event row 86: weekly-u-31-tuesday U-31
 - event row 87: weekly-u-31-thursday U-31
-- event row 88: weekly-jps-pub-tuesday JP's Pub
-- event row 89: weekly-jps-pub-wednesday JP's Pub
-- event row 90: weekly-jps-pub-thursday JP's Pub
-- event row 91: weekly-jps-pub-friday JP's Pub
 - event row 92: weekly-harbor-town-pub-wednesday Harbor Town Pub
 - event row 94: weekly-mine-oyster-wednesday Mine Oyster
 - event row 95: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
@@ -229,6 +227,7 @@ Exported events: 184.
 - venue-0117 Rosie O'Grady's
 - venue-0118 Chief's Da Tiki Bar
 - venue-0119 Rich's San Diego
+- venue-0126 Way Point Saloon
 ## Closed/Hidden/Archived Rows Excluded
 - None
 ## Stable Venue Identity Changes
@@ -242,14 +241,14 @@ Exported events: 184.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 86
-Authoritative events: 184
+Public venues: 88
+Authoritative events: 186
 Legacy venue slug aliases: 0
 
 PASS Monday: 17 authoritative / 8 expected minimum
-PASS Tuesday: 28 authoritative / 8 expected minimum
+PASS Tuesday: 29 authoritative / 8 expected minimum
 PASS Wednesday: 31 authoritative / 9 expected minimum
-PASS Thursday: 37 authoritative / 14 expected minimum
+PASS Thursday: 38 authoritative / 14 expected minimum
 PASS Friday: 29 authoritative / 10 expected minimum
 PASS Saturday: 21 authoritative / 10 expected minimum
 PASS Sunday: 21 authoritative / 7 expected minimum
