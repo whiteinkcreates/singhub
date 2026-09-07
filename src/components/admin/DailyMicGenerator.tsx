@@ -3,7 +3,12 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import type { PollQuestion } from "@/lib/pollBank";
-import { DAILY_MIC_BRAND, DAILY_MIC_TEMPLATES } from "@/lib/dailyMicBrand";
+import {
+  DAILY_MIC_BRAND,
+  DAILY_MIC_TEMPLATES,
+  type DailyMicTemplate,
+  type NormalizedBox,
+} from "@/lib/dailyMicBrand";
 
 const CARD_DIMENSIONS = {
   feed: { width: 1080, height: 1350 },
@@ -19,41 +24,85 @@ function loadCanvasImage(src: string) {
   });
 }
 
-function roundedRect(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number,
-) {
-  ctx.beginPath();
-  ctx.roundRect(x, y, width, height, radius);
-}
-
 function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number) {
-  const words = text.split(/\s+/);
+  const words = text.trim().split(/\s+/);
   const lines: string[] = [];
   let line = "";
-
-  words.forEach((word) => {
+  for (const word of words) {
     const next = line ? `${line} ${word}` : word;
-    if (ctx.measureText(next).width <= maxWidth || !line) {
-      line = next;
-    } else {
+    if (!line || ctx.measureText(next).width <= maxWidth) line = next;
+    else {
       lines.push(line);
       line = word;
     }
-  });
+  }
   if (line) lines.push(line);
   return lines;
 }
 
-async function renderDailyMicImage(
-  poll: PollQuestion,
-  label: string,
-  format: "feed" | "story",
+function imageRect(image: HTMLImageElement, width: number, height: number) {
+  const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
+  const drawWidth = image.naturalWidth * scale;
+  const drawHeight = image.naturalHeight * scale;
+  return { x: (width - drawWidth) / 2, y: (height - drawHeight) / 2, width: drawWidth, height: drawHeight };
+}
+
+function absoluteBox(box: NormalizedBox, master: ReturnType<typeof imageRect>) {
+  return { x: master.x + box.x * master.width, y: master.y + box.y * master.height, width: box.width * master.width, height: box.height * master.height };
+}
+
+function paintCleanPanel(ctx: CanvasRenderingContext2D, box: ReturnType<typeof absoluteBox>) {
+  ctx.save();
+  ctx.fillStyle = "#f4efe6";
+  ctx.fillRect(box.x + 3, box.y + 3, box.width - 6, box.height - 6);
+  ctx.restore();
+}
+
+function drawFitText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  box: ReturnType<typeof absoluteBox>,
+  options?: { maxLines?: number; align?: "left" | "center"; minSize?: number; maxSize?: number },
 ) {
+  const maxLines = options?.maxLines ?? 4;
+  const align = options?.align ?? "center";
+  const minSize = options?.minSize ?? 20;
+  const maxSize = options?.maxSize ?? 52;
+  const inset = Math.max(16, box.width * 0.055);
+  const usableWidth = box.width - inset * 2;
+  const usableHeight = box.height - inset * 1.4;
+  let size = maxSize;
+  let lines: string[] = [];
+
+  while (size >= minSize) {
+    ctx.font = `900 ${size}px Arial, Helvetica, sans-serif`;
+    lines = wrapLines(ctx, text, usableWidth);
+    const lineHeight = size * 1.08;
+    if (lines.length <= maxLines && lines.length * lineHeight <= usableHeight) break;
+    size -= 2;
+  }
+  if (!lines.length) return;
+  lines = lines.slice(0, maxLines);
+  const lineHeight = size * 1.08;
+  const blockHeight = lines.length * lineHeight;
+  const top = box.y + (box.height - blockHeight) / 2 + size * 0.82;
+
+  ctx.fillStyle = "#101014";
+  ctx.textAlign = align;
+  ctx.textBaseline = "alphabetic";
+  lines.forEach((line, index) => {
+    ctx.fillText(line, align === "center" ? box.x + box.width / 2 : box.x + inset, top + index * lineHeight);
+  });
+  ctx.textAlign = "left";
+}
+
+function panelCopy(poll: PollQuestion) {
+  const question = poll.socialQuestion || poll.question;
+  if (poll.options.length <= 1) return question;
+  return `${question}\n${poll.options.map((option, index) => `${index + 1}. ${option.label}`).join("  •  ")}`;
+}
+
+async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplate, format: "feed" | "story") {
   const { width, height } = CARD_DIMENSIONS[format];
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -61,96 +110,65 @@ async function renderDailyMicImage(
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("Canvas is unavailable in this browser.");
 
-  ctx.fillStyle = "#09090b";
+  const [masterImage, officialWordmark] = await Promise.all([
+    loadCanvasImage(template.masterPath),
+    loadCanvasImage(DAILY_MIC_BRAND.wordmark),
+  ]);
+
+  ctx.fillStyle = DAILY_MIC_BRAND.ink;
   ctx.fillRect(0, 0, width, height);
 
-  const pinkGlow = ctx.createRadialGradient(245, 230, 0, 245, 230, 510);
-  pinkGlow.addColorStop(0, "rgba(255,42,163,.26)");
-  pinkGlow.addColorStop(1, "rgba(255,42,163,0)");
-  ctx.fillStyle = pinkGlow;
-  ctx.fillRect(0, 0, width, height);
+  if (format === "story") {
+    const coverScale = Math.max(width / masterImage.naturalWidth, height / masterImage.naturalHeight);
+    const bgW = masterImage.naturalWidth * coverScale;
+    const bgH = masterImage.naturalHeight * coverScale;
+    ctx.save();
+    ctx.globalAlpha = 0.24;
+    ctx.filter = "blur(28px) brightness(.55)";
+    ctx.drawImage(masterImage, (width - bgW) / 2, (height - bgH) / 2, bgW, bgH);
+    ctx.restore();
+  }
 
-  const purpleGlow = ctx.createRadialGradient(860, height * 0.7, 0, 860, height * 0.7, 560);
-  purpleGlow.addColorStop(0, "rgba(139,92,246,.22)");
-  purpleGlow.addColorStop(1, "rgba(139,92,246,0)");
-  ctx.fillStyle = purpleGlow;
-  ctx.fillRect(0, 0, width, height);
+  const master = imageRect(masterImage, width, height);
+  ctx.drawImage(masterImage, master.x, master.y, master.width, master.height);
 
-  const inset = 70;
-  const wordmark = await loadCanvasImage(DAILY_MIC_BRAND.wordmark);
-  const wordmarkWidth = 420;
-  const wordmarkHeight = wordmarkWidth * (wordmark.naturalHeight / wordmark.naturalWidth);
-  ctx.drawImage(wordmark, inset, inset, wordmarkWidth, wordmarkHeight);
+  const brandBandHeight = master.height * 0.075;
+  const brandGradient = ctx.createLinearGradient(0, master.y, 0, master.y + brandBandHeight * 1.35);
+  brandGradient.addColorStop(0, "rgba(4,4,8,.98)");
+  brandGradient.addColorStop(0.72, "rgba(4,4,8,.86)");
+  brandGradient.addColorStop(1, "rgba(4,4,8,0)");
+  ctx.fillStyle = brandGradient;
+  ctx.fillRect(master.x, master.y, master.width, brandBandHeight * 1.4);
+  const logoWidth = Math.min(master.width * 0.34, 390);
+  const logoHeight = logoWidth * (officialWordmark.naturalHeight / officialWordmark.naturalWidth);
+  ctx.drawImage(officialWordmark, master.x + (master.width - logoWidth) / 2, master.y + Math.max(10, master.height * 0.012), logoWidth, logoHeight);
 
-  const badgeY = inset + wordmarkHeight + 72;
-  ctx.font = "900 28px Arial, sans-serif";
-  const badgeWidth = ctx.measureText(label.toUpperCase()).width + 58;
-  roundedRect(ctx, inset, badgeY, badgeWidth, 64, 32);
-  ctx.fillStyle = "rgba(217,70,239,.12)";
-  ctx.fill();
-  ctx.strokeStyle = "rgba(240,171,252,.45)";
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  ctx.fillStyle = "#f5d0fe";
-  ctx.fillText(label.toUpperCase(), inset + 29, badgeY + 42);
+  if (template.questionBox) {
+    const box = absoluteBox(template.questionBox, master);
+    if (template.clearDynamicBoxes) paintCleanPanel(ctx, box);
+    drawFitText(ctx, panelCopy(poll), box, {
+      maxLines: template.mode === "question-panel" ? 6 : 4,
+      minSize: 18,
+      maxSize: template.mode === "question-panel" ? 42 : 46,
+    });
+  }
 
-  const question = poll.socialQuestion || poll.question;
-  let fontSize = format === "story" ? 82 : 76;
-  let questionLines: string[] = [];
-  do {
-    ctx.font = `900 ${fontSize}px Arial, sans-serif`;
-    questionLines = wrapLines(ctx, question, width - inset * 2);
-    fontSize -= 2;
-  } while (questionLines.length > (format === "story" ? 6 : 5) && fontSize > 52);
-
-  ctx.fillStyle = "#ffffff";
-  const lineHeight = fontSize * 0.98;
-  const questionY = badgeY + 145;
-  questionLines.forEach((line, index) => {
-    ctx.fillText(line, inset, questionY + index * lineHeight);
-  });
-
-  const footerY = height - 70;
-  if (poll.options.length > 1) {
-    const gap = 18;
-    const cardWidth = (width - inset * 2 - gap) / 2;
-    const rows = Math.ceil(poll.options.length / 2);
-    const cardHeight = 108;
-    const optionsTop = footerY - 70 - rows * cardHeight - (rows - 1) * gap;
-
-    poll.options.forEach((option, index) => {
-      const column = index % 2;
-      const row = Math.floor(index / 2);
-      const x = inset + column * (cardWidth + gap);
-      const y = optionsTop + row * (cardHeight + gap);
-      roundedRect(ctx, x, y, cardWidth, cardHeight, 24);
-      ctx.fillStyle = "rgba(255,255,255,.055)";
-      ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,.18)";
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.fillStyle = "#ffffff";
-      ctx.font = "800 27px Arial, sans-serif";
-      const optionLines = wrapLines(ctx, option.label, cardWidth - 44).slice(0, 2);
-      const optionLineHeight = 31;
-      const textTop = y + (cardHeight - optionLines.length * optionLineHeight) / 2 + 24;
-      optionLines.forEach((line, lineIndex) => {
-        ctx.fillText(line, x + 22, textTop + lineIndex * optionLineHeight);
+  if (template.optionBoxes?.length) {
+    template.optionBoxes.forEach((normalized, index) => {
+      const option = poll.options[index];
+      if (!option) return;
+      const box = absoluteBox(normalized, master);
+      if (template.clearDynamicBoxes) paintCleanPanel(ctx, box);
+      drawFitText(ctx, option.label, box, {
+        maxLines: 4,
+        minSize: 18,
+        maxSize: template.optionBoxes!.length === 4 ? 34 : 44,
       });
     });
   }
 
-  ctx.font = "900 23px Arial, sans-serif";
-  ctx.fillStyle = "#cbd5e1";
-  ctx.fillText("CAST YOUR VOTE", inset, footerY);
-  const url = "SINGHUB.APP/VOTE";
-  ctx.fillText(url, width - inset - ctx.measureText(url).width, footerY);
-
   return new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => blob?.type === "image/png" ? resolve(blob) : reject(new Error("Could not create a PNG image.")),
-      "image/png",
-    );
+    canvas.toBlob((blob) => blob?.type === "image/png" ? resolve(blob) : reject(new Error("Could not create a PNG image.")), "image/png");
   });
 }
 
@@ -162,6 +180,26 @@ function captionVariants(poll: PollQuestion) {
     Funny: `${poll.socialHook}\n\n${question}${options}\n\nMake your choice. Defend the damage in the comments.\n\nVote + see results → ${DAILY_MIC_BRAND.voteUrl}`,
     "Argument Starter": `${poll.socialHook}\n\n${question}${options}\n\nVote first. Then make your case in the comments.\n\nVote + see results → ${DAILY_MIC_BRAND.voteUrl}`,
   };
+}
+
+function PreviewText({ poll, template }: { poll: PollQuestion; template: DailyMicTemplate }) {
+  const renderBox = (box: NormalizedBox, text: string, clear = false) => (
+    <div
+      className={`absolute flex items-center justify-center overflow-hidden px-[2.2%] text-center font-black leading-[1.04] text-zinc-950 ${clear ? "bg-[#f4efe6]" : ""}`}
+      style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%`, fontSize: "clamp(8px,2.1vw,18px)" }}
+    >
+      {text}
+    </div>
+  );
+
+  return (
+    <>
+      {template.questionBox && renderBox(template.questionBox, panelCopy(poll), Boolean(template.clearDynamicBoxes))}
+      {template.optionBoxes?.map((box, index) => poll.options[index] ? (
+        <div key={poll.options[index].id}>{renderBox(box, poll.options[index].label, Boolean(template.clearDynamicBoxes))}</div>
+      ) : null)}
+    </>
+  );
 }
 
 export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
@@ -184,11 +222,15 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
     return `SingHUB-Daily-Mic-${poll.slug}-${format}-${CARD_DIMENSIONS[format].width}x${CARD_DIMENSIONS[format].height}.png`;
   }
 
+  async function buildImage() {
+    return renderDailyMicImage(poll, template, format);
+  }
+
   async function downloadImage() {
     setExporting(true);
     setExportMessage(null);
     try {
-      const blob = await renderDailyMicImage(poll, template.label, format);
+      const blob = await buildImage();
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = objectUrl;
@@ -198,10 +240,10 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
       link.click();
       link.remove();
       window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
-      setExportMessage(`Image saved as ${imageFilename()}. Look in Downloads.`);
+      setExportMessage(`Saved ${imageFilename()} to Downloads.`);
     } catch (error) {
       console.error(error);
-      setExportMessage("Could not create the image in this browser.");
+      setExportMessage("Template master is missing or the image could not be created.");
     } finally {
       setExporting(false);
     }
@@ -211,18 +253,18 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
     setExporting(true);
     setExportMessage(null);
     try {
-      const blob = await renderDailyMicImage(poll, template.label, format);
+      const blob = await buildImage();
       const file = new File([blob], imageFilename(), { type: "image/png" });
       const shareData = { files: [file], title: `${template.label} | SingHUB`, text: caption };
       if (!navigator.share || !navigator.canShare?.(shareData)) {
-        setExportMessage("This browser cannot share image files directly. Use Download Image instead.");
+        setExportMessage("This browser cannot hand image files to the share sheet. Use Download image.");
         return;
       }
       await navigator.share(shareData);
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
       console.error(error);
-      setExportMessage("Could not share the image. Use Download Image instead.");
+      setExportMessage("Could not share the image. Use Download image instead.");
     } finally {
       setExporting(false);
     }
@@ -244,18 +286,19 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
         </div>
 
         <div className="mt-5 flex justify-center overflow-hidden rounded-2xl bg-slate-950 p-4">
-          <div className={`relative flex w-full max-w-[540px] flex-col overflow-hidden border border-white/10 bg-[#09090b] text-white ${format === "feed" ? "aspect-[4/5]" : "aspect-[9/16]"}`}>
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(255,42,163,.18),transparent_30%),radial-gradient(circle_at_80%_70%,rgba(139,92,246,.16),transparent_30%)]" />
-            <div className="relative flex h-full flex-col p-[6%]">
-              <Image src={DAILY_MIC_BRAND.wordmark} alt={DAILY_MIC_BRAND.wordmarkAlt} width={2400} height={600} className="h-auto w-[42%] object-contain" priority />
-              <div className="mt-[8%] inline-flex w-fit rounded-full border border-fuchsia-300/30 px-3 py-1 text-[clamp(10px,1.4vw,14px)] font-black uppercase tracking-[.18em] text-fuchsia-200">{template.label}</div>
-              <h3 className="mt-[6%] max-w-[92%] text-[clamp(28px,5.6vw,58px)] font-black leading-[.94] tracking-[-.04em]">{poll.socialQuestion || poll.question}</h3>
-              {poll.options.length > 1 && <div className="mt-auto grid gap-2 pt-[6%] sm:grid-cols-2">{poll.options.map((option) => <div key={option.id} className="rounded-xl border border-white/15 bg-white/[.05] px-3 py-3 text-[clamp(12px,1.6vw,17px)] font-extrabold leading-tight">{option.label}</div>)}</div>}
-              <div className="mt-[5%] flex items-end justify-between gap-4 text-[clamp(9px,1.2vw,12px)] font-black uppercase tracking-[.16em] text-slate-300"><span>Cast your vote</span><span>SingHUB.app/vote</span></div>
+          <div className={`relative w-full max-w-[540px] overflow-hidden bg-black ${format === "feed" ? "aspect-[4/5]" : "aspect-[9/16]"}`}>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="relative max-h-full max-w-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={template.masterPath} alt={`${template.label} approved master`} className="max-h-full max-w-full object-contain" />
+                <PreviewText poll={poll} template={template} />
+                <div className="absolute left-0 right-0 top-0 h-[8%] bg-gradient-to-b from-black via-black/90 to-transparent" />
+                <Image src={DAILY_MIC_BRAND.wordmark} alt={DAILY_MIC_BRAND.wordmarkAlt} width={2400} height={600} className="absolute left-1/2 top-[1.2%] z-10 h-auto w-[34%] -translate-x-1/2 object-contain" priority />
+              </div>
             </div>
           </div>
         </div>
-        <p className="mt-4 text-xs leading-5 text-slate-500">Brand lock: official SingHUB wordmark asset only. No recreated logo text, no gradient substitutions, no brush-stroke typography. Template art slots in behind this fixed layout.</p>
+        <p className="mt-4 text-xs leading-5 text-slate-500">The artwork is fixed by category. Only the daily question/options and the official SingHUB wordmark are composited on export.</p>
       </section>
 
       <aside className="rounded-3xl border border-white/10 bg-white/[.035] p-5">
@@ -269,7 +312,7 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
         </div>
         {exportMessage && <p className="mt-3 text-sm font-semibold text-cyan-200">{exportMessage}</p>}
         <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4">
-          <p className="text-xs font-black uppercase tracking-[.18em] text-slate-500">Template direction</p>
+          <p className="text-xs font-black uppercase tracking-[.18em] text-slate-500">Locked master</p>
           <p className="mt-2 text-sm leading-6 text-slate-300">{template.visualDirection}</p>
         </div>
       </aside>
