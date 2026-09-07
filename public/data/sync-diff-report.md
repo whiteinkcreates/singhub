@@ -63,77 +63,19 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 
 - Previous non-empty lines: 187
 - Candidate non-empty lines: 187
-- Added/changed lines: 187
-- Removed/changed lines: 187
+- Added/changed lines: 0
+- Removed/changed lines: 0
 
-### Added or changed sample
-
-```text
-event_id	venue_id	venue_name	venue_slug	karaoke_day	start_time	end_time	host_id	host_display_name	host_name	recurring	active_status	event_notes	event_confidence_score	source_1	source_2	last_verified	review_status	generated
-weekly-dons-cocktails-thursday	venue-0020	Don's Cocktails	dons-cocktails	Thursday	9pm-last call	TBD		DJ Savadelic	DJ Savadelic	TRUE	active	Thursday karaoke with DJ Savadelic starting 9pm-last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-dons-cocktails-friday	venue-0020	Don's Cocktails	dons-cocktails	Friday	9pm-last call	TBD		DJ Savadelic	DJ Savadelic	TRUE	active	Friday karaoke with DJ Savadelic starting 9pm-last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-blvd-saturday	venue-0018	BLVD	blvd	Saturday	9:00 PM	TBD		DJ Glyph	DJ Glyph	TRUE	active	Saturday karaoke with DJ Glyph starting 9pm.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-camels-bar-grill-thursday	venue-0013	Camels Bar & Grill	camels-bar-grill	Thursday	9:00 PM	1:00 AM		DJ Mike	DJ Mike	TRUE	active	Thursday karaoke from 9 PM to 1 AM with DJ Mike.	100	Corey direct update 2026-08-27	Prior Weekly_Grid	2026-08-27	verified_direct_schedule	FALSE
-weekly-camels-bar-grill-saturday	venue-0013	Camels Bar & Grill	camels-bar-grill	Saturday	8:30 PM	close	dj-meth	KJ Meth	KJ Meth	TRUE	active	Saturday karaoke from 8:30 PM to close with KJ Meth.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Prior Weekly_Grid	2026-09-04	verified_direct_provider_schedule	FALSE
-weekly-cheers-bar-san-diego-monday	venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	Monday	8:00 PM	1:00 AM		Ed&Katie	Ed&Katie	TRUE	active	Monday karaoke with Ed&Katie starting 8pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-cheers-bar-san-diego-wednesday	venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	Wednesday	8:00 PM	1:00 AM		Ed&Katie	Ed&Katie	TRUE	active	Wednesday karaoke with Ed&Katie starting 8pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-cordova-bar-tuesday	venue-0016	The Cordova Bar	cordova-bar	Tuesday	8:00 PM	12:00 AM		Savor Ent.	Savor Ent.	TRUE	active	Tuesday karaoke with Savor Ent. starting 8pm until 12am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-deanos-pub-wednesday	venue-0009	Deano's Pub - La Mesa	deanos-pub	Wednesday	8:00 PM	12:00 AM	kj-smash	KJ Smash	KJ Smash	TRUE	active	Wednesday karaoke from 8 PM to midnight with KJ Smash.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Current Deano's venue post	2026-09-04	verified_direct_provider_schedule	FALSE
-weekly-hearth-house-tuesday	venue-0003	Hearth House	hearth-house	Tuesday	9:00 PM	close		James	James	TRUE	active	Tuesday karaoke with James starting 9pm until close.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-hearth-house-wednesday	venue-0003	Hearth House	hearth-house	Wednesday	9:00 PM	close		James	James	TRUE	active	Wednesday karaoke with James starting 9pm until close.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-hearth-house-thursday	venue-0003	Hearth House	hearth-house	Thursday	9:00 PM	close		James	James	TRUE	active	Thursday karaoke with James starting 9pm until close.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-jts-tavern-monday	venue-0006	JT's Tavern	jts-tavern	Monday	9:00 PM	last call	brian	Brian The Lion	Brian The Lion	TRUE	active	Monday karaoke from 9 PM until last call with Brian The Lion.	85	Corey direct correction 2026-08-10	Prior Weekly_Grid entry	2026-08-10	weekly_grid_sync	FALSE
-weekly-jts-tavern-tuesday	venue-0006	JT's Tavern	jts-tavern	Tuesday	9:00 PM	last call	chad	Chad	Chad	TRUE	active	Tuesday karaoke with Chad starting 9pm until last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-jts-tavern-wednesday	venue-0006	JT's Tavern	jts-tavern	Wednesday	9:00 PM	last call	chad	Chad	Chad	TRUE	active	Wednesday karaoke with Chad starting 9pm until last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-jts-tavern-thursday	venue-0006	JT's Tavern	jts-tavern	Thursday	9:00 PM	last call	chad	Chad	Chad	TRUE	active	Thursday karaoke with Chad starting 9pm until last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-pal-joeys-thursday	venue-0017	Pal Joey's Cocktail Lounge	pal-joeys	Thursday	9:00 PM	1:00 AM	trini	Trini	Trini	TRUE	active	Thursday karaoke from 9 PM to 1 AM with Trini.	100	Corey direct confirmation 2026-09-03	SingHUB canonical correction	2026-09-03	verified_direct_user_confirmation	FALSE
-weekly-regal-friday	venue-0010	The Regal Bar	regal	Friday	9:00 PM	1:00 AM		Rosemarie	Rosemarie	TRUE	active	Friday karaoke with Rosemarie starting 9pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-the-lamplighter-monday	venue-0002	The Lamplighter	the-lamplighter	Monday	9:00 PM	2:00 AM	jared	Jared	Jared	TRUE	active	Monday karaoke from 9 PM to 2 AM with Jared.	100	Leo direct update via Corey 2026-08-04	Prior Weekly_Grid entry	2026-08-04	verified_direct_schedule	FALSE
-```
-
-### Removed or changed sample
-
-```text
-event_id	venue_id	venue_name	venue_slug	karaoke_day	start_time	end_time	host_name	recurring	active_status	event_notes	event_confidence_score	source_1	source_2	last_verified	review_status	generated
-weekly-dons-cocktails-thursday	venue-0020	Don's Cocktails	dons-cocktails	Thursday	9pm-last call	TBD	DJ Savadelic	TRUE	active	Thursday karaoke with DJ Savadelic starting 9pm-last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-dons-cocktails-friday	venue-0020	Don's Cocktails	dons-cocktails	Friday	9pm-last call	TBD	DJ Savadelic	TRUE	active	Friday karaoke with DJ Savadelic starting 9pm-last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-blvd-saturday	venue-0018	BLVD	blvd	Saturday	9:00 PM	TBD	DJ Glyph	TRUE	active	Saturday karaoke with DJ Glyph starting 9pm.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-camels-bar-grill-thursday	venue-0013	Camels Bar & Grill	camels-bar-grill	Thursday	9:00 PM	1:00 AM	DJ Mike	TRUE	active	Thursday karaoke from 9 PM to 1 AM with DJ Mike.	100	Corey direct update 2026-08-27	Prior Weekly_Grid	2026-08-27	verified_direct_schedule	FALSE
-weekly-camels-bar-grill-saturday	venue-0013	Camels Bar & Grill	camels-bar-grill	Saturday	8:30 PM	close	KJ Meth	TRUE	active	Saturday karaoke from 8:30 PM to close with KJ Meth.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Prior Weekly_Grid	2026-09-04	verified_direct_provider_schedule	FALSE
-weekly-cheers-bar-san-diego-monday	venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	Monday	8:00 PM	1:00 AM	Ed&Katie	TRUE	active	Monday karaoke with Ed&Katie starting 8pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-cheers-bar-san-diego-wednesday	venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	Wednesday	8:00 PM	1:00 AM	Ed&Katie	TRUE	active	Wednesday karaoke with Ed&Katie starting 8pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-cordova-bar-tuesday	venue-0016	The Cordova Bar	cordova-bar	Tuesday	8:00 PM	12:00 AM	Savor Ent.	TRUE	active	Tuesday karaoke with Savor Ent. starting 8pm until 12am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-deanos-pub-wednesday	venue-0009	Deano's Pub - La Mesa	deanos-pub	Wednesday	8:00 PM	12:00 AM	KJ Smash	TRUE	active	Wednesday karaoke from 8 PM to midnight with KJ Smash.	100	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Current Deano's venue post	2026-09-04	verified_direct_provider_schedule	FALSE
-weekly-hearth-house-tuesday	venue-0003	Hearth House	hearth-house	Tuesday	9:00 PM	close	James	TRUE	active	Tuesday karaoke with James starting 9pm until close.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-hearth-house-wednesday	venue-0003	Hearth House	hearth-house	Wednesday	9:00 PM	close	James	TRUE	active	Wednesday karaoke with James starting 9pm until close.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-hearth-house-thursday	venue-0003	Hearth House	hearth-house	Thursday	9:00 PM	close	James	TRUE	active	Thursday karaoke with James starting 9pm until close.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-jts-tavern-monday	venue-0006	JT's Tavern	jts-tavern	Monday	9:00 PM	last call	Brian The Lion	TRUE	active	Monday karaoke from 9 PM until last call with Brian The Lion.	85	Corey direct correction 2026-08-10	Prior Weekly_Grid entry	2026-08-10	weekly_grid_sync	FALSE
-weekly-jts-tavern-tuesday	venue-0006	JT's Tavern	jts-tavern	Tuesday	9:00 PM	last call	Chad	TRUE	active	Tuesday karaoke with Chad starting 9pm until last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-jts-tavern-wednesday	venue-0006	JT's Tavern	jts-tavern	Wednesday	9:00 PM	last call	Chad	TRUE	active	Wednesday karaoke with Chad starting 9pm until last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-jts-tavern-thursday	venue-0006	JT's Tavern	jts-tavern	Thursday	9:00 PM	last call	Chad	TRUE	active	Thursday karaoke with Chad starting 9pm until last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-pal-joeys-thursday	venue-0017	Pal Joey's Cocktail Lounge	pal-joeys	Thursday	9:00 PM	1:00 AM	Trini	TRUE	active	Thursday karaoke from 9 PM to 1 AM with Trini.	100	Corey direct confirmation 2026-09-03	SingHUB canonical correction	2026-09-03	verified_direct_user_confirmation	FALSE
-weekly-regal-friday	venue-0010	The Regal Bar	regal	Friday	9:00 PM	1:00 AM	Rosemarie	TRUE	active	Friday karaoke with Rosemarie starting 9pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
-weekly-the-lamplighter-monday	venue-0002	The Lamplighter	the-lamplighter	Monday	9:00 PM	2:00 AM	Jared	TRUE	active	Monday karaoke from 9 PM to 2 AM with Jared.	100	Leo direct update via Corey 2026-08-04	Prior Weekly_Grid entry	2026-08-04	verified_direct_schedule	FALSE
-```
+- No content changes.
 
 ## generated_events_review.tsv
 
 - Previous non-empty lines: 1
 - Candidate non-empty lines: 1
-- Added/changed lines: 1
-- Removed/changed lines: 1
+- Added/changed lines: 0
+- Removed/changed lines: 0
 
-### Added or changed sample
-
-```text
-event_id	venue_id	venue_name	venue_slug	karaoke_day	start_time	end_time	host_id	host_display_name	host_name	recurring	active_status	event_notes	event_confidence_score	source_1	source_2	last_verified	review_status	generated
-```
-
-### Removed or changed sample
-
-```text
-event_id	venue_id	venue_name	venue_slug	karaoke_day	start_time	end_time	host_name	recurring	active_status	event_notes	event_confidence_score	source_1	source_2	last_verified	review_status	generated
-```
+- No content changes.
 
 ## venue_slug_aliases.tsv
 
@@ -154,11 +96,11 @@ event_id	venue_id	venue_name	venue_slug	karaoke_day	start_time	end_time	host_nam
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-07T06:06:57.081Z",
+  "generatedAt": "2026-09-07T15:49:44.654Z",
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-07T06:00:44.073Z",
+  "generatedAt": "2026-09-07T06:06:57.081Z",
 ```
