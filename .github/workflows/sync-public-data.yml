@@ -2,6 +2,7 @@ name: Sync public karaoke data
 
 on:
   workflow_dispatch:
+  # Spreadsheet-only changes publish nightly or through a manual dispatch.
   schedule:
     - cron: "15 10 * * *"
   push:
