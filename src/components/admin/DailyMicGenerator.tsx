@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { Archivo_Black } from "next/font/google";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { PollQuestion } from "@/lib/pollBank";
 import {
   DAILY_MIC_BRAND,
@@ -20,6 +19,7 @@ const CARD_DIMENSIONS = {
   story: { width: 1080, height: 1920 },
 } as const;
 
+type CardFormat = keyof typeof CARD_DIMENSIONS;
 type AbsoluteBox = { x: number; y: number; width: number; height: number };
 
 function loadCanvasImage(src: string) {
@@ -51,11 +51,21 @@ function imageRect(image: HTMLImageElement, width: number, height: number) {
   const scale = Math.min(width / image.naturalWidth, height / image.naturalHeight);
   const drawWidth = image.naturalWidth * scale;
   const drawHeight = image.naturalHeight * scale;
-  return { x: (width - drawWidth) / 2, y: (height - drawHeight) / 2, width: drawWidth, height: drawHeight };
+  return {
+    x: (width - drawWidth) / 2,
+    y: (height - drawHeight) / 2,
+    width: drawWidth,
+    height: drawHeight,
+  };
 }
 
 function absoluteBox(box: NormalizedBox, master: ReturnType<typeof imageRect>): AbsoluteBox {
-  return { x: master.x + box.x * master.width, y: master.y + box.y * master.height, width: box.width * master.width, height: box.height * master.height };
+  return {
+    x: master.x + box.x * master.width,
+    y: master.y + box.y * master.height,
+    width: box.width * master.width,
+    height: box.height * master.height,
+  };
 }
 
 function insetBox(box: AbsoluteBox, insetX: number, insetY = insetX): AbsoluteBox {
@@ -103,14 +113,13 @@ function drawFitText(
   const align = options?.align ?? "center";
   const minSize = options?.minSize ?? 20;
   const maxSize = options?.maxSize ?? 52;
-  const lineHeightRatio = options?.lineHeight ?? 1.08;
-  const padRatio = options?.padRatio ?? 0.055;
-  const inset = Math.max(8, box.width * padRatio);
+  const lineHeightRatio = options?.lineHeight ?? 1.06;
+  const inset = Math.max(8, box.width * (options?.padRatio ?? 0.04));
   const usableWidth = Math.max(1, box.width - inset * 2);
-  const usableHeight = Math.max(1, box.height - inset * 1.2);
+  const usableHeight = Math.max(1, box.height - inset * 1.1);
+
   let size = maxSize;
   let lines: string[] = [];
-
   while (size >= minSize) {
     ctx.font = `${size}px ${DISPLAY_FONT}`;
     lines = wrapLines(ctx, text, usableWidth);
@@ -118,8 +127,8 @@ function drawFitText(
     if (lines.length <= maxLines && lines.length * lineHeight <= usableHeight) break;
     size -= 1;
   }
-
   if (!lines.length) return;
+
   const lineHeight = size * lineHeightRatio;
   const blockHeight = lines.length * lineHeight;
   const firstBaseline = box.y + (box.height - blockHeight) / 2 + size * 0.83;
@@ -128,7 +137,11 @@ function drawFitText(
   ctx.textAlign = align;
   ctx.textBaseline = "alphabetic";
   lines.slice(0, maxLines).forEach((line, index) => {
-    ctx.fillText(line, align === "center" ? box.x + box.width / 2 : box.x + inset, firstBaseline + index * lineHeight);
+    ctx.fillText(
+      line,
+      align === "center" ? box.x + box.width / 2 : box.x + inset,
+      firstBaseline + index * lineHeight,
+    );
   });
   ctx.textAlign = "left";
 }
@@ -136,9 +149,9 @@ function drawFitText(
 function drawWildCardPanel(ctx: CanvasRenderingContext2D, poll: PollQuestion, box: AbsoluteBox) {
   const question = poll.socialQuestion || poll.question;
   const choices = poll.options.filter((option) => option.label.trim()).slice(0, 4);
-  const panel = insetBox(box, box.width * 0.035, box.height * 0.08);
-  const questionHeight = panel.height * 0.39;
-  const gap = panel.height * 0.045;
+  const panel = insetBox(box, box.width * 0.035, box.height * 0.06);
+  const questionHeight = panel.height * 0.40;
+  const gap = panel.height * 0.035;
   const questionBox: AbsoluteBox = {
     x: panel.x,
     y: panel.y,
@@ -154,16 +167,16 @@ function drawWildCardPanel(ctx: CanvasRenderingContext2D, poll: PollQuestion, bo
 
   drawFitText(ctx, question, questionBox, {
     maxLines: 3,
-    minSize: Math.max(22, Math.floor(box.width * 0.038)),
-    maxSize: Math.max(44, Math.floor(box.width * 0.064)),
-    lineHeight: 1.0,
-    padRatio: 0.02,
+    minSize: Math.floor(box.width * 0.040),
+    maxSize: Math.floor(box.width * 0.072),
+    lineHeight: 0.98,
+    padRatio: 0.025,
   });
 
   if (choices.length < 2) return;
 
   const colGap = gridBox.width * 0.025;
-  const rowGap = gridBox.height * 0.10;
+  const rowGap = gridBox.height * 0.12;
   const cellWidth = (gridBox.width - colGap) / 2;
   const cellHeight = (gridBox.height - rowGap) / 2;
 
@@ -178,10 +191,10 @@ function drawWildCardPanel(ctx: CanvasRenderingContext2D, poll: PollQuestion, bo
     };
 
     ctx.save();
-    roundedRect(ctx, cell, cell.height * 0.28);
-    ctx.fillStyle = "rgba(255,255,255,0.34)";
+    roundedRect(ctx, cell, cell.height * 0.30);
+    ctx.fillStyle = "rgba(255,255,255,0.42)";
     ctx.fill();
-    ctx.lineWidth = Math.max(2, box.width * 0.0028);
+    ctx.lineWidth = Math.max(2, box.width * 0.0026);
     ctx.strokeStyle = "#a80064";
     ctx.stroke();
 
@@ -196,23 +209,22 @@ function drawWildCardPanel(ctx: CanvasRenderingContext2D, poll: PollQuestion, bo
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    const letterSize = Math.max(16, circleRadius * 1.18);
-    ctx.font = `${letterSize}px ${DISPLAY_FONT}`;
+    ctx.font = `${Math.max(16, circleRadius * 1.18)}px ${DISPLAY_FONT}`;
     ctx.fillText(OPTION_LETTERS[index] ?? String.fromCharCode(65 + index), circleX, circleY + 1);
 
     const textBox: AbsoluteBox = {
-      x: cell.x + cell.height * 0.95,
+      x: cell.x + cell.height * 0.96,
       y: cell.y,
-      width: cell.width - cell.height * 1.05,
+      width: cell.width - cell.height * 1.06,
       height: cell.height,
     };
     drawFitText(ctx, choice.label, textBox, {
       maxLines: 2,
       align: "left",
-      minSize: Math.max(15, Math.floor(box.width * 0.021)),
-      maxSize: Math.max(26, Math.floor(box.width * 0.036)),
-      lineHeight: 1.0,
-      padRatio: 0.025,
+      minSize: Math.floor(box.width * 0.022),
+      maxSize: Math.floor(box.width * 0.038),
+      lineHeight: 0.98,
+      padRatio: 0.02,
     });
     ctx.restore();
   });
@@ -221,54 +233,62 @@ function drawWildCardPanel(ctx: CanvasRenderingContext2D, poll: PollQuestion, bo
 function drawQuestionPanel(ctx: CanvasRenderingContext2D, poll: PollQuestion, box: AbsoluteBox) {
   const question = poll.socialQuestion || poll.question;
   const choices = poll.options.filter((option) => option.label.trim());
-  const hasChoices = choices.length > 1;
-  const outer = insetBox(box, Math.max(12, box.width * 0.025), Math.max(10, box.height * 0.06));
+  const outer = insetBox(box, box.width * 0.03, box.height * 0.06);
 
-  if (!hasChoices) {
+  if (choices.length <= 1) {
     drawFitText(ctx, question, outer, {
       maxLines: 5,
-      minSize: 24,
-      maxSize: 58,
-      lineHeight: 1.05,
+      minSize: Math.floor(box.width * 0.035),
+      maxSize: Math.floor(box.width * 0.075),
+      lineHeight: 1.0,
       padRatio: 0.02,
     });
     return;
   }
 
-  const questionHeight = outer.height * 0.46;
-  const gap = Math.max(8, outer.height * 0.035);
-  const questionBox = { x: outer.x, y: outer.y, width: outer.width, height: questionHeight };
-  const choicesBox = { x: outer.x, y: outer.y + questionHeight + gap, width: outer.width, height: Math.max(1, outer.height - questionHeight - gap) };
+  const questionHeight = outer.height * 0.48;
+  const questionBox: AbsoluteBox = { x: outer.x, y: outer.y, width: outer.width, height: questionHeight };
+  const choicesBox: AbsoluteBox = {
+    x: outer.x,
+    y: outer.y + questionHeight,
+    width: outer.width,
+    height: outer.height - questionHeight,
+  };
 
   drawFitText(ctx, question, questionBox, {
     maxLines: 4,
-    minSize: 24,
-    maxSize: 56,
-    lineHeight: 1.03,
+    minSize: Math.floor(box.width * 0.032),
+    maxSize: Math.floor(box.width * 0.060),
+    lineHeight: 1.0,
     padRatio: 0.02,
   });
 
+  const colGap = choicesBox.width * 0.025;
+  const rowGap = choicesBox.height * 0.08;
   const rows = Math.ceil(choices.length / 2);
-  const colGap = Math.max(8, choicesBox.width * 0.018);
-  const rowGap = Math.max(6, choicesBox.height * 0.08);
   const cellWidth = (choicesBox.width - colGap) / 2;
   const cellHeight = (choicesBox.height - rowGap * (rows - 1)) / rows;
 
   choices.forEach((choice, index) => {
     const row = Math.floor(index / 2);
     const col = index % 2;
-    const cell = { x: choicesBox.x + col * (cellWidth + colGap), y: choicesBox.y + row * (cellHeight + rowGap), width: cellWidth, height: cellHeight };
+    const cell: AbsoluteBox = {
+      x: choicesBox.x + col * (cellWidth + colGap),
+      y: choicesBox.y + row * (cellHeight + rowGap),
+      width: cellWidth,
+      height: cellHeight,
+    };
     drawFitText(ctx, `${OPTION_LETTERS[index] ?? String.fromCharCode(65 + index)}. ${choice.label}`, cell, {
       maxLines: 2,
-      minSize: 18,
-      maxSize: choices.length >= 4 ? 30 : 34,
-      lineHeight: 1.03,
-      padRatio: 0.018,
+      minSize: Math.floor(box.width * 0.021),
+      maxSize: Math.floor(box.width * 0.036),
+      lineHeight: 1.0,
+      padRatio: 0.02,
     });
   });
 }
 
-async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplate, format: "feed" | "story") {
+async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplate, format: CardFormat) {
   const { width, height } = CARD_DIMENSIONS[format];
   const canvas = document.createElement("canvas");
   canvas.width = width;
@@ -277,7 +297,6 @@ async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplat
   if (!ctx) throw new Error("Canvas is unavailable in this browser.");
 
   await document.fonts.ready;
-
   const [masterImage, officialWordmark] = await Promise.all([
     loadCanvasImage(template.masterPath),
     loadCanvasImage(DAILY_MIC_BRAND.wordmark),
@@ -307,23 +326,28 @@ async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplat
   brandGradient.addColorStop(1, "rgba(4,4,8,0)");
   ctx.fillStyle = brandGradient;
   ctx.fillRect(master.x, master.y, master.width, brandBandHeight * 1.4);
+
   const logoWidth = Math.min(master.width * 0.34, 390);
   const logoHeight = logoWidth * (officialWordmark.naturalHeight / officialWordmark.naturalWidth);
-  ctx.drawImage(officialWordmark, master.x + (master.width - logoWidth) / 2, master.y + Math.max(10, master.height * 0.012), logoWidth, logoHeight);
+  ctx.drawImage(
+    officialWordmark,
+    master.x + (master.width - logoWidth) / 2,
+    master.y + Math.max(10, master.height * 0.012),
+    logoWidth,
+    logoHeight,
+  );
 
   if (template.questionBox) {
     const box = absoluteBox(template.questionBox, master);
     if (template.clearDynamicBoxes) paintCleanPanel(ctx, box);
-    if (poll.category === "wild-card") {
-      drawWildCardPanel(ctx, poll, box);
-    } else if (template.mode === "question-panel") {
-      drawQuestionPanel(ctx, poll, box);
-    } else {
+    if (poll.category === "wild-card") drawWildCardPanel(ctx, poll, box);
+    else if (template.mode === "question-panel") drawQuestionPanel(ctx, poll, box);
+    else {
       drawFitText(ctx, poll.socialQuestion || poll.question, box, {
         maxLines: 4,
-        minSize: 22,
-        maxSize: 50,
-        lineHeight: 1.04,
+        minSize: Math.floor(box.width * 0.040),
+        maxSize: Math.floor(box.width * 0.075),
+        lineHeight: 1.0,
       });
     }
   }
@@ -336,21 +360,26 @@ async function renderDailyMicImage(poll: PollQuestion, template: DailyMicTemplat
       if (template.clearDynamicBoxes) paintCleanPanel(ctx, box);
       drawFitText(ctx, option.label, box, {
         maxLines: 4,
-        minSize: 20,
-        maxSize: template.optionBoxes!.length === 4 ? 38 : 50,
-        lineHeight: 1.04,
+        minSize: Math.floor(box.width * 0.060),
+        maxSize: Math.floor(box.width * 0.120),
+        lineHeight: 1.0,
         padRatio: 0.04,
       });
     });
   }
 
   return new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob((blob) => blob?.type === "image/png" ? resolve(blob) : reject(new Error("Could not create a PNG image.")), "image/png");
+    canvas.toBlob(
+      (blob) => (blob?.type === "image/png" ? resolve(blob) : reject(new Error("Could not create a PNG image."))),
+      "image/png",
+    );
   });
 }
 
 function captionVariants(poll: PollQuestion) {
-  const options = poll.options.length > 1 ? `\n\n${poll.options.map((o, index) => `${OPTION_LETTERS[index] ?? String.fromCharCode(65 + index)}. ${o.label}`).join(" • ")}` : "";
+  const options = poll.options.length > 1
+    ? `\n\n${poll.options.map((o, index) => `${OPTION_LETTERS[index] ?? String.fromCharCode(65 + index)}. ${o.label}`).join(" • ")}`
+    : "";
   const question = poll.socialQuestion || poll.question;
   return {
     Punchy: `${poll.socialHook}\n\n${question}${options}\n\nPick one. Then go see what everyone else chose.\n\nVote + see results → ${DAILY_MIC_BRAND.voteUrl}`,
@@ -359,89 +388,41 @@ function captionVariants(poll: PollQuestion) {
   };
 }
 
-function PreviewText({ poll, template }: { poll: PollQuestion; template: DailyMicTemplate }) {
-  const renderBox = (box: NormalizedBox, text: string, clear = false) => (
-    <div
-      className={`absolute flex items-center justify-center overflow-hidden px-[2.2%] text-center leading-[1.04] text-zinc-950 ${clear ? "bg-[#f4efe6]" : ""}`}
-      style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%`, fontSize: "clamp(9px,2.25vw,20px)", fontFamily: DISPLAY_FONT }}
-    >
-      {text}
-    </div>
-  );
-
-  const renderWildCard = (box: NormalizedBox) => {
-    const question = poll.socialQuestion || poll.question;
-    const choices = poll.options.filter((option) => option.label.trim()).slice(0, 4);
-    return (
-      <div
-        className="absolute overflow-hidden text-zinc-950"
-        style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%`, fontFamily: DISPLAY_FONT }}
-      >
-        <div className="grid h-full grid-rows-[39%_1fr] gap-[4.5%] px-[3.5%] py-[8%]">
-          <div className="flex items-center justify-center text-center leading-none" style={{ fontSize: "clamp(12px,2.8vw,24px)" }}>{question}</div>
-          <div className="grid grid-cols-2 grid-rows-2 gap-x-[2.5%] gap-y-[10%]">
-            {choices.map((choice, index) => (
-              <div key={choice.id} className="flex min-w-0 items-center rounded-[999px] border border-[#a80064] bg-white/35 px-[3%] shadow-sm">
-                <span className="mr-[4%] flex aspect-square h-[72%] shrink-0 items-center justify-center rounded-full bg-[#cf0a67] text-white" style={{ fontSize: "clamp(10px,2vw,18px)" }}>
-                  {OPTION_LETTERS[index] ?? String.fromCharCode(65 + index)}
-                </span>
-                <span className="min-w-0 text-left leading-none" style={{ fontSize: "clamp(9px,1.8vw,16px)" }}>{choice.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderQuestionPanel = (box: NormalizedBox) => {
-    const question = poll.socialQuestion || poll.question;
-    const choices = poll.options.filter((option) => option.label.trim());
-    const hasChoices = choices.length > 1;
-    return (
-      <div
-        className={`absolute overflow-hidden text-zinc-950 ${template.clearDynamicBoxes ? "bg-[#f4efe6]" : ""}`}
-        style={{ left: `${box.x * 100}%`, top: `${box.y * 100}%`, width: `${box.width * 100}%`, height: `${box.height * 100}%`, fontFamily: DISPLAY_FONT }}
-      >
-        <div className={`grid h-full px-[3%] py-[4%] ${hasChoices ? "grid-rows-[1.05fr_.95fr] gap-[3%]" : "place-items-center"}`}>
-          <div className="flex items-center justify-center text-center leading-[1.02]" style={{ fontSize: "clamp(11px,2.55vw,22px)" }}>{question}</div>
-          {hasChoices && (
-            <div className="grid grid-cols-2 content-center gap-x-[3%] gap-y-[6%]">
-              {choices.map((choice, index) => (
-                <div key={choice.id} className="flex items-center justify-center text-center leading-[1.03]" style={{ fontSize: "clamp(8px,1.75vw,15px)" }}>
-                  {OPTION_LETTERS[index] ?? String.fromCharCode(65 + index)}. {choice.label}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <>
-      {template.questionBox && (poll.category === "wild-card"
-        ? renderWildCard(template.questionBox)
-        : template.mode === "question-panel"
-          ? renderQuestionPanel(template.questionBox)
-          : renderBox(template.questionBox, poll.socialQuestion || poll.question, Boolean(template.clearDynamicBoxes)))}
-      {template.optionBoxes?.map((box, index) => poll.options[index] ? (
-        <div key={poll.options[index].id}>{renderBox(box, poll.options[index].label, Boolean(template.clearDynamicBoxes))}</div>
-      ) : null)}
-    </>
-  );
-}
-
 export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
-  const [format, setFormat] = useState<"feed" | "story">("feed");
+  const [format, setFormat] = useState<CardFormat>("feed");
   const [captionStyle, setCaptionStyle] = useState<"Punchy" | "Funny" | "Argument Starter">("Punchy");
   const [copied, setCopied] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportMessage, setExportMessage] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewError, setPreviewError] = useState<string | null>(null);
+
   const template = DAILY_MIC_TEMPLATES[poll.category];
   const captions = useMemo(() => captionVariants(poll), [poll]);
   const caption = captions[captionStyle];
+
+  useEffect(() => {
+    let active = true;
+    let objectUrl: string | null = null;
+    setPreviewUrl(null);
+    setPreviewError(null);
+
+    renderDailyMicImage(poll, template, format)
+      .then((blob) => {
+        if (!active) return;
+        objectUrl = URL.createObjectURL(blob);
+        setPreviewUrl(objectUrl);
+      })
+      .catch((error) => {
+        console.error(error);
+        if (active) setPreviewError("Could not render the Daily Mic preview.");
+      });
+
+    return () => {
+      active = false;
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [poll, template, format]);
 
   async function copyCaption() {
     await navigator.clipboard.writeText(caption);
@@ -511,35 +492,58 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
           </div>
           <div className="flex rounded-xl border border-white/10 p-1 text-sm font-bold">
             {(["feed", "story"] as const).map((value) => (
-              <button key={value} type="button" onClick={() => setFormat(value)} className={`rounded-lg px-3 py-2 capitalize ${format === value ? "bg-white text-black" : "text-slate-300"}`}>{value}</button>
+              <button
+                key={value}
+                type="button"
+                onClick={() => setFormat(value)}
+                className={`rounded-lg px-3 py-2 capitalize ${format === value ? "bg-white text-black" : "text-slate-300"}`}
+              >
+                {value}
+              </button>
             ))}
           </div>
         </div>
 
         <div className="mt-5 flex justify-center overflow-hidden rounded-2xl bg-slate-950 p-4">
           <div className={`relative w-full max-w-[540px] overflow-hidden bg-black ${format === "feed" ? "aspect-[4/5]" : "aspect-[9/16]"}`}>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="relative max-h-full max-w-full">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={template.masterPath} alt={`${template.label} approved master`} className="max-h-full max-w-full object-contain" />
-                <PreviewText poll={poll} template={template} />
-                <div className="absolute left-0 right-0 top-0 h-[8%] bg-gradient-to-b from-black via-black/90 to-transparent" />
-                <Image src={DAILY_MIC_BRAND.wordmark} alt={DAILY_MIC_BRAND.wordmarkAlt} width={2400} height={600} className="absolute left-1/2 top-[1.2%] z-10 h-auto w-[34%] -translate-x-1/2 object-contain" priority />
+            {previewUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={previewUrl} alt={`${template.label} rendered preview`} className="h-full w-full object-contain" />
+            ) : (
+              <div className="flex h-full items-center justify-center p-6 text-center text-sm font-semibold text-slate-400">
+                {previewError ?? "Rendering the exact export preview…"}
               </div>
-            </div>
+            )}
           </div>
         </div>
-        <p className="mt-4 text-xs leading-5 text-slate-500">The artwork is fixed by category. Only the daily question/options and the official SingHUB wordmark are composited on export.</p>
+        <p className="mt-4 text-xs leading-5 text-slate-500">Preview, Download, and Share now use the exact same canvas renderer.</p>
       </section>
 
       <aside className="rounded-3xl border border-white/10 bg-white/[.035] p-5">
         <p className="text-xs font-black uppercase tracking-[.22em] text-cyan-300">Caption bait</p>
-        <div className="mt-4 flex flex-wrap gap-2">{(["Punchy", "Funny", "Argument Starter"] as const).map((style) => <button key={style} type="button" onClick={() => setCaptionStyle(style)} className={`rounded-full border px-3 py-2 text-xs font-black ${captionStyle === style ? "border-fuchsia-300 bg-fuchsia-300/15 text-white" : "border-white/10 text-slate-400"}`}>{style}</button>)}</div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {(["Punchy", "Funny", "Argument Starter"] as const).map((style) => (
+            <button
+              key={style}
+              type="button"
+              onClick={() => setCaptionStyle(style)}
+              className={`rounded-full border px-3 py-2 text-xs font-black ${captionStyle === style ? "border-fuchsia-300 bg-fuchsia-300/15 text-white" : "border-white/10 text-slate-400"}`}
+            >
+              {style}
+            </button>
+          ))}
+        </div>
         <textarea readOnly value={caption} className="mt-4 min-h-72 w-full rounded-2xl border border-white/10 bg-slate-950 p-4 text-sm leading-6 text-slate-200" />
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          <button type="button" onClick={downloadImage} disabled={exporting} className="min-h-11 rounded-xl bg-fuchsia-300 px-4 text-sm font-black text-slate-950 disabled:opacity-50">{exporting ? "Creating image..." : "Download image"}</button>
-          <button type="button" onClick={shareImage} disabled={exporting} className="min-h-11 rounded-xl border border-fuchsia-300/40 px-4 text-sm font-black text-fuchsia-100 disabled:opacity-50">Share image</button>
-          <button type="button" onClick={copyCaption} className="min-h-11 rounded-xl border border-white/15 px-4 text-sm font-black sm:col-span-2">{copied ? "Caption copied" : "Copy caption"}</button>
+          <button type="button" onClick={downloadImage} disabled={exporting} className="min-h-11 rounded-xl bg-fuchsia-300 px-4 text-sm font-black text-slate-950 disabled:opacity-50">
+            {exporting ? "Creating image..." : "Download image"}
+          </button>
+          <button type="button" onClick={shareImage} disabled={exporting} className="min-h-11 rounded-xl border border-fuchsia-300/40 px-4 text-sm font-black text-fuchsia-100 disabled:opacity-50">
+            Share image
+          </button>
+          <button type="button" onClick={copyCaption} className="min-h-11 rounded-xl border border-white/15 px-4 text-sm font-black sm:col-span-2">
+            {copied ? "Caption copied" : "Copy caption"}
+          </button>
         </div>
         {exportMessage && <p className="mt-3 text-sm font-semibold text-cyan-200">{exportMessage}</p>}
         <div className="mt-6 rounded-2xl border border-white/10 bg-black/20 p-4">
