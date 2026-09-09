@@ -15,16 +15,16 @@ export default function manifest(): MetadataRoute.Manifest {
     prefer_related_applications: false,
     icons: [
       {
-        src: "/icon.png",
-        sizes: "512x512",
+        src: "/icon-192.png",
+        sizes: "192x192",
         type: "image/png",
-        purpose: "maskable",
+        purpose: "any",
       },
       {
         src: "/icon.png",
         sizes: "512x512",
         type: "image/png",
-        purpose: "any",
+        purpose: "any maskable",
       },
       {
         src: "/apple-icon.png",
