@@ -11,6 +11,13 @@ const eslintConfig = defineConfig([
       "react/no-unescaped-entities": "off",
     },
   },
+  {
+    files: ["src/components/admin/DailyMicGenerator.tsx"],
+    rules: {
+      // Existing preview-render effect intentionally clears stale preview state before the async canvas render.
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

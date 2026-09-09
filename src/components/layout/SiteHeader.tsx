@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
+import { InstallSingHubButton } from "@/components/pwa/InstallSingHubButton";
 import { Button } from "@/components/ui/Button";
 
 const primaryNavItems = [
@@ -101,6 +102,8 @@ export function SiteHeader() {
               ))}
 
               <div className="my-1 border-t border-white/10" />
+
+              <InstallSingHubButton onClick={closeMobileMenu} />
 
               <Link
                 href="/venues/premium"

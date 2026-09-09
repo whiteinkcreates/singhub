@@ -28,6 +28,9 @@ jobs:
       - name: Validate committed public data
         run: npm run check:data
 
+      - name: Keep heavy media out of deployments
+        run: npm run check:assets
+
       - name: Lint
         run: npm run lint
 

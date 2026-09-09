@@ -1,10 +1,10 @@
 name: Sync public karaoke data
 
 on:
+  # Run intentionally when public snapshots need to be refreshed.
+  # The nightly schedule was removed to avoid generating unnecessary
+  # preview + production deployments when no product release is needed.
   workflow_dispatch:
-  # Spreadsheet-only changes publish nightly or through a manual dispatch.
-  schedule:
-    - cron: "15 10 * * *"
   push:
     branches:
       - main
@@ -70,7 +70,7 @@ jobs:
           path: .data-sync-output
           include-hidden-files: true
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 7
 
   publish:
     if: github.event_name != 'pull_request'
@@ -130,14 +130,14 @@ jobs:
 
           BRANCH="automation/data-sync-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           git checkout -b "$BRANCH"
-          git commit -m "data: nightly canonical sync"
+          git commit -m "data: intentional canonical sync"
           git push -u origin "$BRANCH"
 
           PR_URL=$(gh pr create \
             --base main \
             --head "$BRANCH" \
-            --title "data: nightly canonical sync" \
-            --body "Automated SingHUB canonical-to-public data sync. Data guardrails, committed-data checks, lint, and build passed before this pull request was created.")
+            --title "data: intentional canonical sync" \
+            --body "Intentional SingHUB canonical-to-public data sync. Data guardrails, committed-data checks, lint, and build passed before this pull request was created.")
 
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
@@ -159,4 +159,4 @@ jobs:
           path: .data-sync-output
           include-hidden-files: true
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 7
