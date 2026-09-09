@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { PwaInstallManager } from "@/components/pwa/PwaInstallManager";
+import { PwaRegister } from "@/components/pwa/PwaRegister";
 import "./globals.css";
 
 const GA_MEASUREMENT_ID = "G-NQGPSYB6Q7";
@@ -10,6 +12,12 @@ export const metadata: Metadata = {
   title: "SingHUB | Find Karaoke Near You",
   description:
     "SingHUB helps you find karaoke near you. Search karaoke nights by day, neighborhood, venue, or host, starting in San Diego.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "SingHUB",
+  },
   icons: {
     icon: [{ url: "/icon.png", sizes: "512x512", type: "image/png" }],
     shortcut: [{ url: "/icon.png", sizes: "512x512", type: "image/png" }],
@@ -34,6 +42,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             gtag('config', '${GA_MEASUREMENT_ID}');
           `}
         </Script>
+        <PwaRegister />
+        <PwaInstallManager />
         <SiteHeader />
         {children}
         <SiteFooter />
