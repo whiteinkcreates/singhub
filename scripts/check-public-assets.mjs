@@ -4,9 +4,13 @@ import path from "node:path";
 const ROOT = path.join(process.cwd(), "public");
 const MAX_BYTES = 750 * 1024;
 const ALLOWED = new Set([
-  // PWA/browser icons are intentionally local and should remain lightweight.
+  // Install/browser assets need to remain local for reliable PWA metadata.
   "icon.png",
   "apple-icon.png",
+  // Existing core brand assets stay local for now. Heavy venue, host, event,
+  // social, and generated media belongs in Cloudinary.
+  "images/header-singhub-logo.png",
+  "images/singhub-mark.png",
 ]);
 const MEDIA_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".mp4", ".mov", ".webm"]);
 
