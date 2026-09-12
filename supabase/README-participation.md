@@ -7,7 +7,7 @@ SingHUB uses two participation thresholds:
 
 ## 1. Create the database objects
 
-Run the complete contents of `supabase/vibe-checks.sql` in the Supabase SQL Editor. The script is idempotent, so rerun the whole file when this participation schema changes.
+Run the complete contents of `supabase/vibe-checks.sql` in the Supabase SQL Editor for the initial participation setup. The streamlined feature-vote flow reuses these existing objects and does not require an additional migration.
 
 Confirm the controlled bank and feature choices were seeded:
 
