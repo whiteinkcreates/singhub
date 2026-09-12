@@ -4,7 +4,7 @@ Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
 Exported venues: 91.
-Exported events: 186.
+Exported events: 183.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -17,7 +17,9 @@ Exported events: 186.
 ## Public Venues Missing Events Row
 - venue-0048 Hive Karaoke
 - venue-0065 Jin Music Studios
+- venue-0071 Kaminski's Sports Lounge
 - venue-0066 North County - Larrys Beach Club
+- venue-0109 N City Sports Lounge
 - venue-0127 Smitty's Downtown
 - venue-0128 La Estación
 ## Public Venues Missing Schedule
@@ -143,7 +145,11 @@ Exported events: 186.
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
 - event row 76: event-double-deuce-2026-07-17-navy-nick-cover
+- event row 120: event-mcguffies-karaoke-2026-09-02
+- event row 151: weekly-richs-san-diego-thursday
 - event row 152: event-n-city-sports-lounge-thursday-karaoke-party
+- event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
+- event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
 ## Events With Invalid App Visibility
 - None
 ## Event References Missing Exported Venues
@@ -203,7 +209,9 @@ Exported events: 186.
 - event row 167: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
+- venue: venue-0071 Kaminski's Sports Lounge
 - venue: venue-0066 North County - Larrys Beach Club
+- venue: venue-0109 N City Sports Lounge
 - venue: venue-0127 Smitty's Downtown
 - venue: venue-0128 La Estación
 ## Public Venues Missing Coordinates
@@ -247,14 +255,14 @@ SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
 Public venues: 91
-Authoritative events: 186
+Authoritative events: 183
 Legacy venue slug aliases: 0
 
 PASS Monday: 17 authoritative / 8 expected minimum
 PASS Tuesday: 29 authoritative / 8 expected minimum
-PASS Wednesday: 31 authoritative / 9 expected minimum
-PASS Thursday: 38 authoritative / 14 expected minimum
-PASS Friday: 29 authoritative / 10 expected minimum
+PASS Wednesday: 30 authoritative / 9 expected minimum
+PASS Thursday: 37 authoritative / 14 expected minimum
+PASS Friday: 28 authoritative / 10 expected minimum
 PASS Saturday: 21 authoritative / 10 expected minimum
 PASS Sunday: 21 authoritative / 7 expected minimum
 
