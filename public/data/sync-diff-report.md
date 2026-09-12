@@ -4,10 +4,10 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 89
+- Previous non-empty lines: 92
 - Candidate non-empty lines: 92
 - Added/changed lines: 92
-- Removed/changed lines: 89
+- Removed/changed lines: 92
 
 ### Added or changed sample
 
@@ -62,11 +62,24 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 ## events_by_night.tsv
 
 - Previous non-empty lines: 187
-- Candidate non-empty lines: 187
-- Added/changed lines: 0
-- Removed/changed lines: 0
+- Candidate non-empty lines: 184
+- Added/changed lines: 1
+- Removed/changed lines: 4
 
-- No content changes.
+### Added or changed sample
+
+```text
+event-richs-san-diego-karaoke-2026-09-17	venue-0119	Rich's San Diego	richs-san-diego	Thursday	10:00 PM	2:00 AM	dj-niko	DJ Niko	DJ Niko	Date-specific	active	Thursday, September 17 karaoke from 10 PM to 2 AM with DJ Niko.	100	Direct email from Ryan Bedrosian, Owner - Rich's San Diego, 2026-09-02	Rich's official Pop Rocks / events calendar	2026-09-02	verified_direct_owner_schedule	FALSE
+```
+
+### Removed or changed sample
+
+```text
+event-mcguffies-karaoke-2026-09-02	venue-0025	McGuffie's Live	mcguffies-live	Wednesday	8:00 PM	2:00 AM		T-DOG	T-DOG	One-time / event series	active	Karaoke night at McGuffie's Live on Wednesday Sept. 2 at 8 PM, hosted by T-DOG.	93	Official McGuffie's Live shows calendar	SingHUB event watch 2026-08-18	2026-08-18	web_verified_event	FALSE
+weekly-richs-san-diego-thursday	venue-0119	Rich's San Diego	richs-san-diego	Thursday	9:00 PM	2:00 AM	dj-niko	DJ Niko	DJ Niko	Date-specific September 2026	active	September 2026: Sep 3 10 PM-2 AM; Sep 10 9 PM-2 AM; Sep 17 10 PM-2 AM; no karaoke Sep 24. DJ Niko hosts front-room karaoke during Pop Rocks.	100	Direct email from Ryan Bedrosian, Owner - Rich's San Diego, 2026-09-02	Rich's official Pop Rocks / events calendar	2026-09-02	verified_direct_owner_schedule	FALSE
+event-n-city-sports-lounge-karaoke-2026-09-03	venue-0109	N City Sports Lounge	n-city-sports-lounge	Thursday	9:00 PM	2:00 AM		Lady Nancy	Lady Nancy	Date-specific	active	Thursday Sept. 3 karaoke at N City Sports Lounge from 9 PM to 2 AM with Lady Nancy.	100	https://ncitysportslounge.com/national-city-n-city-sports-lounge-events	SingHUB re-verification 2026-08-29	2026-08-29	web_verified_date_specific	FALSE
+event-kaminskis-sports-lounge-karaoke-2026-09-04	venue-0071	Kaminski's Sports Lounge	kaminskis-sports-lounge	Friday	8:00 PM	11:00 PM	devyn-conover	Devyn Conover	Devyn Conover	Date-specific	active	Friday, September 4 karaoke from 8 PM to 11 PM with Devyn Conover.	100	Corey direct confirmation 2026-09-03	Direct schedule from Devyn Conover 2026-09-03	2026-09-03	verified_direct_user_confirmation	FALSE
+```
 
 ## generated_events_review.tsv
 
@@ -96,13 +109,13 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-12T21:50:28.354Z",
-  "venues": 91,
+  "generatedAt": "2026-09-12T23:28:07.273Z",
+  "authoritativeEvents": 183,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-12T03:16:31.895Z",
-  "venues": 88,
+  "generatedAt": "2026-09-12T21:50:28.354Z",
+  "authoritativeEvents": 186,
 ```
