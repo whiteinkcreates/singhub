@@ -1,6 +1,6 @@
 {
   "archivedOn": "2026-08-14",
-  "lastUpdated": "2026-08-29",
+  "lastUpdated": "2026-09-12",
   "archiveTab": "Live_Only_Event_Review / Events_Canonical",
   "reason": "Explicitly approved public snapshot removals after archival, expiry, or source verification. Date-specific rows must be re-promoted as separate recurring canonical events only after recurrence is verified.",
   "eventIds": [
@@ -11,6 +11,8 @@
     "event-0023",
     "event-0024",
     "event-0026",
-    "event-n-city-sports-lounge-thursday-karaoke-party"
+    "event-n-city-sports-lounge-thursday-karaoke-party",
+    "event-n-city-sports-lounge-karaoke-2026-09-03",
+    "event-kaminskis-sports-lounge-karaoke-2026-09-04"
   ]
 }
