@@ -18,7 +18,7 @@ const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 async function getFeatureVoteResults(): Promise<FeatureVoteApiResponse> {
   const supabase = createAdminClient();
   const { data, error } = await supabase
-    .from("feature_poll_email_votes")
+    .from("feature_poll_votes")
     .select("option_id")
     .eq("poll_slug", CURRENT_FEATURE_POLL.slug);
 
@@ -95,15 +95,21 @@ export async function POST(request: Request) {
     }
 
     const supabase = createAdminClient();
-    const { error: submitError } = await supabase.rpc(
-      "submit_feature_email_vote",
-      {
-        p_email: email,
-        p_poll_slug: CURRENT_FEATURE_POLL.slug,
-        p_option_id: body.optionId,
-        p_product_updates_opt_in: body.productUpdatesOptIn === true,
-      },
-    );
+    const { data: identity, error: identityError } =
+      await supabase.auth.admin.generateLink({
+        type: "magiclink",
+        email,
+      });
+    if (identityError) throw identityError;
+    if (!identity.user) throw new Error("Email identity could not be created.");
+
+    const { error: submitError } = await supabase.rpc("submit_feature_vote", {
+      p_user_id: identity.user.id,
+      p_email: email,
+      p_poll_slug: CURRENT_FEATURE_POLL.slug,
+      p_option_id: body.optionId,
+      p_product_updates_opt_in: body.productUpdatesOptIn === true,
+    });
     if (submitError) throw submitError;
 
     return NextResponse.json({
