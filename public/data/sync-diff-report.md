@@ -15,7 +15,7 @@ Candidate output compared with the currently committed public data.
 id	venue_name	slug	profile_tier	listing_status	venue_type	city	neighborhood	address	latitude	longitude	website	instagram	banner_image_url	banner_image_alt	ticker_text	karaoke_day	start_time	end_time	host_name	vibe_tags	description	specials	happy_hour	food_highlights	drink_highlights	parking_info	age_policy	accessibility_notes	cover_charge	reservation_link	booking_contact	is_featured	confidence_score	confidence_notes	source_1	source_2	source_3	last_verified
 venue-0051	#1 Fifth Avenue	1-fifth-avenue	basic	verified	live_bar	San Diego	Hillcrest	3845 Fifth Ave, San Diego, CA 92103	32.7482	-117.1603		@numberonefifth				Thursday, Tuesday	10:00 PM / 8:00 PM	12:30 AM / 12:00 AM	Navy Nick / DJ JP rotation, Bobbi and Danny	Hillcrest, Thursday karaoke, Tuesday karaoke, live karaoke	Hillcrest karaoke venue with verified Tuesday karaoke from 8 PM to midnight hosted by Bobbi and Danny, plus Thursday late-night karaoke from 10 PM to 12:30 AM with a Navy Nick / DJ JP rotation.											FALSE	100	Diego directly confirmed Tuesday karaoke 8 PM-midnight hosted by Bobbi and Danny and clarified that the 10 PM-12:30 AM late-night Navy Nick / DJ JP rotation is on Thursdays.	Direct venue response from Diego / #1 Fifth	Corey verification outreach 2026-08-19; Navy Nick response 2026-07-15		2026-08-19
 venue-0062	710 Beach Club	710-beach-club	basic	ai_scouted	live_bar	San Diego	Pacific Beach	710 Garnet Ave, San Diego (Pacific Beach)	32.7971	-117.2562	https://www.710bc.com/	@710beachclub				Thursday	8:00 PM	12:00 AM	Two of Clubs	Pacific Beach, Thursday karaoke, live karaoke	Thursday karaoke with Two of Clubs starting 8pm until 12am.											FALSE	85	Synced from completed Weekly_Grid roundup schedule.				2026-07-13
-venue-0018	BLVD	blvd	basic	ai_scouted	live_bar	San Diego	Grantville	6628 Mission Gorge Rd, San Diego, CA 92120	32.7803	-117.0951	https://theblvdbarsd.com/	@theblvdbarsd				Saturday	9:00 PM	TBD	DJ Glyph	Grantville, Saturday karaoke, live karaoke	Grantville / Mission Gorge venue with a reported Saturday karaoke lead. Current start time, host, and recurring status still need verification before using in roundups.											FALSE	85	Synced from completed Weekly_Grid roundup schedule.				2026-07-13
+venue-0018	BLVD	blvd	basic	ai_scouted	live_bar	San Diego	College Area	6949 El Cajon Blvd, San Diego, CA 92115	32.7803	-117.0951	https://theblvdbarsd.com/	@theblvdbarsd	College Area, Saturday Karaoke, DJ Glyph			Saturday	9:00 PM	TBD	DJ Glyph	College Area bar with Saturday karaoke starting at 9 PM with DJ Glyph. Saturday only.	Grantville / Mission Gorge venue with a reported Saturday karaoke lead. Current start time, host, and recurring status still need verification before using in roundups.											FALSE	verified_direct_user_correction	BLVD is in College Area, not Grantville. Address corrected to 6949 El Cajon Blvd. Karaoke is Saturday only.	2026-09-09	Corey direct correction 2026-09-09		100
 venue-0013	Camels Bar & Grill	camels-bar-grill	basic	verified	live_bar	San Diego	Mission Valley	10330 Friars Rd, San Diego, CA 92120	32.7938	-117.1082	https://camelsbarandgrill.com/	@camelsbarandgrill				Thursday, Saturday	9:00 PM / 8:30 PM	1:00 AM / close	DJ Mike, KJ Meth	Mission Valley, Thursday karaoke, Saturday karaoke, live karaoke	Mission Valley karaoke venue with Thursday karaoke hosted by DJ Mike and Saturday karaoke from 8:30 PM to close with KJ Meth of A.I. Entertainment.											FALSE	100	A.I. Entertainment directly confirms the Saturday schedule and KJ Meth affiliation.	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Corey direct Camels Thursday confirmation		2026-09-04
 venue-0015	Carriage House Cocktails & Karaoke	carriage-house-cocktails-karaoke	basic	verified	live_bar	San Diego	Kearny Mesa / Convoy	4690 Convoy St, San Diego, CA 92111	32.8311	-117.1539		@carriagehousekaraokesd				Monday, Tuesday, Wednesday, Sunday, Thursday, Friday, Saturday	9:00 PM	1:30 AM	Amy "Miss Pond", Brian "MP", Amy "Miss Pond" / Lindsey, Lindsey	Kearny Mesa / Convoy, Monday karaoke, Tuesday karaoke, Wednesday karaoke, Sunday karaoke, Thursday karaoke	Kearny Mesa / Convoy dedicated karaoke bar with karaoke seven nights a week from 9 PM to 1:30 AM. Wednesday programming also includes Bingo on the 1st Wednesday and trivia on the 3rd Wednesday before karaoke.											FALSE	100	Venue directly confirmed karaoke 7 nights/week, 9 PM-1:30 AM. Hosts: Amy "Miss Pond" Monday, Thursday, Friday, Saturday, plus 1st/3rd Wednesdays; Brian "MP" Tuesday; Lindsey Sunday plus 2nd/4th/5th Wednesdays. Bingo 1st Wednesday 5:30-8:30 PM; trivia 3rd Wednesday 5:30-8:30 PM.	Direct venue response via Instagram	Corey verification outreach 2026-08-16		2026-08-16
 venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	basic	verified	live_bar	San Diego	University Heights	1839 Adams Avenue, San Diego, CA, USA	32.7634	-117.1455	https://cheerssandiego.com	cheersbarsandiego				Monday, Wednesday	8:00 PM	1:00 AM	Ed&Katie	University Heights, Monday karaoke, Wednesday karaoke, live karaoke	University Heights neighborhood bar with karaoke Monday and Wednesday from 8 PM-1 AM, hosted by Ed and Katie.										info@cheerssandiego.com	FALSE	95	Official site confirms Cheers Bar San Diego at 1839 Adams Ave and its University Heights history.	Official Cheers Bar San Diego website/history	Corey correction 2026-08-12		2026-08-12
@@ -63,10 +63,32 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 
 - Previous non-empty lines: 187
 - Candidate non-empty lines: 187
-- Added/changed lines: 0
-- Removed/changed lines: 0
+- Added/changed lines: 7
+- Removed/changed lines: 7
 
-- No content changes.
+### Added or changed sample
+
+```text
+weekly-werewolf-monday	venue-0007	Werewolf	werewolf	Monday	9:00 PM	1:00 AM		Rotating KJs	Rotating KJs	TRUE	active	Monday karaoke from 9 PM to 1 AM with rotating KJs.	100	https://thewerewolf.net/karaoke	Corey direct correction 2026-08-09	2026-09-09	verified_official_current_schedule	FALSE
+weekly-werewolf-tuesday	venue-0007	Werewolf	werewolf	Tuesday	9:00 PM	1:00 AM		Rotating KJs	Rotating KJs	TRUE	active	Tuesday karaoke from 9 PM to 1 AM with rotating KJs.	100	https://thewerewolf.net/karaoke	Corey direct correction 2026-08-09	2026-09-09	verified_official_current_schedule	FALSE
+weekly-werewolf-wednesday	venue-0007	Werewolf	werewolf	Wednesday	9:00 PM	1:00 AM		Rotating KJs	Rotating KJs	TRUE	active	Wednesday karaoke from 9 PM to 1 AM with rotating KJs.	100	https://thewerewolf.net/karaoke	Corey direct correction 2026-08-09	2026-09-09	verified_official_current_schedule	FALSE
+weekly-werewolf-thursday	venue-0007	Werewolf	werewolf	Thursday	9:00 PM	1:00 AM		Rotating KJs	Rotating KJs	TRUE	active	Thursday karaoke from 9 PM to 1 AM with rotating KJs.	100	https://thewerewolf.net/karaoke	Corey direct correction 2026-08-09	2026-09-09	verified_official_current_schedule	FALSE
+weekly-werewolf-friday	venue-0007	Werewolf	werewolf	Friday	9:00 PM	1:00 AM	rodney	Rodney	Rodney	TRUE	active	Friday karaoke from 9 PM to 1 AM with Rodney.	100	https://thewerewolf.net/karaoke	Corey direct correction 2026-07-25	2026-09-09	verified_official_current_schedule	FALSE
+weekly-werewolf-saturday	venue-0007	Werewolf	werewolf	Saturday	9:00 PM	1:00 AM	rodney	Rodney	Rodney	TRUE	active	Saturday karaoke from 9 PM to 1 AM with Rodney.	100	https://thewerewolf.net/karaoke	Corey direct correction 2026-07-25	2026-09-09	verified_official_current_schedule	FALSE
+weekly-werewolf-sunday	venue-0007	Werewolf	werewolf	Sunday	9:00 PM	1:00 AM	rodney	Rodney	Rodney	TRUE	active	Sunday karaoke from 9 PM to 1 AM with Rodney.	100	https://thewerewolf.net/karaoke	Corey direct correction 2026-07-25	2026-09-09	verified_official_current_schedule	FALSE
+```
+
+### Removed or changed sample
+
+```text
+weekly-werewolf-monday	venue-0007	Werewolf	werewolf	Monday	9:00 PM	1:30 AM		Rotating KJs	Rotating KJs	TRUE	active	Monday karaoke from 9 PM to 1:30 AM with rotating KJs.	100	Corey direct correction 2026-08-09	SingHUB canonical correction	2026-08-09	verified_direct_schedule	FALSE
+weekly-werewolf-tuesday	venue-0007	Werewolf	werewolf	Tuesday	9:00 PM	1:30 AM		Rotating KJs	Rotating KJs	TRUE	active	Tuesday karaoke from 9 PM to 1:30 AM with rotating KJs.	100	Corey direct correction 2026-08-09	SingHUB canonical correction	2026-08-09	verified_direct_schedule	FALSE
+weekly-werewolf-wednesday	venue-0007	Werewolf	werewolf	Wednesday	9:00 PM	1:30 AM		Rotating KJs	Rotating KJs	TRUE	active	Wednesday karaoke from 9 PM to 1:30 AM with rotating KJs.	100	Corey direct correction 2026-08-09	SingHUB canonical correction	2026-08-09	verified_direct_schedule	FALSE
+weekly-werewolf-thursday	venue-0007	Werewolf	werewolf	Thursday	9:00 PM	1:30 AM		Rotating KJs	Rotating KJs	TRUE	active	Thursday karaoke from 9 PM to 1:30 AM with rotating KJs.	100	Corey direct correction 2026-08-09	SingHUB canonical correction	2026-08-09	verified_direct_schedule	FALSE
+weekly-werewolf-friday	venue-0007	Werewolf	werewolf	Friday	9:00 PM	1:30 AM	rodney	Rodney	Rodney	TRUE	active	Friday karaoke from 9 PM to 1:30 AM with Rodney.	100	Corey direct correction 2026-07-25	SingHUB field notes	2026-08-09	verified_direct_schedule	FALSE
+weekly-werewolf-saturday	venue-0007	Werewolf	werewolf	Saturday	9:00 PM	1:30 AM	rodney	Rodney	Rodney	TRUE	active	Saturday karaoke from 9 PM to 1:30 AM with Rodney.	100	Corey direct correction 2026-07-25	SingHUB field notes	2026-08-09	verified_direct_schedule	FALSE
+weekly-werewolf-sunday	venue-0007	Werewolf	werewolf	Sunday	9:00 PM	1:30 AM	rodney	Rodney	Rodney	TRUE	active	Sunday karaoke from 9 PM to 1:30 AM with Rodney.	100	Corey direct correction 2026-07-25	SingHUB field notes	2026-08-09	verified_direct_schedule	FALSE
+```
 
 ## generated_events_review.tsv
 
@@ -96,11 +118,11 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-09T07:50:51.463Z",
+  "generatedAt": "2026-09-12T03:16:31.895Z",
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-07T15:49:44.654Z",
+  "generatedAt": "2026-09-09T07:50:51.463Z",
 ```
