@@ -22,6 +22,7 @@ const expansionMarkets = new Map([
   ["Moreno Valley", "Inland Empire"],
   ["Boston", "Boston"],
   ["Boothbay Harbor", "Midcoast Maine"],
+  ["Rincón", "Puerto Rico"],
 ]);
 
 const sanDiegoCities = new Set([
