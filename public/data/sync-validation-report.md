@@ -3,7 +3,7 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 88.
+Exported venues: 91.
 Exported events: 186.
 
 ## Generated Venue Schedule Candidates (Review Only)
@@ -17,6 +17,9 @@ Exported events: 186.
 ## Public Venues Missing Events Row
 - venue-0048 Hive Karaoke
 - venue-0065 Jin Music Studios
+- venue-0066 North County - Larrys Beach Club
+- venue-0127 Smitty's Downtown
+- venue-0128 La Estación
 ## Public Venues Missing Schedule
 - venue-0051 #1 Fifth Avenue
 - venue-0062 710 Beach Club
@@ -46,6 +49,7 @@ Exported events: 186.
 - venue-0025 McGuffie's Live
 - venue-0004 Norms
 - venue-0067 Grand Comedy Club and Pizzeria
+- venue-0066 North County - Larrys Beach Club
 - venue-0076 Novo Brazil Brewing - Lane Ave
 - venue-0017 Pal Joey's Cocktail Lounge
 - venue-0038 Peter D's
@@ -106,6 +110,8 @@ Exported events: 186.
 - venue-0122 Stoney's Bar & Grill
 - venue-0123 Mr. Peabody's Bar & Grill
 - venue-0124 The Rabbit Hole
+- venue-0127 Smitty's Downtown
+- venue-0128 La Estación
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -117,7 +123,6 @@ Exported events: 186.
 - row 33: venue-0040 Melody Karaoke & Cafe
 - row 34: venue-0032 Mikami Bar & Revolving Sushi
 - row 38: venue-0068 North County - CoLab Public House
-- row 40: venue-0066 North County - Larrys Beach Club
 - row 42: venue-0033 Off Base Bar
 - row 43: venue-0074 On The Rocks Cocktails
 - row 45: venue-0034 Paradise Lounge
@@ -198,6 +203,9 @@ Exported events: 186.
 - event row 167: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
+- venue: venue-0066 North County - Larrys Beach Club
+- venue: venue-0127 Smitty's Downtown
+- venue: venue-0128 La Estación
 ## Public Venues Missing Coordinates
 - venue-0101 Urban Mo’s Bar & Grill
 - venue-0102 Three Stags Irish Pub and Restaurant
@@ -206,7 +214,6 @@ Exported events: 186.
 - venue-0104 Flights Bar & Eats
 - venue-0088 Batter Rebellion
 - venue-0089 U-31
-- venue-0090 JP's Pub
 - venue-0091 Harbor Town Pub
 - venue-0092 Neon Moon
 - venue-0083 Tony’s Martini Bar
@@ -217,8 +224,6 @@ Exported events: 186.
 - venue-0107 Coyote Bar & Grill Carlsbad
 - venue-0108 The North Bar
 - venue-0109 N City Sports Lounge
-- venue-0110 BNS Brewing and Distilling Co.
-- venue-0111 D O T Cocktail Lounge
 - venue-0112 Cow Shed Bar & Grill
 - venue-0113 Full Circle Saloon
 - venue-0114 Casino Inn Bar & Grill
@@ -241,7 +246,7 @@ Exported events: 186.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 88
+Public venues: 91
 Authoritative events: 186
 Legacy venue slug aliases: 0
 
