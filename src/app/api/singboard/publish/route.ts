@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { uploadSingBoardImage } from "@/lib/singboard/cloudinary";
+import { findSingBoardSlot, isSingBoardSlotOccupied } from "@/lib/singboard/layout";
 import {
   createSingBoardPost,
+  getActiveSingBoardFlyers,
   getAuthorizedSingBoardPoster,
   type SingBoardNoteColor,
   type SingBoardPostType,
@@ -39,6 +41,19 @@ export async function POST(request: Request) {
     const eventDate = requiredText(form, "eventDate");
     if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate)) return NextResponse.json({ error: "Invalid event date." }, { status: 400 });
 
+    const placement = {
+      x: numberField(form, "x", 0, 100),
+      y: numberField(form, "y", 0, 100),
+      rotation: numberField(form, "rotation", -5, 5),
+    };
+    const slot = findSingBoardSlot(placement);
+    if (!slot) return NextResponse.json({ error: "Choose one of the available flyer spaces." }, { status: 400 });
+
+    const activePosts = await getActiveSingBoardFlyers();
+    if (isSingBoardSlotOccupied(slot, activePosts)) {
+      return NextResponse.json({ error: "That flyer space was just taken. Choose another one." }, { status: 409 });
+    }
+
     let imageUrl: string | undefined;
     let imagePublicId: string | undefined;
     let noteText: string | undefined;
@@ -74,9 +89,9 @@ export async function POST(request: Request) {
       startTime: String(form.get("startTime") || "").trim() || undefined,
       hostName: String(form.get("hostName") || "").trim() || undefined,
       linkUrl: String(form.get("linkUrl") || "").trim() || undefined,
-      x: numberField(form, "x", 0, 100),
-      y: numberField(form, "y", 0, 100),
-      rotation: numberField(form, "rotation", -5, 5),
+      x: placement.x,
+      y: placement.y,
+      rotation: placement.rotation,
     });
 
     return NextResponse.json({ id, imageUrl });
