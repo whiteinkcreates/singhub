@@ -310,4 +310,4 @@ revoke all on function public.submit_feature_vote(uuid, text, text, text, boolea
 grant execute on function public.submit_feature_vote(uuid, text, text, text, boolean) to service_role;
 
 comment on table public.feature_poll_votes is
-  'One current roadmap vote per email-confirmed SingHUB member and feature poll.';
+  'One current roadmap vote per SingHUB email identity and feature poll.';
