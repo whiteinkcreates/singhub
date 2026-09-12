@@ -213,7 +213,6 @@ function venueMatchesSearch(
     venue.agePolicy,
     venue.coverCharge,
     ...(venueSearchAliases[venue.slug] ?? []),
-    ...venue.vibeTags,
     ...events.flatMap((event) => [
       event.hostName,
       event.karaokeDay,

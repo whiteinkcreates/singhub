@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FeatureVote } from "@/components/home/FeatureVote";
 import { KaraokeForecastCard } from "@/components/home/KaraokeForecastCard";
 import { PollOfTheDay } from "@/components/home/PollOfTheDay";
 import { HostDirectoryCard } from "@/components/host/HostCard";
@@ -128,6 +129,7 @@ export default async function Home() {
         <div className="relative mx-auto max-w-7xl space-y-5 px-3 pb-8 sm:px-4 md:space-y-6 md:pb-12">
           <KaraokeForecastCard forecast={forecast} />
           <PollOfTheDay />
+          <FeatureVote />
         </div>
       </section>
 

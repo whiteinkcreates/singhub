@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { DailyMicQuestionPanel } from "@/components/home/DailyMicQuestionPanel";
 
 type PollOption = { id: string; label: string; votes: number; percentage: number };
 type PollPayload = { slug: string; question: string; helper?: string; category: string; totalVotes: number; options: PollOption[] };
@@ -89,20 +90,15 @@ export function PollOfTheDay() {
           <div className="mt-6 h-64 animate-pulse rounded-3xl border border-white/5 bg-white/[0.03]" />
         ) : poll ? (
           <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_0.92fr]">
-            <div className="rounded-3xl border border-white/10 bg-black/20 p-5 md:p-6">
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">Today&apos;s argument</p>
-              <h3 className="mt-3 max-w-2xl text-2xl font-black leading-tight text-white md:text-3xl">{poll.question}</h3>
-              {poll.helper && <p className="mt-2 text-sm leading-6 text-slate-400">{poll.helper}</p>}
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                {poll.options.map((option) => {
-                  const isSelected = selected === option.id;
-                  return (
-                    <button key={option.id} type="button" disabled={Boolean(selected) || voting} onClick={() => vote(option.id)} className={`min-h-16 rounded-2xl border px-4 py-3 text-left text-sm font-black transition ${isSelected ? "border-fuchsia-300/70 bg-fuchsia-400/20 text-white shadow-[0_0_28px_rgba(217,70,239,0.16)]" : "border-white/12 bg-white/[0.035] text-slate-100 hover:-translate-y-0.5 hover:border-cyan-300/45 hover:bg-cyan-300/[0.06]"} disabled:cursor-default`}>
-                      {option.label}
-                    </button>
-                  );
-                })}
-              </div>
+            <div>
+              <DailyMicQuestionPanel
+                question={poll.question}
+                helper={poll.helper}
+                options={poll.options}
+                selectedOptionId={selected}
+                voting={voting}
+                onVote={vote}
+              />
               <p className="mt-4 min-h-5 text-xs text-slate-500">{message || (selected ? "Vote locked in. Results are live." : "Tap once. No account needed.")}</p>
             </div>
 

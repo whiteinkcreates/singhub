@@ -244,12 +244,6 @@ function PremiumVenueCard({ venue, events = [], distanceLabel }: VenueCardProps)
             {venue.description}
           </p>
 
-          <div className="flex flex-wrap gap-2">
-            {venue.vibeTags.map((tag) => (
-              <Badge key={tag}>{tag}</Badge>
-            ))}
-          </div>
-
           {premiumHighlights.length > 0 && (
             <div className="grid gap-3 md:grid-cols-4">
               {premiumHighlights.slice(0, 4).map((item) => (
@@ -320,12 +314,6 @@ function BasicVenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
           <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
             {venue.description}
           </p>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {venue.vibeTags.map((tag) => (
-              <Badge key={tag}>{tag}</Badge>
-            ))}
-          </div>
 
           <p className="mt-4 rounded-2xl border border-white/10 bg-slate-950/40 p-3 text-xs leading-5 text-slate-200">
             {getTrustCopy(venue)}
