@@ -1,15 +1,15 @@
 import { KaraokePlacesExperience } from "@/components/places/KaraokePlacesExperience";
-import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getVenueListings } from "@/lib/venueData";
 
 export const metadata = {
-  title: "San Diego Karaoke Venue Index | SingHUB",
+  title: "SingHUB Radar | Karaoke Places Worldwide",
   description:
-    "Explore the SingHUB Venue Index for karaoke spots across San Diego, including verified schedules, recent finds, and places worth knowing.",
+    "Explore karaoke places on the SingHUB Radar, including verified schedules, community finds, and venues that still need confirmation.",
 };
 
 export default async function KaraokePlacesPage() {
-  const venues = getSanDiegoPublicVenues(await getVenueListings());
+  const venues = getPublicVenues(await getVenueListings());
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
@@ -18,13 +18,13 @@ export default async function KaraokePlacesPage() {
         <div className="absolute -bottom-24 left-1/3 h-64 w-64 rounded-full bg-cyan-500/10 blur-3xl" />
         <div className="relative">
           <p className="text-xs font-black uppercase tracking-[0.32em] text-cyan-300">
-            SingHUB Venue Index
+            SingHUB Radar
           </p>
           <h1 className="mt-3 max-w-4xl text-4xl font-black text-white md:text-6xl">
-            Explore San Diego karaoke beyond tonight.
+            Explore karaoke places worth knowing.
           </h1>
           <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 md:text-lg">
-            Browse karaoke spots across San Diego, including verified schedules, recent finds, and venues worth knowing. For a specific night, use the Finder to see current karaoke options.
+            Browse verified karaoke and community-submitted finds from anywhere SingHUB singers have been or heard about. Radar listings may still need schedule confirmation and do not automatically mean karaoke is happening tonight. For current San Diego nights, use the Finder.
           </p>
         </div>
       </section>
