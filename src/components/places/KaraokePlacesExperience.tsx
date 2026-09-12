@@ -40,7 +40,6 @@ function matchesSearch(venue: VenueListing, query: string) {
     venue.neighborhood,
     venue.address,
     venue.description,
-    ...venue.vibeTags,
   ].some((value) => value?.toLowerCase().includes(normalizedQuery));
 }
 

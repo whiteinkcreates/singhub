@@ -15,11 +15,6 @@ export function VenueMiniCard({ venue }: { venue: VenueListing }) {
       <p className="mt-2 text-sm leading-6 text-slate-300">
         {venue.karaokeDay} {venue.startTime ? `at ${venue.startTime}` : "karaoke"}
       </p>
-      {venue.vibeTags.length > 0 ? (
-        <p className="mt-3 text-xs font-semibold uppercase tracking-[0.16em] text-fuchsia-200">
-          {venue.vibeTags.slice(0, 3).join(" • ")}
-        </p>
-      ) : null}
     </Link>
   );
 }

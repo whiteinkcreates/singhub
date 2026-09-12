@@ -95,7 +95,6 @@ function getSchedule(venue: VenueListing) {
 
 function VenueMiniCard({ venue }: { venue: VenueListing }) {
   const name = getDisplayName(venue);
-  const tags = venue.vibeTags.slice(0, 3);
   return (
     <Link href={getVenueHref(venue)} className="group relative flex min-h-[15rem] flex-col justify-between overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.045] p-4 shadow-2xl shadow-black/30 transition hover:-translate-y-1 hover:border-cyan-300/50 sm:p-5">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_24%_10%,rgba(217,70,239,0.28),transparent_14rem),radial-gradient(circle_at_90%_0%,rgba(34,211,238,0.22),transparent_12rem)]" />
@@ -109,10 +108,7 @@ function VenueMiniCard({ venue }: { venue: VenueListing }) {
         <p className="mt-3 text-sm font-semibold leading-5 text-cyan-100">{getSchedule(venue)}</p>
       </div>
       <div className="relative mt-6">
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => <span key={tag} className="rounded-full border border-white/10 bg-slate-950/55 px-3 py-1 text-xs font-semibold text-slate-200">{tag}</span>)}
-        </div>
-        <p className="mt-4 text-sm font-bold text-fuchsia-100">View listing →</p>
+        <p className="text-sm font-bold text-fuchsia-100">View listing →</p>
       </div>
     </Link>
   );

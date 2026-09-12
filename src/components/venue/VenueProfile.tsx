@@ -2,6 +2,7 @@
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EventSchedule } from "@/components/venue/EventSchedule";
+import { VibeCheck } from "@/components/venue/VibeCheck";
 import {
   VenueSignalBadges,
   VenueSignalDetails,
@@ -181,12 +182,6 @@ function PremiumProfile({ venue, events = [] }: VenueProfileProps) {
         </div>
 
         <div className="p-6 md:p-8">
-          <div className="flex flex-wrap gap-2">
-            {venue.vibeTags.map((tag) => (
-              <Badge key={tag}>{tag}</Badge>
-            ))}
-          </div>
-
           <RadarContext venue={venue} events={events} />
           <EventSchedule events={events} />
           <VenueSignalDetails venue={venue} />
@@ -250,12 +245,6 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
         <p className="mt-5 max-w-3xl leading-8 text-slate-300">
           {venue.description}
         </p>
-        <div className="mt-6 flex flex-wrap gap-2">
-          {venue.vibeTags.map((tag) => (
-            <Badge key={tag}>{tag}</Badge>
-          ))}
-        </div>
-
         <RadarContext venue={venue} events={events} />
         <EventSchedule events={events} />
         <VenueSignalDetails venue={venue} />
@@ -280,9 +269,22 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
 }
 
 export function VenueProfile({ venue, events = [] }: VenueProfileProps) {
-  if (venue.profileTier === "premium") {
-    return <PremiumProfile venue={venue} events={events} />;
-  }
-
-  return <BasicProfile venue={venue} events={events} />;
+  return (
+    <>
+      {venue.profileTier === "premium" ? (
+        <PremiumProfile venue={venue} events={events} />
+      ) : (
+        <BasicProfile venue={venue} events={events} />
+      )}
+      <VibeCheck
+        venue={{ id: venue.id, slug: venue.slug, name: venue.venueName }}
+        events={events.map((event) => ({
+          eventId: event.eventId,
+          karaokeDay: event.karaokeDay,
+          startTime: event.startTime,
+          hostName: event.hostName,
+        }))}
+      />
+    </>
+  );
 }
