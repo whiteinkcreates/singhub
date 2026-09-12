@@ -1,6 +1,6 @@
 "use client";
 
-import { toPng } from "html-to-image";
+import { toJpeg } from "html-to-image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DailyMicQuestionPanel } from "@/components/home/DailyMicQuestionPanel";
 import { DAILY_MIC_BRAND } from "@/lib/dailyMicBrand";
@@ -48,6 +48,42 @@ function dataUrlToBlob(dataUrl: string) {
   }
 
   return new Blob([bytes], { type: mimeType });
+}
+
+async function waitForCaptureAssets(node: HTMLElement) {
+  await Promise.race([
+    document.fonts.ready,
+    new Promise<void>((resolve) => window.setTimeout(resolve, 5000)),
+  ]);
+
+  const images = Array.from(node.querySelectorAll("img"));
+  await Promise.all(
+    images.map(async (image) => {
+      if (image.complete && image.naturalWidth > 0) return;
+      if (image.complete) {
+        throw new Error(`Could not load ${image.currentSrc || image.src}`);
+      }
+      await new Promise<void>((resolve, reject) => {
+        image.addEventListener("load", () => resolve(), { once: true });
+        image.addEventListener(
+          "error",
+          () => reject(new Error(`Could not load ${image.currentSrc || image.src}`)),
+          { once: true },
+        );
+      });
+    }),
+  );
+}
+
+function downloadFile(file: File) {
+  const objectUrl = URL.createObjectURL(file);
+  const link = document.createElement("a");
+  link.href = objectUrl;
+  link.download = file.name;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
 }
 
 function SocialPollCard({ poll, format }: { poll: PollQuestion; format: CardFormat }) {
@@ -103,11 +139,12 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
     const node = captureRef.current;
     if (!node) throw new Error("The Daily Mic card is not ready yet.");
 
-    await document.fonts.ready;
-    return toPng(node, {
+    await waitForCaptureAssets(node);
+    return toJpeg(node, {
       cacheBust: true,
       backgroundColor: "#020617",
       pixelRatio: 2,
+      quality: 0.95,
       width: dimensions.captureWidth,
       height: dimensions.captureHeight,
     });
@@ -136,12 +173,12 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
   }, [format, poll.slug, renderImage]);
 
   function imageFilename() {
-    return `SingHUB-Daily-Mic-${poll.slug}-${format}-${dimensions.width}x${dimensions.height}.png`;
+    return `SingHUB-Daily-Mic-${poll.slug}-${format}-${dimensions.width}x${dimensions.height}.jpg`;
   }
 
   async function buildImageFile() {
     const dataUrl = await renderImage();
-    return new File([dataUrlToBlob(dataUrl)], imageFilename(), { type: "image/png" });
+    return new File([dataUrlToBlob(dataUrl)], imageFilename(), { type: "image/jpeg" });
   }
 
   async function downloadImage() {
@@ -150,15 +187,10 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
 
     try {
       const file = await buildImageFile();
-      const objectUrl = URL.createObjectURL(file);
-      const link = document.createElement("a");
-      link.href = objectUrl;
-      link.download = file.name;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
-      setExportMessage(`Saved ${file.name} to Downloads.`);
+      downloadFile(file);
+      setExportMessage(
+        `Downloaded ${file.name}. Look in your browser's Downloads folder.`,
+      );
     } catch (error) {
       console.error("Daily Mic image download failed", error);
       setExportMessage("Could not capture or download the poll image.");
@@ -175,10 +207,14 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
       const file = await buildImageFile();
       const shareData = { files: [file], title: "Daily Mic | SingHUB" };
       if (!navigator.share || !navigator.canShare?.(shareData)) {
-        setExportMessage("This browser cannot share image files. Use Download image.");
+        downloadFile(file);
+        setExportMessage(
+          "This browser cannot open a file share sheet, so the JPG was downloaded instead.",
+        );
         return;
       }
       await navigator.share(shareData);
+      setExportMessage("JPG shared from your device.");
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") return;
       console.error("Daily Mic image sharing failed", error);
@@ -186,6 +222,24 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
     } finally {
       setExporting(false);
     }
+  }
+
+  function openFullSizeImage() {
+    if (!previewUrl) {
+      setExportMessage("The full-size preview is still being created.");
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(dataUrlToBlob(previewUrl));
+    const opened = window.open(objectUrl, "_blank", "noopener,noreferrer");
+    if (!opened) {
+      URL.revokeObjectURL(objectUrl);
+      setExportMessage(
+        "Your browser blocked the image tab. Use Download JPG instead.",
+      );
+      return;
+    }
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 5 * 60_000);
   }
 
   async function copyCaption() {
@@ -239,8 +293,17 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
             </div>
           </div>
           <p className="mt-4 text-xs leading-5 text-slate-500">
-            Preview, download, and share are generated from the same rendered poll fields used on the homepage.
+            Preview, download, and share use the same poll fields shown on the homepage. The exported JPG is exactly {dimensions.width}×{dimensions.height}px.
           </p>
+          {previewUrl ? (
+            <button
+              type="button"
+              onClick={openFullSizeImage}
+              className="mt-3 inline-flex text-xs font-black text-cyan-200 underline decoration-cyan-300/40 underline-offset-4"
+            >
+              Open full-size JPG
+            </button>
+          ) : null}
         </section>
 
         <aside className="rounded-3xl border border-white/10 bg-white/[.035] p-5">
@@ -260,15 +323,18 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
           <textarea readOnly value={caption} className="mt-4 min-h-72 w-full rounded-2xl border border-white/10 bg-slate-950 p-4 text-sm leading-6 text-slate-200" />
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             <button type="button" onClick={downloadImage} disabled={exporting} className="min-h-11 rounded-xl bg-fuchsia-300 px-4 text-sm font-black text-slate-950 disabled:opacity-50">
-              {exporting ? "Creating image..." : "Download image"}
+              {exporting ? "Creating JPG..." : "Download JPG"}
             </button>
             <button type="button" onClick={shareImage} disabled={exporting} className="min-h-11 rounded-xl border border-fuchsia-300/40 px-4 text-sm font-black text-fuchsia-100 disabled:opacity-50">
-              Share image
+              Share JPG
             </button>
             <button type="button" onClick={copyCaption} className="min-h-11 rounded-xl border border-white/15 px-4 text-sm font-black sm:col-span-2">
               {copied ? "Caption copied" : "Copy caption"}
             </button>
           </div>
+          <p className="mt-3 text-xs leading-5 text-slate-500">
+            Instagram controls its own share-sheet options. If it only offers Messages, download the JPG and choose it inside Instagram when creating the post.
+          </p>
           {exportMessage && <p className="mt-3 text-sm font-semibold text-cyan-200">{exportMessage}</p>}
         </aside>
       </div>
