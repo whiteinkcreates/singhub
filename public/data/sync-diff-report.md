@@ -22,8 +22,8 @@ venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	basic	verified	live_bar	San
 venue-0009	Deano's Pub - La Mesa	deanos-pub	basic	verified	live_bar	La Mesa	La Mesa	5286 Baltimore Dr, La Mesa, CA 91942	32.7754	-117.0327	https://deanospub.com/	@deanospub				Wednesday	8:00 PM	12:00 AM	KJ Smash	La Mesa, Wednesday karaoke, live karaoke	La Mesa neighborhood pub with Wednesday karaoke from 8 PM to midnight hosted by KJ Smash of A.I. Entertainment.											TRUE	100	A.I. Entertainment confirms the current Wednesday schedule and KJ Smash affiliation.	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Current Deano's venue post		2026-09-04
 venue-0082	Deano's East	deanos-east	basic	verified	live_bar	Santee	Santee	11541 Woodside Ave Ste d, Santee, CA 92071	32.8384	-116.9723						Saturday	8:00 PM	12:00 AM	KJ Lolo	Santee, Saturday karaoke, live karaoke	Santee karaoke venue with Saturday karaoke from 8 PM to midnight hosted by KJ Lolo of A.I. Entertainment.											FALSE	100	A.I. Entertainment confirms the Saturday schedule, address, and KJ Lolo affiliation.	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	KJ Lolo direct profile submission		2026-09-04
 venue-0077	Clark Cabaret	clark-cabaret	basic	verified	live_bar	San Diego	University Heights	4545 Park Blvd #101, San Diego, CA 92116	32.7604	-117.1462	https://www.diversionary.org/events/karaoke-night-7	@clarkcabaret				Friday	10:00 PM	TBD	TBD	University Heights, Friday karaoke, live karaoke	University Heights LGBTQIA+ theatre/cabaret bar venue with Friday Karaoke Night starting at 10 PM. Use public listing name Clark Cabaret.											FALSE	92	Corey confirmed Diversionary Friday karaoke starts at 10 PM on 2026-06-29. Diversionary karaoke archive lists Karaoke Night on multiple Fridays. End time and host still need confirmation.	https://www.diversionary.org/mec-category/karaoke	https://www.diversionary.org/events/karaoke-night-7		2026-06-30
-venue-0073	Dock's Cocktail Lounge	docks-cocktail-lounge	basic	ai_scouted	live_bar	Chula Vista	Downtown Chula Vista	317 3rd Ave, Chula Vista, CA	32.6409	-117.0805						Friday, Saturday	9:00 PM	TBD	TBD	Downtown Chula Vista, Friday karaoke, Saturday karaoke, live karaoke	Remove Dock's from tonight's Thursday roundup. Current karaoke schedule needs direct confirmation before future roundup use.											FALSE	50	New row added from Karaoke Venues SD 9/17 List. Needs verification before verified status.	Karaoke Venues SD - 9/17 List			2026-07-09
-venue-0020	Don's Cocktails	dons-cocktails	basic	ai_scouted	live_bar	El Cajon	El Cajon	13321 Hwy 8 Bus, El Cajon, CA 92021	32.8171	-116.9002	https://dons-cocktail-lounge.edan.io/	@dons_cocktail_lounge)				Thursday, Friday	9pm-last call	TBD	DJ Savadelic	El Cajon, Thursday karaoke, Friday karaoke, live karaoke	El Cajon karaoke bar with Thursday and Friday karaoke. Exact times still need confirmation.											FALSE	78	Corey confirmed Don's Cocktails has Thursday / Friday karaoke. Removed misplaced Cordova event/media data from canonical row.				2026-07-11
+venue-0073	Dock's Cocktail Lounge	docks-cocktail-lounge	basic	ai_scouted	live_bar	Chula Vista	Downtown Chula Vista	317 3rd Ave, Chula Vista, CA	32.6409	-117.0805										Downtown Chula Vista, live karaoke	On the Radar in Downtown Chula Vista. Karaoke has been reported at Dock's Cocktail Lounge, but no current recurring night or time is verified.											FALSE	50	Prior Friday and Saturday community reports remain unverified. Corey moved Dock's to Radar-only pending direct confirmation.	Corey direct Radar classification 2026-09-13	Recent Chula Vista community karaoke reports		2026-09-13
+venue-0020	Don's Cocktails	dons-cocktails	basic	verified	live_bar	El Cajon	El Cajon	13321 Hwy 8 Business, El Cajon, CA 92021	32.8171	-116.9002	https://dons-cocktail-lounge.edan.io/	@dons_cocktail_lounge				Thursday, Friday	9:00 PM	last call	DJ Savadelic	El Cajon, Thursday karaoke, Friday karaoke, live karaoke	El Cajon karaoke bar with Thursday and Friday karaoke from 9 PM to last call, hosted by DJ Savadelic. 21+, no cover, with drink specials all night.											FALSE	100	Current Don's promotion confirms karaoke Thursday and Friday from 9 PM to last call with DJ Savadelic. 21+, no cover, and drink specials all night.	Don's karaoke promotion supplied by Corey 2026-09-13	Weekly_Grid		2026-09-13
 venue-0005	Double Deuce	double-deuce	basic	verified	live_bar	San Diego	Gaslamp Quarter	528 F St, San Diego, CA 92101	32.7139	-117.1603	https://doubledeucesd.com/	@doubledeucesandiego				Thursday, Friday, Saturday	8:00 PM / 7:00 PM	10:00 PM	Savor Entertainment	Gaslamp, Country Karaoke, Weekly Karaoke	Gaslamp Quarter bar with Thursday-Saturday karaoke. Thursday runs 8-10 PM with Savor Entertainment; Friday and Saturday run 7-10 PM with Savor Entertainment.											FALSE	95	Nickalus Randle / @navynickaraoke provided recurring Double Deuce karaoke schedule. Flyer confirms Navy Nick country collab with Savor Entertainment on 07.11 and 07.17, 7-10 PM.	Navy Nick response 2026-07-15	Navy Nick / Savor Entertainment flyer		2026-07-15
 venue-0014	Flicks	flicks	basic	verified	live_bar	San Diego	Hillcrest	1017 University Ave, San Diego, CA 92103	32.7483	-117.1546	https://www.sdflicks.com/	https://www.instagram.com/flicks_sd/?hl=enn				Tuesday	8:30 PM	1:30 AM	Thonie Lee	Hillcrest, Late Night, Weekly Karaoke	Hillcrest bar/nightlife venue with Tuesday karaoke from 8:30 PM-1:30 AM hosted by Thonie Lee.											FALSE	95	Nickalus Randle / @navynickaraoke provided Tuesday schedule: Flicks, 8:30 PM-1:30 AM, host Thonie Lee.	Navy Nick response 2026-07-15	Karaoke Venues SD - Full_Karaoke_Venue_List__Rebuilt_.csv		2026-07-15
 venue-0042	Gaslamplighter Karaoke Cocktail Bar	gaslamplighter	basic	ai_scouted	live_bar	San Diego	Gaslamp Quarter	536 Market St, San Diego, CA 92101	32.7111	-117.1604		@gaslamplighter				Tuesday, Wednesday, Friday, Sunday	9:00 PM	close	TBD	Gaslamp Quarter, Tuesday karaoke, Wednesday karaoke, Friday karaoke, Sunday karaoke, live karaoke	Gaslamp karaoke cocktail bar with karaoke Tuesday-Sunday from 9 PM-close. Hours and availability may occasionally vary due to private events or full venue buyouts.											FALSE	85	Corey confirmed Gaslamplighter Karaoke Cocktail Bar schedule: Tuesday-Sunday 9p-close. Note: hours and availability may vary for private events or full venue buyouts. Removed Monday from lineup.	Corey direct update 2026-06-28			2026-07-13
@@ -61,15 +61,27 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 178
-- Candidate non-empty lines: 179
-- Added/changed lines: 1
-- Removed/changed lines: 0
+- Previous non-empty lines: 179
+- Candidate non-empty lines: 177
+- Added/changed lines: 3
+- Removed/changed lines: 5
 
 ### Added or changed sample
 
 ```text
-event-kaminskis-sports-lounge-karaoke-2026-09-18	venue-0071	Kaminski's Sports Lounge	kaminskis-sports-lounge	Friday	8:00 PM	11:00 PM	devyn-conover	Devyn Conover	Devyn Conover	Date-specific	active	Friday, September 18 karaoke from 8 PM to 11 PM with Devyn Conover.	100	Direct message from Devyn Conover to Corey 2026-09-03	Corey direct anchor confirmation 2026-09-03	2026-09-03	verified_direct_host_schedule	FALSE
+weekly-dons-cocktails-thursday	venue-0020	Don's Cocktails	dons-cocktails	Thursday	9:00 PM	last call	dj-savadelic	DJ Savadelic	DJ Savadelic	TRUE	active	Thursday karaoke from 9 PM to last call with DJ Savadelic. 21+, no cover.	100	Don's karaoke promotion supplied by Corey 2026-09-13	Weekly_Grid	2026-09-13	verified_direct_venue_promotion	FALSE
+weekly-dons-cocktails-friday	venue-0020	Don's Cocktails	dons-cocktails	Friday	9:00 PM	last call	dj-savadelic	DJ Savadelic	DJ Savadelic	TRUE	active	Friday karaoke from 9 PM to last call with DJ Savadelic. 21+, no cover.	100	Don's karaoke promotion supplied by Corey 2026-09-13	Weekly_Grid	2026-09-13	verified_direct_venue_promotion	FALSE
+weekly-whiskey-girl-thursday	venue-0008	Whiskey Girl	whiskey-girl	Thursday	8:30 PM	1:00 AM		Live Band Karaoke	Live Band Karaoke	TRUE	active	Thursday Live Band Karaoke from 8:30 PM to 1 AM.	100	Whiskey Girl Nightly Entertainment schedule supplied by Corey 2026-09-13	https://livebandkaraokesd.com/shows	2026-09-13	verified_direct_venue_schedule	FALSE
+```
+
+### Removed or changed sample
+
+```text
+weekly-dons-cocktails-thursday	venue-0020	Don's Cocktails	dons-cocktails	Thursday	9pm-last call	TBD		DJ Savadelic	DJ Savadelic	TRUE	active	Thursday karaoke with DJ Savadelic starting 9pm-last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
+weekly-dons-cocktails-friday	venue-0020	Don's Cocktails	dons-cocktails	Friday	9pm-last call	TBD		DJ Savadelic	DJ Savadelic	TRUE	active	Friday karaoke with DJ Savadelic starting 9pm-last call.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
+weekly-whiskey-girl-thursday	venue-0008	Whiskey Girl	whiskey-girl	Thursday	9:00 PM	1:00 AM		Live Band Karaoke	Live Band Karaoke	TRUE	active	Thursday karaoke with Live Band Karaoke starting 9pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
+weekly-docks-cocktail-lounge-friday	venue-0073	Dock's Cocktail Lounge	docks-cocktail-lounge	Friday	9:00 PM	TBD		TBD	TBD	TRUE	active	Friday karaoke at Dock's starting at 9 PM. End time and host need confirmation.	75	Corey direct lock request 2026-08-27	Recent Chula Vista community karaoke reports	2026-08-27	community_report_needs_confirmation	FALSE
+weekly-docks-cocktail-lounge-saturday	venue-0073	Dock's Cocktail Lounge	docks-cocktail-lounge	Saturday	9:00 PM	TBD		TBD	TBD	TRUE	active	Saturday karaoke at Dock's starting at 9 PM. End time and host need confirmation.	75	Corey direct lock request 2026-08-27	Recent Chula Vista community karaoke reports	2026-08-27	community_report_needs_confirmation	FALSE
 ```
 
 ## generated_events_review.tsv
@@ -100,13 +112,13 @@ event-kaminskis-sports-lounge-karaoke-2026-09-18	venue-0071	Kaminski's Sports Lo
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-13T19:10:14.286Z",
-  "authoritativeEvents": 178,
+  "generatedAt": "2026-09-13T20:54:25.653Z",
+  "authoritativeEvents": 176,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-13T19:02:00.136Z",
-  "authoritativeEvents": 177,
+  "generatedAt": "2026-09-13T19:10:14.286Z",
+  "authoritativeEvents": 178,
 ```

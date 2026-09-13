@@ -4,7 +4,7 @@ Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
 Exported venues: 89.
-Exported events: 178.
+Exported events: 176.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -15,6 +15,7 @@ Exported events: 178.
 ## Legacy Slug Mappings
 - None
 ## Public Venues Missing Events Row
+- venue-0073 Dock's Cocktail Lounge
 - venue-0048 Hive Karaoke
 - venue-0065 Jin Music Studios
 - venue-0066 North County - Larrys Beach Club
@@ -153,6 +154,8 @@ Exported events: 178.
 - event row 120: event-mcguffies-karaoke-2026-09-02
 - event row 151: weekly-richs-san-diego-thursday
 - event row 152: event-n-city-sports-lounge-thursday-karaoke-party
+- event row 153: weekly-docks-cocktail-lounge-friday
+- event row 154: weekly-docks-cocktail-lounge-saturday
 - event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
 - event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
 ## Events With Invalid App Visibility
@@ -170,8 +173,6 @@ Exported events: 178.
 ## Events Skipped Because Missing Day Or Start Time
 - None
 ## Public Rows With TBD Address/Time/Host
-- event row 2: weekly-dons-cocktails-thursday Don's Cocktails
-- event row 3: weekly-dons-cocktails-friday Don's Cocktails
 - event row 5: weekly-blvd-saturday BLVD
 - event row 40: weekly-novo-brazil-brewing-lane-ave-thursday Novo Brazil Brewing - Lane Ave
 - event row 45: weekly-gaslamplighter-tuesday Gaslamplighter Karaoke Cocktail Bar
@@ -204,13 +205,12 @@ Exported events: 178.
 - event row 147: weekly-redwing-bar-grill-monday Redwing Bar & Grill
 - event row 148: weekly-redwing-bar-grill-tuesday Redwing Bar & Grill
 - event row 149: weekly-redwing-bar-grill-wednesday Redwing Bar & Grill
-- event row 153: weekly-docks-cocktail-lounge-friday Dock's Cocktail Lounge
-- event row 154: weekly-docks-cocktail-lounge-saturday Dock's Cocktail Lounge
 - event row 156: weekly-the-luau-thursday The Luau
 - event row 157: weekly-the-luau-saturday The Luau
 - event row 158: weekly-the-luau-sunday The Luau
 - event row 159: weekly-the-luau-friday The Luau
 - event row 167: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
+- venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
 - venue: venue-0066 North County - Larrys Beach Club
@@ -258,15 +258,15 @@ SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
 Public venues: 89
-Authoritative events: 178
+Authoritative events: 176
 Legacy venue slug aliases: 0
 
 PASS Monday: 17 authoritative / 8 expected minimum
 PASS Tuesday: 29 authoritative / 8 expected minimum
 PASS Wednesday: 30 authoritative / 9 expected minimum
 PASS Thursday: 35 authoritative / 14 expected minimum
-PASS Friday: 28 authoritative / 10 expected minimum
-PASS Saturday: 19 authoritative / 10 expected minimum
+PASS Friday: 27 authoritative / 10 expected minimum
+PASS Saturday: 18 authoritative / 10 expected minimum
 PASS Sunday: 20 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
