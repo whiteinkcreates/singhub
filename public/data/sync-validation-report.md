@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 91.
-Exported events: 183.
+Exported venues: 89.
+Exported events: 177.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -36,7 +36,6 @@ Exported events: 183.
 - venue-0020 Don's Cocktails
 - venue-0005 Double Deuce
 - venue-0014 Flicks
-- venue-0058 Gaslamp Lumpia Factory
 - venue-0042 Gaslamplighter Karaoke Cocktail Bar
 - venue-0056 Gingers
 - venue-0054 Happy Does
@@ -54,7 +53,6 @@ Exported events: 183.
 - venue-0066 North County - Larrys Beach Club
 - venue-0076 Novo Brazil Brewing - Lane Ave
 - venue-0017 Pal Joey's Cocktail Lounge
-- venue-0038 Peter D's
 - venue-0060 Punch Bowl Social San Diego
 - venue-0039 Redwing Bar & Grill
 - venue-0026 Shooters Cocktails
@@ -118,6 +116,7 @@ Exported events: 183.
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
 - row 12: venue-0069 Dirk's Niteclub
+- row 18: venue-0058 Gaslamp Lumpia Factory
 - row 21: venue-0078 Good News Bar
 - row 22: venue-0055 Good Night John Boy
 - row 25: venue-0053 Henrys Pub
@@ -129,6 +128,7 @@ Exported events: 183.
 - row 43: venue-0074 On The Rocks Cocktails
 - row 45: venue-0034 Paradise Lounge
 - row 46: venue-0028 Parkys Saloon
+- row 47: venue-0038 Peter D's
 - row 50: venue-0023 Rock Out Karaoke
 - row 51: venue-0050 Saddle Bar
 - row 53: venue-0064 Spot KTV & Restaurant
@@ -141,6 +141,12 @@ Exported events: 183.
 ## Events Skipped Because App Hidden
 - event row 4: weekly-the-search-bar-thursday
 - event row 39: weekly-wongs-golden-palace-sunday
+- event row 41: weekly-peter-ds-thursday
+- event row 42: weekly-peter-ds-friday
+- event row 43: weekly-peter-ds-saturday
+- event row 44: weekly-peter-ds-sunday
+- event row 55: weekly-gaslamp-lumpia-factory-thursday
+- event row 56: weekly-gaslamp-lumpia-factory-saturday
 - event row 63: weekly-kaminskis-sports-lounge-friday
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
@@ -165,16 +171,11 @@ Exported events: 183.
 - event row 3: weekly-dons-cocktails-friday Don's Cocktails
 - event row 5: weekly-blvd-saturday BLVD
 - event row 40: weekly-novo-brazil-brewing-lane-ave-thursday Novo Brazil Brewing - Lane Ave
-- event row 41: weekly-peter-ds-thursday Peter D's
-- event row 42: weekly-peter-ds-friday Peter D's
-- event row 43: weekly-peter-ds-saturday Peter D's
-- event row 44: weekly-peter-ds-sunday Peter D's
 - event row 45: weekly-gaslamplighter-tuesday Gaslamplighter Karaoke Cocktail Bar
 - event row 46: weekly-gaslamplighter-wednesday Gaslamplighter Karaoke Cocktail Bar
 - event row 47: weekly-gaslamplighter-friday Gaslamplighter Karaoke Cocktail Bar
 - event row 48: weekly-gaslamplighter-sunday Gaslamplighter Karaoke Cocktail Bar
 - event row 50: weekly-star-bar-tuesday Star Bar
-- event row 56: weekly-gaslamp-lumpia-factory-saturday Gaslamp Lumpia Factory
 - event row 59: weekly-happy-does-saturday Happy Does
 - event row 64: weekly-clark-cabaret-friday Clark Cabaret
 - event row 70: event-winstons-friday Winstons Beach Club
@@ -254,17 +255,17 @@ Exported events: 183.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 91
-Authoritative events: 183
+Public venues: 89
+Authoritative events: 177
 Legacy venue slug aliases: 0
 
 PASS Monday: 17 authoritative / 8 expected minimum
 PASS Tuesday: 29 authoritative / 8 expected minimum
 PASS Wednesday: 30 authoritative / 9 expected minimum
-PASS Thursday: 37 authoritative / 14 expected minimum
-PASS Friday: 28 authoritative / 10 expected minimum
-PASS Saturday: 21 authoritative / 10 expected minimum
-PASS Sunday: 21 authoritative / 7 expected minimum
+PASS Thursday: 35 authoritative / 14 expected minimum
+PASS Friday: 27 authoritative / 10 expected minimum
+PASS Saturday: 19 authoritative / 10 expected minimum
+PASS Sunday: 20 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
