@@ -16,6 +16,103 @@ function truthy(value) {
   return /^(true|yes|1)$/i.test(clean(value));
 }
 
+function booleanCell(value) {
+  return /^(true|false|yes|no|1|0)$/i.test(clean(value));
+}
+
+function validScore(value) {
+  if (!clean(value)) return true;
+  const score = Number(value);
+  return Number.isFinite(score) && score >= 0 && score <= 100;
+}
+
+function validIsoDate(value) {
+  const text = clean(value);
+  if (!text) return true;
+  const match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return false;
+  const date = new Date(`${text}T00:00:00Z`);
+  return (
+    !Number.isNaN(date.getTime()) &&
+    date.getUTCFullYear() === Number(match[1]) &&
+    date.getUTCMonth() + 1 === Number(match[2]) &&
+    date.getUTCDate() === Number(match[3])
+  );
+}
+
+function validHttpUrl(value) {
+  const text = clean(value);
+  return !text || /^https?:\/\/\S+$/i.test(text);
+}
+
+function publicSchemaFailures(venues, events) {
+  const failures = [];
+
+  for (const venue of venues) {
+    const label = `${venue.id || `row ${venue.__rowNumber}`} ${venue.venue_name || "unnamed venue"}`;
+    if (!validScore(venue.confidence_score)) {
+      failures.push(`${label}: confidence_score must be a number from 0 to 100`);
+    }
+    if (!validIsoDate(venue.last_verified)) {
+      failures.push(`${label}: last_verified must use YYYY-MM-DD`);
+    }
+    if (!validHttpUrl(venue.banner_image_url)) {
+      failures.push(`${label}: banner_image_url is not an HTTP(S) URL`);
+    }
+    if (clean(venue.is_featured) && !booleanCell(venue.is_featured)) {
+      failures.push(`${label}: is_featured must be boolean`);
+    }
+  }
+
+  for (const event of events) {
+    const label = `${event.event_id || `row ${event.__rowNumber}`} ${event.venue_name || "unnamed venue"}`;
+    if (!validScore(event.event_confidence_score)) {
+      failures.push(`${label}: event_confidence_score must be a number from 0 to 100`);
+    }
+    if (!validIsoDate(event.last_verified)) {
+      failures.push(`${label}: last_verified must use YYYY-MM-DD`);
+    }
+  }
+
+  return failures;
+}
+
+function publicSemanticFailures(venues, events) {
+  const failures = [];
+  const eventsByVenue = new Map();
+  for (const event of events) {
+    if (clean(event.active_status).toLowerCase() !== "active") continue;
+    eventsByVenue.set(event.venue_id, [...(eventsByVenue.get(event.venue_id) || []), event]);
+  }
+
+  const globalDenial = /\b(no current karaoke|does not (?:have|offer|host) karaoke|not currently (?:offering|hosting) karaoke|do not include[^.]*karaoke)\b/i;
+  for (const venue of venues) {
+    const activeEvents = eventsByVenue.get(venue.id) || [];
+    if (!activeEvents.length) continue;
+    const evidence = [venue.description, venue.confidence_notes].map(clean).filter(Boolean).join(" ");
+    if (globalDenial.test(evidence)) {
+      failures.push(
+        `${venue.id} ${venue.venue_name}: active events conflict with venue text denying current karaoke`,
+      );
+    }
+    for (const event of activeEvents) {
+      const day = clean(event.karaoke_day);
+      if (!day) continue;
+      const dayDenial = new RegExp(
+        `\\b(?:no\\s+|does not (?:have|offer|host)\\s+)[^.]{0,40}${day}[^.]{0,20}karaoke\\b|\\bno ${day}(?: night)? karaoke\\b`,
+        "i",
+      );
+      if (dayDenial.test(evidence)) {
+        failures.push(
+          `${venue.id} ${venue.venue_name}: active ${day} event conflicts with venue text`,
+        );
+      }
+    }
+  }
+
+  return failures;
+}
+
 function parseTsvFile(filePath) {
   if (!fs.existsSync(filePath)) {
     throw new Error(`Missing required public data file: ${filePath}`);
@@ -91,6 +188,9 @@ export function validatePublicData({
   const counts = countEventsByDay(events, thresholds);
   const failures = [];
   const warnings = [];
+
+  failures.push(...publicSchemaFailures(venues, events));
+  failures.push(...publicSemanticFailures(venues, events));
 
   if (!skipMinimums) {
     for (const [day, expectedMinimum] of Object.entries(thresholds)) {
