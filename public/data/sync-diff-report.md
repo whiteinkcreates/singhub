@@ -4,10 +4,10 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 92
+- Previous non-empty lines: 90
 - Candidate non-empty lines: 90
 - Added/changed lines: 90
-- Removed/changed lines: 92
+- Removed/changed lines: 90
 
 ### Added or changed sample
 
@@ -40,7 +40,7 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 id	venue_name	slug	profile_tier	listing_status	venue_type	city	neighborhood	market	address	latitude	longitude	website	instagram	banner_image_url	banner_image_alt	ticker_text	karaoke_day	start_time	end_time	host_name	vibe_tags	description	specials	happy_hour	food_highlights	drink_highlights	parking_info	age_policy	accessibility_notes	cover_charge	reservation_link	booking_contact	is_featured	confidence_score	confidence_notes	source_1	source_2	source_3	last_verified
 venue-0051	#1 Fifth Avenue	1-fifth-avenue	basic	verified	live_bar	San Diego	Hillcrest	Central San Diego	3845 Fifth Ave, San Diego, CA 92103	32.7482	-117.1603		@numberonefifth				Thursday, Tuesday	10:00 PM / 8:00 PM	12:30 AM / 12:00 AM	Navy Nick / DJ JP rotation, Bobbi and Danny	Hillcrest, Thursday karaoke, Tuesday karaoke, live karaoke	Hillcrest karaoke venue with verified Tuesday karaoke from 8 PM to midnight hosted by Bobbi and Danny, plus Thursday late-night karaoke from 10 PM to 12:30 AM with a Navy Nick / DJ JP rotation.											FALSE	100	Diego directly confirmed Tuesday karaoke 8 PM-midnight hosted by Bobbi and Danny and clarified that the 10 PM-12:30 AM late-night Navy Nick / DJ JP rotation is on Thursdays.	Direct venue response from Diego / #1 Fifth	Corey verification outreach 2026-08-19; Navy Nick response 2026-07-15		2026-08-19
 venue-0062	710 Beach Club	710-beach-club	basic	ai_scouted	live_bar	San Diego	Pacific Beach	Coastal San Diego	710 Garnet Ave, San Diego (Pacific Beach)	32.7971	-117.2562	https://www.710bc.com/	@710beachclub				Thursday	8:00 PM	12:00 AM	Two of Clubs	Pacific Beach, Thursday karaoke, live karaoke	Thursday karaoke with Two of Clubs starting 8pm until 12am.											FALSE	85	Synced from completed Weekly_Grid roundup schedule.				2026-07-13
-venue-0018	BLVD	blvd	basic	ai_scouted	live_bar	San Diego	College Area	Central San Diego	6949 El Cajon Blvd, San Diego, CA 92115	32.7803	-117.0951	https://theblvdbarsd.com/	@theblvdbarsd	College Area, Saturday Karaoke, DJ Glyph			Saturday	9:00 PM	TBD	DJ Glyph	College Area bar with Saturday karaoke starting at 9 PM with DJ Glyph. Saturday only.	Grantville / Mission Gorge venue with a reported Saturday karaoke lead. Current start time, host, and recurring status still need verification before using in roundups.											FALSE	verified_direct_user_correction	BLVD is in College Area, not Grantville. Address corrected to 6949 El Cajon Blvd. Karaoke is Saturday only.	2026-09-09	Corey direct correction 2026-09-09		100
+venue-0018	BLVD	blvd	basic	verified	live_bar	San Diego	College Area	Central San Diego	6949 El Cajon Blvd, San Diego, CA 92115	32.7803	-117.0951	https://theblvdbarsd.com/	@theblvdbarsd				Saturday	9:00 PM	TBD	DJ Glyph	College Area, Saturday Karaoke, DJ Glyph	College Area bar with Saturday karaoke starting at 9 PM with DJ Glyph. End time is still being confirmed.											FALSE	100	Corey directly corrected BLVD to College Area at 6949 El Cajon Blvd and confirmed Saturday-only karaoke with DJ Glyph at 9 PM.	Corey direct correction 2026-09-09	Weekly_Grid		2026-09-09
 venue-0013	Camels Bar & Grill	camels-bar-grill	basic	verified	live_bar	San Diego	Mission Valley	Central San Diego	10330 Friars Rd, San Diego, CA 92120	32.7938	-117.1082	https://camelsbarandgrill.com/	@camelsbarandgrill				Thursday, Saturday	9:00 PM / 8:30 PM	1:00 AM / close	DJ Mike, KJ Meth	Mission Valley, Thursday karaoke, Saturday karaoke, live karaoke	Mission Valley karaoke venue with Thursday karaoke hosted by DJ Mike and Saturday karaoke from 8:30 PM to close with KJ Meth of A.I. Entertainment.											FALSE	100	A.I. Entertainment directly confirms the Saturday schedule and KJ Meth affiliation.	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Corey direct Camels Thursday confirmation		2026-09-04
 venue-0015	Carriage House Cocktails & Karaoke	carriage-house-cocktails-karaoke	basic	verified	live_bar	San Diego	Kearny Mesa / Convoy	Central San Diego	4690 Convoy St, San Diego, CA 92111	32.8311	-117.1539		@carriagehousekaraokesd				Monday, Tuesday, Wednesday, Sunday, Thursday, Friday, Saturday	9:00 PM	1:30 AM	Amy "Miss Pond", Brian "MP", Amy "Miss Pond" / Lindsey, Lindsey	Kearny Mesa / Convoy, Monday karaoke, Tuesday karaoke, Wednesday karaoke, Sunday karaoke, Thursday karaoke	Kearny Mesa / Convoy dedicated karaoke bar with karaoke seven nights a week from 9 PM to 1:30 AM. Wednesday programming also includes Bingo on the 1st Wednesday and trivia on the 3rd Wednesday before karaoke.											FALSE	100	Venue directly confirmed karaoke 7 nights/week, 9 PM-1:30 AM. Hosts: Amy "Miss Pond" Monday, Thursday, Friday, Saturday, plus 1st/3rd Wednesdays; Brian "MP" Tuesday; Lindsey Sunday plus 2nd/4th/5th Wednesdays. Bingo 1st Wednesday 5:30-8:30 PM; trivia 3rd Wednesday 5:30-8:30 PM.	Direct venue response via Instagram	Corey verification outreach 2026-08-16		2026-08-16
 venue-0027	Cheers Bar San Diego	cheers-bar-san-diego	basic	verified	live_bar	San Diego	University Heights	Central San Diego	1839 Adams Avenue, San Diego, CA, USA	32.7634	-117.1455	https://cheerssandiego.com	cheersbarsandiego				Monday, Wednesday	8:00 PM	1:00 AM	Ed&Katie	University Heights, Monday karaoke, Wednesday karaoke, live karaoke	University Heights neighborhood bar with karaoke Monday and Wednesday from 8 PM-1 AM, hosted by Ed and Katie.										info@cheerssandiego.com	FALSE	95	Official site confirms Cheers Bar San Diego at 1839 Adams Ave and its University Heights history.	Official Cheers Bar San Diego website/history	Corey correction 2026-08-12		2026-08-12
@@ -51,38 +51,22 @@ venue-0073	Dock's Cocktail Lounge	docks-cocktail-lounge	basic	ai_scouted	live_ba
 venue-0020	Don's Cocktails	dons-cocktails	basic	ai_scouted	live_bar	El Cajon	El Cajon	East County	13321 Hwy 8 Bus, El Cajon, CA 92021	32.8171	-116.9002	https://dons-cocktail-lounge.edan.io/	@dons_cocktail_lounge)				Thursday, Friday	9pm-last call	TBD	DJ Savadelic	El Cajon, Thursday karaoke, Friday karaoke, live karaoke	El Cajon karaoke bar with Thursday and Friday karaoke. Exact times still need confirmation.											FALSE	78	Corey confirmed Don's Cocktails has Thursday / Friday karaoke. Removed misplaced Cordova event/media data from canonical row.				2026-07-11
 venue-0005	Double Deuce	double-deuce	basic	verified	live_bar	San Diego	Gaslamp Quarter	Downtown	528 F St, San Diego, CA 92101	32.7139	-117.1603	https://doubledeucesd.com/	@doubledeucesandiego				Thursday, Friday, Saturday	8:00 PM / 7:00 PM	10:00 PM	Savor Entertainment	Gaslamp, Country Karaoke, Weekly Karaoke	Gaslamp Quarter bar with Thursday-Saturday karaoke. Thursday runs 8-10 PM with Savor Entertainment; Friday and Saturday run 7-10 PM with Savor Entertainment.											FALSE	95	Nickalus Randle / @navynickaraoke provided recurring Double Deuce karaoke schedule. Flyer confirms Navy Nick country collab with Savor Entertainment on 07.11 and 07.17, 7-10 PM.	Navy Nick response 2026-07-15	Navy Nick / Savor Entertainment flyer		2026-07-15
 venue-0014	Flicks	flicks	basic	verified	live_bar	San Diego	Hillcrest	Central San Diego	1017 University Ave, San Diego, CA 92103	32.7483	-117.1546	https://www.sdflicks.com/	https://www.instagram.com/flicks_sd/?hl=enn				Tuesday	8:30 PM	1:30 AM	Thonie Lee	Hillcrest, Late Night, Weekly Karaoke	Hillcrest bar/nightlife venue with Tuesday karaoke from 8:30 PM-1:30 AM hosted by Thonie Lee.											FALSE	95	Nickalus Randle / @navynickaraoke provided Tuesday schedule: Flicks, 8:30 PM-1:30 AM, host Thonie Lee.	Navy Nick response 2026-07-15	Karaoke Venues SD - Full_Karaoke_Venue_List__Rebuilt_.csv		2026-07-15
-venue-0058	Gaslamp Lumpia Factory	gaslamp-lumpia-factory	basic	ai_scouted	live_bar	San Diego	Gaslamp Quarter	Downtown	423 F Street, San Diego, CA	32.7106	-117.1594		@eqsandiego				Thursday, Saturday	7:00 PM / 8:00 PM	12:00 AM / TBD	KJ Glenn, TBD	Gaslamp restaurant and bar serving food, cocktails, and drink specials throughout Thursday karaoke.	Formerly The Merrow, now EQ. No current karaoke found; do not include in SingHUBSD roundups unless separately verified.											FALSE	100	Venue confirmed recurring Thursday karaoke with KJ Glenn, 7 PM-midnight, plus food, cocktails, and drink specials throughout the night.	Direct venue submission via Instagram	Corey follow-up with venue details 2026-08-05		2026-08-05
 venue-0042	Gaslamplighter Karaoke Cocktail Bar	gaslamplighter	basic	ai_scouted	live_bar	San Diego	Gaslamp Quarter	Downtown	536 Market St, San Diego, CA 92101	32.7111	-117.1604		@gaslamplighter				Tuesday, Wednesday, Friday, Sunday	9:00 PM	close	TBD	Gaslamp Quarter, Tuesday karaoke, Wednesday karaoke, Friday karaoke, Sunday karaoke, live karaoke	Gaslamp karaoke cocktail bar with karaoke Tuesday-Sunday from 9 PM-close. Hours and availability may occasionally vary due to private events or full venue buyouts.											FALSE	85	Corey confirmed Gaslamplighter Karaoke Cocktail Bar schedule: Tuesday-Sunday 9p-close. Note: hours and availability may vary for private events or full venue buyouts. Removed Monday from lineup.	Corey direct update 2026-06-28			2026-07-13
 venue-0056	Gingers	gingers	basic	verified	live_bar	San Diego	Gaslamp Quarter	Downtown	600 Fifth Ave (below Barleymash), San Diego (Gaslamp Quarter)	32.7119	-117.1604		@gingersgaslamp				Thursday	9:00 PM	12:00 AM	Mikey Mic	Gaslamp Quarter, Thursday karaoke, live karaoke	Gaslamp karaoke at Ginger's on Thursdays from 9 PM-12 AM.											FALSE	90	Corey confirmed Ginger's Thursday karaoke is 9 PM-12 AM. Host remains Mikey Mic from existing row unless corrected.	Corey direct correction 2026-07-02			2026-07-02
 venue-0054	Happy Does	happy-does	basic	verified	live_bar	San Diego	Gaslamp Quarter	Downtown	340 5th Ave, San Diego, CA 92101	32.7109	-117.1585		@happydoesbar				Thursday, Friday, Saturday	8:30 PM	12:30 AM / 1:30 AM	Veronica, TBD	Gaslamp Quarter, Thursday karaoke, Friday karaoke, Saturday karaoke, live karaoke	Gaslamp Quarter karaoke on Thursday, Friday, and Saturday starting at 8:30 PM. Thursday and Friday run to 12:30 AM; Saturday runs to 1:30 AM.											TRUE	92	Official Happy Does site lists 340 5th Ave, San Diego, CA 92101 in the Gaslamp Quarter and karaoke Thursday-Saturday at 8:30 PM.	Official Happy Does website	Corey correction 2026-08-12		2026-08-12
 venue-0003	Hearth House	hearth-house	basic	verified	live_bar	San Diego	La Mesa	East County	5505 Jackson Dr, La Mesa, CA 91942	32.7734	-117.0326	https://hearthhousebar.com	@hearthcocktails				Tuesday, Wednesday, Thursday	9:00 PM	close	James	La Mesa, Tuesday karaoke, Wednesday karaoke, Thursday karaoke, live karaoke	La Mesa / East County karaoke listing with verified Tuesday-Thursday schedule from 9 PM-close. Thursday host confirmed as James.											FALSE	92	Corey confirmed Hearth House Tuesday-Thursday, 9 PM-close. Thursday host confirmed as James on 2026-07-02.	Corey direct update 2026-07-02			2026-07-02
-venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearny Mesa / Convoy	Central San Diego	4428 Convoy St, San Diego, CA 92111	32.8244	-117.1541		@hivesandiego								Kearny Mesa / Convoy, private rooms												FALSE	60					46175
+venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearny Mesa / Convoy	Central San Diego	4428 Convoy St, San Diego, CA 92111	32.8244	-117.1541		@hivesandiego								Kearny Mesa / Convoy, private rooms												FALSE	60					2026-06-02
+venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San Diego	Kearny Mesa / Convoy	Central San Diego	4690 Convoy St #110, San Diego (Kearny Mesa)	32.8311	-117.1537										Kearny Mesa / Convoy, private rooms	Kearny Mesa / Convoy private-room karaoke studio lead with daily evening availability reported. Room details, hours, and reservation info still need current verification.											FALSE	75	Enriched from Karaoke Venues SD 9/17 List. Nightly karaoke and host details need current verification.	Karaoke Venues SD - 9/17 List			2026-06-02
 ```
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 184
+- Previous non-empty lines: 178
 - Candidate non-empty lines: 178
-- Added/changed lines: 1
-- Removed/changed lines: 7
+- Added/changed lines: 0
+- Removed/changed lines: 0
 
-### Added or changed sample
-
-```text
-weekly-blvd-saturday	venue-0018	BLVD	blvd	Saturday	9:00 PM	TBD		DJ Glyph	DJ Glyph	TRUE	active	Saturday karaoke starts at 9 PM with DJ Glyph. End time is not yet confirmed.	100	Corey direct correction 2026-09-09	Weekly_Grid	2026-09-09	verified_direct_schedule_needs_end_time	FALSE
-```
-
-### Removed or changed sample
-
-```text
-weekly-blvd-saturday	venue-0018	BLVD	blvd	Saturday	9:00 PM	TBD		DJ Glyph	DJ Glyph	TRUE	active	Saturday karaoke with DJ Glyph starting 9pm.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
-weekly-peter-ds-thursday	venue-0038	Peter D's	peter-ds	Thursday	9:00 PM	TBD		TBD	TBD	TRUE	inactive	Thursday karaoke starting 9pm. Removed from public results 2026-09-13 after canonical data conflict was identified.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	quarantined_data_conflict	FALSE
-weekly-peter-ds-friday	venue-0038	Peter D's	peter-ds	Friday	9:00 PM	TBD		TBD	TBD	TRUE	inactive	Friday karaoke starting 9pm. Removed from public results 2026-09-13 after canonical data conflict was identified.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	quarantined_data_conflict	FALSE
-weekly-peter-ds-saturday	venue-0038	Peter D's	peter-ds	Saturday	9:00 PM	TBD		TBD	TBD	TRUE	inactive	Saturday karaoke starting 9pm. Removed from public results 2026-09-13 after canonical data conflict was identified.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	quarantined_data_conflict	FALSE
-weekly-peter-ds-sunday	venue-0038	Peter D's	peter-ds	Sunday	9:00 PM	TBD		TBD	TBD	TRUE	inactive	Sunday karaoke starting 9pm. Removed from public results 2026-09-13 after canonical data conflict was identified.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	quarantined_data_conflict	FALSE
-weekly-gaslamp-lumpia-factory-thursday	venue-0058	Gaslamp Lumpia Factory	gaslamp-lumpia-factory	Thursday	7:00 PM	12:00 AM	kj-glenn	KJ Glenn	KJ Glenn	TRUE	inactive	Thursday karaoke from 7 PM to midnight with KJ Glenn. Food, cocktails, and drink specials available throughout the night. Removed from public results 2026-09-13 after canonical data conflict was identified.	100	Direct venue submission via Instagram	Corey follow-up with venue details 2026-08-05	2026-08-05	quarantined_data_conflict	FALSE
-weekly-gaslamp-lumpia-factory-saturday	venue-0058	Gaslamp Lumpia Factory	gaslamp-lumpia-factory	Saturday	8:00 PM	TBD		TBD	TBD	TRUE	inactive	Saturday karaoke starting 8pm. Removed from public results 2026-09-13 after canonical data conflict was identified.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	quarantined_data_conflict	FALSE
-```
+- No content changes.
 
 ## generated_events_review.tsv
 
@@ -106,21 +90,17 @@ weekly-gaslamp-lumpia-factory-saturday	venue-0058	Gaslamp Lumpia Factory	gaslamp
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 3
-- Removed/changed lines: 3
+- Added/changed lines: 1
+- Removed/changed lines: 1
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-13T18:51:24.040Z",
-  "venues": 89,
-  "authoritativeEvents": 177,
+  "generatedAt": "2026-09-13T19:02:00.136Z",
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-12T23:28:07.273Z",
-  "venues": 91,
-  "authoritativeEvents": 183,
+  "generatedAt": "2026-09-13T18:51:24.040Z",
 ```

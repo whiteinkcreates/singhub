@@ -158,6 +158,10 @@ Exported events: 177.
 - event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
 ## Events With Invalid App Visibility
 - None
+## Canonical Schema Problems
+- None
+## Canonical Semantic Conflicts
+- None
 ## Event References Missing Exported Venues
 - None
 ## Event Slug Mismatches
