@@ -1,6 +1,6 @@
 {
   "archivedOn": "2026-08-14",
-  "lastUpdated": "2026-09-12",
+  "lastUpdated": "2026-09-13",
   "archiveTab": "Live_Only_Event_Review / Events_Canonical",
   "reason": "Explicitly approved public snapshot removals after archival, expiry, or source verification. Date-specific rows must be re-promoted as separate recurring canonical events only after recurrence is verified.",
   "eventIds": [
@@ -13,6 +13,12 @@
     "event-0026",
     "event-n-city-sports-lounge-thursday-karaoke-party",
     "event-n-city-sports-lounge-karaoke-2026-09-03",
-    "event-kaminskis-sports-lounge-karaoke-2026-09-04"
+    "event-kaminskis-sports-lounge-karaoke-2026-09-04",
+    "weekly-gaslamp-lumpia-factory-thursday",
+    "weekly-gaslamp-lumpia-factory-saturday",
+    "weekly-peter-ds-thursday",
+    "weekly-peter-ds-friday",
+    "weekly-peter-ds-saturday",
+    "weekly-peter-ds-sunday"
   ]
 }
