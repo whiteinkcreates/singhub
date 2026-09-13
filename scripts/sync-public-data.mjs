@@ -101,6 +101,145 @@ function isBooleanCell(value) {
   return /^(true|false|yes|no|1|0)$/i.test(clean(value));
 }
 
+function validScore(value) {
+  if (!clean(value)) return true;
+  const score = Number(value);
+  return Number.isFinite(score) && score >= 0 && score <= 100;
+}
+
+function validIsoDate(value) {
+  const text = clean(value);
+  if (!text) return true;
+  const match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return false;
+  const date = new Date(`${text}T00:00:00Z`);
+  return (
+    !Number.isNaN(date.getTime()) &&
+    date.getUTCFullYear() === Number(match[1]) &&
+    date.getUTCMonth() + 1 === Number(match[2]) &&
+    date.getUTCDate() === Number(match[3])
+  );
+}
+
+function validHttpUrl(value) {
+  const text = clean(value);
+  return !text || /^https?:\/\/\S+$/i.test(text);
+}
+
+function reportCanonicalSchemaProblems(venueRows, eventRows, report) {
+  for (const row of venueRows) {
+    if (!clean(row.venue_id) && !clean(row.venue_name)) continue;
+    const label = `venue row ${row.__rowNumber}: ${clean(row.venue_id)} ${clean(row.venue_name)}`;
+    if (!validScore(row.confidence_score)) {
+      report.canonicalSchemaProblems.push(`${label} has invalid confidence_score`);
+    }
+    if (!validIsoDate(row.last_verified)) {
+      report.canonicalSchemaProblems.push(`${label} has invalid last_verified; expected YYYY-MM-DD`);
+    }
+    if (!validHttpUrl(row.banner_image_url)) {
+      report.canonicalSchemaProblems.push(`${label} has non-URL banner_image_url`);
+    }
+    if (clean(row.is_featured) && !isBooleanCell(row.is_featured)) {
+      report.canonicalSchemaProblems.push(`${label} has non-boolean is_featured`);
+    }
+    if (clean(row.needs_review) && !isBooleanCell(row.needs_review)) {
+      report.canonicalSchemaProblems.push(`${label} has non-boolean needs_review`);
+    }
+    if (
+      /^\d+(?:\.\d+)?$/.test(clean(row.review_status)) ||
+      (clean(row.review_status) && validIsoDate(row.review_status))
+    ) {
+      report.canonicalSchemaProblems.push(`${label} has a shifted-looking review_status`);
+    }
+  }
+
+  for (const row of eventRows) {
+    if (!clean(row.event_id) && !clean(row.venue_id)) continue;
+    const label = `event row ${row.__rowNumber}: ${clean(row.event_id)}`;
+    if (!validScore(row.event_confidence_score)) {
+      report.canonicalSchemaProblems.push(`${label} has invalid event_confidence_score`);
+    }
+    if (!validIsoDate(row.last_verified)) {
+      report.canonicalSchemaProblems.push(`${label} has invalid last_verified; expected YYYY-MM-DD`);
+    }
+    if (clean(row.app_visible) && !isBooleanCell(row.app_visible)) {
+      report.canonicalSchemaProblems.push(`${label} has non-boolean app_visible`);
+    }
+    if (clean(row.needs_review) && !isBooleanCell(row.needs_review)) {
+      report.canonicalSchemaProblems.push(`${label} has non-boolean needs_review`);
+    }
+  }
+}
+
+function reportCanonicalSemanticProblems(venueRows, eventRows, report) {
+  const visibleActiveEvents = eventRows.filter(
+    (row) =>
+      truthy(row.app_visible) &&
+      key(row.active_status) === "active" &&
+      !clean(row.archive_reason) &&
+      !clean(row.duplicate_of),
+  );
+  const eventsByVenue = new Map();
+  const activeVenueDays = new Set();
+  for (const event of visibleActiveEvents) {
+    eventsByVenue.set(clean(event.venue_id), [
+      ...(eventsByVenue.get(clean(event.venue_id)) || []),
+      event,
+    ]);
+    for (const day of dayList(event.karaoke_day)) {
+      activeVenueDays.add(`${clean(event.venue_id)}::${day}`);
+    }
+  }
+
+  const globalDenial = /\b(no current karaoke|does not (?:have|offer|host) karaoke|not currently (?:offering|hosting) karaoke|do not include[^.]*karaoke)\b/i;
+  for (const venue of venueRows) {
+    if (!truthy(venue.app_visible)) continue;
+    const activeEvents = eventsByVenue.get(clean(venue.venue_id)) || [];
+    if (!activeEvents.length) continue;
+    const evidence = [
+      venue.public_description,
+      venue.source_notes,
+      venue.public_notes,
+      venue.internal_notes,
+    ].map(clean).filter(Boolean).join(" ");
+    if (globalDenial.test(evidence)) {
+      report.canonicalSemanticProblems.push(
+        `venue row ${venue.__rowNumber}: ${venue.venue_name} has public active events but its venue evidence denies current karaoke`,
+      );
+    }
+    for (const event of activeEvents) {
+      for (const day of dayList(event.karaoke_day)) {
+        const dayDenial = new RegExp(
+          `\\b(?:no\\s+|does not (?:have|offer|host)\\s+)[^.]{0,40}${day}[^.]{0,20}karaoke\\b|\\bno ${day}(?: night)? karaoke\\b`,
+          "i",
+        );
+        if (dayDenial.test(evidence)) {
+          report.canonicalSemanticProblems.push(
+            `venue row ${venue.__rowNumber}: ${venue.venue_name} has an active ${day} event that conflicts with its venue evidence`,
+          );
+        }
+      }
+    }
+  }
+
+  for (const event of eventRows) {
+    if (!clean(event.archive_reason) && key(event.active_status) === "active") continue;
+    for (const day of dayList(event.karaoke_day)) {
+      const denial = [event.archive_reason, event.event_notes, event.internal_notes]
+        .map(clean)
+        .join(" ");
+      const explicitlyDenied =
+        new RegExp(`\\bno[_ -]?${day}[_ -]?karaoke\\b`, "i").test(denial) ||
+        new RegExp(`\\bno ${day}(?: night)? karaoke\\b`, "i").test(denial);
+      if (explicitlyDenied && activeVenueDays.has(`${clean(event.venue_id)}::${day}`)) {
+        report.canonicalSemanticProblems.push(
+          `event row ${event.__rowNumber}: archived ${day} denial conflicts with another public active event for ${event.venue_name}`,
+        );
+      }
+    }
+  }
+}
+
 function isTbd(value) {
   return /^(tbd|address tbd|address needed|-|—)?$/i.test(clean(value));
 }
@@ -591,6 +730,8 @@ function reportMarkdown(report, venues, events) {
     section("Venues Skipped As Not Public-Usable", report.venuesSkippedAsNotPublicUsable),
     section("Events Skipped Because App Hidden", report.eventsSkippedAppHidden),
     section("Events With Invalid App Visibility", report.eventsInvalidAppVisibility),
+    section("Canonical Schema Problems", report.canonicalSchemaProblems),
+    section("Canonical Semantic Conflicts", report.canonicalSemanticProblems),
     section("Event References Missing Exported Venues", report.eventReferencesMissingVenues),
     section("Event Slug Mismatches", report.eventSlugMismatches),
     section("Events Skipped Because Inactive", report.eventsSkippedInactive),
@@ -725,6 +866,8 @@ async function main() {
     venuesSkippedAsNotPublicUsable: [],
     eventsSkippedAppHidden: [],
     eventsInvalidAppVisibility: [],
+    canonicalSchemaProblems: [],
+    canonicalSemanticProblems: [],
     eventReferencesMissingVenues: [],
     eventSlugMismatches: [],
     eventsSkippedInactive: [],
@@ -740,6 +883,8 @@ async function main() {
     fetchGoogleSheetRows(SPREADSHEET_ID, VENUES_SHEET, "A:AZ"),
     fetchGoogleSheetRows(SPREADSHEET_ID, EVENTS_SHEET, "A:AZ"),
   ]);
+  reportCanonicalSchemaProblems(venueSourceRows, eventSourceRows, report);
+  reportCanonicalSemanticProblems(venueSourceRows, eventSourceRows, report);
   const venues = buildVenues(venueSourceRows, report);
   const events = buildEvents(eventSourceRows, venues, report);
   const generatedCandidates = buildGeneratedVenueScheduleCandidates(
@@ -836,6 +981,16 @@ async function main() {
   if (report.eventsInvalidAppVisibility.length) {
     sourceFailures.push(
       `${report.eventsInvalidAppVisibility.length} event row(s) have invalid app_visible values.`,
+    );
+  }
+  if (report.canonicalSchemaProblems.length) {
+    sourceFailures.push(
+      `${report.canonicalSchemaProblems.length} canonical row(s) contain malformed or shifted fields.`,
+    );
+  }
+  if (report.canonicalSemanticProblems.length) {
+    sourceFailures.push(
+      `${report.canonicalSemanticProblems.length} canonical schedule conflict(s) contradict their own evidence.`,
     );
   }
   if (report.eventReferencesMissingVenues.length) {
