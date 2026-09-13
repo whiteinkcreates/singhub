@@ -62,11 +62,15 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 ## events_by_night.tsv
 
 - Previous non-empty lines: 178
-- Candidate non-empty lines: 178
-- Added/changed lines: 0
+- Candidate non-empty lines: 179
+- Added/changed lines: 1
 - Removed/changed lines: 0
 
-- No content changes.
+### Added or changed sample
+
+```text
+event-kaminskis-sports-lounge-karaoke-2026-09-18	venue-0071	Kaminski's Sports Lounge	kaminskis-sports-lounge	Friday	8:00 PM	11:00 PM	devyn-conover	Devyn Conover	Devyn Conover	Date-specific	active	Friday, September 18 karaoke from 8 PM to 11 PM with Devyn Conover.	100	Direct message from Devyn Conover to Corey 2026-09-03	Corey direct anchor confirmation 2026-09-03	2026-09-03	verified_direct_host_schedule	FALSE
+```
 
 ## generated_events_review.tsv
 
@@ -90,17 +94,19 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 1
-- Removed/changed lines: 1
+- Added/changed lines: 2
+- Removed/changed lines: 2
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-13T19:02:00.136Z",
+  "generatedAt": "2026-09-13T19:10:14.286Z",
+  "authoritativeEvents": 178,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-13T18:51:24.040Z",
+  "generatedAt": "2026-09-13T19:02:00.136Z",
+  "authoritativeEvents": 177,
 ```
