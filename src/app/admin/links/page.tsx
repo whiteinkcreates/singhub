@@ -50,7 +50,7 @@ export default async function GoLinksAdminPage({ searchParams }: { searchParams:
     <section className="mt-7 grid gap-3 sm:grid-cols-3">
       <div className="rounded-2xl border border-white/10 bg-white/[.04] p-4"><p className="text-xs font-black uppercase tracking-wider text-slate-500">Active links</p><p className="mt-2 text-3xl font-black text-cyan-200">{active}</p></div>
       <div className="rounded-2xl border border-white/10 bg-white/[.04] p-4"><p className="text-xs font-black uppercase tracking-wider text-slate-500">Human clicks</p><p className="mt-2 text-3xl font-black text-fuchsia-200">{clicks.toLocaleString()}</p></div>
-      <div className="rounded-2xl border border-white/10 bg-white/[.04] p-4"><p className="text-xs font-black uppercase tracking-wider text-slate-500">QR standard</p><p className="mt-2 text-sm font-black">Square · black/white · 4-module quiet zone</p><p className="mt-1 text-xs text-slate-500">No dots, gradients or logo overlays.</p></div>
+      <div className="rounded-2xl border border-white/10 bg-white/[.04] p-4"><p className="text-xs font-black uppercase tracking-wider text-slate-500">QR standard</p><p className="mt-2 text-sm font-black">Square · black/white · high error correction</p><p className="mt-1 text-xs text-slate-500">Centered SingHUB mark, white safety plate and 4-module quiet zone.</p></div>
     </section>
 
     <section className="mt-6 rounded-3xl border border-fuchsia-300/15 bg-fuchsia-300/[.035] p-5 md:p-6">
