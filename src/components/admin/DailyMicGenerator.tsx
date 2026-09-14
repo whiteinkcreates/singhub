@@ -24,7 +24,15 @@ const CATEGORY_LABELS: Record<PollQuestion["category"], string> = {
 
 type CardFormat = keyof typeof CARD_DIMENSIONS;
 
-function captionVariants(poll: PollQuestion) {
+function captionVariants(poll: PollQuestion, format: CardFormat) {
+  if (format === "story") {
+    return {
+      Punchy: `Pick one. No hedging.\n\nVote: ${DAILY_MIC_BRAND.voteUrl}`,
+      Funny: `Choose your damage.\n\nVote: ${DAILY_MIC_BRAND.voteUrl}`,
+      "Argument Starter": `Vote now. Defend it in the replies.\n\n${DAILY_MIC_BRAND.voteUrl}`,
+    };
+  }
+
   const options = poll.options.length > 1
     ? `\n\n${poll.options.map((option) => option.label).join(" • ")}`
     : "";
@@ -132,7 +140,7 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
   const [previewError, setPreviewError] = useState<string | null>(null);
 
   const dimensions = CARD_DIMENSIONS[format];
-  const captions = useMemo(() => captionVariants(poll), [poll]);
+  const captions = useMemo(() => captionVariants(poll, format), [format, poll]);
   const caption = captions[captionStyle];
 
   const renderImage = useCallback(async () => {
@@ -307,7 +315,9 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
         </section>
 
         <aside className="rounded-3xl border border-white/10 bg-white/[.035] p-5">
-          <p className="text-xs font-black uppercase tracking-[.22em] text-cyan-300">Caption bait</p>
+          <p className="text-xs font-black uppercase tracking-[.22em] text-cyan-300">
+            {format === "story" ? "Story copy" : "Caption bait"}
+          </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {(["Punchy", "Funny", "Argument Starter"] as const).map((style) => (
               <button
@@ -320,7 +330,14 @@ export function DailyMicGenerator({ poll }: { poll: PollQuestion }) {
               </button>
             ))}
           </div>
-          <textarea readOnly value={caption} className="mt-4 min-h-72 w-full rounded-2xl border border-white/10 bg-slate-950 p-4 text-sm leading-6 text-slate-200" />
+          <textarea
+            readOnly
+            value={caption}
+            className={`mt-4 w-full rounded-2xl border border-white/10 bg-slate-950 p-4 text-sm leading-6 text-slate-200 ${format === "story" ? "min-h-32" : "min-h-72"}`}
+          />
+          <p className="mt-2 text-right text-xs font-semibold text-slate-500">
+            {caption.length} characters
+          </p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             <button type="button" onClick={downloadImage} disabled={exporting} className="min-h-11 rounded-xl bg-fuchsia-300 px-4 text-sm font-black text-slate-950 disabled:opacity-50">
               {exporting ? "Creating JPG..." : "Download JPG"}
