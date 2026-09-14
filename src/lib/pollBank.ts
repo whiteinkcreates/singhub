@@ -55,7 +55,7 @@ function modulo(value:number,divisor:number){return ((value%divisor)+divisor)%di
 
 // Preserve every poll served before the rotation fix so links and prior results
 // continue to reference the question people actually saw that day.
-const CATEGORY_ROTATION_START_DAY = dayNumber("2026-09-15");
+const CATEGORY_ROTATION_START_DAY = dayNumber("2026-09-14");
 
 export function getPollForDate(date=new Date()){
   const currentDay = dayNumber(dateKeyInLosAngeles(date));
