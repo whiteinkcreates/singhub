@@ -38,9 +38,37 @@ q("wild-song-stolen","Someone starts singing YOUR signature song. Your first rea
 q("wild-one-song","You only get ONE song tonight. What's the objective?","wild-card",["Show off my voice","Win the crowd","Maximum fun","Emotional damage"],"One song. Choose your mission.","punchy",3),
 ];
 
+const CATEGORY_ROTATION: PollCategory[] = [
+  "this-or-that",
+  "song-battle",
+  "would-you-rather",
+  "confessions",
+  "open-mic",
+  "wild-card",
+  "karaoke-court",
+  "kill-one",
+];
+
 function dateKeyInLosAngeles(date=new Date()){return new Intl.DateTimeFormat("en-CA",{timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit"}).format(date)}
 function dayNumber(dateKey:string){const [year,month,day]=dateKey.split("-").map(Number);return Math.floor(Date.UTC(year,month-1,day)/86400000)}
-export function getPollForDate(date=new Date()){const key=dateKeyInLosAngeles(date);const index=((dayNumber(key)%POLL_BANK.length)+POLL_BANK.length)%POLL_BANK.length;return POLL_BANK[index]}
+function modulo(value:number,divisor:number){return ((value%divisor)+divisor)%divisor}
+
+// Preserve every poll served before the rotation fix so links and prior results
+// continue to reference the question people actually saw that day.
+const CATEGORY_ROTATION_START_DAY = dayNumber("2026-09-15");
+
+export function getPollForDate(date=new Date()){
+  const currentDay = dayNumber(dateKeyInLosAngeles(date));
+  if(currentDay<CATEGORY_ROTATION_START_DAY){
+    return POLL_BANK[modulo(currentDay,POLL_BANK.length)];
+  }
+
+  const rotationDay = currentDay-CATEGORY_ROTATION_START_DAY;
+  const category = CATEGORY_ROTATION[modulo(rotationDay,CATEGORY_ROTATION.length)];
+  const categoryQuestions = POLL_BANK.filter((poll)=>poll.category===category);
+  const questionCycle = Math.floor(rotationDay/CATEGORY_ROTATION.length);
+  return categoryQuestions[modulo(questionCycle,categoryQuestions.length)];
+}
 export function getPreviousPoll(date=new Date()){return getPollForDate(new Date(date.getTime()-86400000))}
 export function getPollBySlug(slug:string){return POLL_BANK.find(poll=>poll.slug===slug)}
 export function buildPollCaption(poll:PollQuestion,voteUrl="https://singhub.app/vote"){const options=poll.options.length>1?`\n\n${poll.options.map(o=>o.label).join(" • ")}`:"";const endings:Record<CaptionAngle,string>={punchy:"Pick one. Then go see what everyone else chose.",funny:"Make your choice. Defend the damage in the comments.","argument-starter":"Vote first. Then make your case in the comments."};return `${poll.socialHook}\n\n${poll.socialQuestion||poll.question}${options}\n\n${endings[poll.captionAngle]}\n\nVote + see the results → ${voteUrl}`}
