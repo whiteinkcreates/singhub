@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { EventSchedule } from "@/components/venue/EventSchedule";
-import { VibeCheck } from "@/components/venue/VibeCheck";
+import { VibeCheckLauncher } from "@/components/venue/VibeCheckLauncher";
 import {
   VenueSignalBadges,
   VenueSignalDetails,
@@ -269,6 +269,13 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
 }
 
 export function VenueProfile({ venue, events = [] }: VenueProfileProps) {
+  const vibeCheckEvents = events.map((event) => ({
+    eventId: event.eventId,
+    karaokeDay: event.karaokeDay,
+    startTime: event.startTime,
+    hostName: event.hostName,
+  }));
+
   return (
     <>
       {venue.profileTier === "premium" ? (
@@ -276,14 +283,9 @@ export function VenueProfile({ venue, events = [] }: VenueProfileProps) {
       ) : (
         <BasicProfile venue={venue} events={events} />
       )}
-      <VibeCheck
+      <VibeCheckLauncher
         venue={{ id: venue.id, slug: venue.slug, name: venue.venueName }}
-        events={events.map((event) => ({
-          eventId: event.eventId,
-          karaokeDay: event.karaokeDay,
-          startTime: event.startTime,
-          hostName: event.hostName,
-        }))}
+        events={vibeCheckEvents}
       />
     </>
   );
