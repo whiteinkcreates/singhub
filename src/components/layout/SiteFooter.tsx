@@ -4,7 +4,7 @@ const footerLinks = [
   { href: "/find-karaoke", label: "Find Karaoke" },
   { href: "/places", label: "Venue Index" },
   { href: "/hosts", label: "Hosts" },
-  { href: "/singboard", label: "SingBoard" },
+  { href: "/singboard", label: "SingBOARD" },
   { href: "/submit-listing", label: "Submit Listing" },
   { href: "/claim-listing", label: "Claim Listing" },
   { href: "/venues/premium", label: "For Venues" },
