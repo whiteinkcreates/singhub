@@ -96,10 +96,8 @@ export async function listVenueMedia(slug: string) {
   const prefix = `${venueFolder(slug)}/`;
   const authorization = Buffer.from(`${apiKey}:${apiSecret}`).toString("base64");
   const params = new URLSearchParams({
-    type: "upload",
     prefix,
     max_results: "100",
-    direction: "desc",
   });
 
   const response = await fetch(
@@ -135,5 +133,6 @@ export async function listVenueMedia(slug: string) {
       height: asset.height || 0,
       format: asset.format || "",
       createdAt: asset.created_at,
-    })) satisfies VenueMediaAsset[];
+    }))
+    .sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || "")) satisfies VenueMediaAsset[];
 }
