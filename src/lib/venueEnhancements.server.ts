@@ -24,7 +24,7 @@ export async function getPersistedVenueEnhancement(slug: string) {
 
     if (error) throw error;
     const row = data as EnhancementRow | null;
-    return row?.profile?.enabled ? row.profile : fallback;
+    return row?.profile ?? fallback;
   } catch (error) {
     console.error("Venue enhancement read failed", error);
     return fallback;
