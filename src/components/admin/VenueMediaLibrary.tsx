@@ -7,7 +7,6 @@ import type { VenueMediaAsset } from "@/lib/venueMediaCloudinary";
 
 type VenueMediaLibraryProps = {
   slug: string;
-  adminKey: string;
   heroUrl: string;
   heroAlt: string;
   gallery: VenueGalleryItem[];
@@ -32,7 +31,6 @@ function defaultAlt(slug: string) {
 
 export function VenueMediaLibrary({
   slug,
-  adminKey,
   heroUrl,
   heroAlt,
   gallery,
@@ -42,14 +40,14 @@ export function VenueMediaLibrary({
   const [assets, setAssets] = useState<VenueMediaAsset[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-  const [message, setMessage] = useState("Enter the admin media key to load this venue's Cloudinary library.");
+  const [message, setMessage] = useState("Loading this venue's Cloudinary library…");
 
   const galleryUrls = useMemo(() => new Set(gallery.map((item) => item.url)), [gallery]);
 
   async function loadLibrary() {
-    if (!adminKey.trim() || !slug.trim()) {
+    if (!slug.trim()) {
       setAssets([]);
-      setMessage("Enter the admin media key to load this venue's Cloudinary library.");
+      setMessage("Add a venue slug to load its media library.");
       return;
     }
 
@@ -57,7 +55,6 @@ export function VenueMediaLibrary({
     setMessage("Loading Cloudinary media…");
     try {
       const response = await fetch(`/api/admin/venue-media?slug=${encodeURIComponent(slug.trim())}`, {
-        headers: { "x-venue-media-key": adminKey.trim() },
         cache: "no-store",
       });
       const payload = (await response.json()) as MediaResponse;
@@ -77,19 +74,15 @@ export function VenueMediaLibrary({
   }
 
   useEffect(() => {
-    if (!adminKey.trim() || !slug.trim()) return;
+    if (!slug.trim()) return;
     const timer = window.setTimeout(() => void loadLibrary(), 250);
     return () => window.clearTimeout(timer);
-    // loadLibrary intentionally reads the current slug/key values.
+    // loadLibrary intentionally reads the current slug value.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [adminKey, slug]);
+  }, [slug]);
 
   async function uploadFiles(files: FileList | null) {
-    if (!files?.length) return;
-    if (!adminKey.trim()) {
-      setMessage("Enter the admin media key before uploading.");
-      return;
-    }
+    if (!files?.length || !slug.trim()) return;
 
     setUploading(true);
     setMessage(`Uploading ${files.length} image${files.length === 1 ? "" : "s"}…`);
@@ -102,7 +95,6 @@ export function VenueMediaLibrary({
         form.append("file", file);
         const response = await fetch("/api/admin/venue-media", {
           method: "POST",
-          headers: { "x-venue-media-key": adminKey.trim() },
           body: form,
         });
         const payload = (await response.json()) as MediaResponse;
@@ -166,7 +158,7 @@ export function VenueMediaLibrary({
         <button
           type="button"
           onClick={() => void loadLibrary()}
-          disabled={!adminKey.trim() || loading}
+          disabled={!slug.trim() || loading}
           className="rounded-xl border border-white/15 px-3 py-2 text-xs font-black normal-case tracking-normal text-white disabled:opacity-40"
         >
           {loading ? "Loading…" : "Refresh library"}
@@ -179,14 +171,14 @@ export function VenueMediaLibrary({
             <p className="text-sm font-black normal-case tracking-normal text-white">Add venue photos</p>
             <p className="mt-1 text-xs font-medium normal-case tracking-normal text-slate-500">JPG, PNG or WebP. Up to 12 MB each.</p>
           </div>
-          <label className={`cursor-pointer rounded-xl bg-fuchsia-300 px-4 py-2.5 text-xs font-black normal-case tracking-normal text-slate-950 ${uploading || !adminKey.trim() ? "pointer-events-none opacity-40" : ""}`}>
+          <label className={`cursor-pointer rounded-xl bg-fuchsia-300 px-4 py-2.5 text-xs font-black normal-case tracking-normal text-slate-950 ${uploading || !slug.trim() ? "pointer-events-none opacity-40" : ""}`}>
             {uploading ? "Uploading…" : "Upload photos"}
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp"
               multiple
               className="sr-only"
-              disabled={uploading || !adminKey.trim()}
+              disabled={uploading || !slug.trim()}
               onChange={(event) => {
                 void uploadFiles(event.target.files);
                 event.currentTarget.value = "";
