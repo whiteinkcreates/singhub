@@ -27,10 +27,20 @@ export type VenueEnhancement = {
   menuUrl?: string;
   heroImageUrl?: string;
   heroImageAlt?: string;
+  logoImageUrl?: string;
+  logoImageAlt?: string;
   gallery: VenueGalleryItem[];
   amenities: string[];
   weeklySpecials: VenueSpecial[];
   dailyDeals: VenueDailyDeal[];
+};
+
+export const EMPTY_VENUE_ENHANCEMENT: VenueEnhancement = {
+  enabled: false,
+  gallery: [],
+  amenities: [],
+  weeklySpecials: [],
+  dailyDeals: [],
 };
 
 export const VENUE_FACT_OPTIONS = [
@@ -55,8 +65,12 @@ export const VENUE_FACT_OPTIONS = [
 
 const enhancements = enhancementData as Record<string, VenueEnhancement>;
 
+export function getVenueEnhancementRecord(slug: string) {
+  return enhancements[slug];
+}
+
 export function getVenueEnhancement(slug: string) {
-  const enhancement = enhancements[slug];
+  const enhancement = getVenueEnhancementRecord(slug);
   return enhancement?.enabled ? enhancement : undefined;
 }
 
