@@ -27,6 +27,7 @@ export type VenueEnhancement = {
   menuUrl?: string;
   heroImageUrl?: string;
   heroImageAlt?: string;
+  heroPosition?: "top" | "center" | "bottom";
   logoImageUrl?: string;
   logoImageAlt?: string;
   gallery: VenueGalleryItem[];
@@ -37,6 +38,7 @@ export type VenueEnhancement = {
 
 export const EMPTY_VENUE_ENHANCEMENT: VenueEnhancement = {
   enabled: false,
+  heroPosition: "center",
   gallery: [],
   amenities: [],
   weeklySpecials: [],
