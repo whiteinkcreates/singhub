@@ -7,6 +7,8 @@ import type { VenueEnhancement } from "@/lib/venueEnhancements";
 
 export const dynamic = "force-dynamic";
 
+const HERO_POSITIONS = new Set(["center", "top", "bottom", "left", "right"]);
+
 function cleanSlug(value: string | null | undefined) {
   return (value || "").trim().toLowerCase().replace(/[^a-z0-9-]/g, "");
 }
@@ -28,6 +30,18 @@ export async function PUT(request: Request) {
 
     if (!slug || !profile || typeof profile.enabled !== "boolean") {
       return NextResponse.json({ error: "A valid venue profile is required." }, { status: 400 });
+    }
+
+    if (profile.featured !== undefined && typeof profile.featured !== "boolean") {
+      return NextResponse.json({ error: "Featured state is invalid." }, { status: 400 });
+    }
+
+    if (profile.featured && (!Number.isFinite(profile.featuredPriority) || Number(profile.featuredPriority) < 1 || Number(profile.featuredPriority) > 99)) {
+      return NextResponse.json({ error: "Featured priority must be between 1 and 99." }, { status: 400 });
+    }
+
+    if (profile.heroPosition && !HERO_POSITIONS.has(profile.heroPosition)) {
+      return NextResponse.json({ error: "Hero focal position is invalid." }, { status: 400 });
     }
 
     if (!Array.isArray(profile.gallery) || profile.gallery.length > 15) {
