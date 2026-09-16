@@ -3,6 +3,7 @@ import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
   getVenueEnhancement,
+  getVenueEnhancementRecord,
   type VenueEnhancement,
 } from "@/lib/venueEnhancements";
 
@@ -11,23 +12,39 @@ type EnhancementRow = {
   profile: VenueEnhancement;
 };
 
+async function getSavedEnhancementRow(slug: string) {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("venue_enhancements")
+    .select("slug,profile")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data as EnhancementRow | null;
+}
+
 export async function getPersistedVenueEnhancement(slug: string) {
   const fallback = getVenueEnhancement(slug);
 
   try {
-    const supabase = createAdminClient();
-    const { data, error } = await supabase
-      .from("venue_enhancements")
-      .select("slug,profile")
-      .eq("slug", slug)
-      .maybeSingle();
-
-    if (error) throw error;
-    const row = data as EnhancementRow | null;
-    return row?.profile?.enabled ? row.profile : fallback;
+    const row = await getSavedEnhancementRow(slug);
+    if (row) return row.profile?.enabled ? row.profile : undefined;
+    return fallback;
   } catch (error) {
     console.error("Venue enhancement read failed", error);
     return fallback;
+  }
+}
+
+export async function getAdminVenueEnhancement(slug: string) {
+  try {
+    const row = await getSavedEnhancementRow(slug);
+    if (row?.profile) return row.profile;
+    return getVenueEnhancementRecord(slug);
+  } catch (error) {
+    console.error("Venue enhancement admin read failed", error);
+    return getVenueEnhancementRecord(slug);
   }
 }
 
