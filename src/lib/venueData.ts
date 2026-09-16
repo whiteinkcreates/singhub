@@ -14,6 +14,8 @@ type EnhancementMediaRow = {
   slug: string;
   profile: {
     enabled?: boolean;
+    featured?: boolean;
+    featuredPriority?: number;
     heroImageUrl?: string;
     heroImageAlt?: string;
   } | null;
@@ -183,9 +185,18 @@ export async function getVenueListings(): Promise<VenueListing[]> {
     .map((row) => rowToVenueListing(row, row, coordinates, true))
     .map((venue) => {
       const enhancement = enhancementMedia.get(venue.slug);
-      if (!enhancement?.enabled) return venue;
-      return {
+      if (!enhancement) return venue;
+
+      const featuredPriority = parseNumber(enhancement.featuredPriority) ?? undefined;
+      const withPromotion = {
         ...venue,
+        isFeatured: typeof enhancement.featured === "boolean" ? enhancement.featured : venue.isFeatured,
+        featuredPriority,
+      };
+
+      if (!enhancement.enabled) return withPromotion;
+      return {
+        ...withPromotion,
         profileTier: "premium" as const,
         bannerImageUrl: getOptionalValue(enhancement.heroImageUrl) || venue.bannerImageUrl,
         bannerImageAlt: getOptionalValue(enhancement.heroImageAlt) || venue.bannerImageAlt,
@@ -195,7 +206,9 @@ export async function getVenueListings(): Promise<VenueListing[]> {
 }
 
 export async function getFeaturedVenueListings(): Promise<VenueListing[]> {
-  return (await getVenueListings()).filter((venue) => venue.isFeatured);
+  return (await getVenueListings())
+    .filter((venue) => venue.isFeatured)
+    .sort((a, b) => (a.featuredPriority ?? 999) - (b.featuredPriority ?? 999) || a.venueName.localeCompare(b.venueName));
 }
 
 export async function getVenueTickerItems(): Promise<string[]> {
