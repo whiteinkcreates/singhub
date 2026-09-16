@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  getPersistedVenueEnhancement,
+  getAdminVenueEnhancement,
   saveVenueEnhancement,
 } from "@/lib/venueEnhancements.server";
 import type { VenueEnhancement } from "@/lib/venueEnhancements";
@@ -15,9 +15,8 @@ export async function GET(request: NextRequest) {
   const slug = cleanSlug(request.nextUrl.searchParams.get("slug"));
   if (!slug) return NextResponse.json({ error: "Venue slug is required." }, { status: 400 });
 
-  const profile = await getPersistedVenueEnhancement(slug);
-  if (!profile) return NextResponse.json({ error: "Venue enhancement not found." }, { status: 404 });
-  return NextResponse.json({ slug, profile });
+  const profile = await getAdminVenueEnhancement(slug);
+  return NextResponse.json({ slug, profile: profile || null });
 }
 
 export async function PUT(request: Request) {
@@ -26,8 +25,8 @@ export async function PUT(request: Request) {
     const slug = cleanSlug(body.slug);
     const profile = body.profile;
 
-    if (!slug || !profile || profile.enabled !== true) {
-      return NextResponse.json({ error: "A valid enabled venue profile is required." }, { status: 400 });
+    if (!slug || !profile || typeof profile.enabled !== "boolean") {
+      return NextResponse.json({ error: "A valid venue profile is required." }, { status: 400 });
     }
 
     if (!Array.isArray(profile.gallery) || profile.gallery.length > 15) {
