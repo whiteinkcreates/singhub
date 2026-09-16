@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/Button";
 import { VenueProfile } from "@/components/venue/VenueProfile";
 import { getKaraokeEventsByVenueSlug } from "@/lib/eventData";
 import { getPublicVenues, isPublicVenue } from "@/lib/publicVenueFilters";
+import { getSingersSaySummary } from "@/lib/singersSay.server";
+import { getPersistedVenueEnhancement } from "@/lib/venueEnhancements.server";
 import { getVenueListingBySlug, getVenueListings } from "@/lib/venueData";
 
-type VenuePageProps = {
-  params: Promise<{ slug: string }>;
-};
+type VenuePageProps = { params: Promise<{ slug: string }> };
+
+export const dynamic = "force-dynamic";
 
 function isPlaceholderVenue(venueName: string) {
   return venueName.toLowerCase().includes("tbd") || venueName.toLowerCase().includes("placeholder");
@@ -21,52 +23,31 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: VenuePageProps): Promise<Metadata> {
   const { slug } = await params;
   const venue = await getVenueListingBySlug(slug);
-
-  if (!venue || !isPublicVenue(venue)) {
-    return {
-      title: "Venue Not Found | SingHUB",
-      robots: {
-        index: false,
-        follow: false,
-      },
-    };
-  }
-
+  if (!venue || !isPublicVenue(venue)) return { title: "Venue Not Found | SingHUB", robots: { index: false, follow: false } };
   const shouldNoindex = isPlaceholderVenue(venue.venueName);
-
   return {
     title: `${venue.venueName} Karaoke | SingHUB`,
     description: `${venue.venueName} karaoke listing in ${venue.neighborhood}, San Diego.`,
-    alternates: {
-      canonical: `/venues/${venue.slug}`,
-    },
-    robots: shouldNoindex
-      ? {
-          index: false,
-          follow: false,
-        }
-      : undefined,
+    alternates: { canonical: `/venues/${venue.slug}` },
+    robots: shouldNoindex ? { index: false, follow: false } : undefined,
   };
 }
 
 export default async function VenuePage({ params }: VenuePageProps) {
   const { slug } = await params;
   const venue = await getVenueListingBySlug(slug);
+  if (!venue || !isPublicVenue(venue)) notFound();
 
-  if (!venue || !isPublicVenue(venue)) {
-    notFound();
-  }
-
-  const events = await getKaraokeEventsByVenueSlug(venue.slug);
+  const [events, enhancement, singersSay] = await Promise.all([
+    getKaraokeEventsByVenueSlug(venue.slug),
+    getPersistedVenueEnhancement(venue.slug),
+    getSingersSaySummary(venue.id),
+  ]);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-      <div className="mb-8">
-        <Button href="/find-karaoke" variant="ghost">
-          ← Back to all listings
-        </Button>
-      </div>
-      <VenueProfile venue={venue} events={events} />
+      <div className="mb-8"><Button href="/find-karaoke" variant="ghost">← Back to all listings</Button></div>
+      <VenueProfile venue={venue} events={events} enhancement={enhancement} singersSay={singersSay} />
     </main>
   );
 }
