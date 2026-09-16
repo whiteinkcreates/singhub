@@ -153,7 +153,7 @@ export function LitUpVenueProfile({ venue, events = [] }: { venue: VenueListing;
             ))}
             {tonightSpecials.map((special) => (
               <div key={`${special.day}-${special.title}`} className="rounded-2xl border border-cyan-300/15 bg-cyan-300/[0.05] p-4">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-cyan-200">Tonight's deal</p>
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-cyan-200">Tonight&apos;s deal</p>
                 <p className="mt-2 text-base font-black text-white">
                   {special.price ? `${special.price} • ` : ""}{special.title}
                 </p>
