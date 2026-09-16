@@ -43,6 +43,13 @@ const tools = [
       "Create posting codes, see who has SingBOARD access, replace codes, and revoke or restore posting privileges.",
   },
   {
+    href: "/admin/light-up-venues",
+    eyebrow: "Venue Partnerships",
+    title: "Light Up a Venue",
+    description:
+      "Build the structured content layer for enhanced venue profiles, including specials, daily deals, amenities, media, and conversion links.",
+  },
+  {
     href: "/admin/venue-comparison",
     eyebrow: "Venue Partnerships",
     title: "Venue Sales Comparison",
