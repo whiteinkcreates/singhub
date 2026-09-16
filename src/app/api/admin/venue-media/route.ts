@@ -1,24 +1,10 @@
 import { NextResponse } from "next/server";
-import {
-  getVenueMediaAdminKey,
-  listVenueMedia,
-  uploadVenueMedia,
-} from "@/lib/venueMediaCloudinary";
+import { listVenueMedia, uploadVenueMedia } from "@/lib/venueMediaCloudinary";
 
 export const runtime = "nodejs";
 
-function authorized(request: Request) {
-  const configuredKey = getVenueMediaAdminKey();
-  const suppliedKey = request.headers.get("x-venue-media-key");
-  return Boolean(configuredKey && suppliedKey && suppliedKey === configuredKey);
-}
-
 export async function GET(request: Request) {
   try {
-    if (!authorized(request)) {
-      return NextResponse.json({ error: "Venue media access is not authorized." }, { status: 401 });
-    }
-
     const slug = new URL(request.url).searchParams.get("slug") || "";
     if (!slug) {
       return NextResponse.json({ error: "Venue slug is required." }, { status: 400 });
@@ -37,10 +23,6 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    if (!authorized(request)) {
-      return NextResponse.json({ error: "Venue media upload is not authorized." }, { status: 401 });
-    }
-
     const form = await request.formData();
     const slug = String(form.get("slug") || "");
     const file = form.get("file");
