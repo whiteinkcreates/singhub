@@ -36,8 +36,11 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Featured state is invalid." }, { status: 400 });
     }
 
-    if (profile.featured && (!Number.isFinite(profile.featuredPriority) || Number(profile.featuredPriority) < 1 || Number(profile.featuredPriority) > 99)) {
-      return NextResponse.json({ error: "Featured priority must be between 1 and 99." }, { status: 400 });
+    if (profile.featured) {
+      const priority = profile.featuredPriority;
+      if (typeof priority !== "number" || !Number.isFinite(priority) || priority < 1 || priority > 99) {
+        return NextResponse.json({ error: "Featured priority must be between 1 and 99." }, { status: 400 });
+      }
     }
 
     if (profile.heroPosition && !HERO_POSITIONS.has(profile.heroPosition)) {
