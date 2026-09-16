@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 
 const primaryNavItems = [
   { href: "/find-karaoke", label: "Find Karaoke" },
-  { href: "/singboard", label: "SingBoard" },
+  { href: "/singboard", label: "SingBOARD" },
   { href: "/places", label: "Venue Index" },
   { href: "/neighborhoods", label: "Neighborhoods" },
   { href: "/hosts", label: "Hosts" },
