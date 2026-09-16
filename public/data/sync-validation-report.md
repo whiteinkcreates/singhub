@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 90.
-Exported events: 177.
+Exported venues: 91.
+Exported events: 180.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -113,6 +113,7 @@ Exported events: 177.
 - venue-0124 The Rabbit Hole
 - venue-0127 Smitty's Downtown
 - venue-0128 La Estación
+- venue-0129 Barlando
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -147,7 +148,6 @@ Exported events: 177.
 - event row 44: weekly-peter-ds-sunday
 - event row 55: weekly-gaslamp-lumpia-factory-thursday
 - event row 56: weekly-gaslamp-lumpia-factory-saturday
-- event row 63: weekly-kaminskis-sports-lounge-friday
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
 - event row 76: event-double-deuce-2026-07-17-navy-nick-cover
@@ -158,6 +158,7 @@ Exported events: 177.
 - event row 154: weekly-docks-cocktail-lounge-saturday
 - event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
 - event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
+- event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -174,19 +175,13 @@ Exported events: 177.
 - None
 ## Public Rows With TBD Address/Time/Host
 - event row 4: weekly-the-search-bar-thursday The Search Bar
-- event row 5: weekly-blvd-saturday BLVD
-- event row 40: weekly-novo-brazil-brewing-lane-ave-thursday Novo Brazil Brewing - Lane Ave
 - event row 45: weekly-gaslamplighter-tuesday Gaslamplighter Karaoke Cocktail Bar
 - event row 46: weekly-gaslamplighter-wednesday Gaslamplighter Karaoke Cocktail Bar
 - event row 47: weekly-gaslamplighter-friday Gaslamplighter Karaoke Cocktail Bar
 - event row 48: weekly-gaslamplighter-sunday Gaslamplighter Karaoke Cocktail Bar
 - event row 50: weekly-star-bar-tuesday Star Bar
-- event row 59: weekly-happy-does-saturday Happy Does
 - event row 64: weekly-clark-cabaret-friday Clark Cabaret
 - event row 70: event-winstons-friday Winstons Beach Club
-- event row 86: weekly-u-31-tuesday U-31
-- event row 87: weekly-u-31-thursday U-31
-- event row 92: weekly-harbor-town-pub-wednesday Harbor Town Pub
 - event row 94: weekly-mine-oyster-wednesday Mine Oyster
 - event row 95: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
 - event row 98: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
@@ -211,6 +206,9 @@ Exported events: 177.
 - event row 158: weekly-the-luau-sunday The Luau
 - event row 159: weekly-the-luau-friday The Luau
 - event row 167: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
+- event row 178: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
+- event row 179: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
+- event row 180: weekly-barlando-friday Barlando
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
@@ -246,6 +244,7 @@ Exported events: 177.
 - venue-0119 Rich's San Diego
 - venue-0072 The Search Bar
 - venue-0126 Way Point Saloon
+- venue-0129 Barlando
 ## Closed/Hidden/Archived Rows Excluded
 - None
 ## Stable Venue Identity Changes
@@ -259,16 +258,16 @@ Exported events: 177.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 90
-Authoritative events: 177
+Public venues: 91
+Authoritative events: 180
 Legacy venue slug aliases: 0
 
 PASS Monday: 17 authoritative / 8 expected minimum
 PASS Tuesday: 29 authoritative / 8 expected minimum
 PASS Wednesday: 30 authoritative / 9 expected minimum
-PASS Thursday: 36 authoritative / 14 expected minimum
-PASS Friday: 27 authoritative / 10 expected minimum
-PASS Saturday: 18 authoritative / 10 expected minimum
+PASS Thursday: 37 authoritative / 14 expected minimum
+PASS Friday: 28 authoritative / 10 expected minimum
+PASS Saturday: 19 authoritative / 10 expected minimum
 PASS Sunday: 20 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
