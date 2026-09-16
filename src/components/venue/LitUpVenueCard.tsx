@@ -10,6 +10,20 @@ type LitUpVenueCardProps = {
 };
 
 const DEFAULT_BANNER_IMAGE_URL = "/images/venues/default-singhub-banner.svg";
+const TAG_GLYPHS: Record<string, string> = {
+  "Food available": "🍴",
+  "Full bar": "🍸",
+  "Beer & wine": "🍺",
+  "Outdoor seating": "☀",
+  "Good for groups": "◉",
+  "Pool tables": "●",
+  "Bar games": "◆",
+  "Dance floor": "♪",
+  "Patio": "☀",
+  "Game night": "★",
+  "Late night food": "☾",
+  "BBQ": "♨",
+};
 
 function clean(value?: string) {
   const trimmed = value?.trim();
@@ -31,14 +45,15 @@ export function LitUpVenueCard({ venue, events = [], distanceLabel }: LitUpVenue
   const imageUrl = clean(venue.bannerImageUrl) || clean(enhancement?.heroImageUrl) || DEFAULT_BANNER_IMAGE_URL;
   const imageAlt = clean(venue.bannerImageAlt) || clean(enhancement?.heroImageAlt) || `${venue.venueName} venue`;
   const schedule = scheduleLabel(venue, events);
-  const highlights = enhancement?.amenities.slice(0, 3) ?? venue.vibeTags.slice(0, 3);
+  const highlights = (enhancement?.amenities.length ? enhancement.amenities : venue.vibeTags).slice(0, 3);
+  const summary = enhancement?.tagline || venue.description;
 
   return (
     <article className="group overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#0b1118] shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:border-fuchsia-400/50 hover:shadow-fuchsia-950/20">
       <Link href={`/venues/${venue.slug}`} className="block focus:outline-none focus:ring-2 focus:ring-fuchsia-400">
         <div className="relative h-44 overflow-hidden sm:h-52">
-          <img src={imageUrl} alt={imageAlt} className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-300 group-hover:scale-[1.015] group-hover:opacity-65" loading="lazy" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1118] via-[#0b1118]/35 to-black/10" />
+          <img src={imageUrl} alt={imageAlt} className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-300 group-hover:scale-[1.015] group-hover:opacity-68" loading="lazy" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b1118] via-[#0b1118]/28 to-black/5" />
           {distanceLabel && <div className="absolute right-4 top-4"><span className="rounded-full border border-white/15 bg-black/55 px-3 py-1 text-xs font-bold text-white backdrop-blur">{distanceLabel}</span></div>}
           <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
             <div className="flex flex-wrap gap-2">
@@ -56,8 +71,8 @@ export function LitUpVenueCard({ venue, events = [], distanceLabel }: LitUpVenue
             </div>
             <span className="mt-1 text-xl text-fuchsia-300 transition group-hover:translate-x-0.5" aria-hidden>→</span>
           </div>
-          {enhancement?.tagline && <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-200">{enhancement.tagline}</p>}
-          {highlights.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{highlights.map((item) => <span key={item} className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-semibold text-slate-300">{item}</span>)}</div>}
+          {summary && <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-200">{summary}</p>}
+          {highlights.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{highlights.map((item) => <span key={item} className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-semibold text-slate-300">{TAG_GLYPHS[item] ? <span className="text-cyan-200" aria-hidden>{TAG_GLYPHS[item]}</span> : null}{item}</span>)}</div>}
         </div>
       </Link>
     </article>

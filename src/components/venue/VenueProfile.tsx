@@ -87,12 +87,15 @@ function BasicProfile({ venue, events = [] }: VenueProfileProps) {
 
 export function VenueProfile({ venue, events = [], enhancement, singersSay }: VenueProfileProps) {
   const vibeCheckEvents = events.map((event) => ({ eventId: event.eventId, karaokeDay: event.karaokeDay, startTime: event.startTime, hostName: event.hostName }));
-  const enhanced = Boolean(enhancement?.enabled) || venue.profileTier === "premium" || isLitUpVenue(venue.slug);
+  const enhanced = enhancement !== undefined
+    ? Boolean(enhancement.enabled)
+    : venue.profileTier === "premium" || isLitUpVenue(venue.slug);
 
   return (
     <>
-      {enhanced ? <LitUpVenueProfile venue={venue} events={events} enhancement={enhancement} /> : <BasicProfile venue={venue} events={events} />}
-      {singersSay ? <SingersSay summary={singersSay} /> : null}
+      {enhanced
+        ? <LitUpVenueProfile venue={venue} events={events} enhancement={enhancement} singersSay={singersSay} />
+        : <><BasicProfile venue={venue} events={events} />{singersSay ? <SingersSay summary={singersSay} /> : null}</>}
       <VibeCheckLauncher venue={{ id: venue.id, slug: venue.slug, name: venue.venueName }} events={vibeCheckEvents} />
     </>
   );
