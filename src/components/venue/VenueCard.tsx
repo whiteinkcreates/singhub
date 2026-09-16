@@ -86,7 +86,7 @@ function ExternalActionLink({ children, href }: { children: string; href: string
       href={href}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center justify-center rounded-full border border-cyan-400/50 bg-cyan-400/10 px-5 py-3 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-offset-2 focus:ring-offset-slate-950"
+      className="inline-flex w-full items-center justify-center whitespace-nowrap rounded-full border border-cyan-400/50 bg-cyan-400/10 px-5 py-3 text-sm font-semibold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-offset-2 focus:ring-offset-slate-950"
     >
       {children}
     </a>
@@ -95,7 +95,7 @@ function ExternalActionLink({ children, href }: { children: string; href: string
 
 function VenueActions({ venue, directionsUrl, instagramUrl, websiteUrl }: VenueActionUrls & { venue: VenueListing }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+    <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-1">
       <Button href={`/venues/${venue.slug}`}>Select Venue</Button>
       {directionsUrl && <ExternalActionLink href={directionsUrl}>Directions</ExternalActionLink>}
       {websiteUrl && <ExternalActionLink href={websiteUrl}>Website</ExternalActionLink>}
@@ -124,7 +124,7 @@ function BasicVenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
   return (
     <article className="rounded-3xl border border-white/10 bg-white/[0.04] p-5 shadow-xl shadow-black/20 transition hover:border-fuchsia-400/40">
       <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-        <div>
+        <div className="min-w-0 flex-1">
           <div className="mb-3 flex flex-wrap gap-2">
             {getListingBadge(venue)}
             {venue.isFeatured && <Badge variant="premium">Featured</Badge>}
@@ -151,7 +151,7 @@ function BasicVenueCard({ venue, events = [], distanceLabel }: VenueCardProps) {
           </p>
         </div>
 
-        <div className="flex shrink-0 flex-wrap gap-3 md:w-44 md:flex-col">
+        <div className="flex shrink-0 flex-wrap gap-3 md:w-48 md:flex-col">
           <VenueActions
             venue={venue}
             directionsUrl={directionsUrl}
