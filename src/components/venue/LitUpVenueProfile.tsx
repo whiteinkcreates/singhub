@@ -44,6 +44,9 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
 
   const heroUrl = clean(enhancement.heroImageUrl) || clean(venue.bannerImageUrl) || DEFAULT_BANNER_IMAGE_URL;
   const heroAlt = clean(enhancement.heroImageAlt) || clean(venue.bannerImageAlt) || `${venue.venueName} venue`;
+  const heroPosition = enhancement.heroPosition || venue.bannerImagePosition || "center";
+  const logoUrl = clean(enhancement.logoImageUrl);
+  const logoAlt = clean(enhancement.logoImageAlt) || `${venue.venueName} logo`;
   const directionsUrl = getDirectionsUrl(venue);
   const instagramUrl = getInstagramUrl(venue.instagram);
   const websiteUrl = clean(venue.website);
@@ -57,7 +60,7 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
   return (
     <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#071019] shadow-2xl shadow-black/30">
       <section className="relative min-h-[20rem] overflow-hidden md:min-h-[28rem]">
-        <img src={heroUrl} alt={heroAlt} className="absolute inset-0 h-full w-full object-cover" loading="eager" />
+        <img src={heroUrl} alt={heroAlt} className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: heroPosition }} loading="eager" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#071019] via-[#071019]/30 to-black/15" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-transparent" />
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#22d3ee] via-[#ff2aa3] to-[#8b5cf6]" />
@@ -66,12 +69,14 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
           <div className="flex flex-wrap gap-2">
             <span className="rounded-full bg-[#ff2aa3] px-3 py-1.5 text-[0.7rem] font-black uppercase tracking-[0.12em] text-white">Karaoke</span>
             {karaokeLabel ? <span className="rounded-full border border-cyan-300/60 bg-[#061820]/75 px-3 py-1.5 text-[0.7rem] font-black uppercase tracking-[0.12em] text-cyan-100 backdrop-blur">{karaokeLabel}</span> : null}
+            {venue.isFeatured ? <span className="rounded-full border border-violet-300/50 bg-black/45 px-3 py-1.5 text-[0.7rem] font-black uppercase tracking-[0.12em] text-violet-100 backdrop-blur">Featured</span> : null}
           </div>
         </div>
       </section>
 
-      <div className="p-4 sm:p-6 md:p-8">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+      <div className="relative p-4 sm:p-6 md:p-8">
+        {logoUrl ? <div className="absolute right-5 top-0 flex h-24 w-24 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-300/60 bg-[#071019] p-3 shadow-xl shadow-black/30 md:right-8 md:h-28 md:w-28"><img src={logoUrl} alt={logoAlt} className="h-full w-full object-contain" /></div> : null}
+        <div className={`flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between ${logoUrl ? "pr-28 md:pr-32" : ""}`}>
           <div className="max-w-3xl">
             <h1 className="text-4xl font-black leading-none text-white md:text-5xl">{venue.venueName}</h1>
             <p className="mt-2 text-sm font-semibold text-slate-400">{[venue.neighborhood || venue.city, clean(venue.address)].filter(Boolean).join(" • ")}</p>

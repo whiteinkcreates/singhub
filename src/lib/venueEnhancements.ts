@@ -1,5 +1,7 @@
 import enhancementData from "../../public/data/venue-enhancements.json";
 
+export type HeroPosition = "center" | "top" | "bottom" | "left" | "right";
+
 export type VenueGalleryItem = {
   url: string;
   alt: string;
@@ -21,12 +23,17 @@ export type VenueDailyDeal = {
 
 export type VenueEnhancement = {
   enabled: boolean;
+  featured?: boolean;
+  featuredPriority?: number;
   tagline?: string;
   about?: string;
   phone?: string;
   menuUrl?: string;
   heroImageUrl?: string;
   heroImageAlt?: string;
+  heroPosition?: HeroPosition;
+  logoImageUrl?: string;
+  logoImageAlt?: string;
   gallery: VenueGalleryItem[];
   amenities: string[];
   weeklySpecials: VenueSpecial[];
