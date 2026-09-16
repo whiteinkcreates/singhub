@@ -26,8 +26,8 @@ export async function PUT(request: Request) {
     const slug = cleanSlug(body.slug);
     const profile = body.profile;
 
-    if (!slug || !profile || profile.enabled !== true) {
-      return NextResponse.json({ error: "A valid enabled venue profile is required." }, { status: 400 });
+    if (!slug || !profile || typeof profile.enabled !== "boolean") {
+      return NextResponse.json({ error: "A valid venue profile is required." }, { status: 400 });
     }
 
     if (!Array.isArray(profile.gallery) || profile.gallery.length > 15) {
