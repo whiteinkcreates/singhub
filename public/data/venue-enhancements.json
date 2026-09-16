@@ -1,0 +1,103 @@
+{
+  "barlando": {
+    "enabled": true,
+    "tagline": "Great food, cold drinks, good vibes, and karaoke every Friday.",
+    "about": "BarLando is a Rolando neighborhood bar and barbecue spot building a bigger nightlife identity around food, drinks, games, community events, and Friday karaoke.",
+    "phone": "(619) 913-3287",
+    "menuUrl": "https://order.toasttab.com/online/corbins-q-6548-el-cajon-blvd",
+    "heroImageUrl": "",
+    "heroImageAlt": "BarLando in San Diego",
+    "gallery": [],
+    "amenities": [
+      "Food available",
+      "Full bar",
+      "Outdoor seating",
+      "Good for groups",
+      "Game night"
+    ],
+    "weeklySpecials": [
+      {
+        "day": "Monday",
+        "title": "Margarita Monday or a flight",
+        "price": "$9"
+      },
+      {
+        "day": "Wednesday",
+        "title": "Pint Night",
+        "price": "$5"
+      },
+      {
+        "day": "Wednesday",
+        "title": "All-you-can-eat wings",
+        "price": "$26"
+      },
+      {
+        "day": "Thursday",
+        "title": "50% off well drinks",
+        "detail": "Game Night at the Bar"
+      },
+      {
+        "day": "Thursday",
+        "title": "All-you-can-eat tacos",
+        "price": "$22"
+      },
+      {
+        "day": "Friday",
+        "title": "Flight Night",
+        "price": "$11",
+        "detail": "Margarita or beer + shot"
+      },
+      {
+        "day": "Friday",
+        "title": "All-you-can-eat poppers",
+        "price": "$19"
+      },
+      {
+        "day": "Saturday",
+        "title": "Pitchers",
+        "price": "$18"
+      },
+      {
+        "day": "Saturday",
+        "title": "Buckets",
+        "price": "$15"
+      },
+      {
+        "day": "Saturday",
+        "title": "All-you-can-eat sliders",
+        "price": "$26"
+      },
+      {
+        "day": "Sunday",
+        "title": "All-day Happy Hour"
+      }
+    ],
+    "dailyDeals": [
+      {
+        "title": "Shot + Beer",
+        "price": "$5",
+        "detail": "Jamo, tequila, Jack Daniels, or Skrewball"
+      },
+      {
+        "title": "Ronny Luv",
+        "price": "$11",
+        "detail": "Tito's + beer"
+      },
+      {
+        "title": "Big Mitch",
+        "price": "$11",
+        "detail": "Jamo + beer"
+      },
+      {
+        "title": "Beer + Entrée",
+        "price": "$19",
+        "detail": "Burger, burrito, or flatbread"
+      },
+      {
+        "title": "Cocktail + Entrée",
+        "price": "$22",
+        "detail": "Burger, burrito, or flatbread"
+      }
+    ]
+  }
+}
