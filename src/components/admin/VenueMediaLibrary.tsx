@@ -69,15 +69,7 @@ export function VenueMediaLibrary({ slug, heroUrl, heroAlt, gallery, onHeroChang
 
   useEffect(() => {
     const requestedSlug = slug.trim();
-    if (!requestedSlug) {
-      requestSequence.current += 1;
-      setAssets([]);
-      setLoading(false);
-      setMessage("Add a venue slug to load its media library.");
-      return;
-    }
-
-    const timer = window.setTimeout(() => void loadLibrary(requestedSlug), 250);
+    const timer = window.setTimeout(() => void loadLibrary(requestedSlug), requestedSlug ? 250 : 0);
     return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
