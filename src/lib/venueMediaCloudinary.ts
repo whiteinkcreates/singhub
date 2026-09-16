@@ -23,10 +23,6 @@ function getCloudinaryConfig() {
   return { cloudName, apiKey, apiSecret };
 }
 
-export function getVenueMediaAdminKey() {
-  return process.env.VENUE_MEDIA_UPLOAD_KEY || process.env.DAILY_MIC_UPLOAD_KEY || "";
-}
-
 function sanitizeSlug(slug: string) {
   const normalized = slug.trim().toLowerCase();
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(normalized)) {
