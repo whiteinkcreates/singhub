@@ -182,8 +182,9 @@ export async function getVenueListings(): Promise<VenueListing[]> {
     })
     .map((row) => rowToVenueListing(row, row, coordinates, true))
     .map((venue) => {
+      if (!enhancementMedia.has(venue.slug)) return venue;
       const enhancement = enhancementMedia.get(venue.slug);
-      if (!enhancement?.enabled) return venue;
+      if (!enhancement?.enabled) return { ...venue, profileTier: "basic" as const };
       return {
         ...venue,
         profileTier: "premium" as const,
