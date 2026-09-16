@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { VenueMediaLibrary } from "@/components/admin/VenueMediaLibrary";
 import type { VenueEnhancement, VenueGalleryItem } from "@/lib/venueEnhancements";
 
@@ -27,11 +27,6 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile }: VenueLightU
   const [dailyDeals, setDailyDeals] = useState(JSON.stringify(initialProfile.dailyDeals, null, 2));
   const [adminMediaKey, setAdminMediaKey] = useState("");
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    const savedKey = window.sessionStorage.getItem("singhub-venue-media-key");
-    if (savedKey) setAdminMediaKey(savedKey);
-  }, []);
 
   const output = useMemo(() => {
     try {
@@ -64,12 +59,6 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile }: VenueLightU
     window.setTimeout(() => setCopied(false), 1600);
   }
 
-  function updateMediaKey(value: string) {
-    setAdminMediaKey(value);
-    if (value) window.sessionStorage.setItem("singhub-venue-media-key", value);
-    else window.sessionStorage.removeItem("singhub-venue-media-key");
-  }
-
   const fieldClass = "mt-2 w-full rounded-2xl border border-white/10 bg-black/25 px-4 py-3 text-sm text-white outline-none transition focus:border-fuchsia-400/60 focus:ring-2 focus:ring-fuchsia-400/20";
   const labelClass = "text-xs font-black uppercase tracking-[0.16em] text-slate-400";
 
@@ -89,14 +78,14 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile }: VenueLightU
               <input
                 type="password"
                 value={adminMediaKey}
-                onChange={(event) => updateMediaKey(event.target.value)}
+                onChange={(event) => setAdminMediaKey(event.target.value)}
                 autoComplete="off"
                 placeholder="Venue media key"
                 className={fieldClass}
               />
             </label>
             <p className="mt-2 text-xs leading-5 text-slate-500">
-              Kept only for this browser session. The venue media endpoint accepts VENUE_MEDIA_UPLOAD_KEY, with the existing Daily Mic upload key as a fallback.
+              The venue media endpoint accepts VENUE_MEDIA_UPLOAD_KEY, with the existing Daily Mic upload key as a fallback.
             </p>
           </div>
 
