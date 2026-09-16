@@ -91,8 +91,14 @@ export function VenueProfile({ venue, events = [], enhancement, singersSay }: Ve
 
   return (
     <>
-      {enhanced ? <LitUpVenueProfile venue={venue} events={events} enhancement={enhancement} /> : <BasicProfile venue={venue} events={events} />}
-      {singersSay ? <SingersSay summary={singersSay} /> : null}
+      {enhanced ? (
+        <LitUpVenueProfile venue={venue} events={events} enhancement={enhancement} singersSay={singersSay} />
+      ) : (
+        <>
+          <BasicProfile venue={venue} events={events} />
+          {singersSay ? <SingersSay summary={singersSay} /> : null}
+        </>
+      )}
       <VibeCheckLauncher venue={{ id: venue.id, slug: venue.slug, name: venue.venueName }} events={vibeCheckEvents} />
     </>
   );
