@@ -2,26 +2,22 @@ import fs from "node:fs";
 import path from "node:path";
 import type { ListingStatus, ProfileTier, VenueListing, VenueType } from "@/types";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const DATA_PATH = path.join(process.cwd(), "public", "data", "venues.tsv");
-const SLUG_ALIASES_PATH = path.join(
-  process.cwd(),
-  "public",
-  "data",
-  "venue_slug_aliases.tsv",
-);
-const COORDINATES_PATH = path.join(
-  process.cwd(),
-  "scripts",
-  "data-sync",
-  "venue-coordinates.json",
-);
+const SLUG_ALIASES_PATH = path.join(process.cwd(), "public", "data", "venue_slug_aliases.tsv");
+const COORDINATES_PATH = path.join(process.cwd(), "scripts", "data-sync", "venue-coordinates.json");
 
 type VenueSourceRow = Record<string, string>;
-type CoordinateMap = Record<
-  string,
-  { latitude?: string | number; longitude?: string | number }
->;
+type CoordinateMap = Record<string, { latitude?: string | number; longitude?: string | number }>;
+type EnhancementMediaRow = {
+  slug: string;
+  profile: {
+    enabled?: boolean;
+    heroImageUrl?: string;
+    heroImageAlt?: string;
+  } | null;
+};
 
 const VERIFIED_STATUSES = new Set([
   "verified",
@@ -52,11 +48,7 @@ function getOptionalValue(value: string | undefined) {
   return trimmedValue ? trimmedValue : undefined;
 }
 
-function getAny(
-  primary: VenueSourceRow,
-  fallback: VenueSourceRow | undefined,
-  names: string[],
-) {
+function getAny(primary: VenueSourceRow, fallback: VenueSourceRow | undefined, names: string[]) {
   for (const name of names) {
     const primaryValue = getOptionalValue(primary[name]);
     if (primaryValue) return primaryValue;
@@ -71,53 +63,37 @@ function parseBoolean(value: string | undefined) {
 }
 
 function parseNumber(value: string | number | undefined) {
-  if (value === undefined || value === null || String(value).trim() === "") {
-    return null;
-  }
+  if (value === undefined || value === null || String(value).trim() === "") return null;
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
 }
 
 function parseTags(value: string | undefined) {
   if (!value) return [];
-  return value
-    .split(",")
-    .map((tag) => tag.trim())
-    .filter(Boolean);
+  return value.split(",").map((tag) => tag.trim()).filter(Boolean);
 }
 
 function normalizeProfileTier(value: string | undefined): ProfileTier {
   const normalized = value?.trim().toLowerCase();
-  return normalized === "premium" || normalized === "enhanced_candidate"
-    ? "premium"
-    : "basic";
+  return normalized === "premium" || normalized === "enhanced_candidate" ? "premium" : "basic";
 }
 
-function normalizeListingStatus(
-  statusValue: string | undefined,
-  reviewStatusValue?: string | undefined,
-): ListingStatus {
+function normalizeListingStatus(statusValue: string | undefined, reviewStatusValue?: string | undefined): ListingStatus {
   const status = statusValue?.trim().toLowerCase() || "";
   const reviewStatus = reviewStatusValue?.trim().toLowerCase() || "";
-
   if (status === "claimed") return "claimed";
-  if (VERIFIED_STATUSES.has(status) || VERIFIED_STATUSES.has(reviewStatus)) {
-    return "verified";
-  }
+  if (VERIFIED_STATUSES.has(status) || VERIFIED_STATUSES.has(reviewStatus)) return "verified";
   return "ai_scouted";
 }
 
 function normalizeVenueType(value: string | undefined): VenueType {
   const normalized = value?.trim().toLowerCase();
-  if (normalized === "private_room" || normalized === "event_producer") {
-    return normalized;
-  }
+  if (normalized === "private_room" || normalized === "event_producer") return normalized;
   return "live_bar";
 }
 
 function loadCoordinates(): CoordinateMap {
   if (!fs.existsSync(COORDINATES_PATH)) return {};
-
   try {
     return JSON.parse(fs.readFileSync(COORDINATES_PATH, "utf8")) as CoordinateMap;
   } catch (error) {
@@ -128,9 +104,7 @@ function loadCoordinates(): CoordinateMap {
 
 function getFallbackRows() {
   if (!fs.existsSync(DATA_PATH)) return [] as VenueSourceRow[];
-  return parseTsv(fs.readFileSync(DATA_PATH, "utf8")).map(
-    (row: TsvRow) => row as VenueSourceRow,
-  );
+  return parseTsv(fs.readFileSync(DATA_PATH, "utf8")).map((row: TsvRow) => row as VenueSourceRow);
 }
 
 function getCanonicalSlug(slug: string) {
@@ -140,60 +114,47 @@ function getCanonicalSlug(slug: string) {
   return match?.canonical_slug || slug;
 }
 
-function rowToVenueListing(
-  row: VenueSourceRow,
-  fallback: VenueSourceRow | undefined,
-  coordinates: CoordinateMap,
-  useLegacyScheduleFallback: boolean,
-): VenueListing {
+async function loadEnhancementMedia() {
+  const map = new Map<string, EnhancementMediaRow["profile"]>();
+  try {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from("venue_enhancements").select("slug,profile");
+    if (error) throw error;
+    for (const row of (data || []) as EnhancementMediaRow[]) map.set(row.slug, row.profile);
+  } catch (error) {
+    console.error("Venue enhancement media read failed", error);
+  }
+  return map;
+}
+
+function rowToVenueListing(row: VenueSourceRow, fallback: VenueSourceRow | undefined, coordinates: CoordinateMap, useLegacyScheduleFallback: boolean): VenueListing {
   const id = getAny(row, fallback, ["venue_id", "id"]) || "";
   const slug = getAny(row, fallback, ["slug"]) || "";
   const coordinate = coordinates[id] || coordinates[slug] || {};
-
   return {
     id,
     venueName: getAny(row, fallback, ["venue_name"]) || "",
     slug,
-    profileTier: normalizeProfileTier(
-      getAny(row, fallback, ["profile_tier"]),
-    ),
-    listingStatus: normalizeListingStatus(
-      getAny(row, fallback, ["listing_status"]),
-      getAny(row, fallback, ["review_status"]),
-    ),
+    profileTier: normalizeProfileTier(getAny(row, fallback, ["profile_tier"])),
+    listingStatus: normalizeListingStatus(getAny(row, fallback, ["listing_status"]), getAny(row, fallback, ["review_status"])),
     venueType: normalizeVenueType(getAny(row, fallback, ["venue_type"])),
     city: getAny(row, fallback, ["city"]) || "",
     neighborhood: getAny(row, fallback, ["neighborhood"]) || "",
     market: getAny(row, fallback, ["market"]) || "",
     address: getAny(row, fallback, ["address"]) || "",
-    latitude:
-      parseNumber(getAny(row, fallback, ["latitude"])) ??
-      parseNumber(coordinate.latitude),
-    longitude:
-      parseNumber(getAny(row, fallback, ["longitude"])) ??
-      parseNumber(coordinate.longitude),
+    latitude: parseNumber(getAny(row, fallback, ["latitude"])) ?? parseNumber(coordinate.latitude),
+    longitude: parseNumber(getAny(row, fallback, ["longitude"])) ?? parseNumber(coordinate.longitude),
     website: getAny(row, fallback, ["website"]),
     instagram: getAny(row, fallback, ["instagram"]),
     bannerImageUrl: getAny(row, fallback, ["banner_image_url"]),
     bannerImageAlt: getAny(row, fallback, ["banner_image_alt"]),
     tickerText: getAny(row, fallback, ["ticker_text"]),
-    karaokeDay: useLegacyScheduleFallback
-      ? getOptionalValue(fallback?.karaoke_day) || ""
-      : "",
-    startTime: useLegacyScheduleFallback
-      ? getOptionalValue(fallback?.start_time) || ""
-      : "",
-    endTime: useLegacyScheduleFallback
-      ? getOptionalValue(fallback?.end_time) || ""
-      : "",
-    hostName: useLegacyScheduleFallback
-      ? getOptionalValue(fallback?.host_name)
-      : undefined,
-    vibeTags: parseTags(
-      getAny(row, fallback, ["vibe_tags"]),
-    ),
-    description:
-      getAny(row, fallback, ["public_description", "description"]) || "",
+    karaokeDay: useLegacyScheduleFallback ? getOptionalValue(fallback?.karaoke_day) || "" : "",
+    startTime: useLegacyScheduleFallback ? getOptionalValue(fallback?.start_time) || "" : "",
+    endTime: useLegacyScheduleFallback ? getOptionalValue(fallback?.end_time) || "" : "",
+    hostName: useLegacyScheduleFallback ? getOptionalValue(fallback?.host_name) : undefined,
+    vibeTags: parseTags(getAny(row, fallback, ["vibe_tags"])),
+    description: getAny(row, fallback, ["public_description", "description"]) || "",
     specials: getAny(row, fallback, ["specials"]),
     happyHour: getAny(row, fallback, ["happy_hour"]),
     foodHighlights: getAny(row, fallback, ["food_highlights"]),
@@ -211,6 +172,8 @@ function rowToVenueListing(
 export async function getVenueListings(): Promise<VenueListing[]> {
   const fallbackRows = getFallbackRows();
   const coordinates = loadCoordinates();
+  const enhancementMedia = await loadEnhancementMedia();
+
   return fallbackRows
     .filter((row) => !getOptionalValue(row.archive_reason))
     .filter((row) => {
@@ -218,6 +181,16 @@ export async function getVenueListings(): Promise<VenueListing[]> {
       return !EXCLUDED_STATUSES.has(status);
     })
     .map((row) => rowToVenueListing(row, row, coordinates, true))
+    .map((venue) => {
+      const enhancement = enhancementMedia.get(venue.slug);
+      if (!enhancement?.enabled) return venue;
+      return {
+        ...venue,
+        profileTier: "premium" as const,
+        bannerImageUrl: getOptionalValue(enhancement.heroImageUrl) || venue.bannerImageUrl,
+        bannerImageAlt: getOptionalValue(enhancement.heroImageAlt) || venue.bannerImageAlt,
+      };
+    })
     .filter((venue) => venue.id && venue.venueName && venue.slug);
 }
 
@@ -226,12 +199,8 @@ export async function getFeaturedVenueListings(): Promise<VenueListing[]> {
 }
 
 export async function getVenueTickerItems(): Promise<string[]> {
-  const tickerItems = (await getVenueListings())
-    .map((venue) => venue.tickerText)
-    .filter((item): item is string => Boolean(item));
-
+  const tickerItems = (await getVenueListings()).map((venue) => venue.tickerText).filter((item): item is string => Boolean(item));
   if (tickerItems.length > 0) return tickerItems;
-
   return [
     "Tonight in San Diego • Find live bar karaoke, private rooms, and local host-led nights",
     "SingHUB is actively verifying karaoke schedules and adding new venues",
@@ -239,11 +208,7 @@ export async function getVenueTickerItems(): Promise<string[]> {
   ];
 }
 
-export async function getVenueListingBySlug(
-  slug: string,
-): Promise<VenueListing | undefined> {
+export async function getVenueListingBySlug(slug: string): Promise<VenueListing | undefined> {
   const canonicalSlug = getCanonicalSlug(slug);
-  return (await getVenueListings()).find(
-    (venue) => venue.slug === canonicalSlug,
-  );
+  return (await getVenueListings()).find((venue) => venue.slug === canonicalSlug);
 }

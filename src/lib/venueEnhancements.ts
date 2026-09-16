@@ -33,6 +33,26 @@ export type VenueEnhancement = {
   dailyDeals: VenueDailyDeal[];
 };
 
+export const VENUE_FACT_OPTIONS = [
+  "Food available",
+  "Full bar",
+  "Beer & wine",
+  "Outdoor seating",
+  "Good for groups",
+  "21+",
+  "All ages",
+  "Free parking",
+  "Street parking",
+  "Reservations available",
+  "Private rooms",
+  "Pool tables",
+  "Bar games",
+  "Dance floor",
+  "Patio",
+  "Game night",
+  "Late night food",
+] as const;
+
 const enhancements = enhancementData as Record<string, VenueEnhancement>;
 
 export function getVenueEnhancement(slug: string) {
