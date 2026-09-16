@@ -25,7 +25,6 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile }: VenueLightU
   const [amenities, setAmenities] = useState(listToText(initialProfile.amenities));
   const [weeklySpecials, setWeeklySpecials] = useState(JSON.stringify(initialProfile.weeklySpecials, null, 2));
   const [dailyDeals, setDailyDeals] = useState(JSON.stringify(initialProfile.dailyDeals, null, 2));
-  const [adminMediaKey, setAdminMediaKey] = useState("");
   const [copied, setCopied] = useState(false);
 
   const output = useMemo(() => {
@@ -72,26 +71,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile }: VenueLightU
           <label className={`${labelClass} md:col-span-2`}>About<textarea className={`${fieldClass} min-h-28`} value={about} onChange={(event) => setAbout(event.target.value)} /></label>
           <label className={`${labelClass} md:col-span-2`}>Menu URL<input className={fieldClass} value={menuUrl} onChange={(event) => setMenuUrl(event.target.value)} /></label>
 
-          <div className="md:col-span-2 rounded-2xl border border-white/10 bg-black/20 p-4">
-            <label className={labelClass}>
-              Admin media key
-              <input
-                type="password"
-                value={adminMediaKey}
-                onChange={(event) => setAdminMediaKey(event.target.value)}
-                autoComplete="off"
-                placeholder="Venue media key"
-                className={fieldClass}
-              />
-            </label>
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              The venue media endpoint accepts VENUE_MEDIA_UPLOAD_KEY, with the existing Daily Mic upload key as a fallback.
-            </p>
-          </div>
-
           <VenueMediaLibrary
             slug={slug}
-            adminKey={adminMediaKey}
             heroUrl={heroImageUrl}
             heroAlt={heroImageAlt}
             gallery={gallery}
@@ -116,7 +97,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile }: VenueLightU
         <p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Profile payload</p>
         <h2 className="mt-2 text-2xl font-black text-white">Ready for the data file</h2>
         <p className="mt-3 text-sm leading-6 text-slate-400">
-          Venue photos now stay in Cloudinary and are selected visually. The same structured profile still powers both the compact Venue Index card and the full Lit Up page.
+          Venue photos stay in Cloudinary and are selected visually. The same structured profile powers both the compact Venue Index card and the full Lit Up page.
         </p>
 
         <pre className={`mt-5 max-h-[42rem] overflow-auto rounded-2xl border p-4 text-xs leading-5 ${output.valid ? "border-white/10 bg-black/30 text-slate-300" : "border-red-400/30 bg-red-400/5 text-red-200"}`}>
