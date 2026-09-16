@@ -21,6 +21,7 @@ export type VenueListing = {
   instagram?: string;
   bannerImageUrl?: string;
   bannerImageAlt?: string;
+  bannerImagePosition?: "center" | "top" | "bottom" | "left" | "right";
   tickerText?: string;
   karaokeDay: string;
   startTime: string;
@@ -40,6 +41,8 @@ export type VenueListing = {
   bookingContact?: string;
   isFeatured: boolean;
   featuredPriority?: number;
+  enhancementTagline?: string;
+  enhancementAmenities?: string[];
 };
 
 export type KaraokeEventListing = {
