@@ -168,9 +168,8 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             {selectedSlotId===slot.id?"Selected":`Place here · ${slot.id}`}
           </button>)}
 
-          <div className="pointer-events-none absolute left-1/2 top-4 z-30 flex w-[52%] max-w-[680px] -translate-x-1/2 items-center gap-2 rounded-lg border-2 border-fuchsia-400/80 bg-black/45 px-3 py-2 shadow-[0_0_18px_rgba(236,72,153,.45),inset_0_0_18px_rgba(34,211,238,.12)]">
-            <img src="/images/header-singhub-logo.png" alt="SingHUB" className="h-auto w-[54%] object-contain" />
-            <span className="text-[clamp(1.25rem,4vw,3.4rem)] font-black tracking-[-.08em] text-white [text-shadow:0_0_8px_#38cfff,0_0_18px_#38cfff]">BOARD</span>
+          <div className="pointer-events-none absolute left-1/2 top-4 z-30 w-[62%] max-w-[760px] -translate-x-1/2">
+            <img src="/images/singboard-wordmark.webp" alt="SingBOARD" className="h-auto w-full object-contain" />
           </div>
           <p className="pointer-events-none absolute left-1/2 top-[13%] z-30 w-[58%] -translate-x-1/2 text-center text-[10px] font-black uppercase tracking-[.28em] text-slate-200/85 sm:text-xs">
             The bulletin board for karaoke events
