@@ -97,7 +97,10 @@ function getLocationMessage(status: LocationStatus) {
 }
 
 function getTonightDayName(): DayName {
-  return dayNames[new Date().getDay()];
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    timeZone: "America/Los_Angeles",
+  }).format(new Date()) as DayName;
 }
 
 function normalizeInitialDayFilter(value: string | undefined): DayFilter {
