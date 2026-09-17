@@ -1,4 +1,5 @@
 import type { HostProfile, HostWeekday } from "@/types";
+import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
 
 export const HOST_WEEKDAYS: HostWeekday[] = [
   "Monday",
@@ -25,8 +26,5 @@ export function isHostConfirmed(
 }
 
 export function getTodayInLosAngeles(): HostWeekday {
-  return new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
-    timeZone: "America/Los_Angeles",
-  }).format(new Date()) as HostWeekday;
+  return getSanDiegoNightlifeWeekday() as HostWeekday;
 }
