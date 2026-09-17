@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { VenueMap } from "@/components/map/VenueMap";
 import { VenueCard } from "@/components/venue/VenueCard";
+import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
 import type { KaraokeEventListing, ListingStatus, VenueListing, VenueType } from "@/types";
 import {
   formatDistance,
@@ -97,10 +98,7 @@ function getLocationMessage(status: LocationStatus) {
 }
 
 function getTonightDayName(): DayName {
-  return new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
-    timeZone: "America/Los_Angeles",
-  }).format(new Date()) as DayName;
+  return getSanDiegoNightlifeWeekday();
 }
 
 function normalizeInitialDayFilter(value: string | undefined): DayFilter {

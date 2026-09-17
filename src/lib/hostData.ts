@@ -8,6 +8,7 @@ import type {
   KaraokeEventListing,
 } from "@/types";
 import { getKaraokeEventListings } from "@/lib/eventData";
+import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
 import {
   getGoogleSheetRows,
   GoogleSheetsConfigurationError,
@@ -504,10 +505,7 @@ export async function getHostBySlug(slug: string) {
 }
 
 export function getTodayInLosAngeles(): HostWeekday {
-  return new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
-    timeZone: "America/Los_Angeles",
-  }).format(new Date()) as HostWeekday;
+  return getSanDiegoNightlifeWeekday() as HostWeekday;
 }
 
 export async function getHostsHostingToday() {

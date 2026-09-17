@@ -1,4 +1,5 @@
 import type { KaraokeEventListing, VenueListing } from "@/types";
+import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
 
 export type KaraokeForecast = {
   score: number;
@@ -23,10 +24,7 @@ function parseHour(value: string) {
 }
 
 function getWeekendBump() {
-  const weekday = new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
-    timeZone: "America/Los_Angeles",
-  }).format(new Date());
+  const weekday = getSanDiegoNightlifeWeekday();
   return ["Friday", "Saturday"].includes(weekday) ? 5 : weekday === "Thursday" ? 3 : 0;
 }
 

@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { connection } from "next/server";
+import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
 import type { KaraokeEventListing } from "@/types";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
 
@@ -86,13 +87,6 @@ function getFallbackRows() {
   return parseTsv(content).map((row: TsvRow) => row as EventSourceRow);
 }
 
-function getTodayInLosAngeles() {
-  return new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
-    timeZone: "America/Los_Angeles",
-  }).format(new Date());
-}
-
 function eventRunsToday(event: KaraokeEventListing, today: string) {
   const eventDay = event.karaokeDay.toLowerCase();
   return eventDay === today.toLowerCase() || eventDay.includes(today.toLowerCase());
@@ -143,7 +137,7 @@ export async function getKaraokeEventListings(): Promise<KaraokeEventListing[]> 
 
 export async function getKaraokeEventsHostingToday(): Promise<KaraokeEventListing[]> {
   await connection();
-  const today = getTodayInLosAngeles();
+  const today = getSanDiegoNightlifeWeekday();
   return (await getKaraokeEventListings()).filter((event) =>
     eventRunsToday(event, today),
   );
