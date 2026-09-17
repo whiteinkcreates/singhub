@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 91.
-Exported events: 180.
+Exported venues: 95.
+Exported events: 186.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -114,6 +114,10 @@ Exported events: 180.
 - venue-0127 Smitty's Downtown
 - venue-0128 La Estación
 - venue-0129 Barlando
+- venue-0130 Spring Valley Inn
+- venue-0131 Mike's Cocktails
+- venue-0132 Alpine VFW Post 9578
+- venue-0133 VFW Santee Post 9327
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -193,9 +197,6 @@ Exported events: 180.
 - event row 123: weekly-grand-comedy-club-monday Grand Comedy Club and Pizzeria
 - event row 124: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
 - event row 132: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
-- event row 134: event-0041 Full Circle Saloon
-- event row 135: event-0042 Full Circle Saloon
-- event row 136: event-0043 Full Circle Saloon
 - event row 139: event-0046 Market on 8th
 - event row 146: weekly-redwing-bar-grill-sunday Redwing Bar & Grill
 - event row 147: weekly-redwing-bar-grill-monday Redwing Bar & Grill
@@ -244,7 +245,10 @@ Exported events: 180.
 - venue-0119 Rich's San Diego
 - venue-0072 The Search Bar
 - venue-0126 Way Point Saloon
-- venue-0129 Barlando
+- venue-0130 Spring Valley Inn
+- venue-0131 Mike's Cocktails
+- venue-0132 Alpine VFW Post 9578
+- venue-0133 VFW Santee Post 9327
 ## Closed/Hidden/Archived Rows Excluded
 - None
 ## Stable Venue Identity Changes
@@ -258,17 +262,17 @@ Exported events: 180.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 91
-Authoritative events: 180
+Public venues: 95
+Authoritative events: 186
 Legacy venue slug aliases: 0
 
 PASS Monday: 17 authoritative / 8 expected minimum
-PASS Tuesday: 29 authoritative / 8 expected minimum
-PASS Wednesday: 30 authoritative / 9 expected minimum
-PASS Thursday: 37 authoritative / 14 expected minimum
+PASS Tuesday: 30 authoritative / 8 expected minimum
+PASS Wednesday: 31 authoritative / 9 expected minimum
+PASS Thursday: 38 authoritative / 14 expected minimum
 PASS Friday: 28 authoritative / 10 expected minimum
-PASS Saturday: 19 authoritative / 10 expected minimum
-PASS Sunday: 20 authoritative / 7 expected minimum
+PASS Saturday: 21 authoritative / 10 expected minimum
+PASS Sunday: 21 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
