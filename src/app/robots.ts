@@ -6,9 +6,10 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/admin/", "/scout", "/scout/"],
+        disallow: ["/admin", "/admin/", "/api/admin", "/api/admin/"],
       },
     ],
     sitemap: "https://singhub.app/sitemap.xml",
+    host: "https://singhub.app",
   };
 }

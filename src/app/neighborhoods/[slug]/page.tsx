@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { VenueMiniCard } from "@/components/seo/SeoCards";
 import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { getVenueListings } from "@/lib/venueData";
@@ -63,7 +63,7 @@ export async function generateMetadata({ params }: NeighborhoodPageProps) {
 export default async function NeighborhoodPage({ params }: NeighborhoodPageProps) {
   const resolvedParams = await params;
   const legacyTarget = LEGACY_NEIGHBORHOOD_SLUGS[resolvedParams.slug];
-  if (legacyTarget) redirect(`/neighborhoods/${legacyTarget}`);
+  if (legacyTarget) permanentRedirect(`/neighborhoods/${legacyTarget}`);
 
   const page = await getNeighborhood(resolvedParams.slug);
   if (!page) notFound();

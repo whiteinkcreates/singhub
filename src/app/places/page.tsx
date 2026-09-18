@@ -6,6 +6,7 @@ export const metadata = {
   title: "SingHUB Radar | Karaoke Places Worldwide",
   description:
     "Explore karaoke places on the SingHUB Radar, including verified schedules, community finds, and venues that still need confirmation.",
+  alternates: { canonical: "/places" },
 };
 
 export default async function KaraokePlacesPage() {
