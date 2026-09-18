@@ -168,10 +168,10 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             {selectedSlotId===slot.id?"Selected":`Place here · ${slot.id}`}
           </button>)}
 
-          <div className="pointer-events-none absolute left-1/2 top-4 z-30 w-[62%] max-w-[760px] -translate-x-1/2">
+          <div className="pointer-events-none absolute left-1/2 top-8 z-30 w-[62%] max-w-[760px] -translate-x-1/2">
             <img src="/images/singboard-wordmark.webp" alt="SingBOARD" className="h-auto w-full object-contain" />
           </div>
-          <p className="pointer-events-none absolute left-1/2 top-[13%] z-30 w-[58%] -translate-x-1/2 text-center text-[10px] font-black uppercase tracking-[.28em] text-slate-200/85 sm:text-xs">
+          <p className="pointer-events-none absolute left-1/2 top-3 z-30 w-[72%] -translate-x-1/2 text-center text-[8px] font-black uppercase tracking-[.26em] text-slate-300/80 sm:text-[10px]">
             The bulletin board for karaoke events
           </p>
 
