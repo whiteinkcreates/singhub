@@ -1,11 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { InstallSingHubButton } from "@/components/pwa/InstallSingHubButton";
 import { Button } from "@/components/ui/Button";
+import { SITE_WORDMARK_PART_1 } from "@/lib/siteWordmarkPart1";
+import { SITE_WORDMARK_PART_2 } from "@/lib/siteWordmarkPart2";
+import { SITE_WORDMARK_PART_3 } from "@/lib/siteWordmarkPart3";
+
+const SITE_WORDMARK_SRC = `data:image/webp;base64,${SITE_WORDMARK_PART_1}${SITE_WORDMARK_PART_2}${SITE_WORDMARK_PART_3}`;
 
 const primaryNavItems = [
   { href: "/find-karaoke", label: "Find Karaoke" },
@@ -40,13 +44,13 @@ export function SiteHeader() {
           className="group inline-flex min-w-0 shrink-0 items-center rounded-xl px-1 py-0 transition hover:scale-[1.01]"
           aria-label="SingHUB home"
         >
-          <Image
-            src="/images/header-singhub-logo.png"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={SITE_WORDMARK_SRC}
             alt="SingHUB"
-            width={2400}
-            height={600}
-            priority
-            className="h-10 w-auto max-w-[180px] object-contain sm:max-w-[210px] md:h-14 md:max-w-[280px]"
+            width={400}
+            height={171}
+            className="relative z-10 -my-2 h-[68px] w-auto max-w-none object-contain sm:h-[80px] md:-my-3 md:h-[96px]"
           />
         </Link>
 
