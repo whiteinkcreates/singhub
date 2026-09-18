@@ -8,10 +8,26 @@ import "./globals.css";
 
 const GA_MEASUREMENT_ID = "G-NQGPSYB6Q7";
 
+const siteTitle = "SingHUB | Find Karaoke Near You";
+const siteDescription =
+  "SingHUB helps you find karaoke near you. Search karaoke nights by day, neighborhood, venue, or host, starting in San Diego.";
+
 export const metadata: Metadata = {
-  title: "SingHUB | Find Karaoke Near You",
-  description:
-    "SingHUB helps you find karaoke near you. Search karaoke nights by day, neighborhood, venue, or host, starting in San Diego.",
+  metadataBase: new URL("https://singhub.app"),
+  title: siteTitle,
+  description: siteDescription,
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "SingHUB",
+    title: siteTitle,
+    description: siteDescription,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+  },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
