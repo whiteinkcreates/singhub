@@ -12,6 +12,7 @@ type FindKaraokePageProps = {
 export const metadata = {
   title: "Find Karaoke in San Diego | SingHUB",
   description: "Find live karaoke, private rooms, and host-led karaoke nights in San Diego.",
+  alternates: { canonical: "/find-karaoke" },
 };
 
 function getSearchParamValue(value: string | string[] | undefined) {

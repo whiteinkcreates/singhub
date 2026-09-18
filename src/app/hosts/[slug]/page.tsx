@@ -57,6 +57,9 @@ export async function generateMetadata({ params }: HostProfilePageProps) {
   return {
     title: `${host.publicDisplayName} Karaoke Schedule | SingHUB`,
     description,
+    alternates: {
+      canonical: `/hosts/${host.slug}`,
+    },
     openGraph: {
       title: `${host.publicDisplayName} Karaoke Schedule | SingHUB`,
       description,
