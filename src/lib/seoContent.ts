@@ -110,10 +110,10 @@ export const localSeoPages: LocalSeoPage[] = [
   {
     slug: "san-diego-karaoke",
     path: "/san-diego-karaoke",
-    title: "San Diego Karaoke Guide",
-    metaTitle: "San Diego Karaoke Guide | SingHUB",
+    title: "San Diego Karaoke",
+    metaTitle: "San Diego Karaoke | Bars, Nights & Private Rooms | SingHUB",
     description:
-      "A local guide to San Diego karaoke nights, neighborhoods, hosts, bars, and private rooms.",
+      "Find San Diego karaoke bars, recurring nights, private rooms, neighborhoods, and local hosts in one current karaoke index.",
     eyebrow: "San Diego Karaoke",
     headline: "Where San Diego sings",
     intro:
@@ -124,9 +124,9 @@ export const localSeoPages: LocalSeoPage[] = [
     secondaryCtaHref: "/neighborhoods",
     sections: [
       {
-        heading: "A guide for singers, not just search engines",
+        heading: "Choose the room, not just the closest pin",
         body:
-          "This guide points singers toward the right kind of night: social rooms, big energy rooms, low-pressure rooms, and places where regulars keep the rotation alive.",
+          "San Diego has private rooms, neighborhood regular spots, live-band nights, and full-volume party bars. Start with the day and neighborhood, then use the venue details to find the room that fits the night you want.",
       },
       {
         heading: "Every night has a different job",
@@ -134,16 +134,16 @@ export const localSeoPages: LocalSeoPage[] = [
           "A Tuesday neighborhood room is not the same animal as a Saturday birthday takeover. SingHUB separates day, venue, and neighborhood so you can pick with a little more intelligence.",
       },
       {
-        heading: "The scene gets stronger when the data gets cleaner",
+        heading: "Current schedules beat old reviews",
         body:
-          "The more hosts, venues, and singers tag or submit current details, the better the local index gets. This is the boring part that makes the fun part work.",
+          "A glowing review from three years ago does not tell you whether karaoke is happening this Thursday. SingHUB organizes recurring schedules and venue details, then keeps improving them with updates from local hosts, venues, and singers.",
       },
     ],
     faqs: [
       {
         question: "What is the best karaoke neighborhood in San Diego?",
         answer:
-          "It depends on the night. North Park, Hillcrest, Pacific Beach, Gaslamp, and East County each have different karaoke personalities.",
+          "It depends on the night and the room you want. North Park, Hillcrest, Pacific Beach, Gaslamp Quarter, and La Mesa each have different karaoke crowds and schedules.",
       },
       {
         question: "Is SingHUB only for San Diego?",
@@ -170,23 +170,23 @@ export const localSeoPages: LocalSeoPage[] = [
       "Looking for karaoke tonight in San Diego? Start here, then use the finder to filter by venue, neighborhood, and type of room.",
     primaryCtaLabel: "See Tonight's Karaoke",
     primaryCtaHref: "/find-karaoke?day=tonight",
-    secondaryCtaLabel: "Follow Nightly Updates",
-    secondaryCtaHref: "/guides/tonights-karaoke-lives-here",
+    secondaryCtaLabel: "Browse All San Diego Karaoke",
+    secondaryCtaHref: "/san-diego-karaoke",
     sections: [
       {
-        heading: "Tonight is the core habit",
+        heading: "Start with the actual night",
         body:
-          "People rarely plan karaoke like a dentist appointment. They ask where karaoke is happening tonight, then decide if the room, drive, and start time make sense.",
+          "The lineup on this page is filtered to the current San Diego nightlife day, which rolls over at 4 AM. That keeps a 1 AM karaoke night attached to the night you actually went out.",
       },
       {
-        heading: "Use the finder, then check the room",
+        heading: "Compare the drive, start time, and room",
         body:
-          "Schedules can change, especially with rotating hosts or special events. SingHUB gives you a starting point, and verified listings will get stronger as hosts and venues update the details.",
+          "Use the lineup to compare neighborhoods and start times, then open the venue page for the host, room details, and any available verification notes before you leave.",
       },
       {
-        heading: "Hosts can feed the signal",
+        heading: "Schedules can still change",
         body:
-          "Weekly flyers, schedule changes, and tagged posts help SingHUB keep tonight's karaoke useful instead of becoming another abandoned internet calendar.",
+          "Private events, holidays, and host changes can move a recurring night. SingHUB gives you the strongest current starting point, but checking the venue on unusual dates is still smart.",
       },
     ],
     faqs: [
@@ -234,8 +234,8 @@ export const neighborhoodSeoPages: NeighborhoodSeoPage[] = [
   {
     slug: "north-park",
     name: "North Park",
-    metaTitle: "North Park Karaoke | SingHUB",
-    description: "Find karaoke nights around North Park and nearby San Diego neighborhoods.",
+    metaTitle: "North Park Karaoke Nights & Bars | SingHUB",
+    description: "Find current North Park karaoke nights, bars, schedules, and nearby San Diego options.",
     intro:
       "North Park karaoke tends to pull creative regulars, bar hoppers, and people who are very ready to make one song everyone else's problem.",
     vibe: "Big personality rooms, neighborhood energy, and strong regulars.",
@@ -244,8 +244,8 @@ export const neighborhoodSeoPages: NeighborhoodSeoPage[] = [
   {
     slug: "hillcrest",
     name: "Hillcrest",
-    metaTitle: "Hillcrest Karaoke | SingHUB",
-    description: "Find karaoke nights in Hillcrest, one of San Diego's most social karaoke areas.",
+    metaTitle: "Hillcrest Karaoke Nights & Bars | SingHUB",
+    description: "Find current Hillcrest karaoke nights, bars, schedules, and local host details.",
     intro:
       "Hillcrest karaoke is social, theatrical, and usually friendlier to singers who want the crowd involved.",
     vibe: "Crowd-friendly, expressive, and built for people who actually cheer.",
@@ -254,28 +254,28 @@ export const neighborhoodSeoPages: NeighborhoodSeoPage[] = [
   {
     slug: "pacific-beach",
     name: "Pacific Beach",
-    metaTitle: "Pacific Beach Karaoke | SingHUB",
-    description: "Find karaoke nights in Pacific Beach and beach-area San Diego bars.",
+    metaTitle: "Pacific Beach Karaoke Nights & Bars | SingHUB",
+    description: "Find current Pacific Beach karaoke nights, bars, schedules, and beach-area options.",
     intro:
       "Pacific Beach karaoke can go from casual to full chaos fast. Sometimes that is exactly the assignment.",
     vibe: "Beach bar energy, birthdays, groups, and chorus-level participation.",
     bestFor: ["groups", "high-energy songs", "late-night chaos"],
   },
   {
-    slug: "gaslamp",
-    name: "Gaslamp",
-    metaTitle: "Gaslamp Karaoke | SingHUB",
-    description: "Find karaoke in the Gaslamp and downtown San Diego nightlife areas.",
+    slug: "gaslamp-quarter",
+    name: "Gaslamp Quarter",
+    metaTitle: "Gaslamp Quarter Karaoke | Downtown San Diego | SingHUB",
+    description: "Find current karaoke nights in the Gaslamp Quarter and downtown San Diego.",
     intro:
       "Gaslamp karaoke is where locals, tourists, birthdays, and bachelor or bachelorette crews collide under one microphone.",
     vibe: "Downtown nightlife, tourist traffic, and big group momentum.",
     bestFor: ["birthdays", "tourists", "downtown nights"],
   },
   {
-    slug: "east-county-la-mesa",
-    name: "East County and La Mesa",
-    metaTitle: "East County and La Mesa Karaoke | SingHUB",
-    description: "Find karaoke nights around La Mesa and East County San Diego.",
+    slug: "la-mesa",
+    name: "La Mesa",
+    metaTitle: "La Mesa Karaoke | East County San Diego | SingHUB",
+    description: "Find current karaoke nights in La Mesa and explore nearby East County options.",
     intro:
       "East County and La Mesa karaoke rooms can be underrated because the regulars do not need hype. They just show up and sing.",
     vibe: "Local regulars, loyal rooms, and less downtown nonsense.",
@@ -284,8 +284,8 @@ export const neighborhoodSeoPages: NeighborhoodSeoPage[] = [
   {
     slug: "ocean-beach",
     name: "Ocean Beach",
-    metaTitle: "Ocean Beach Karaoke | SingHUB",
-    description: "Find karaoke nights in Ocean Beach and nearby coastal San Diego bars.",
+    metaTitle: "Ocean Beach Karaoke Nights & Bars | SingHUB",
+    description: "Find current Ocean Beach karaoke nights, bars, schedules, and nearby coastal options.",
     intro:
       "Ocean Beach karaoke is beach-town weird in the best possible way. Expect personality, not polish.",
     vibe: "Laid-back coastal bars, local characters, and unpredictable song choices.",

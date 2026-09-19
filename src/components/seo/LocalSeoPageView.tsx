@@ -1,12 +1,20 @@
 import Link from "next/link";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { VenueMiniCard } from "@/components/seo/SeoCards";
-import type { GuidePost, LocalSeoPage } from "@/lib/seoContent";
+import type { LocalSeoPage } from "@/lib/seoContent";
+import {
+  breadcrumbStructuredData,
+  faqStructuredData,
+  SITE_URL,
+  venueListStructuredData,
+} from "@/lib/seoStructuredData";
 import type { VenueListing } from "@/types";
 
 type LocalSeoPageViewProps = {
   page: LocalSeoPage;
   venues: VenueListing[];
-  guides?: GuidePost[];
+  listingEyebrow?: string;
+  listingHeading?: string;
 };
 
 const dayLinks = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -19,7 +27,12 @@ function slugify(value: string) {
     .replace(/^-|-$/g, "");
 }
 
-export function LocalSeoPageView({ page, venues }: LocalSeoPageViewProps) {
+export function LocalSeoPageView({
+  page,
+  venues,
+  listingEyebrow = "Featured Karaoke Nights",
+  listingHeading = "A few places to start",
+}: LocalSeoPageViewProps) {
   const featuredVenues = venues.slice(0, 6);
   const neighborhoodCounts = new Map<string, number>();
   for (const venue of venues) {
@@ -33,9 +46,32 @@ export function LocalSeoPageView({ page, venues }: LocalSeoPageViewProps) {
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
     .slice(0, 6);
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        name: page.title,
+        url: `${SITE_URL}${page.path}`,
+        description: page.description,
+        isPartOf: {
+          "@type": "WebSite",
+          name: "SingHUB",
+          url: SITE_URL,
+        },
+      },
+      breadcrumbStructuredData([
+        { name: "Home", path: "/" },
+        { name: page.title, path: page.path },
+      ]),
+      venueListStructuredData(page.title, page.path, venues),
+      faqStructuredData(page.faqs),
+    ],
+  };
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
+      <JsonLd data={structuredData} />
       <section className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
         <div>
           <p className="text-sm font-black uppercase tracking-[0.3em] text-cyan-300">{page.eyebrow}</p>
@@ -50,7 +86,11 @@ export function LocalSeoPageView({ page, venues }: LocalSeoPageViewProps) {
         </div>
 
         <aside className="rounded-[2rem] border border-fuchsia-300/30 bg-slate-900/80 p-6 shadow-2xl shadow-fuchsia-950/30">
-          <p className="text-xs font-black uppercase tracking-[0.25em] text-fuchsia-300">Quick Search</p>
+          <p className="text-xs font-black uppercase tracking-[0.25em] text-fuchsia-300">Current SingHUB Index</p>
+          <p className="mt-3 text-4xl font-black text-white">{venues.length}</p>
+          <p className="mt-1 text-sm leading-6 text-slate-300">
+            {venues.length === 1 ? "current venue option" : "current venue options"} across {neighborhoodCounts.size} San Diego {neighborhoodCounts.size === 1 ? "neighborhood" : "neighborhoods"} on this page.
+          </p>
           <div className="mt-5 grid gap-3">
             <Link className="rounded-2xl bg-white/[0.06] p-4 font-bold text-white hover:bg-white/[0.1]" href="/find-karaoke?day=tonight">Tonight</Link>
             <Link className="rounded-2xl bg-white/[0.06] p-4 font-bold text-white hover:bg-white/[0.1]" href="/find-karaoke?type=live">Live karaoke bars</Link>
@@ -58,6 +98,15 @@ export function LocalSeoPageView({ page, venues }: LocalSeoPageViewProps) {
             <Link className="rounded-2xl bg-white/[0.06] p-4 font-bold text-white hover:bg-white/[0.1]" href="/submit-listing">Submit a karaoke night</Link>
           </div>
         </aside>
+      </section>
+
+      <section className="mt-16 grid gap-4 md:grid-cols-3">
+        {page.sections.map((section) => (
+          <article key={section.heading} className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5">
+            <h2 className="text-xl font-black text-white">{section.heading}</h2>
+            <p className="mt-3 text-sm leading-7 text-slate-300">{section.body}</p>
+          </article>
+        ))}
       </section>
 
       <section className="mt-16 rounded-[2rem] border border-white/10 bg-slate-900/80 p-6">
@@ -79,8 +128,8 @@ export function LocalSeoPageView({ page, venues }: LocalSeoPageViewProps) {
         <section className="mt-16">
           <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.25em] text-fuchsia-300">Featured Karaoke Nights</p>
-              <h2 className="mt-2 text-3xl font-black text-white">A few places to start</h2>
+              <p className="text-sm font-black uppercase tracking-[0.25em] text-fuchsia-300">{listingEyebrow}</p>
+              <h2 className="mt-2 text-3xl font-black text-white">{listingHeading}</h2>
             </div>
             <Link href="/find-karaoke" className="text-sm font-bold text-cyan-200 hover:text-cyan-100">View all listings →</Link>
           </div>

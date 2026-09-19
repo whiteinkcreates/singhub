@@ -1,7 +1,8 @@
 import { LocalSeoPageView } from "@/components/seo/LocalSeoPageView";
+import { getKaraokeEventsHostingToday } from "@/lib/eventData";
 import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { getVenueListings } from "@/lib/venueData";
-import { getLocalSeoPage, guidePosts } from "@/lib/seoContent";
+import { getLocalSeoPage } from "@/lib/seoContent";
 
 const page = getLocalSeoPage("karaoke-tonight-san-diego");
 
@@ -18,11 +19,21 @@ export default async function KaraokeTonightSanDiegoPage() {
     return null;
   }
 
+  const [events, allVenues] = await Promise.all([
+    getKaraokeEventsHostingToday(),
+    getVenueListings(),
+  ]);
+  const venueSlugs = new Set(events.map((event) => event.venueSlug));
+  const venues = getSanDiegoPublicVenues(allVenues).filter((venue) =>
+    venueSlugs.has(venue.slug),
+  );
+
   return (
     <LocalSeoPageView
       page={page}
-      venues={getSanDiegoPublicVenues(await getVenueListings())}
-      guides={guidePosts}
+      venues={venues}
+      listingEyebrow="Tonight's Karaoke Lineup"
+      listingHeading={`${venues.length} places to sing tonight`}
     />
   );
 }

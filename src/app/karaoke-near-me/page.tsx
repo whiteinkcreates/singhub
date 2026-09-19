@@ -1,7 +1,15 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/Button";
-import { getPublicVenues } from "@/lib/publicVenueFilters";
+import { getKaraokeEventListings } from "@/lib/eventData";
+import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
+import {
+  breadcrumbStructuredData,
+  faqStructuredData,
+  SITE_URL,
+  venueListStructuredData,
+} from "@/lib/seoStructuredData";
 import { getVenueListings } from "@/lib/venueData";
 import type { VenueListing } from "@/types";
 
@@ -47,16 +55,21 @@ const neighborhoodLinks = [
   { label: "Chula Vista", href: "/find-karaoke?q=Chula%20Vista" },
 ];
 
-const starterGuideLinks = [
+const intentLinks = [
   {
-    title: "First time singing karaoke?",
-    href: "/guides/first-time-singing-karaoke",
-    body: "Pick a song, get through the nerves, and survive your first trip to the mic.",
+    title: "Karaoke tonight",
+    href: "/karaoke-tonight-san-diego",
+    body: "See the current San Diego nightlife-day lineup before you leave.",
   },
   {
-    title: "Karaoke etiquette basics",
-    href: "/guides/karaoke-etiquette-dont-be-that-guy",
-    body: "A quick room-read before you become someone else's group chat story.",
+    title: "Live karaoke bars",
+    href: "/find-karaoke?type=live",
+    body: "Browse host-led karaoke nights at bars and neighborhood venues.",
+  },
+  {
+    title: "Private karaoke rooms",
+    href: "/find-karaoke?type=private-room",
+    body: "Find private-room karaoke for groups, birthdays, and your own rotation.",
   },
 ];
 
@@ -161,22 +174,62 @@ function BrowsePanel({ title, intro, links, showAllHref }: { title: string; intr
 }
 
 export default async function KaraokeNearMePage() {
-  const venues = getPublicVenues(await getVenueListings());
+  const [allVenues, events] = await Promise.all([
+    getVenueListings(),
+    getKaraokeEventListings(),
+  ]);
+  const venues = getSanDiegoPublicVenues(allVenues);
+  const venueSlugs = new Set(venues.map((venue) => venue.slug));
+  const localEvents = events.filter((event) => venueSlugs.has(event.venueSlug));
+  const neighborhoodCount = new Set(
+    venues.map((venue) => venue.neighborhood).filter(Boolean),
+  ).size;
   const popularVenues = popularVenueIds.map((id) => getVenueById(venues, id)).filter((venue): venue is VenueListing => Boolean(venue));
   const weeklySpotlightVenue = getVenueById(venues, weeklySpotlightVenueId);
+  const faqs = [
+    {
+      question: "How do I find karaoke near me in San Diego?",
+      answer: "Use SingHUB to browse current karaoke by tonight, weekday, neighborhood, venue, or host. Open a listing to check the recurring schedule and room details before heading out.",
+    },
+    {
+      question: "Does SingHUB list both karaoke bars and private rooms?",
+      answer: "Yes. The San Diego index includes recurring karaoke bars, host-led nights, live-band karaoke, and private karaoke rooms where current details are available.",
+    },
+    {
+      question: "How current are the karaoke schedules?",
+      answer: "SingHUB combines recurring schedule data with verification notes and updates from venues, hosts, and singers. Holidays and private events can still change a night, so check the venue on unusual dates.",
+    },
+  ];
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: "Karaoke Near Me",
-    url: "https://singhub.app/karaoke-near-me",
-    description: "Find karaoke bars, private rooms, and live karaoke nights near you tonight, starting in San Diego.",
-    isPartOf: { "@type": "WebSite", name: "SingHUB", url: "https://singhub.app" },
-    mainEntity: { "@type": "ItemList", itemListElement: popularVenues.map((venue, index) => ({ "@type": "ListItem", position: index + 1, name: getDisplayName(venue), url: `https://singhub.app${getVenueHref(venue)}` })) },
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        name: "Karaoke Near Me in San Diego",
+        url: `${SITE_URL}/karaoke-near-me`,
+        description: "Find karaoke bars, private rooms, and recurring karaoke nights near you in San Diego.",
+        about: {
+          "@type": "Thing",
+          name: "Karaoke in San Diego",
+        },
+        isPartOf: { "@type": "WebSite", name: "SingHUB", url: SITE_URL },
+      },
+      breadcrumbStructuredData([
+        { name: "Home", path: "/" },
+        { name: "Karaoke Near Me", path: "/karaoke-near-me" },
+      ]),
+      venueListStructuredData(
+        "San Diego Karaoke Venues",
+        "/karaoke-near-me",
+        venues,
+      ),
+      faqStructuredData(faqs),
+    ],
   };
 
   return (
     <main>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <JsonLd data={structuredData} />
       <section className="mx-auto max-w-7xl px-3 py-5 sm:px-4 md:py-8">
         <div className="relative overflow-hidden rounded-[2rem] border border-fuchsia-300/40 bg-slate-950 shadow-2xl shadow-fuchsia-950/40 md:rounded-[2.5rem]">
           <div className="absolute inset-0 bg-no-repeat opacity-40 sm:opacity-50 md:opacity-60 bg-[length:82%] bg-[position:center_1rem] sm:bg-[length:34rem] sm:bg-[position:92%_46%] lg:bg-[length:40rem] lg:bg-[position:88%_50%]" style={{ backgroundImage: "url('/images/hero/karaoke-marker-target.svg')" }} />
@@ -201,6 +254,21 @@ export default async function KaraokeNearMePage() {
         </div>
       </section>
 
+      <section className="mx-auto grid max-w-7xl gap-4 px-4 py-6 sm:grid-cols-3">
+        <div className="rounded-[1.5rem] border border-fuchsia-300/25 bg-fuchsia-300/[0.07] p-5">
+          <p className="text-4xl font-black text-white">{venues.length}</p>
+          <p className="mt-2 text-sm font-bold text-fuchsia-100">current San Diego venue listings</p>
+        </div>
+        <div className="rounded-[1.5rem] border border-cyan-300/25 bg-cyan-300/[0.07] p-5">
+          <p className="text-4xl font-black text-white">{localEvents.length}</p>
+          <p className="mt-2 text-sm font-bold text-cyan-100">recurring karaoke schedule entries</p>
+        </div>
+        <div className="rounded-[1.5rem] border border-violet-300/25 bg-violet-300/[0.07] p-5">
+          <p className="text-4xl font-black text-white">{neighborhoodCount}</p>
+          <p className="mt-2 text-sm font-bold text-violet-100">San Diego neighborhoods represented</p>
+        </div>
+      </section>
+
       {weeklySpotlightVenue && <WeeklySpotlight venue={weeklySpotlightVenue} />}
 
       <section className="mx-auto grid max-w-7xl gap-4 px-4 py-8 md:grid-cols-4">
@@ -214,17 +282,28 @@ export default async function KaraokeNearMePage() {
 
       <section className="mx-auto max-w-7xl px-4 py-8">
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 shadow-xl shadow-black/20 md:p-8">
-          <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Karaoke 101</p>
-          <h2 className="mt-3 text-3xl font-black text-white">New to karaoke? Start here.</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            {starterGuideLinks.map((guide) => (
-              <Link key={guide.href} href={guide.href} className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 transition hover:border-cyan-300/50">
-                <h3 className="text-xl font-black text-white">{guide.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-300">{guide.body}</p>
-                <p className="mt-4 text-sm font-bold text-cyan-100">Read guide →</p>
+          <p className="text-sm font-black uppercase tracking-[0.22em] text-fuchsia-300">Pick Your Route</p>
+          <h2 className="mt-3 text-3xl font-black text-white">What kind of karaoke are you looking for?</h2>
+          <div className="mt-5 grid gap-4 md:grid-cols-3">
+            {intentLinks.map((item) => (
+              <Link key={item.href} href={item.href} className="rounded-3xl border border-white/10 bg-slate-950/60 p-5 transition hover:border-cyan-300/50">
+                <h3 className="text-xl font-black text-white">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-300">{item.body}</p>
+                <p className="mt-4 text-sm font-bold text-cyan-100">Explore →</p>
               </Link>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-8">
+        <div className="grid gap-4 md:grid-cols-3">
+          {faqs.map((faq) => (
+            <article key={faq.question} className="rounded-3xl border border-white/10 bg-white/[0.04] p-5">
+              <h2 className="text-lg font-black text-white">{faq.question}</h2>
+              <p className="mt-3 text-sm leading-7 text-slate-300">{faq.answer}</p>
+            </article>
+          ))}
         </div>
       </section>
     </main>

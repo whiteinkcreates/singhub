@@ -1,9 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { VenueMiniCard } from "@/components/seo/SeoCards";
 import { daySeoPages, getDaySeoPage } from "@/lib/seoContent";
 import { getKaraokeEventListings } from "@/lib/eventData";
 import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
+import {
+  breadcrumbStructuredData,
+  faqStructuredData,
+  SITE_URL,
+  venueListStructuredData,
+} from "@/lib/seoStructuredData";
 import { getVenueListings } from "@/lib/venueData";
 
 export function generateStaticParams() {
@@ -53,9 +60,52 @@ export default async function DayKaraokePage({ params }: DayPageProps) {
   const venues = getSanDiegoPublicVenues(await getVenueListings()).filter((venue) =>
     eventVenueSlugs.has(venue.slug) || eventMatchesDay(venue.karaokeDay, page.day),
   );
+  const neighborhoods = [...new Set(
+    venues
+      .map((venue) => venue.neighborhood)
+      .filter((neighborhood) => Boolean(neighborhood)),
+  )].sort((a, b) => a.localeCompare(b));
+  const canonicalPath = `/karaoke/${page.slug}`;
+  const faqs = [
+    {
+      question: `Where is karaoke on ${page.day} in San Diego?`,
+      answer: `SingHUB currently lists ${venues.length} ${page.day} karaoke ${venues.length === 1 ? "option" : "options"} across San Diego. Use the venue cards to compare neighborhoods, start times, and room details.`,
+    },
+    {
+      question: `Which San Diego neighborhoods have ${page.day} karaoke?`,
+      answer:
+        neighborhoods.length > 0
+          ? `Current ${page.day} listings include ${neighborhoods.join(", ")}. Recurring schedules can change for holidays and private events.`
+          : `SingHUB is still confirming the current ${page.day} neighborhood lineup.`,
+    },
+  ];
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "CollectionPage",
+              name: page.title,
+              url: `${SITE_URL}${canonicalPath}`,
+              description: page.description,
+              about: {
+                "@type": "Thing",
+                name: `${page.day} karaoke in San Diego`,
+              },
+            },
+            breadcrumbStructuredData([
+              { name: "Home", path: "/" },
+              { name: "San Diego Karaoke", path: "/san-diego-karaoke" },
+              { name: page.day, path: canonicalPath },
+            ]),
+            venueListStructuredData(page.title, canonicalPath, venues),
+            faqStructuredData(faqs),
+          ],
+        }}
+      />
       <section className="max-w-4xl">
         <p className="text-sm font-black uppercase tracking-[0.3em] text-cyan-300">
           Karaoke By Day
@@ -83,7 +133,7 @@ export default async function DayKaraokePage({ params }: DayPageProps) {
           {page.day} Listings
         </p>
         <h2 className="mt-2 text-3xl font-black text-white">
-          {venues.length > 0 ? `Known ${page.day} karaoke options` : `No ${page.day} listings yet`}
+          {venues.length > 0 ? `${venues.length} ${page.day} karaoke options` : `No ${page.day} listings yet`}
         </h2>
         <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
           Schedules can change. SingHUB is actively cleaning and verifying local karaoke data, so use this as a launch pad and check the venue before heading out.
@@ -104,6 +154,33 @@ export default async function DayKaraokePage({ params }: DayPageProps) {
             </Link>
           </div>
         )}
+      </section>
+
+      {neighborhoods.length > 0 ? (
+        <section className="mt-14 rounded-[2rem] border border-cyan-300/20 bg-cyan-300/[0.06] p-6">
+          <p className="text-sm font-black uppercase tracking-[0.25em] text-cyan-300">Browse By Area</p>
+          <h2 className="mt-2 text-2xl font-black text-white">{page.day} karaoke neighborhoods</h2>
+          <div className="mt-5 flex flex-wrap gap-3">
+            {neighborhoods.map((neighborhood) => (
+              <Link
+                key={neighborhood}
+                href={`/find-karaoke?day=${encodeURIComponent(page.day)}&neighborhood=${encodeURIComponent(neighborhood)}`}
+                className="rounded-full border border-white/15 bg-slate-950/70 px-4 py-3 text-sm font-bold text-white hover:border-fuchsia-300/60"
+              >
+                {neighborhood} →
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      <section className="mt-14 grid gap-4 md:grid-cols-2">
+        {faqs.map((faq) => (
+          <article key={faq.question} className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+            <h2 className="text-lg font-black text-white">{faq.question}</h2>
+            <p className="mt-3 text-sm leading-7 text-slate-300">{faq.answer}</p>
+          </article>
+        ))}
       </section>
 
       <section className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
