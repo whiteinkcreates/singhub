@@ -53,11 +53,15 @@ export default async function DayKaraokePage({ params }: DayPageProps) {
     notFound();
   }
 
-  const events = (await getKaraokeEventListings()).filter((event) =>
+  const [allEvents, allVenues] = await Promise.all([
+    getKaraokeEventListings(),
+    getVenueListings(),
+  ]);
+  const events = allEvents.filter((event) =>
     eventMatchesDay(event.karaokeDay, page.day),
   );
   const eventVenueSlugs = new Set(events.map((event) => event.venueSlug));
-  const venues = getSanDiegoPublicVenues(await getVenueListings()).filter((venue) =>
+  const venues = getSanDiegoPublicVenues(allVenues).filter((venue) =>
     eventVenueSlugs.has(venue.slug) || eventMatchesDay(venue.karaokeDay, page.day),
   );
   const neighborhoods = [...new Set(
