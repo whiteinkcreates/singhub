@@ -4,7 +4,7 @@ Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
 Exported venues: 95.
-Exported events: 186.
+Exported events: 189.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -210,6 +210,9 @@ Exported events: 186.
 - event row 178: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
 - event row 179: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
 - event row 180: weekly-barlando-friday Barlando
+- event row 187: weekly-jts-tavern-friday JT's Tavern
+- event row 188: weekly-jts-tavern-saturday JT's Tavern
+- event row 189: weekly-jts-tavern-sunday JT's Tavern
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
@@ -263,16 +266,16 @@ SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
 Public venues: 95
-Authoritative events: 186
+Authoritative events: 189
 Legacy venue slug aliases: 0
 
 PASS Monday: 17 authoritative / 8 expected minimum
 PASS Tuesday: 30 authoritative / 8 expected minimum
 PASS Wednesday: 31 authoritative / 9 expected minimum
 PASS Thursday: 38 authoritative / 14 expected minimum
-PASS Friday: 28 authoritative / 10 expected minimum
-PASS Saturday: 21 authoritative / 10 expected minimum
-PASS Sunday: 21 authoritative / 7 expected minimum
+PASS Friday: 29 authoritative / 10 expected minimum
+PASS Saturday: 22 authoritative / 10 expected minimum
+PASS Sunday: 22 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
