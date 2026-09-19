@@ -61,17 +61,22 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 187
-- Candidate non-empty lines: 190
-- Added/changed lines: 3
-- Removed/changed lines: 0
+- Previous non-empty lines: 190
+- Candidate non-empty lines: 189
+- Added/changed lines: 1
+- Removed/changed lines: 2
 
 ### Added or changed sample
 
 ```text
-weekly-jts-tavern-friday	venue-0006	JT's Tavern	jts-tavern	Friday	9:00 PM	last call				TRUE	active	Friday karaoke from 9 PM until last call.	100	Corey direct schedule confirmation 2026-09-18		2026-09-18	verified_direct_schedule	FALSE
-weekly-jts-tavern-saturday	venue-0006	JT's Tavern	jts-tavern	Saturday	9:00 PM	last call				TRUE	active	Saturday karaoke from 9 PM until last call.	100	Corey direct schedule confirmation 2026-09-18		2026-09-18	verified_direct_schedule	FALSE
-weekly-jts-tavern-sunday	venue-0006	JT's Tavern	jts-tavern	Sunday	9:00 PM	last call				TRUE	active	Sunday karaoke from 9 PM until last call.	100	Corey direct schedule confirmation 2026-09-18		2026-09-18	verified_direct_schedule	FALSE
+weekly-kaminskis-sports-lounge-friday	venue-0071	Kaminski's Sports Lounge	kaminskis-sports-lounge	Friday	8:00 PM	11:00 PM	all-mic-long	ALL MIC LONG	ALL MIC LONG	TRUE	active	Friday karaoke from 8 PM to 11 PM with ALL MIC LONG.	100	ALL MIC LONG direct clarification to Corey 2026-09-19	Prior Kaminski's schedule confirmation	2026-09-19	verified_direct_schedule	FALSE
+```
+
+### Removed or changed sample
+
+```text
+weekly-kaminskis-sports-lounge-friday	venue-0071	Kaminski's Sports Lounge	kaminskis-sports-lounge	Friday	8:00 PM	11:00 PM		Rotating KJs	Rotating KJs	TRUE	active	Friday karaoke from 8 PM to 11 PM with rotating KJs.	100	Corey direct correction 2026-09-14	Direct schedule from DJ Devyn	2026-09-14	verified_direct_schedule	FALSE
+weekly-alpine-vfw-post-9578-thursday	venue-0132	Alpine VFW Post 9578	alpine-vfw-post-9578	Thursday	5:00 PM	9:00 PM	kj-big-a	KJ Big "A"	KJ Big "A"	TRUE	active	Thursday karaoke 5-9 PM with KJ Big "A".	100	KJ Big "A" direct schedule supplied to Corey 2026-09-15	Official VFW Post 9578 venue identity sources	2026-09-16	verified_direct_host_schedule	FALSE
 ```
 
 ## generated_events_review.tsv
@@ -102,13 +107,13 @@ weekly-jts-tavern-sunday	venue-0006	JT's Tavern	jts-tavern	Sunday	9:00 PM	last c
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-19T06:00:46.576Z",
-  "authoritativeEvents": 189,
+  "generatedAt": "2026-09-19T21:51:39.565Z",
+  "authoritativeEvents": 188,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-17T06:36:35.028Z",
-  "authoritativeEvents": 186,
+  "generatedAt": "2026-09-19T06:00:46.576Z",
+  "authoritativeEvents": 189,
 ```

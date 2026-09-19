@@ -4,7 +4,7 @@ Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
 Exported venues: 95.
-Exported events: 189.
+Exported events: 188.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -22,6 +22,7 @@ Exported events: 189.
 - venue-0109 N City Sports Lounge
 - venue-0127 Smitty's Downtown
 - venue-0128 La Estación
+- venue-0132 Alpine VFW Post 9578
 ## Public Venues Missing Schedule
 - venue-0051 #1 Fifth Avenue
 - venue-0062 710 Beach Club
@@ -163,6 +164,7 @@ Exported events: 189.
 - event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
 - event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
 - event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
+- event row 184: weekly-alpine-vfw-post-9578-thursday
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -220,6 +222,7 @@ Exported events: 189.
 - venue: venue-0109 N City Sports Lounge
 - venue: venue-0127 Smitty's Downtown
 - venue: venue-0128 La Estación
+- venue: venue-0132 Alpine VFW Post 9578
 ## Public Venues Missing Coordinates
 - venue-0101 Urban Mo’s Bar & Grill
 - venue-0102 Three Stags Irish Pub and Restaurant
@@ -266,13 +269,13 @@ SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
 Public venues: 95
-Authoritative events: 189
+Authoritative events: 188
 Legacy venue slug aliases: 0
 
 PASS Monday: 17 authoritative / 8 expected minimum
 PASS Tuesday: 30 authoritative / 8 expected minimum
 PASS Wednesday: 31 authoritative / 9 expected minimum
-PASS Thursday: 38 authoritative / 14 expected minimum
+PASS Thursday: 37 authoritative / 14 expected minimum
 PASS Friday: 29 authoritative / 10 expected minimum
 PASS Saturday: 22 authoritative / 10 expected minimum
 PASS Sunday: 22 authoritative / 7 expected minimum
