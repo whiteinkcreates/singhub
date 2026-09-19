@@ -4,10 +4,10 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 92
+- Previous non-empty lines: 96
 - Candidate non-empty lines: 96
 - Added/changed lines: 96
-- Removed/changed lines: 92
+- Removed/changed lines: 96
 
 ### Added or changed sample
 
@@ -61,33 +61,17 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 181
-- Candidate non-empty lines: 187
-- Added/changed lines: 10
-- Removed/changed lines: 4
+- Previous non-empty lines: 187
+- Candidate non-empty lines: 190
+- Added/changed lines: 3
+- Removed/changed lines: 0
 
 ### Added or changed sample
 
 ```text
-event-0040	venue-0113	Full Circle Saloon	full-circle-saloon	Sunday	8:30 PM	12:30 AM	kj-blue	KJ Blue	KJ Blue	TRUE	active	Sunday karaoke from 8:30 PM to 12:30 AM with KJ Blue.	100	Corey direct identity and schedule confirmation 2026-09-16	Corey Facebook community recommendations 2026-08-21	2026-09-16	verified_direct_host_schedule	FALSE
-event-0041	venue-0113	Full Circle Saloon	full-circle-saloon	Tuesday	8:30 PM	12:30 AM	kj-blue	KJ Blue	KJ Blue	TRUE	active	Tuesday karaoke from 8:30 PM to 12:30 AM with KJ Blue.	100	Corey direct identity and schedule confirmation 2026-09-16	Corey Facebook community recommendations 2026-08-21	2026-09-16	verified_direct_host_schedule	FALSE
-event-0042	venue-0113	Full Circle Saloon	full-circle-saloon	Wednesday	8:30 PM	12:30 AM	kj-blue	KJ Blue	KJ Blue	TRUE	active	Wednesday karaoke from 8:30 PM to 12:30 AM with KJ Blue.	100	Corey direct identity and schedule confirmation 2026-09-16	Corey Facebook community recommendations 2026-08-21	2026-09-16	verified_direct_host_schedule	FALSE
-event-0043	venue-0113	Full Circle Saloon	full-circle-saloon	Thursday	8:30 PM	12:30 AM	kj-blue	KJ Blue	KJ Blue	TRUE	active	Thursday karaoke from 8:30 PM to 12:30 AM with KJ Blue.	100	Corey direct identity and schedule confirmation 2026-09-16	Corey Facebook community recommendations 2026-08-21	2026-09-16	verified_direct_host_schedule	FALSE
-weekly-vfw-santee-post-9327-saturday	venue-0133	VFW Santee Post 9327	vfw-santee-post-9327	Saturday	7:00 PM	11:00 PM	kj-blue	KJ Blue	KJ Blue	TRUE	active	Saturday karaoke 7-11 PM with KJ Blue. Open to the public during karaoke.	100	Corey direct identity and schedule confirmation 2026-09-16	Official VFW California roster	2026-09-16	verified_direct_host_schedule	FALSE
-weekly-spring-valley-inn-tuesday	venue-0130	Spring Valley Inn	spring-valley-inn	Tuesday	7:00 PM	11:00 PM	kj-big-a	KJ Big "A"	KJ Big "A"	TRUE	active	Tuesday karaoke 7-11 PM with KJ Big "A".	100	KJ Big "A" direct schedule supplied to Corey 2026-09-15	Current business listing for venue identity	2026-09-16	verified_direct_host_schedule	FALSE
-weekly-mikes-cocktails-wednesday	venue-0131	Mike's Cocktails	mikes-cocktails	Wednesday	7:00 PM	11:00 PM	kj-big-a	KJ Big "A"	KJ Big "A"	TRUE	active	Wednesday karaoke 7-11 PM with KJ Big "A".	100	KJ Big "A" direct schedule supplied to Corey 2026-09-15	Current business listing for venue identity	2026-09-16	verified_direct_host_schedule	FALSE
-weekly-alpine-vfw-post-9578-thursday	venue-0132	Alpine VFW Post 9578	alpine-vfw-post-9578	Thursday	5:00 PM	9:00 PM	kj-big-a	KJ Big "A"	KJ Big "A"	TRUE	active	Thursday karaoke 5-9 PM with KJ Big "A".	100	KJ Big "A" direct schedule supplied to Corey 2026-09-15	Official VFW Post 9578 venue identity sources	2026-09-16	verified_direct_host_schedule	FALSE
-weekly-spring-valley-inn-saturday	venue-0130	Spring Valley Inn	spring-valley-inn	Saturday	8:30 PM	1:00 AM	kj-big-a	KJ Big "A"	KJ Big "A"	TRUE	active	Saturday karaoke 8:30 PM-1 AM with KJ Big "A".	100	KJ Big "A" direct schedule supplied to Corey 2026-09-15	Current business listing for venue identity	2026-09-16	verified_direct_host_schedule	FALSE
-weekly-spring-valley-inn-sunday	venue-0130	Spring Valley Inn	spring-valley-inn	Sunday	6:00 PM	10:00 PM	kj-big-a	KJ Big "A"	KJ Big "A"	TRUE	active	Sunday karaoke 6-10 PM with KJ Big "A".	100	KJ Big "A" direct schedule supplied to Corey 2026-09-15	Current business listing for venue identity	2026-09-16	verified_direct_host_schedule	FALSE
-```
-
-### Removed or changed sample
-
-```text
-event-0040	venue-0113	Full Circle Saloon	full-circle-saloon	Sunday	8:30 PM	12:30 AM		KJ Blue	KJ Blue	TRUE	active	Sunday karaoke at Full Circle from 8:30 PM to 12:30 AM. Host may rotate; KJ Blue is currently promoted for Sundays.	98	Current Full Circle venue posts	Corey Facebook community recommendations 2026-08-21	2026-08-21	verified	FALSE
-event-0041	venue-0113	Full Circle Saloon	full-circle-saloon	Tuesday	8:30 PM	12:30 AM		TBD	TBD	TRUE	active	Tuesday karaoke at Full Circle from 8:30 PM to 12:30 AM.	98	Current Full Circle venue posts	Corey Facebook community recommendations 2026-08-21	2026-08-21	verified	FALSE
-event-0042	venue-0113	Full Circle Saloon	full-circle-saloon	Wednesday	8:30 PM	12:30 AM		TBD	TBD	TRUE	active	Wednesday karaoke at Full Circle from 8:30 PM to 12:30 AM.	98	Current Full Circle venue posts	Corey Facebook community recommendations 2026-08-21	2026-08-21	verified	FALSE
-event-0043	venue-0113	Full Circle Saloon	full-circle-saloon	Thursday	8:30 PM	12:30 AM		TBD	TBD	TRUE	active	Thursday karaoke at Full Circle from 8:30 PM to 12:30 AM.	98	Current Full Circle venue posts	Corey Facebook community recommendations 2026-08-21	2026-08-21	verified	FALSE
+weekly-jts-tavern-friday	venue-0006	JT's Tavern	jts-tavern	Friday	9:00 PM	last call				TRUE	active	Friday karaoke from 9 PM until last call.	100	Corey direct schedule confirmation 2026-09-18		2026-09-18	verified_direct_schedule	FALSE
+weekly-jts-tavern-saturday	venue-0006	JT's Tavern	jts-tavern	Saturday	9:00 PM	last call				TRUE	active	Saturday karaoke from 9 PM until last call.	100	Corey direct schedule confirmation 2026-09-18		2026-09-18	verified_direct_schedule	FALSE
+weekly-jts-tavern-sunday	venue-0006	JT's Tavern	jts-tavern	Sunday	9:00 PM	last call				TRUE	active	Sunday karaoke from 9 PM until last call.	100	Corey direct schedule confirmation 2026-09-18		2026-09-18	verified_direct_schedule	FALSE
 ```
 
 ## generated_events_review.tsv
@@ -112,21 +96,19 @@ event-0043	venue-0113	Full Circle Saloon	full-circle-saloon	Thursday	8:30 PM	12:
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 3
-- Removed/changed lines: 3
+- Added/changed lines: 2
+- Removed/changed lines: 2
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-17T06:36:35.028Z",
-  "venues": 95,
-  "authoritativeEvents": 186,
+  "generatedAt": "2026-09-19T06:00:46.576Z",
+  "authoritativeEvents": 189,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-16T08:15:09.782Z",
-  "venues": 91,
-  "authoritativeEvents": 180,
+  "generatedAt": "2026-09-17T06:36:35.028Z",
+  "authoritativeEvents": 186,
 ```
