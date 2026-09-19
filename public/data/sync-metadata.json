@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-09-19T06:00:46.576Z",
+  "generatedAt": "2026-09-19T21:51:39.565Z",
   "source": "google_sheets_api",
   "sourceWorkbook": "canonical",
   "venueTab": "Venues_Canonical",
   "eventTab": "Events_Canonical",
   "venues": 95,
-  "authoritativeEvents": 189,
+  "authoritativeEvents": 188,
   "generatedCandidates": 0
 }
