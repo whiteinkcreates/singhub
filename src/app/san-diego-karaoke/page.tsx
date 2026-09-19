@@ -1,7 +1,7 @@
 import { LocalSeoPageView } from "@/components/seo/LocalSeoPageView";
 import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { getVenueListings } from "@/lib/venueData";
-import { getLocalSeoPage, guidePosts } from "@/lib/seoContent";
+import { getLocalSeoPage } from "@/lib/seoContent";
 
 const page = getLocalSeoPage("san-diego-karaoke");
 
@@ -22,7 +22,6 @@ export default async function SanDiegoKaraokePage() {
     <LocalSeoPageView
       page={page}
       venues={getSanDiegoPublicVenues(await getVenueListings())}
-      guides={guidePosts}
     />
   );
 }

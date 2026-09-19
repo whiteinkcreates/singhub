@@ -67,6 +67,10 @@ export default async function FindKaraokePage({ searchParams }: FindKaraokePageP
         eventsByVenueSlug={eventsByVenueSlug}
         initialDayFilter={getSearchParamValue(resolvedSearchParams?.day)}
         initialVenueTypeFilter={getSearchParamValue(resolvedSearchParams?.type)}
+        initialSearchQuery={
+          getSearchParamValue(resolvedSearchParams?.q) ||
+          getSearchParamValue(resolvedSearchParams?.neighborhood)
+        }
       />
     </main>
   );
