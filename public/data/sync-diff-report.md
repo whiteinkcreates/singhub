@@ -5,8 +5,8 @@ Candidate output compared with the currently committed public data.
 ## venues.tsv
 
 - Previous non-empty lines: 96
-- Candidate non-empty lines: 96
-- Added/changed lines: 96
+- Candidate non-empty lines: 98
+- Added/changed lines: 98
 - Removed/changed lines: 96
 
 ### Added or changed sample
@@ -61,22 +61,16 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 190
-- Candidate non-empty lines: 189
-- Added/changed lines: 1
-- Removed/changed lines: 2
+- Previous non-empty lines: 189
+- Candidate non-empty lines: 191
+- Added/changed lines: 2
+- Removed/changed lines: 0
 
 ### Added or changed sample
 
 ```text
-weekly-kaminskis-sports-lounge-friday	venue-0071	Kaminski's Sports Lounge	kaminskis-sports-lounge	Friday	8:00 PM	11:00 PM	all-mic-long	ALL MIC LONG	ALL MIC LONG	TRUE	active	Friday karaoke from 8 PM to 11 PM with ALL MIC LONG.	100	ALL MIC LONG direct clarification to Corey 2026-09-19	Prior Kaminski's schedule confirmation	2026-09-19	verified_direct_schedule	FALSE
-```
-
-### Removed or changed sample
-
-```text
-weekly-kaminskis-sports-lounge-friday	venue-0071	Kaminski's Sports Lounge	kaminskis-sports-lounge	Friday	8:00 PM	11:00 PM		Rotating KJs	Rotating KJs	TRUE	active	Friday karaoke from 8 PM to 11 PM with rotating KJs.	100	Corey direct correction 2026-09-14	Direct schedule from DJ Devyn	2026-09-14	verified_direct_schedule	FALSE
-weekly-alpine-vfw-post-9578-thursday	venue-0132	Alpine VFW Post 9578	alpine-vfw-post-9578	Thursday	5:00 PM	9:00 PM	kj-big-a	KJ Big "A"	KJ Big "A"	TRUE	active	Thursday karaoke 5-9 PM with KJ Big "A".	100	KJ Big "A" direct schedule supplied to Corey 2026-09-15	Official VFW Post 9578 venue identity sources	2026-09-16	verified_direct_host_schedule	FALSE
+weekly-steele-94-restaurant-bar-sunday	venue-0134	Steele 94 Restaurant Bar	steele-94-restaurant-bar	Sunday	2:00 PM	6:00 PM		Melody	Melody	TRUE	active	Sunday karaoke from 2 PM to 6 PM with Melody.	100	https://steele94.com/	Corey direct event details 2026-09-20	2026-09-20	verified_official_venue_and_user_schedule	FALSE
+weekly-casa-reveles-valley-center-monday	venue-0135	Casa Reveles	casa-reveles-valley-center	Monday	7:00 PM	10:00 PM				TRUE	active	Monday karaoke from 7 PM to 10 PM.	100	Current Casa Reveles Monday karaoke flyer supplied by Corey 2026-09-20	https://casareveles.net/	2026-09-20	flyer_verified_current_schedule	FALSE
 ```
 
 ## generated_events_review.tsv
@@ -101,19 +95,21 @@ weekly-alpine-vfw-post-9578-thursday	venue-0132	Alpine VFW Post 9578	alpine-vfw-
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 2
-- Removed/changed lines: 2
+- Added/changed lines: 3
+- Removed/changed lines: 3
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-19T21:51:39.565Z",
-  "authoritativeEvents": 188,
+  "generatedAt": "2026-09-20T19:32:06.299Z",
+  "venues": 97,
+  "authoritativeEvents": 190,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-19T06:00:46.576Z",
-  "authoritativeEvents": 189,
+  "generatedAt": "2026-09-19T21:51:39.565Z",
+  "venues": 95,
+  "authoritativeEvents": 188,
 ```
