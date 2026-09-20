@@ -1,7 +1,4 @@
 import { ImageResponse } from "next/og";
-import { SITE_WORDMARK_PART_1 } from "@/lib/siteWordmarkPart1";
-import { SITE_WORDMARK_PART_2 } from "@/lib/siteWordmarkPart2";
-import { SITE_WORDMARK_PART_3 } from "@/lib/siteWordmarkPart3";
 
 export const alt = "SingHUB wordmark - Find karaoke tonight in San Diego";
 export const size = {
@@ -11,8 +8,7 @@ export const size = {
 
 export const contentType = "image/png";
 
-const WORDMARK_SRC =
-  `data:image/webp;base64,${SITE_WORDMARK_PART_1}${SITE_WORDMARK_PART_2}${SITE_WORDMARK_PART_3}`;
+const WORDMARK_URL = "https://singhub.app/images/header-singhub-logo.png";
 
 export default function OpenGraphImage() {
   return new ImageResponse(
@@ -28,7 +24,7 @@ export default function OpenGraphImage() {
           overflow: "hidden",
           background:
             "linear-gradient(135deg, #020617 0%, #09001a 48%, #001329 100%)",
-          padding: "60px 72px 54px",
+          padding: "64px 72px 58px",
           position: "relative",
         }}
       >
@@ -58,10 +54,10 @@ export default function OpenGraphImage() {
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={WORDMARK_SRC}
+          src={WORDMARK_URL}
           alt=""
-          width="980"
-          height="420"
+          width="960"
+          height="240"
           style={{
             objectFit: "contain",
             position: "relative",
@@ -70,11 +66,11 @@ export default function OpenGraphImage() {
         <div
           style={{
             display: "flex",
-            marginTop: 12,
+            marginTop: 42,
             color: "#f8fafc",
-            fontSize: 38,
+            fontSize: 40,
             fontWeight: 800,
-            letterSpacing: "0.05em",
+            letterSpacing: "0.06em",
             lineHeight: 1.15,
             textAlign: "center",
             textTransform: "uppercase",
@@ -86,9 +82,9 @@ export default function OpenGraphImage() {
         <div
           style={{
             display: "flex",
-            marginTop: 22,
+            marginTop: 24,
             color: "#67e8f9",
-            fontSize: 24,
+            fontSize: 25,
             fontWeight: 700,
             letterSpacing: "0.12em",
             position: "relative",
