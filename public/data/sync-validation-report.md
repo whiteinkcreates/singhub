@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 95.
-Exported events: 186.
+Exported venues: 97.
+Exported events: 190.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -22,6 +22,7 @@ Exported events: 186.
 - venue-0109 N City Sports Lounge
 - venue-0127 Smitty's Downtown
 - venue-0128 La Estación
+- venue-0132 Alpine VFW Post 9578
 ## Public Venues Missing Schedule
 - venue-0051 #1 Fifth Avenue
 - venue-0062 710 Beach Club
@@ -104,6 +105,8 @@ Exported events: 186.
 - venue-0118 Chief's Da Tiki Bar
 - venue-0119 Rich's San Diego
 - venue-0072 The Search Bar
+- venue-0134 Steele 94 Restaurant Bar
+- venue-0135 Casa Reveles
 - venue-0125 Poway's Irish Pub
 - venue-0126 Way Point Saloon
 - venue-0120 Eastbound Bar & Grill
@@ -163,6 +166,7 @@ Exported events: 186.
 - event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
 - event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
 - event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
+- event row 184: weekly-alpine-vfw-post-9578-thursday
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -210,6 +214,10 @@ Exported events: 186.
 - event row 178: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
 - event row 179: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
 - event row 180: weekly-barlando-friday Barlando
+- event row 187: weekly-jts-tavern-friday JT's Tavern
+- event row 188: weekly-jts-tavern-saturday JT's Tavern
+- event row 189: weekly-jts-tavern-sunday JT's Tavern
+- event row 191: weekly-casa-reveles-valley-center-monday Casa Reveles
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
@@ -217,6 +225,7 @@ Exported events: 186.
 - venue: venue-0109 N City Sports Lounge
 - venue: venue-0127 Smitty's Downtown
 - venue: venue-0128 La Estación
+- venue: venue-0132 Alpine VFW Post 9578
 ## Public Venues Missing Coordinates
 - venue-0101 Urban Mo’s Bar & Grill
 - venue-0102 Three Stags Irish Pub and Restaurant
@@ -244,6 +253,8 @@ Exported events: 186.
 - venue-0118 Chief's Da Tiki Bar
 - venue-0119 Rich's San Diego
 - venue-0072 The Search Bar
+- venue-0134 Steele 94 Restaurant Bar
+- venue-0135 Casa Reveles
 - venue-0126 Way Point Saloon
 - venue-0130 Spring Valley Inn
 - venue-0131 Mike's Cocktails
@@ -262,17 +273,17 @@ Exported events: 186.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 95
-Authoritative events: 186
+Public venues: 97
+Authoritative events: 190
 Legacy venue slug aliases: 0
 
-PASS Monday: 17 authoritative / 8 expected minimum
+PASS Monday: 18 authoritative / 8 expected minimum
 PASS Tuesday: 30 authoritative / 8 expected minimum
 PASS Wednesday: 31 authoritative / 9 expected minimum
-PASS Thursday: 38 authoritative / 14 expected minimum
-PASS Friday: 28 authoritative / 10 expected minimum
-PASS Saturday: 21 authoritative / 10 expected minimum
-PASS Sunday: 21 authoritative / 7 expected minimum
+PASS Thursday: 37 authoritative / 14 expected minimum
+PASS Friday: 29 authoritative / 10 expected minimum
+PASS Saturday: 22 authoritative / 10 expected minimum
+PASS Sunday: 23 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```

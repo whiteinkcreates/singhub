@@ -3,6 +3,7 @@ import { ScoutImportTool } from "@/components/scout/ScoutImportTool";
 export const metadata = {
   title: "Scout Import | SingHUB",
   description: "Paste, preview, and format internal AI Scout karaoke lead imports.",
+  robots: { index: false, follow: false },
 };
 
 export default function ScoutImportPage() {

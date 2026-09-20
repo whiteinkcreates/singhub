@@ -12,6 +12,7 @@ type FindKaraokePageProps = {
 export const metadata = {
   title: "Find Karaoke in San Diego | SingHUB",
   description: "Find live karaoke, private rooms, and host-led karaoke nights in San Diego.",
+  alternates: { canonical: "/find-karaoke" },
 };
 
 function getSearchParamValue(value: string | string[] | undefined) {
@@ -66,6 +67,10 @@ export default async function FindKaraokePage({ searchParams }: FindKaraokePageP
         eventsByVenueSlug={eventsByVenueSlug}
         initialDayFilter={getSearchParamValue(resolvedSearchParams?.day)}
         initialVenueTypeFilter={getSearchParamValue(resolvedSearchParams?.type)}
+        initialSearchQuery={
+          getSearchParamValue(resolvedSearchParams?.q) ||
+          getSearchParamValue(resolvedSearchParams?.neighborhood)
+        }
       />
     </main>
   );

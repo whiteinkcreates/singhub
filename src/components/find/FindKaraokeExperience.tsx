@@ -17,6 +17,7 @@ type FindKaraokeExperienceProps = {
   eventsByVenueSlug: Record<string, KaraokeEventListing[]>;
   initialDayFilter?: string;
   initialVenueTypeFilter?: string;
+  initialSearchQuery?: string;
 };
 
 type LocationStatus = "idle" | "loading" | "success" | "unsupported" | "denied" | "error";
@@ -294,6 +295,7 @@ export function FindKaraokeExperience({
   eventsByVenueSlug,
   initialDayFilter,
   initialVenueTypeFilter,
+  initialSearchQuery,
 }: FindKaraokeExperienceProps) {
   const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
   const [locationStatus, setLocationStatus] =
@@ -307,7 +309,7 @@ export function FindKaraokeExperience({
   );
   const [statusFilter, setStatusFilter] =
     useState<ListingStatusFilter>("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery || "");
 
   const venueDistances = useMemo(() => {
     if (!userLocation) {

@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/Button";
 import { VenueProfile } from "@/components/venue/VenueProfile";
 import { getKaraokeEventsByVenueSlug } from "@/lib/eventData";
 import { getPublicVenues, isPublicVenue } from "@/lib/publicVenueFilters";
 import { getSingersSaySummary } from "@/lib/singersSay.server";
+import {
+  breadcrumbStructuredData,
+  venueStructuredData,
+} from "@/lib/seoStructuredData";
 import { getPersistedVenueEnhancement } from "@/lib/venueEnhancements.server";
 import { getVenueListingBySlug, getVenueListings } from "@/lib/venueData";
 
@@ -46,6 +51,19 @@ export default async function VenuePage({ params }: VenuePageProps) {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            venueStructuredData(venue, events),
+            breadcrumbStructuredData([
+              { name: "Home", path: "/" },
+              { name: "Venue Index", path: "/places" },
+              { name: venue.venueName, path: `/venues/${venue.slug}` },
+            ]),
+          ],
+        }}
+      />
       <div className="mb-8"><Button href="/find-karaoke" variant="ghost">← Back to all listings</Button></div>
       <VenueProfile venue={venue} events={events} enhancement={enhancement} singersSay={singersSay} />
     </main>

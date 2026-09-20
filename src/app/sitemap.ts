@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
-import { getPublicVenues } from "@/lib/publicVenueFilters";
-import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
+import { getActiveHosts } from "@/lib/hostData";
+import { getSanDiegoPublicVenues, getSanDiegoRegionHosts } from "@/lib/sanDiegoMarket";
 import { daySeoPages, guidePosts, localSeoPages } from "@/lib/seoContent";
 import { getVenueListings } from "@/lib/venueData";
 
@@ -20,25 +20,52 @@ function slugify(value: string) {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const venues = await getVenueListings();
+  const [venues, activeHosts] = await Promise.all([
+    getVenueListings(),
+    getActiveHosts(),
+  ]);
+  const publicVenues = getSanDiegoPublicVenues(venues);
+  const hosts = getSanDiegoRegionHosts(activeHosts, publicVenues);
 
-  const staticRoutes = ["/", "/find-karaoke", "/submit-listing", "/claim-listing", "/venues/premium", "/guides", "/neighborhoods"];
+  const staticRoutes = [
+    "/",
+    "/find-karaoke",
+    "/places",
+    "/hosts",
+    "/submit-listing",
+    "/claim-listing",
+    "/venues/premium",
+    "/guides",
+    "/neighborhoods",
+  ];
   const localRoutes = localSeoPages.map((page) => page.path);
   const dayRoutes = daySeoPages.map((page) => `/karaoke/${page.slug}`);
   const neighborhoodRoutes = [
     ...new Set(
-      getSanDiegoPublicVenues(venues)
+      publicVenues
         .map((venue) => venue.neighborhood)
         .filter((neighborhood) => neighborhood && neighborhood !== "Multiple venues")
         .map((neighborhood) => `/neighborhoods/${slugify(neighborhood)}`),
     ),
   ];
   const guideRoutes = guidePosts.map((post) => `/guides/${post.slug}`);
-  const venueRoutes = getPublicVenues(venues)
+  const venueRoutes = publicVenues
     .filter((venue) => venue.slug && venue.venueName && !venue.venueName.toLowerCase().includes("tbd"))
     .map((venue) => `/venues/${venue.slug}`);
+  const hostRoutes = hosts.map((host) => `/hosts/${host.slug}`);
+  const routes = [
+    ...new Set([
+      ...staticRoutes,
+      ...localRoutes,
+      ...dayRoutes,
+      ...neighborhoodRoutes,
+      ...guideRoutes,
+      ...venueRoutes,
+      ...hostRoutes,
+    ]),
+  ];
 
-  return [...staticRoutes, ...localRoutes, ...dayRoutes, ...neighborhoodRoutes, ...guideRoutes, ...venueRoutes].map((path) => ({
+  return routes.map((path) => ({
     url: absoluteUrl(path),
     lastModified: now,
     changeFrequency: path.startsWith("/guides") ? "weekly" : "daily",

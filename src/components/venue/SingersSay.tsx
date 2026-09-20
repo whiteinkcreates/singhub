@@ -1,4 +1,5 @@
 import type { SingersSaySummary } from "@/lib/singersSay.server";
+import { VenueSemanticIcon, venueVibeIconName } from "@/components/venue/VenueSemanticIcon";
 
 export function SingersSay({ summary }: { summary: SingersSaySummary }) {
   if (summary.totalResponses < 3 || summary.tags.length === 0) return null;
@@ -16,12 +17,16 @@ export function SingersSay({ summary }: { summary: SingersSaySummary }) {
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2">
-        {tags.map((tag) => (
-          <div key={tag.slug} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-200">
-            <span className="font-bold text-white">{tag.label}</span>
-            <span className="ml-2 text-xs text-cyan-200">{tag.percentage}%</span>
-          </div>
-        ))}
+        {tags.map((tag) => {
+          const icon = venueVibeIconName(tag.slug);
+          return (
+            <div key={tag.slug} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-200">
+              {icon ? <VenueSemanticIcon name={icon} className="h-4 w-4 shrink-0 text-fuchsia-200" /> : null}
+              <span className="font-bold text-white">{tag.label}</span>
+              <span className="text-xs text-cyan-200">{tag.percentage}%</span>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
