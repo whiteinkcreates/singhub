@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { Button } from "@/components/ui/Button";
 import { LitUpVenueTabs } from "@/components/venue/LitUpVenueTabs";
+import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 import type { KaraokeEventListing, VenueListing } from "@/types";
 import type { SingersSaySummary } from "@/lib/singersSay.server";
 import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
@@ -108,7 +109,7 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
             {enhancement.tagline ? <p className="mt-4 text-base leading-7 text-slate-200 md:text-lg">{enhancement.tagline}</p> : null}
             <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
               {venue.vibeTags.slice(0, 4).map((tag) => <span key={tag} className="inline-flex items-center gap-2 text-xs font-bold text-slate-400"><span className="h-1 w-1 rounded-full bg-fuchsia-300" aria-hidden />{tag}</span>)}
-              {enhancement.amenities.slice(0, Math.max(0, 4 - venue.vibeTags.length)).map((tag) => <span key={tag} className="inline-flex items-center gap-2 text-xs font-bold text-slate-400"><span className="h-1 w-1 rounded-full bg-cyan-300" aria-hidden />{tag}</span>)}
+              {enhancement.amenities.slice(0, Math.max(0, 4 - venue.vibeTags.length)).map((tag) => { const icon = venueFactIconName(tag); return <span key={tag} className="inline-flex items-center gap-2 text-xs font-bold text-slate-400">{icon ? <VenueSemanticIcon name={icon} className="h-4 w-4 shrink-0 text-cyan-300" /> : <span className="h-1 w-1 rounded-full bg-cyan-300" aria-hidden />}{tag}</span>; })}
             </div>
           </div>
         </div>
