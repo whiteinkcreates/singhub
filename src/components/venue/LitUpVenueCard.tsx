@@ -2,6 +2,7 @@
 import Link from "next/link";
 import type { KaraokeEventListing, VenueListing } from "@/types";
 import { getVenueEnhancement } from "@/lib/venueEnhancements";
+import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 
 type LitUpVenueCardProps = {
   venue: VenueListing;
@@ -10,21 +11,6 @@ type LitUpVenueCardProps = {
 };
 
 const DEFAULT_BANNER_IMAGE_URL = "/images/venues/default-singhub-banner.svg";
-const TAG_GLYPHS: Record<string, string> = {
-  "Food available": "🍴",
-  "Full bar": "🍸",
-  "Beer & wine": "🍺",
-  "Outdoor seating": "☀",
-  "Good for groups": "◉",
-  "Pool tables": "●",
-  "Bar games": "◆",
-  "Dance floor": "♪",
-  "Patio": "☀",
-  "Game night": "★",
-  "Late night food": "☾",
-  "BBQ": "♨",
-};
-
 function clean(value?: string) {
   const trimmed = value?.trim();
   if (!trimmed || /^(tbd|unknown|-|n\/a)$/i.test(trimmed)) return undefined;
@@ -73,7 +59,7 @@ export function LitUpVenueCard({ venue, events = [], distanceLabel }: LitUpVenue
             <span className="mt-1 text-xl text-fuchsia-300 transition group-hover:translate-x-0.5" aria-hidden>→</span>
           </div>
           {summary && <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-200">{summary}</p>}
-          {highlights.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{highlights.map((item) => <span key={item} className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-semibold text-slate-300">{TAG_GLYPHS[item] ? <span className="text-cyan-200" aria-hidden>{TAG_GLYPHS[item]}</span> : null}{item}</span>)}</div>}
+          {highlights.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{highlights.map((item) => { const icon = venueFactIconName(item); return <span key={item} className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-semibold text-slate-300">{icon ? <VenueSemanticIcon name={icon} className="h-3.5 w-3.5 shrink-0 text-cyan-200" /> : null}{item}</span>; })}</div>}
         </div>
       </Link>
     </article>

@@ -6,26 +6,7 @@ import { EventSchedule } from "@/components/venue/EventSchedule";
 import type { KaraokeEventListing } from "@/types";
 import type { SingersSaySummary } from "@/lib/singersSay.server";
 import type { VenueEnhancement, VenueSpecial } from "@/lib/venueEnhancements";
-
-const FACT_GLYPHS: Record<string, string> = {
-  "Food available": "🍴",
-  "Full bar": "🍸",
-  "Beer & wine": "🍺",
-  "Outdoor seating": "☀",
-  "Good for groups": "◉",
-  "21+": "21+",
-  "All ages": "AA",
-  "Free parking": "P",
-  "Street parking": "P",
-  "Reservations available": "✓",
-  "Private rooms": "▣",
-  "Pool tables": "●",
-  "Bar games": "◆",
-  "Dance floor": "♪",
-  "Patio": "☀",
-  "Game night": "★",
-  "Late night food": "☾",
-};
+import { VenueSemanticIcon, venueFactIconName, venueVibeIconName } from "@/components/venue/VenueSemanticIcon";
 
 function groupSpecials(specials: VenueSpecial[]) {
   const groups = new Map<string, VenueSpecial[]>();
@@ -62,7 +43,7 @@ export function LitUpVenueTabs({ venueName, enhancement, events, singersSay, act
         {tab === "about" && (
           <div className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
             <div><p className="text-xs font-black uppercase tracking-[0.18em] text-fuchsia-300">About {venueName}</p><p className="mt-3 max-w-3xl text-base leading-7 text-slate-300">{enhancement.about || enhancement.tagline}</p></div>
-            {enhancement.amenities.length > 0 && <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-5"><p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">Good to know</p><div className="mt-4 flex flex-wrap gap-2">{enhancement.amenities.map((fact) => { const glyph = FACT_GLYPHS[fact]; return <span key={fact} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-2 text-xs font-semibold text-slate-200">{glyph ? <span className="text-cyan-200" aria-hidden>{glyph}</span> : null}{fact}</span>; })}</div></div>}
+            {enhancement.amenities.length > 0 && <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-5"><p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">Good to know</p><div className="mt-4 flex flex-wrap gap-2">{enhancement.amenities.map((fact) => { const icon = venueFactIconName(fact); return <span key={fact} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-2 text-xs font-semibold text-slate-200">{icon ? <VenueSemanticIcon name={icon} className="h-4 w-4 shrink-0 text-cyan-200" /> : null}{fact}</span>; })}</div></div>}
           </div>
         )}
 
@@ -70,7 +51,7 @@ export function LitUpVenueTabs({ venueName, enhancement, events, singersSay, act
 
         {tab === "events" && <EventSchedule events={events} />}
 
-        {tab === "singers" && singersSay && showSingers && <div className="rounded-2xl border border-fuchsia-300/15 bg-[linear-gradient(135deg,rgba(88,28,135,.12),rgba(8,16,24,.98)_55%,rgba(8,145,178,.08))] p-5"><div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Singers Say</p><h2 className="mt-1 text-2xl font-black text-white">What karaoke feels like here</h2></div><p className="text-xs text-slate-500">{singersSay.totalResponses} recent responses</p></div><div className="mt-5 flex flex-wrap gap-2">{singersSay.tags.slice(0, 8).map((tag) => <div key={tag.slug} className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-200"><span className="font-bold text-white">{tag.label}</span><span className="ml-2 text-xs text-cyan-200">{tag.percentage}%</span></div>)}</div></div>}
+        {tab === "singers" && singersSay && showSingers && <div className="rounded-2xl border border-fuchsia-300/15 bg-[linear-gradient(135deg,rgba(88,28,135,.12),rgba(8,16,24,.98)_55%,rgba(8,145,178,.08))] p-5"><div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Singers Say</p><h2 className="mt-1 text-2xl font-black text-white">What karaoke feels like here</h2></div><p className="text-xs text-slate-500">{singersSay.totalResponses} recent responses</p></div><div className="mt-5 flex flex-wrap gap-2">{singersSay.tags.slice(0, 8).map((tag) => { const icon = venueVibeIconName(tag.slug); return <div key={tag.slug} className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-2 text-sm text-slate-200">{icon ? <VenueSemanticIcon name={icon} className="h-4 w-4 shrink-0 text-fuchsia-200" /> : null}<span className="font-bold text-white">{tag.label}</span><span className="text-xs text-cyan-200">{tag.percentage}%</span></div>; })}</div></div>}
       </div>
     </section>
   );
