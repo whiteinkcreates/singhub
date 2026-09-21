@@ -14,7 +14,7 @@ import { getVenueListings } from "@/lib/venueData";
 import type { VenueListing } from "@/types";
 
 export const metadata: Metadata = {
-  title: "Karaoke Near Me | Find Karaoke Bars & Live Nights Tonight | SingHUB",
+  title: "Karaoke Near Me in San Diego Tonight | SingHUB",
   description:
     "Find karaoke near you tonight. Search San Diego karaoke bars, private karaoke rooms, live nights, neighborhoods, and day-by-day karaoke schedules.",
   alternates: { canonical: "/karaoke-near-me" },

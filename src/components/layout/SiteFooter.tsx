@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 const footerLinks = [
+  { href: "/karaoke-near-me", label: "Karaoke Near Me" },
+  { href: "/karaoke-tonight-san-diego", label: "Karaoke Tonight" },
   { href: "/find-karaoke", label: "Find Karaoke" },
   { href: "/places", label: "Venue Index" },
   { href: "/hosts", label: "Hosts" },

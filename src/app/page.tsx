@@ -21,7 +21,8 @@ export const metadata: Metadata = {
 };
 
 const searchLinks = [
-  { href: "/find-karaoke?day=tonight", label: "Tonight" },
+  { href: "/karaoke-tonight-san-diego", label: "Tonight" },
+  { href: "/karaoke-near-me", label: "Near Me" },
   { href: "/neighborhoods", label: "Neighborhood" },
   { href: "/places", label: "Venue" },
   { href: "/hosts", label: "Host" },
@@ -31,7 +32,7 @@ const searchLinks = [
 
 const actionCards = [
   {
-    href: "/find-karaoke?day=tonight",
+    href: "/karaoke-tonight-san-diego",
     eyebrow: "RIGHT NOW",
     title: "Tonight",
     helper: "See every verified karaoke option happening around San Diego tonight.",
@@ -105,7 +106,7 @@ export default async function Home() {
               </p>
 
               <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Button href="/find-karaoke?day=tonight" className="w-full sm:w-auto">
+                <Button href="/karaoke-tonight-san-diego" className="w-full sm:w-auto">
                   Find Karaoke Tonight
                 </Button>
                 <Button href="/places" variant="secondary" className="w-full sm:w-auto">
