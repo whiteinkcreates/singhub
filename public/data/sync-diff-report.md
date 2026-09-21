@@ -61,16 +61,12 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 191
+- Previous non-empty lines: 190
 - Candidate non-empty lines: 190
 - Added/changed lines: 0
-- Removed/changed lines: 1
+- Removed/changed lines: 0
 
-### Removed or changed sample
-
-```text
-event-richs-san-diego-karaoke-2026-09-17	venue-0119	Rich's San Diego	richs-san-diego	Thursday	10:00 PM	2:00 AM	dj-niko	DJ Niko	DJ Niko	Date-specific	active	Thursday, September 17 karaoke from 10 PM to 2 AM with DJ Niko.	100	Direct email from Ryan Bedrosian, Owner - Rich's San Diego, 2026-09-02	Rich's official Pop Rocks / events calendar	2026-09-02	verified_direct_owner_schedule	FALSE
-```
+- No content changes.
 
 ## generated_events_review.tsv
 
@@ -94,19 +90,17 @@ event-richs-san-diego-karaoke-2026-09-17	venue-0119	Rich's San Diego	richs-san-d
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 2
-- Removed/changed lines: 2
+- Added/changed lines: 1
+- Removed/changed lines: 1
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-21T04:47:15.281Z",
-  "authoritativeEvents": 189,
+  "generatedAt": "2026-09-21T04:50:13.057Z",
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-20T19:32:06.299Z",
-  "authoritativeEvents": 190,
+  "generatedAt": "2026-09-21T04:47:15.281Z",
 ```
