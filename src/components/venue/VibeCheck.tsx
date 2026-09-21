@@ -352,7 +352,7 @@ export function VibeCheck({ venue, events }: VibeCheckProps) {
       };
       window.localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
 
-      const redirectUrl = `${window.location.origin}/venues/${venue.slug}#vibe-check`;
+      const nextPath = `/venues/${venue.slug}#vibe-check`;\n      const redirectUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`;
       const { error } = await createClient().auth.signInWithOtp({
         email: email.trim(),
         options: {
