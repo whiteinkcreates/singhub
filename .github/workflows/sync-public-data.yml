@@ -33,6 +33,7 @@ on:
       - "scripts/sync-public-data-with-taxonomy.mjs"
 
 permissions:
+  actions: write
   contents: write
   pull-requests: write
 
@@ -153,6 +154,12 @@ jobs:
           gh pr merge "${{ steps.data_pr.outputs.pr_url }}" \
             --squash \
             --delete-branch
+
+      - name: Run integrity audit against merged snapshot
+        if: steps.data_pr.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run data-integrity-audit.yml --ref main
 
       - name: Upload sync artifacts
         if: always()
