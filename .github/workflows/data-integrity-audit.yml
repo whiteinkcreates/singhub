@@ -7,6 +7,7 @@ on:
       - fix/data-integrity-guardrails
     paths:
       - ".github/workflows/data-integrity-audit.yml"
+      - ".github/workflows/sync-public-data.yml"
       - "scripts/**"
       - "config/**"
       - "public/data/**"
