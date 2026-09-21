@@ -4,10 +4,10 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 96
+- Previous non-empty lines: 98
 - Candidate non-empty lines: 98
 - Added/changed lines: 98
-- Removed/changed lines: 96
+- Removed/changed lines: 98
 
 ### Added or changed sample
 
@@ -61,16 +61,15 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 189
-- Candidate non-empty lines: 191
-- Added/changed lines: 2
-- Removed/changed lines: 0
+- Previous non-empty lines: 191
+- Candidate non-empty lines: 190
+- Added/changed lines: 0
+- Removed/changed lines: 1
 
-### Added or changed sample
+### Removed or changed sample
 
 ```text
-weekly-steele-94-restaurant-bar-sunday	venue-0134	Steele 94 Restaurant Bar	steele-94-restaurant-bar	Sunday	2:00 PM	6:00 PM		Melody	Melody	TRUE	active	Sunday karaoke from 2 PM to 6 PM with Melody.	100	https://steele94.com/	Corey direct event details 2026-09-20	2026-09-20	verified_official_venue_and_user_schedule	FALSE
-weekly-casa-reveles-valley-center-monday	venue-0135	Casa Reveles	casa-reveles-valley-center	Monday	7:00 PM	10:00 PM				TRUE	active	Monday karaoke from 7 PM to 10 PM.	100	Current Casa Reveles Monday karaoke flyer supplied by Corey 2026-09-20	https://casareveles.net/	2026-09-20	flyer_verified_current_schedule	FALSE
+event-richs-san-diego-karaoke-2026-09-17	venue-0119	Rich's San Diego	richs-san-diego	Thursday	10:00 PM	2:00 AM	dj-niko	DJ Niko	DJ Niko	Date-specific	active	Thursday, September 17 karaoke from 10 PM to 2 AM with DJ Niko.	100	Direct email from Ryan Bedrosian, Owner - Rich's San Diego, 2026-09-02	Rich's official Pop Rocks / events calendar	2026-09-02	verified_direct_owner_schedule	FALSE
 ```
 
 ## generated_events_review.tsv
@@ -95,21 +94,19 @@ weekly-casa-reveles-valley-center-monday	venue-0135	Casa Reveles	casa-reveles-va
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 3
-- Removed/changed lines: 3
+- Added/changed lines: 2
+- Removed/changed lines: 2
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-09-20T19:32:06.299Z",
-  "venues": 97,
-  "authoritativeEvents": 190,
+  "generatedAt": "2026-09-21T04:47:15.281Z",
+  "authoritativeEvents": 189,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-09-19T21:51:39.565Z",
-  "venues": 95,
-  "authoritativeEvents": 188,
+  "generatedAt": "2026-09-20T19:32:06.299Z",
+  "authoritativeEvents": 190,
 ```
