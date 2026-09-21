@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Button } from "@/components/ui/Button";
 import { VenueProfile } from "@/components/venue/VenueProfile";
@@ -15,6 +15,11 @@ import { getVenueListingBySlug, getVenueListings } from "@/lib/venueData";
 
 type VenuePageProps = { params: Promise<{ slug: string }> };
 
+const LEGACY_VENUE_SLUGS: Record<string, string> = {
+  "the-mesa-la-mesa": "the-mesa",
+  "the-mesa-college-area": "the-mesa",
+};
+
 export const dynamic = "force-dynamic";
 
 function isPlaceholderVenue(venueName: string) {
@@ -27,7 +32,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: VenuePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const venue = await getVenueListingBySlug(slug);
+  const canonicalSlug = LEGACY_VENUE_SLUGS[slug] || slug;
+  const venue = await getVenueListingBySlug(canonicalSlug);
   if (!venue || !isPublicVenue(venue)) return { title: "Venue Not Found | SingHUB", robots: { index: false, follow: false } };
   const shouldNoindex = isPlaceholderVenue(venue.venueName);
   return {
@@ -40,7 +46,9 @@ export async function generateMetadata({ params }: VenuePageProps): Promise<Meta
 
 export default async function VenuePage({ params }: VenuePageProps) {
   const { slug } = await params;
-  const venue = await getVenueListingBySlug(slug);
+  const canonicalSlug = LEGACY_VENUE_SLUGS[slug] || slug;
+  if (canonicalSlug !== slug) redirect(`/venues/${canonicalSlug}`);
+  const venue = await getVenueListingBySlug(canonicalSlug);
   if (!venue || !isPublicVenue(venue)) notFound();
 
   const [events, enhancement, singersSay] = await Promise.all([
