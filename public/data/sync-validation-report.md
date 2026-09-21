@@ -4,7 +4,7 @@ Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
 Exported venues: 97.
-Exported events: 190.
+Exported events: 189.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -20,6 +20,7 @@ Exported events: 190.
 - venue-0065 Jin Music Studios
 - venue-0066 North County - Larrys Beach Club
 - venue-0109 N City Sports Lounge
+- venue-0119 Rich's San Diego
 - venue-0127 Smitty's Downtown
 - venue-0128 La Estación
 - venue-0132 Alpine VFW Post 9578
@@ -165,6 +166,7 @@ Exported events: 190.
 - event row 154: weekly-docks-cocktail-lounge-saturday
 - event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
 - event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
+- event row 176: event-richs-san-diego-karaoke-2026-09-17
 - event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
 - event row 184: weekly-alpine-vfw-post-9578-thursday
 ## Events With Invalid App Visibility
@@ -223,6 +225,7 @@ Exported events: 190.
 - venue: venue-0065 Jin Music Studios
 - venue: venue-0066 North County - Larrys Beach Club
 - venue: venue-0109 N City Sports Lounge
+- venue: venue-0119 Rich's San Diego
 - venue: venue-0127 Smitty's Downtown
 - venue: venue-0128 La Estación
 - venue: venue-0132 Alpine VFW Post 9578
@@ -274,13 +277,13 @@ SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
 Public venues: 97
-Authoritative events: 190
+Authoritative events: 189
 Legacy venue slug aliases: 0
 
 PASS Monday: 18 authoritative / 8 expected minimum
 PASS Tuesday: 30 authoritative / 8 expected minimum
 PASS Wednesday: 31 authoritative / 9 expected minimum
-PASS Thursday: 37 authoritative / 14 expected minimum
+PASS Thursday: 36 authoritative / 14 expected minimum
 PASS Friday: 29 authoritative / 10 expected minimum
 PASS Saturday: 22 authoritative / 10 expected minimum
 PASS Sunday: 23 authoritative / 7 expected minimum
