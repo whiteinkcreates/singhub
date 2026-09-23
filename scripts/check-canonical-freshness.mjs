@@ -146,20 +146,20 @@ async function main() {
   console.log(`Scanned canonical event rows: ${rows.length}`);
 
   if (expiredPublicDatedEvents.length) {
-    console.error("\nFAIL: expired dated/date-specific events are still public:");
+    console.error("\nFAIL: expired one-time/single events are still public:");
     for (const event of expiredPublicDatedEvents) {
       console.error(
         `- row ${event.row}: ${event.eventId} | ${event.venue} | ${event.eventDate} | ${event.recurrence}`,
       );
     }
     console.error(
-      "\nArchive or hide the expired event. If it became recurring, create/promote a separate recurring canonical row instead of leaving the dated row public.",
+      "\nArchive or hide the expired one-time event. A date mentioned inside an ongoing or recurring event does not make that recurring event stale.",
     );
     process.exitCode = 1;
     return;
   }
 
-  console.log("PASS: no expired dated/date-specific events are publicly active.");
+  console.log("PASS: no expired one-time/single events are publicly active.");
 }
 
 main().catch((error) => {
