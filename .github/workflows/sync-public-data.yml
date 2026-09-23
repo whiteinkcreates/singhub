@@ -1,7 +1,7 @@
 name: Sync public karaoke data
 
 on:
-  # Run intentionally when public snapshots need to be refreshed.
+  # Run intentionally when canonical sheet changes need to refresh public snapshots.
   # The nightly schedule was removed to avoid generating unnecessary
   # preview + production deployments when no product release is needed.
   workflow_dispatch:
