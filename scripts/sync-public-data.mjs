@@ -29,6 +29,11 @@ const APPROVED_LIVE_ONLY_REMOVALS_PATH = path.join(
   "config",
   "approved-live-only-removals.json",
 );
+const APPROVED_VENUE_IDENTITY_CHANGES_PATH = path.join(
+  ROOT,
+  "config",
+  "approved-venue-identity-changes.json",
+);
 
 const EXCLUDED_STATUSES = new Set([
   "closed",
@@ -299,6 +304,18 @@ function loadApprovedLiveOnlyRemovals() {
     fs.readFileSync(APPROVED_LIVE_ONLY_REMOVALS_PATH, "utf8"),
   );
   return new Set((configured.eventIds || []).map(clean));
+}
+
+function loadApprovedVenueIdentityChanges() {
+  if (!fs.existsSync(APPROVED_VENUE_IDENTITY_CHANGES_PATH)) return new Set();
+  const configured = JSON.parse(
+    fs.readFileSync(APPROVED_VENUE_IDENTITY_CHANGES_PATH, "utf8"),
+  );
+  return new Set(
+    (configured.changes || []).map(
+      (change) => `${clean(change.venue_id)}::${clean(change.from_slug)}::${clean(change.to_slug)}`,
+    ),
+  );
 }
 
 function canonicalDay(token) {
@@ -591,9 +608,12 @@ function reportStableVenueIdentityChanges(candidateVenues) {
   const currentById = new Map(
     readPublicRows("venues.tsv").map((venue) => [clean(venue.id), venue]),
   );
+  const approvedChanges = loadApprovedVenueIdentityChanges();
   return candidateVenues.flatMap((candidate) => {
     const current = currentById.get(clean(candidate.id));
     if (!current || clean(current.slug) === clean(candidate.slug)) return [];
+    const approvalKey = `${clean(candidate.id)}::${clean(current.slug)}::${clean(candidate.slug)}`;
+    if (approvedChanges.has(approvalKey)) return [];
     const currentAddress = key(current.address);
     const candidateAddress = key(candidate.address);
     if (
