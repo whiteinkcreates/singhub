@@ -2,6 +2,8 @@ import { KaraokePlacesExperience } from "@/components/places/KaraokePlacesExperi
 import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getVenueListings } from "@/lib/venueData";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "SingHUB Radar | Karaoke Places Worldwide",
   description:

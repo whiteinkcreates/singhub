@@ -9,6 +9,8 @@ type FindKaraokePageProps = {
     | Record<string, string | string[] | undefined>;
 };
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Find Karaoke in San Diego | SingHUB",
   description: "Find live karaoke, private rooms, and host-led karaoke nights in San Diego.",
