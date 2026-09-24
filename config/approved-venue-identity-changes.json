@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "venue_id": "venue-0136",
+      "from_slug": "the-brass-rail",
+      "to_slug": "the-pour-house-oceanside",
+      "reason": "Correct accidental public ID collision introduced before Brass Rail was added to canonical. Pour House owns venue-0136; Brass Rail is venue-0138."
+    }
+  ]
+}
