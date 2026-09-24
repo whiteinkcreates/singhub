@@ -973,6 +973,16 @@ async function main() {
 
   const validation = validatePublicData({ dataDir: options.outputDir });
   const sourceFailures = [];
+  if (report.duplicateVenueIds.length) {
+    sourceFailures.push(
+      `${report.duplicateVenueIds.length} duplicate canonical venue_id group(s) must be resolved before publishing.`,
+    );
+  }
+  if (report.duplicateSlugs.length) {
+    sourceFailures.push(
+      `${report.duplicateSlugs.length} duplicate canonical venue slug group(s) must be resolved before publishing.`,
+    );
+  }
   if (report.venuesInvalidAppVisibility.length) {
     sourceFailures.push(
       `${report.venuesInvalidAppVisibility.length} venue row(s) have invalid app_visible values, usually indicating shifted canonical columns.`,
