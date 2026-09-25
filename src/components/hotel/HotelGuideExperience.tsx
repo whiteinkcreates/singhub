@@ -23,6 +23,7 @@ type Props = {
   hotelShortName: string;
   heroImageUrl?: string;
   wordmarkImageUrl?: string;
+  wordmarkInvert?: boolean;
   heroFallback: "downtown" | "coast";
   tonightVenues: HotelGuideVenue[];
   weekVenues: HotelGuideVenue[];
@@ -157,6 +158,7 @@ export function HotelGuideExperience({
   hotelShortName,
   heroImageUrl,
   wordmarkImageUrl,
+  wordmarkInvert,
   heroFallback,
   tonightVenues,
   weekVenues,
@@ -193,7 +195,7 @@ export function HotelGuideExperience({
             <img
               src={wordmarkImageUrl}
               alt={hotelName}
-              className="mx-auto max-h-16 max-w-[260px] object-contain"
+              className={`mx-auto max-h-16 max-w-[260px] object-contain ${wordmarkInvert ? "brightness-0 invert" : ""}`}
             />
           ) : (
             <div className="mx-auto max-w-lg text-xl font-semibold tracking-[0.18em] text-white/90">
