@@ -10,6 +10,7 @@ export type HotelGuide = {
   longitude: number;
   heroImageUrl?: string;
   wordmarkImageUrl?: string;
+  wordmarkInvert?: boolean;
   heroFallback: "downtown" | "coast";
   walkableMiles?: number;
   quickTripMiles?: number;
@@ -17,7 +18,7 @@ export type HotelGuide = {
 };
 
 const downtown: HotelGuide[] = [
-  { slug: "pendry-san-diego", name: "Pendry San Diego", shortName: "Pendry", area: "downtown", address: "550 J St, San Diego, CA 92101", latitude: 32.7083, longitude: -117.1594, heroImageUrl: "https://uploads.pendry.com/redesign/wp-content/uploads/sites/2/2018/12/10211411/1-4.jpeg", wordmarkImageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Pendry_Hotels_Logo.png", heroFallback: "downtown" },
+  { slug: "pendry-san-diego", name: "Pendry San Diego", shortName: "Pendry", area: "downtown", address: "550 J St, San Diego, CA 92101", latitude: 32.7083, longitude: -117.1594, heroImageUrl: "https://uploads.pendry.com/redesign/wp-content/uploads/sites/2/2018/12/10211411/1-4.jpeg", wordmarkImageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/3f/Pendry_Hotels_Logo.png", wordmarkInvert: true, heroFallback: "downtown" },
   { slug: "hard-rock-san-diego", name: "Hard Rock Hotel San Diego", shortName: "Hard Rock", area: "downtown", address: "207 5th Ave, San Diego, CA 92101", latitude: 32.7077, longitude: -117.1600, heroImageUrl: "https://hotel.hardrock.com/san-diego/files/6076/HRSD_Exterior_2200x1467.jpg", heroFallback: "downtown" },
   { slug: "hilton-gaslamp", name: "Hilton San Diego Gaslamp Quarter", shortName: "Hilton Gaslamp", area: "downtown", address: "401 K St, San Diego, CA 92101", latitude: 32.7088, longitude: -117.1617, heroFallback: "downtown" },
   { slug: "ac-hotel-gaslamp", name: "AC Hotel San Diego Downtown Gaslamp Quarter", shortName: "AC Hotel Gaslamp", area: "downtown", address: "743 5th Ave, San Diego, CA 92101", latitude: 32.7130, longitude: -117.1599, heroFallback: "downtown" },
