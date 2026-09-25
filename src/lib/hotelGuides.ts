@@ -57,7 +57,7 @@ const laMesa: HotelGuide[] = [
     latitude: 32.77495,
     longitude: -117.0259,
     heroImageUrl: "https://digital.ihg.com/is/image/ihg/holiday-inn-express-la-mesa-8924019411-4x3",
-    wordmarkImageUrl: "https://development.ihg.com/sites/ihgplc/files/IHG/americas/logo/holiday-inn-express-logo-img.png",
+    wordmarkImageUrl: "https://upload.wikimedia.org/wikipedia/commons/7/75/Holiday_Inn_Express_by_IHG_logo.svg",
     heroFallback: "downtown",
     walkableMiles: 0.7,
     quickTripMiles: 3.5,

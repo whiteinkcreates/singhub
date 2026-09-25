@@ -178,42 +178,44 @@ export function HotelGuideExperience({
         <img
           src={heroImageUrl || fallbackHero}
           alt=""
-          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-45"
+          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-65"
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#03101d]/30 via-[#06101e]/70 to-[#06101e]" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#03101d]/20 via-[#06101e]/50 to-[#06101e]/95" />
 
-        <div className="mx-auto max-w-3xl px-5 pb-8 pt-7 text-center">
-          <img
-            src="/images/hero/singhub-logo-glow.svg"
-            alt="SingHUB"
-            className="mx-auto h-auto w-[220px] max-w-[65vw]"
-          />
-
-          <div className="my-1 text-3xl font-black text-fuchsia-300 drop-shadow-[0_0_14px_rgba(232,121,249,0.85)]">@</div>
-
-          {wordmarkImageUrl ? (
+        <div className="mx-auto max-w-3xl px-5 pb-6 pt-5 text-center sm:pb-7 sm:pt-6">
+          <div className="mx-auto flex max-w-md flex-col items-center">
             <img
-              src={wordmarkImageUrl}
-              alt={hotelName}
-              className={`mx-auto max-h-16 max-w-[260px] object-contain ${wordmarkInvert ? "brightness-0 invert" : ""}`}
+              src="/images/header-singhub-logo.png"
+              alt="SingHUB"
+              className="h-auto w-[190px] max-w-[54vw] object-contain sm:w-[220px]"
             />
-          ) : (
-            <div className="mx-auto max-w-lg text-xl font-semibold tracking-[0.18em] text-white/90">
-              {hotelName}
-            </div>
-          )}
 
-          <h1 className="mt-6 text-3xl font-black tracking-tight sm:text-4xl">
-            Karaoke near {hotelShortName}
+            <div className="my-1 text-2xl font-black leading-none text-fuchsia-300 drop-shadow-[0_0_12px_rgba(232,121,249,0.8)]">@</div>
+
+            {wordmarkImageUrl ? (
+              <img
+                src={wordmarkImageUrl}
+                alt={hotelName}
+                className={`max-h-14 max-w-[180px] object-contain sm:max-h-16 sm:max-w-[220px] ${wordmarkInvert ? "brightness-0 invert" : ""}`}
+              />
+            ) : (
+              <div className="max-w-sm text-base font-bold tracking-[0.12em] text-white/90 sm:text-lg">
+                {hotelName}
+              </div>
+            )}
+          </div>
+
+          <h1 className="mt-4 text-2xl font-black tracking-tight sm:text-3xl">
+            Karaoke near your stay
           </h1>
-          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-300">
-            What&apos;s happening tonight and this week, organized by how easy it is to get there.
+          <p className="mx-auto mt-1.5 max-w-lg text-sm leading-6 text-slate-200">
+            See what&apos;s happening tonight or this week near {hotelShortName}.
           </p>
 
-          <div className="mx-auto mt-6 grid max-w-md grid-cols-2 rounded-full border border-white/15 bg-black/25 p-1 backdrop-blur">
+          <div className="mx-auto mt-4 grid max-w-sm grid-cols-2 rounded-full border border-white/15 bg-black/35 p-1 backdrop-blur">
             <button
               onClick={() => setMode("tonight")}
-              className={`rounded-full px-5 py-2.5 text-sm font-black transition ${
+              className={`rounded-full px-4 py-2 text-sm font-black transition ${
                 mode === "tonight"
                   ? "bg-amber-300 text-slate-950"
                   : "text-slate-300 hover:text-white"
@@ -223,7 +225,7 @@ export function HotelGuideExperience({
             </button>
             <button
               onClick={() => setMode("week")}
-              className={`rounded-full px-5 py-2.5 text-sm font-black transition ${
+              className={`rounded-full px-4 py-2 text-sm font-black transition ${
                 mode === "week"
                   ? "bg-amber-300 text-slate-950"
                   : "text-slate-300 hover:text-white"
