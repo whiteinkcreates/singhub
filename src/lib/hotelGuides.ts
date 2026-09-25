@@ -4,7 +4,7 @@ export type HotelGuide = {
   slug: string;
   name: string;
   shortName: string;
-  area: "downtown" | "la-jolla";
+  area: "downtown" | "la-jolla" | "la-mesa";
   address: string;
   latitude: number;
   longitude: number;
@@ -45,7 +45,24 @@ const laJolla: HotelGuide[] = [
   { slug: "la-jolla-beach-tennis-club", name: "La Jolla Beach & Tennis Club", shortName: "La Jolla Beach & Tennis Club", area: "la-jolla", address: "2000 Spindrift Dr, La Jolla, CA 92037", latitude: 32.8572, longitude: -117.2570, heroFallback: "coast", walkableMiles: 1, quickTripMiles: 6, standoutMiles: 10 },
 ];
 
-export const hotelGuides = [...downtown, ...laJolla];
+
+const laMesa: HotelGuide[] = [
+  {
+    slug: "holiday-inn-express-la-mesa",
+    name: "Holiday Inn Express La Mesa near SDSU",
+    shortName: "Holiday Inn Express La Mesa",
+    area: "la-mesa",
+    address: "8000 Parkway Drive, La Mesa, CA 91942",
+    latitude: 32.77495,
+    longitude: -117.0259,
+    heroFallback: "downtown",
+    walkableMiles: 0.7,
+    quickTripMiles: 3.5,
+    standoutMiles: 8,
+  },
+];
+
+export const hotelGuides = [...downtown, ...laJolla, ...laMesa];
 
 export function getHotelGuide(slug: string) {
   return hotelGuides.find((hotel) => hotel.slug === slug);
