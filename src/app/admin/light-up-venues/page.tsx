@@ -1,6 +1,6 @@
-import Image from "next/image";
 import { VenueLightUpBuilder } from "@/components/admin/VenueLightUpBuilder";
 import { getPersistedVenueEnhancement } from "@/lib/venueEnhancements.server";
+import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
 import { getVenueListings } from "@/lib/venueData";
 
 export const dynamic = "force-dynamic";
@@ -35,13 +35,13 @@ export default async function LightUpVenuesPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 text-white">
       <section className="max-w-4xl">
-        <Image
-          src="/images/header-singhub-logo.png"
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={SITE_WORDMARK_SRC}
           alt="SingHUB"
-          width={2400}
-          height={600}
+          width={400}
+          height={171}
           className="h-auto w-44 object-contain object-left"
-          priority
         />
         <p className="mt-6 text-xs font-black uppercase tracking-[0.24em] text-cyan-300">Venue partnerships</p>
         <h1 className="mt-2 text-4xl font-black md:text-6xl">Light Up a Venue</h1>
