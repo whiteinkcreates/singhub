@@ -11,7 +11,7 @@ import {
   type VenueEnhancement,
 } from "@/lib/venueEnhancements";
 
-const DEFAULT_BANNER_IMAGE_URL = "/images/venues/default-singhub-banner.svg";
+const DEFAULT_BANNER_IMAGE_URL = "/images/og/singhub-og.png";
 const ACTION_LINK_STYLES = {
   primary:
     "bg-[#ff2aa3] px-5 py-3 text-white shadow-lg shadow-fuchsia-950/30 hover:bg-fuchsia-400",

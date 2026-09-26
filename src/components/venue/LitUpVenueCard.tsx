@@ -10,7 +10,7 @@ type LitUpVenueCardProps = {
   distanceLabel?: string;
 };
 
-const DEFAULT_BANNER_IMAGE_URL = "/images/venues/default-singhub-banner.svg";
+const DEFAULT_BANNER_IMAGE_URL = "/images/og/singhub-og.png";
 function clean(value?: string) {
   const trimmed = value?.trim();
   if (!trimmed || /^(tbd|unknown|-|n\/a)$/i.test(trimmed)) return undefined;
