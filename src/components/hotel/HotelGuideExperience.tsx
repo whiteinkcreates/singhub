@@ -242,7 +242,7 @@ export function HotelGuideExperience({
             <span className="text-[11px] font-black uppercase tracking-[0.28em] text-fuchsia-200">
               {hotelName}
             </span>
-            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-fuchsia-400/60" />
+            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-300/60" />
           </div>
 
           <h1 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl">
@@ -289,7 +289,7 @@ export function HotelGuideExperience({
             {mode === "tonight" && weekVenues.length > 0 ? (
               <button
                 onClick={() => setMode("week")}
-                className="mt-6 rounded-full bg-amber-300 px-5 py-2.5 text-sm font-black text-slate-950"
+                className="mt-6 rounded-full bg-gradient-to-r from-fuchsia-400 to-violet-400 px-5 py-2.5 text-sm font-black text-white"
               >
                 See what is on this week
               </button>
