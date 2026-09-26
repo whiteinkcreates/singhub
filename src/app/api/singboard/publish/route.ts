@@ -13,7 +13,7 @@ import {
 export const runtime = "nodejs";
 
 const ALLOWED_REGIONS = new Set<SingBoardRegion>(["east-county","central","beach","downtown","south-bay","north-county"]);
-const ALLOWED_TYPES = new Set<SingBoardPostType>(["image", "note"]);
+const ALLOWED_TYPES = new Set<SingBoardPostType>(["image", "note", "wanted"]);
 const ALLOWED_NOTE_COLORS = new Set<SingBoardNoteColor>(["yellow", "pink", "blue", "green", "white"]);
 
 function requiredText(form: FormData, key: string) {
@@ -67,10 +67,12 @@ export async function POST(request: Request) {
       const upload = await uploadSingBoardImage(file);
       imageUrl = upload.imageUrl;
       imagePublicId = upload.publicId;
-    } else {
+    } else if (postType === "note") {
       noteText = requiredText(form, "noteText").slice(0, 280);
       noteColor = requiredText(form, "noteColor") as SingBoardNoteColor;
       if (!ALLOWED_NOTE_COLORS.has(noteColor)) return NextResponse.json({ error: "Invalid note color." }, { status: 400 });
+    } else {
+      noteText = requiredText(form, "noteText").slice(0, 220);
     }
 
     const id = await createSingBoardPost({
