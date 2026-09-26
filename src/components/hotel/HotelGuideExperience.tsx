@@ -60,6 +60,7 @@ function VenueCard({
   venue: HotelGuideVenue;
   mode: "tonight" | "week";
 }) {
+  const [imageVisible, setImageVisible] = useState(Boolean(venue.imageUrl));
   const schedule =
     mode === "tonight"
       ? venue.tonightSchedule
@@ -67,13 +68,14 @@ function VenueCard({
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-white/10 bg-[#0a131f] shadow-[0_18px_50px_rgba(0,0,0,0.2)] transition hover:-translate-y-0.5 hover:border-amber-300/30">
-      {venue.imageUrl ? (
+      {venue.imageUrl && imageVisible ? (
         <div className="relative h-36 overflow-hidden bg-[#0d1724]">
           <img
             src={venue.imageUrl}
             alt=""
             className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
             loading="lazy"
+            onError={() => setImageVisible(false)}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a131f]/90 via-transparent to-transparent" />
           <div className="absolute left-3 top-3 flex flex-wrap gap-2">
@@ -92,7 +94,7 @@ function VenueCard({
       ) : null}
 
       <div className="p-4">
-        {!venue.imageUrl ? (
+        {!venue.imageUrl || !imageVisible ? (
           <div className="mb-3 flex flex-wrap gap-2">
             {venue.venueType === "private_room" ? (
               <span className="rounded-full border border-cyan-200/20 bg-cyan-200/[0.06] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-100">
@@ -125,7 +127,7 @@ function VenueCard({
 
         {venue.venueType === "private_room" ? (
           <p className="mt-3 text-sm leading-5 text-slate-300">
-            Private-room karaoke. This is a book-a-room experience, not a hosted bar rotation.
+            Private-room karaoke. Check room availability before heading over.
           </p>
         ) : schedule ? (
           <p className="mt-3 line-clamp-2 text-sm leading-5 text-slate-300">{schedule}</p>
