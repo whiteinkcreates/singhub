@@ -9,7 +9,6 @@ const ALLOWED = new Set([
   "apple-icon.png",
   // Existing core brand assets stay local for now. Heavy venue, host, event,
   // social, and generated media belongs in Cloudinary.
-  "images/header-singhub-logo.png",
   "images/singhub-mark.png",
 ]);
 const MEDIA_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".mp4", ".mov", ".webm"]);

@@ -1,7 +1,8 @@
 import type { PollCategory } from "@/lib/pollBank";
+import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
 
 export const DAILY_MIC_BRAND = {
-  wordmark: "/images/header-singhub-logo.png",
+  wordmark: SITE_WORDMARK_SRC,
   wordmarkAlt: "SingHUB",
   pink: "#ff2aa3",
   purple: "#8b5cf6",

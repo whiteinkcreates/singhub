@@ -28,7 +28,7 @@ function Group({
               <strong className="block text-base">{hotel.name}</strong>
               <span className="mt-1 block text-xs text-slate-500">{hotel.address}</span>
             </span>
-            <span className="text-xl text-amber-300">›</span>
+            <span className="text-xl text-cyan-300">›</span>
           </Link>
         ))}
       </div>
@@ -44,11 +44,6 @@ export default function HotelGuideIndexPage() {
   return (
     <main className="min-h-screen bg-[#06101e] px-5 py-12 text-white">
       <div className="mx-auto max-w-3xl">
-        <img
-          src="/images/header-singhub-logo.png"
-          alt="SingHUB"
-          className="h-auto w-[220px]"
-        />
         <p className="mt-5 text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">
           Hotel guest guide previews
         </p>

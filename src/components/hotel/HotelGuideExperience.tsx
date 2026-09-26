@@ -67,7 +67,7 @@ function VenueCard({
       : venue.weekSchedule.slice(0, 3).join("  •  ");
 
   return (
-    <article className="group overflow-hidden rounded-2xl border border-white/10 bg-[#0a131f] shadow-[0_18px_50px_rgba(0,0,0,0.2)] transition hover:-translate-y-0.5 hover:border-amber-300/30">
+    <article className="group overflow-hidden rounded-2xl border border-white/10 bg-[#0a131f] shadow-[0_18px_50px_rgba(0,0,0,0.2)] transition hover:-translate-y-0.5 hover:border-fuchsia-300/35">
       {venue.imageUrl && imageVisible ? (
         <div className="relative h-36 overflow-hidden bg-[#0d1724]">
           <img
@@ -85,7 +85,7 @@ function VenueCard({
               </span>
             ) : null}
             {venue.standoutReason ? (
-              <span className="rounded-full border border-amber-200/30 bg-[#1a1407]/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-amber-100 backdrop-blur">
+              <span className="rounded-full border border-violet-300/35 bg-violet-400/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-violet-100 backdrop-blur">
                 Standout
               </span>
             ) : null}
@@ -102,7 +102,7 @@ function VenueCard({
               </span>
             ) : null}
             {venue.standoutReason ? (
-              <span className="rounded-full border border-amber-200/20 bg-amber-200/[0.06] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-amber-100">
+              <span className="rounded-full border border-violet-300/25 bg-violet-400/[0.08] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-violet-100">
                 Standout
               </span>
             ) : null}
@@ -116,7 +116,7 @@ function VenueCard({
                 {venue.name}
               </h3>
             </Link>
-            <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-amber-200">
+            <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-cyan-200">
               {venue.distanceLabel}
             </p>
           </div>
@@ -126,11 +126,11 @@ function VenueCard({
         </div>
 
         {venue.standoutReason ? (
-          <div className="mt-3 rounded-xl border border-amber-300/15 bg-amber-300/[0.05] px-3 py-2.5">
-            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-amber-300">
+          <div className="mt-3 rounded-xl border border-violet-300/20 bg-violet-400/[0.07] px-3 py-2.5">
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-violet-300">
               Why it stands out
             </p>
-            <p className="mt-1 text-sm font-bold text-amber-50">{venue.standoutReason}</p>
+            <p className="mt-1 text-sm font-bold text-violet-50">{venue.standoutReason}</p>
           </div>
         ) : null}
 
@@ -157,7 +157,7 @@ function VenueCard({
 
         <Link
           href={`/venues/${venue.slug}`}
-          className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-amber-300/35 bg-amber-300/[0.08] px-4 py-2 text-sm font-black text-amber-100 transition hover:bg-amber-300 hover:text-slate-950"
+          className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-fuchsia-300/35 bg-fuchsia-400/[0.08] px-4 py-2 text-sm font-black text-fuchsia-100 transition hover:bg-fuchsia-400 hover:text-white"
         >
           View venue
         </Link>
@@ -184,7 +184,7 @@ function TierSection({
       <div className="mb-4 flex items-end justify-between gap-4 border-b border-white/10 pb-3">
         <div>
           <h2 className="flex items-center gap-2 text-2xl font-black text-white">
-            <span className="text-amber-300" aria-hidden>
+            <span className="text-cyan-300" aria-hidden>
               {meta.icon}
             </span>
             {meta.label}
@@ -231,18 +231,12 @@ export function HotelGuideExperience({
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#020713]/15 via-[#06101e]/65 to-[#050d17]" />
 
         <div className="mx-auto max-w-5xl px-5 pb-7 pt-6 text-center sm:pb-8 sm:pt-8">
-          <img
-            src="/images/header-singhub-logo.png"
-            alt="SingHUB"
-            className="mx-auto h-auto w-[190px] max-w-[56vw] object-contain sm:w-[230px]"
-          />
-
-          <div className="mx-auto mt-3 flex max-w-xl items-center gap-3">
-            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-300/60" />
-            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-amber-200">
+          <div className="mx-auto flex max-w-xl items-center gap-3">
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-fuchsia-400/60" />
+            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-fuchsia-200">
               {hotelName}
             </span>
-            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-300/60" />
+            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-300/60" />
           </div>
 
           <h1 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl">
@@ -257,7 +251,7 @@ export function HotelGuideExperience({
               onClick={() => setMode("tonight")}
               className={`rounded-full px-5 py-2.5 text-sm font-black transition ${
                 mode === "tonight"
-                  ? "bg-amber-300 text-slate-950 shadow-md shadow-amber-950/20"
+                  ? "bg-gradient-to-r from-fuchsia-400 to-violet-400 text-white shadow-md shadow-fuchsia-950/25"
                   : "text-slate-300 hover:text-white"
               }`}
             >
@@ -267,7 +261,7 @@ export function HotelGuideExperience({
               onClick={() => setMode("week")}
               className={`rounded-full px-5 py-2.5 text-sm font-black transition ${
                 mode === "week"
-                  ? "bg-amber-300 text-slate-950 shadow-md shadow-amber-950/20"
+                  ? "bg-gradient-to-r from-fuchsia-400 to-violet-400 text-white shadow-md shadow-fuchsia-950/25"
                   : "text-slate-300 hover:text-white"
               }`}
             >
@@ -289,7 +283,7 @@ export function HotelGuideExperience({
             {mode === "tonight" && weekVenues.length > 0 ? (
               <button
                 onClick={() => setMode("week")}
-                className="mt-6 rounded-full bg-amber-300 px-5 py-2.5 text-sm font-black text-slate-950"
+                className="mt-6 rounded-full bg-gradient-to-r from-fuchsia-400 to-violet-400 px-5 py-2.5 text-sm font-black text-white"
               >
                 See what is on this week
               </button>
