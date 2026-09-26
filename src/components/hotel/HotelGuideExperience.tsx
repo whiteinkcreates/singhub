@@ -231,13 +231,7 @@ export function HotelGuideExperience({
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#020713]/15 via-[#06101e]/65 to-[#050d17]" />
 
         <div className="mx-auto max-w-5xl px-5 pb-7 pt-6 text-center sm:pb-8 sm:pt-8">
-          <img
-            src="/images/header-singhub-logo.png"
-            alt="SingHUB"
-            className="mx-auto h-auto w-[190px] max-w-[56vw] object-contain sm:w-[230px]"
-          />
-
-          <div className="mx-auto mt-3 flex max-w-xl items-center gap-3">
+          <div className="mx-auto flex max-w-xl items-center gap-3">
             <span className="h-px flex-1 bg-gradient-to-r from-transparent to-fuchsia-400/60" />
             <span className="text-[11px] font-black uppercase tracking-[0.28em] text-fuchsia-200">
               {hotelName}
