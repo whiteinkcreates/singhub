@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { HOTEL_AT_MARK_SRC } from "@/lib/hotelAtMark";
+import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
 
 export type HotelGuideVenue = {
   slug: string;
@@ -23,6 +25,8 @@ type Props = {
   hotelName: string;
   hotelShortName: string;
   heroImageUrl?: string;
+  hotelWordmarkImageUrl?: string;
+  hotelWordmarkInvert?: boolean;
   tonightVenues: HotelGuideVenue[];
   weekVenues: HotelGuideVenue[];
 };
@@ -208,7 +212,7 @@ function VenueCard({
 
         <Link
           href={`/venues/${venue.slug}`}
-          className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-fuchsia-300/35 bg-fuchsia-400/[0.08] px-4 py-2 text-sm font-black text-fuchsia-100 transition hover:bg-fuchsia-400 hover:text-white"
+          className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-cyan-300/35 bg-cyan-300/[0.08] px-4 py-2 text-sm font-black text-cyan-100 transition hover:bg-cyan-300 hover:text-slate-950"
         >
           View venue
         </Link>
@@ -259,11 +263,16 @@ export function HotelGuideExperience({
   hotelName,
   hotelShortName,
   heroImageUrl,
+  hotelWordmarkImageUrl,
+  hotelWordmarkInvert = false,
   tonightVenues,
   weekVenues,
 }: Props) {
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
   const [heroVisible, setHeroVisible] = useState(Boolean(heroImageUrl));
+  const [hotelWordmarkVisible, setHotelWordmarkVisible] = useState(
+    Boolean(hotelWordmarkImageUrl),
+  );
   const activeVenues = mode === "tonight" ? tonightVenues : weekVenues;
   const grouped = useMemo(() => splitByTier(activeVenues), [activeVenues]);
 
@@ -281,13 +290,43 @@ export function HotelGuideExperience({
         <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_20%_10%,rgba(236,72,153,.14),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(34,211,238,.12),transparent_30%),#07111e]" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#020713]/15 via-[#06101e]/65 to-[#050d17]" />
 
-        <div className="mx-auto max-w-5xl px-5 pb-7 pt-6 text-center sm:pb-8 sm:pt-8">
-          <div className="mx-auto flex max-w-xl items-center gap-3">
-            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-fuchsia-400/60" />
-            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-fuchsia-200">
-              {hotelName}
-            </span>
-            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-300/60" />
+        <div className="mx-auto max-w-5xl px-5 pb-8 pt-6 text-center sm:pb-10 sm:pt-8">
+          <div className="mx-auto flex max-w-xl flex-col items-center">
+            <img
+              src={SITE_WORDMARK_SRC}
+              alt="SingHUB"
+              className="h-auto w-[225px] drop-shadow-[0_0_18px_rgba(34,211,238,0.16)] sm:w-[285px]"
+            />
+            <img
+              src={HOTEL_AT_MARK_SRC}
+              alt=""
+              aria-hidden
+              className="-mt-1 h-auto w-[96px] sm:w-[112px]"
+            />
+            {hotelWordmarkImageUrl && hotelWordmarkVisible ? (
+              <div className="-mt-3 flex min-h-[68px] w-full items-center justify-center px-5">
+                <img
+                  src={hotelWordmarkImageUrl}
+                  alt={hotelName}
+                  className="max-h-[64px] max-w-[290px] object-contain sm:max-h-[72px] sm:max-w-[360px]"
+                  style={{
+                    filter: `${hotelWordmarkInvert ? "invert(1) brightness(1.75) " : ""}drop-shadow(0 -5px 10px rgba(34,211,238,.65)) drop-shadow(0 0 16px rgba(34,211,238,.2))`,
+                  }}
+                  onError={() => setHotelWordmarkVisible(false)}
+                />
+              </div>
+            ) : (
+              <div className="-mt-1 flex w-full max-w-xl items-center gap-3">
+                <span className="h-px flex-1 bg-gradient-to-r from-transparent to-cyan-300/55" />
+                <span className="text-sm font-black uppercase tracking-[0.14em] text-white drop-shadow-[0_-4px_8px_rgba(34,211,238,.55)] sm:text-base">
+                  {hotelName}
+                </span>
+                <span className="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-300/55" />
+              </div>
+            )}
+            <p className="mt-2 text-[10px] font-black uppercase tracking-[0.28em] text-cyan-200/75">
+              Hotel Guest Guide
+            </p>
           </div>
 
           <h1 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl">
@@ -302,7 +341,7 @@ export function HotelGuideExperience({
               onClick={() => setMode("tonight")}
               className={`rounded-full px-5 py-2.5 text-sm font-black transition ${
                 mode === "tonight"
-                  ? "bg-gradient-to-r from-fuchsia-400 to-violet-400 text-white shadow-md shadow-fuchsia-950/25"
+                  ? "bg-gradient-to-r from-cyan-300 to-sky-400 text-slate-950 shadow-md shadow-cyan-950/30"
                   : "text-slate-300 hover:text-white"
               }`}
             >
@@ -312,7 +351,7 @@ export function HotelGuideExperience({
               onClick={() => setMode("week")}
               className={`rounded-full px-5 py-2.5 text-sm font-black transition ${
                 mode === "week"
-                  ? "bg-gradient-to-r from-fuchsia-400 to-violet-400 text-white shadow-md shadow-fuchsia-950/25"
+                  ? "bg-gradient-to-r from-cyan-300 to-sky-400 text-slate-950 shadow-md shadow-cyan-950/30"
                   : "text-slate-300 hover:text-white"
               }`}
             >
@@ -334,14 +373,14 @@ export function HotelGuideExperience({
             {mode === "tonight" && weekVenues.length > 0 ? (
               <button
                 onClick={() => setMode("week")}
-                className="mt-6 rounded-full bg-gradient-to-r from-fuchsia-400 to-violet-400 px-5 py-2.5 text-sm font-black text-white"
+                className="mt-6 rounded-full bg-gradient-to-r from-cyan-300 to-sky-400 px-5 py-2.5 text-sm font-black text-slate-950 shadow-md shadow-cyan-950/25"
               >
                 See what is on this week
               </button>
             ) : (
               <Link
                 href="/find-karaoke"
-                className="mt-6 inline-flex rounded-full border border-fuchsia-400/40 bg-fuchsia-400/10 px-5 py-2.5 text-sm font-black text-fuchsia-100"
+                className="mt-6 inline-flex rounded-full border border-cyan-300/40 bg-cyan-300/10 px-5 py-2.5 text-sm font-black text-cyan-100"
               >
                 Browse all San Diego karaoke
               </Link>
