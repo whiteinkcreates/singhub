@@ -31,17 +31,14 @@ const tierMeta = {
   walkable: {
     label: "Walkable",
     helper: "Close enough to reasonably walk from your hotel",
-    icon: "↟",
   },
   quick: {
     label: "Quick Trip",
     helper: "Nearby karaoke that is better reached by a short ride",
-    icon: "↗",
   },
   standout: {
     label: "Standout Spots",
     helper: "Special-format karaoke, not simply venues that are farther away",
-    icon: "★",
   },
 } as const;
 
@@ -51,6 +48,60 @@ function splitByTier(venues: HotelGuideVenue[]) {
     quick: venues.filter((venue) => venue.tier === "quick"),
     standout: venues.filter((venue) => venue.tier === "standout"),
   };
+}
+
+function TierIcon({ tier }: { tier: keyof typeof tierMeta }) {
+  const common =
+    "h-7 w-7 text-cyan-300 drop-shadow-[0_0_9px_rgba(34,211,238,0.5)]";
+
+  if (tier === "walkable") {
+    return (
+      <svg viewBox="0 0 32 32" className={common} fill="none" aria-hidden>
+        <circle cx="17" cy="6.5" r="2.6" fill="currentColor" />
+        <path
+          d="M15.7 10.2 13 15.1l-3.7 2.6m6.4-7.5 4.2 3.5 4 .8m-8.2.4 3.8 4.6 1.6 6.3m-5.4-10.9-2 6.6-4.4 4.4"
+          stroke="currentColor"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    );
+  }
+
+  if (tier === "quick") {
+    return (
+      <svg viewBox="0 0 32 32" className={common} fill="none" aria-hidden>
+        <path
+          d="M7.2 20.5v-4.1l2.4-5.2c.45-.98 1.42-1.62 2.5-1.62h7.8c1.08 0 2.05.64 2.5 1.62l2.4 5.2v4.1"
+          stroke="currentColor"
+          strokeWidth="2.1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8 16.4h16m-13.9 0 1.6-3.7h8.6l1.6 3.7"
+          stroke="currentColor"
+          strokeWidth="2.1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="10.4" cy="21.3" r="2.1" fill="currentColor" />
+        <circle cx="21.6" cy="21.3" r="2.1" fill="currentColor" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 32 32" className={common} fill="none" aria-hidden>
+      <path
+        d="m16 4.8 3.3 6.7 7.4 1.08-5.35 5.2 1.26 7.35L16 21.65l-6.61 3.48 1.26-7.35-5.35-5.2 7.4-1.08L16 4.8Z"
+        stroke="currentColor"
+        strokeWidth="2.1"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 function VenueCard({
@@ -183,9 +234,9 @@ function TierSection({
     <section className="py-7">
       <div className="mb-4 flex items-end justify-between gap-4 border-b border-white/10 pb-3">
         <div>
-          <h2 className="flex items-center gap-2 text-2xl font-black text-white">
-            <span className="text-cyan-300" aria-hidden>
-              {meta.icon}
+          <h2 className="flex items-center gap-3 text-2xl font-black text-white">
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-300/20 bg-cyan-300/[0.06]">
+              <TierIcon tier={tier} />
             </span>
             {meta.label}
           </h2>
