@@ -16,15 +16,13 @@ export type HotelGuideVenue = {
   venueType: "live_bar" | "private_room";
   tonightSchedule?: string;
   weekSchedule: string[];
+  standoutReason?: string;
 };
 
 type Props = {
   hotelName: string;
   hotelShortName: string;
   heroImageUrl?: string;
-  wordmarkImageUrl?: string;
-  wordmarkInvert?: boolean;
-  heroFallback: "downtown" | "coast";
   tonightVenues: HotelGuideVenue[];
   weekVenues: HotelGuideVenue[];
 };
@@ -32,17 +30,17 @@ type Props = {
 const tierMeta = {
   walkable: {
     label: "Walkable",
-    helper: "Easy to reach on foot",
-    icon: "🚶",
+    helper: "Close enough to reasonably walk from your hotel",
+    icon: "↟",
   },
   quick: {
     label: "Quick Trip",
-    helper: "A short ride from your hotel",
-    icon: "🚕",
+    helper: "Nearby karaoke that is better reached by a short ride",
+    icon: "↗",
   },
   standout: {
     label: "Standout Spots",
-    helper: "Distinctive karaoke worth going farther for",
+    helper: "Special-format karaoke, not simply venues that are farther away",
     icon: "★",
   },
 } as const;
@@ -55,7 +53,7 @@ function splitByTier(venues: HotelGuideVenue[]) {
   };
 }
 
-function VenueRow({
+function VenueCard({
   venue,
   mode,
 }: {
@@ -64,57 +62,96 @@ function VenueRow({
 }) {
   const schedule =
     mode === "tonight"
-      ? venue.tonightSchedule || (venue.venueType === "private_room" ? "Private rooms available" : "")
+      ? venue.tonightSchedule
       : venue.weekSchedule.slice(0, 3).join("  •  ");
 
   return (
-    <div className="grid grid-cols-[88px_minmax(0,1fr)_auto] gap-3 border-b border-white/10 py-4 last:border-b-0">
-      <div className="h-[72px] overflow-hidden rounded-xl bg-slate-900">
-        {venue.imageUrl ? (
+    <article className="group overflow-hidden rounded-2xl border border-white/10 bg-[#0a131f] shadow-[0_18px_50px_rgba(0,0,0,0.2)] transition hover:-translate-y-0.5 hover:border-amber-300/30">
+      {venue.imageUrl ? (
+        <div className="relative h-36 overflow-hidden bg-[#0d1724]">
           <img
             src={venue.imageUrl}
             alt=""
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+            loading="lazy"
           />
-        ) : (
-          <div className="flex h-full items-center justify-center text-2xl text-fuchsia-300">🎤</div>
-        )}
-      </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a131f]/90 via-transparent to-transparent" />
+          <div className="absolute left-3 top-3 flex flex-wrap gap-2">
+            {venue.venueType === "private_room" ? (
+              <span className="rounded-full border border-cyan-200/30 bg-[#07151d]/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-100 backdrop-blur">
+                Private rooms
+              </span>
+            ) : null}
+            {venue.standoutReason ? (
+              <span className="rounded-full border border-amber-200/30 bg-[#1a1407]/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-amber-100 backdrop-blur">
+                {venue.standoutReason}
+              </span>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
 
-      <div className="min-w-0">
-        <Link href={`/venues/${venue.slug}`} className="group">
-          <h3 className="truncate text-base font-black text-white transition group-hover:text-fuchsia-200">
-            {venue.name}
-          </h3>
-        </Link>
-        <p className="mt-1 text-xs font-semibold text-cyan-100">
-          {venue.distanceLabel}
-        </p>
-        {schedule && (
-          <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-300">{schedule}</p>
-        )}
-        {venue.vibeTags.length > 0 && (
-          <div className="mt-2 flex flex-wrap gap-1.5">
+      <div className="p-4">
+        {!venue.imageUrl ? (
+          <div className="mb-3 flex flex-wrap gap-2">
+            {venue.venueType === "private_room" ? (
+              <span className="rounded-full border border-cyan-200/20 bg-cyan-200/[0.06] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-100">
+                Private rooms
+              </span>
+            ) : null}
+            {venue.standoutReason ? (
+              <span className="rounded-full border border-amber-200/20 bg-amber-200/[0.06] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-amber-100">
+                {venue.standoutReason}
+              </span>
+            ) : null}
+          </div>
+        ) : null}
+
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <Link href={`/venues/${venue.slug}`} className="group/title">
+              <h3 className="text-lg font-black leading-tight text-white transition group-hover/title:text-fuchsia-100">
+                {venue.name}
+              </h3>
+            </Link>
+            <p className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-amber-200">
+              {venue.distanceLabel}
+            </p>
+          </div>
+          <span className="text-lg text-slate-600" aria-hidden>
+            ›
+          </span>
+        </div>
+
+        {venue.venueType === "private_room" ? (
+          <p className="mt-3 text-sm leading-5 text-slate-300">
+            Private-room karaoke. This is a book-a-room experience, not a hosted bar rotation.
+          </p>
+        ) : schedule ? (
+          <p className="mt-3 line-clamp-2 text-sm leading-5 text-slate-300">{schedule}</p>
+        ) : null}
+
+        {venue.vibeTags.length > 0 ? (
+          <div className="mt-3 flex flex-wrap gap-1.5">
             {venue.vibeTags.slice(0, 3).map((tag) => (
               <span
                 key={tag}
-                className="rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-bold text-slate-300"
+                className="rounded-full border border-fuchsia-300/15 bg-fuchsia-300/[0.05] px-2.5 py-1 text-[10px] font-bold text-fuchsia-100/90"
               >
                 {tag}
               </span>
             ))}
           </div>
-        )}
-      </div>
+        ) : null}
 
-      <Link
-        href={`/venues/${venue.slug}`}
-        aria-label={`View ${venue.name}`}
-        className="self-center text-xl font-black text-amber-300 transition hover:translate-x-0.5"
-      >
-        ›
-      </Link>
-    </div>
+        <Link
+          href={`/venues/${venue.slug}`}
+          className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-amber-300/35 bg-amber-300/[0.08] px-4 py-2 text-sm font-black text-amber-100 transition hover:bg-amber-300 hover:text-slate-950"
+        >
+          View venue
+        </Link>
+      </div>
+    </article>
   );
 }
 
@@ -132,21 +169,24 @@ function TierSection({
   const meta = tierMeta[tier];
 
   return (
-    <section className="border-t border-white/10 py-5">
-      <div className="mb-1 flex items-end justify-between gap-3">
+    <section className="py-7">
+      <div className="mb-4 flex items-end justify-between gap-4 border-b border-white/10 pb-3">
         <div>
-          <h2 className="text-xl font-black text-white">
-            <span className="mr-2" aria-hidden>{meta.icon}</span>
+          <h2 className="flex items-center gap-2 text-2xl font-black text-white">
+            <span className="text-amber-300" aria-hidden>
+              {meta.icon}
+            </span>
             {meta.label}
           </h2>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+          <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
             {meta.helper}
           </p>
         </div>
       </div>
-      <div>
-        {venues.slice(0, tier === "walkable" ? 5 : 4).map((venue) => (
-          <VenueRow key={venue.slug} venue={venue} mode={mode} />
+
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {venues.slice(0, tier === "walkable" ? 6 : 3).map((venue) => (
+          <VenueCard key={venue.slug} venue={venue} mode={mode} />
         ))}
       </div>
     </section>
@@ -157,67 +197,56 @@ export function HotelGuideExperience({
   hotelName,
   hotelShortName,
   heroImageUrl,
-  wordmarkImageUrl,
-  wordmarkInvert,
-  heroFallback,
   tonightVenues,
   weekVenues,
 }: Props) {
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
+  const [heroVisible, setHeroVisible] = useState(Boolean(heroImageUrl));
   const activeVenues = mode === "tonight" ? tonightVenues : weekVenues;
   const grouped = useMemo(() => splitByTier(activeVenues), [activeVenues]);
 
-  const fallbackHero =
-    heroFallback === "coast"
-      ? "/images/hero/san-diego-skyline-vector.svg"
-      : "/images/hero/san-diego-skyline-hero.svg";
-
   return (
-    <main className="min-h-screen bg-[#06101e] text-white">
+    <main className="min-h-screen bg-[#050d17] text-white">
       <section className="relative isolate overflow-hidden border-b border-white/10">
-        <img
-          src={heroImageUrl || fallbackHero}
-          alt=""
-          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-65"
-        />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#03101d]/20 via-[#06101e]/50 to-[#06101e]/95" />
+        {heroImageUrl && heroVisible ? (
+          <img
+            src={heroImageUrl}
+            alt=""
+            className="absolute inset-0 -z-20 h-full w-full object-cover opacity-55"
+            onError={() => setHeroVisible(false)}
+          />
+        ) : null}
+        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_20%_10%,rgba(236,72,153,.14),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(34,211,238,.12),transparent_30%),#07111e]" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#020713]/15 via-[#06101e]/65 to-[#050d17]" />
 
-        <div className="mx-auto max-w-3xl px-5 pb-6 pt-5 text-center sm:pb-7 sm:pt-6">
-          <div className="mx-auto flex max-w-md flex-col items-center">
-            <img
-              src="/images/header-singhub-logo.png"
-              alt="SingHUB"
-              className="h-auto w-[190px] max-w-[54vw] object-contain sm:w-[220px]"
-            />
+        <div className="mx-auto max-w-5xl px-5 pb-7 pt-6 text-center sm:pb-8 sm:pt-8">
+          <img
+            src="/images/header-singhub-logo.png"
+            alt="SingHUB"
+            className="mx-auto h-auto w-[190px] max-w-[56vw] object-contain sm:w-[230px]"
+          />
 
-            <div className="my-1 text-2xl font-black leading-none text-fuchsia-300 drop-shadow-[0_0_12px_rgba(232,121,249,0.8)]">@</div>
-
-            {wordmarkImageUrl ? (
-              <img
-                src={wordmarkImageUrl}
-                alt={hotelName}
-                className={`max-h-14 max-w-[180px] object-contain sm:max-h-16 sm:max-w-[220px] ${wordmarkInvert ? "brightness-0 invert" : ""}`}
-              />
-            ) : (
-              <div className="max-w-sm text-base font-bold tracking-[0.12em] text-white/90 sm:text-lg">
-                {hotelName}
-              </div>
-            )}
+          <div className="mx-auto mt-3 flex max-w-xl items-center gap-3">
+            <span className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-300/60" />
+            <span className="text-[11px] font-black uppercase tracking-[0.28em] text-amber-200">
+              {hotelName}
+            </span>
+            <span className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-300/60" />
           </div>
 
-          <h1 className="mt-4 text-2xl font-black tracking-tight sm:text-3xl">
-            Karaoke near your stay
+          <h1 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl">
+            {mode === "tonight" ? "Karaoke tonight" : "Karaoke this week"} near {hotelShortName}
           </h1>
-          <p className="mx-auto mt-1.5 max-w-lg text-sm leading-6 text-slate-200">
-            See what&apos;s happening tonight or this week near {hotelShortName}.
+          <p className="mx-auto mt-2 max-w-2xl text-sm leading-6 text-slate-300">
+            Real SingHUB listings organized by what is easiest to reach from your stay.
           </p>
 
-          <div className="mx-auto mt-4 grid max-w-sm grid-cols-2 rounded-full border border-white/15 bg-black/35 p-1 backdrop-blur">
+          <div className="mx-auto mt-5 grid max-w-md grid-cols-2 rounded-full border border-white/15 bg-black/35 p-1 shadow-lg shadow-black/20 backdrop-blur">
             <button
               onClick={() => setMode("tonight")}
-              className={`rounded-full px-4 py-2 text-sm font-black transition ${
+              className={`rounded-full px-5 py-2.5 text-sm font-black transition ${
                 mode === "tonight"
-                  ? "bg-amber-300 text-slate-950"
+                  ? "bg-amber-300 text-slate-950 shadow-md shadow-amber-950/20"
                   : "text-slate-300 hover:text-white"
               }`}
             >
@@ -225,9 +254,9 @@ export function HotelGuideExperience({
             </button>
             <button
               onClick={() => setMode("week")}
-              className={`rounded-full px-4 py-2 text-sm font-black transition ${
+              className={`rounded-full px-5 py-2.5 text-sm font-black transition ${
                 mode === "week"
-                  ? "bg-amber-300 text-slate-950"
+                  ? "bg-amber-300 text-slate-950 shadow-md shadow-amber-950/20"
                   : "text-slate-300 hover:text-white"
               }`}
             >
@@ -237,21 +266,30 @@ export function HotelGuideExperience({
         </div>
       </section>
 
-      <div className="mx-auto max-w-3xl px-5 pb-14">
+      <div className="mx-auto max-w-5xl px-5 pb-16">
         {activeVenues.length === 0 ? (
-          <div className="py-14 text-center">
-            <p className="text-lg font-bold text-white">
-              No karaoke is confirmed {mode === "tonight" ? "tonight" : "this week"} nearby yet.
+          <div className="mx-auto max-w-xl py-16 text-center">
+            <p className="text-xl font-black text-white">
+              No verified karaoke is listed {mode === "tonight" ? "tonight" : "this week"} close enough to recommend from this hotel.
             </p>
-            <p className="mt-2 text-sm text-slate-400">
-              SingHUB is actively verifying San Diego karaoke schedules.
+            <p className="mt-3 text-sm leading-6 text-slate-400">
+              We would rather show nothing than invent a nearby option or send a guest somewhere stale.
             </p>
-            <Link
-              href="/find-karaoke"
-              className="mt-5 inline-flex rounded-full border border-fuchsia-400/40 bg-fuchsia-400/10 px-5 py-2.5 text-sm font-black text-fuchsia-100"
-            >
-              Browse all San Diego karaoke
-            </Link>
+            {mode === "tonight" && weekVenues.length > 0 ? (
+              <button
+                onClick={() => setMode("week")}
+                className="mt-6 rounded-full bg-amber-300 px-5 py-2.5 text-sm font-black text-slate-950"
+              >
+                See what is on this week
+              </button>
+            ) : (
+              <Link
+                href="/find-karaoke"
+                className="mt-6 inline-flex rounded-full border border-fuchsia-400/40 bg-fuchsia-400/10 px-5 py-2.5 text-sm font-black text-fuchsia-100"
+              >
+                Browse all San Diego karaoke
+              </Link>
+            )}
           </div>
         ) : (
           <>
@@ -261,9 +299,9 @@ export function HotelGuideExperience({
           </>
         )}
 
-        <div className="mt-6 border-t border-white/10 pt-6 text-center">
+        <div className="mt-4 border-t border-white/10 pt-6 text-center">
           <p className="text-xs leading-5 text-slate-500">
-            Curated by SingHUB using current karaoke listings. Schedules can change, especially on holidays and private-event nights.
+            Curated by SingHUB from current karaoke listings. Schedules can change, especially on holidays and private-event nights.
           </p>
           <Link href="/find-karaoke" className="mt-3 inline-block text-sm font-bold text-cyan-200 hover:text-cyan-100">
             See all San Diego karaoke →
