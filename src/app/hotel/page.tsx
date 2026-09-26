@@ -28,7 +28,7 @@ function Group({
               <strong className="block text-base">{hotel.name}</strong>
               <span className="mt-1 block text-xs text-slate-500">{hotel.address}</span>
             </span>
-            <span className="text-xl text-amber-300">›</span>
+            <span className="text-xl text-cyan-300">›</span>
           </Link>
         ))}
       </div>
