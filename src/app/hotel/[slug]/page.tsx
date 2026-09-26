@@ -5,6 +5,7 @@ import { getKaraokeEventListings } from "@/lib/eventData";
 import { getHotelGuide, hotelGuides, isHotelGuideVenueCandidate } from "@/lib/hotelGuides";
 import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
+import { getVenueEnhancement } from "@/lib/venueEnhancements";
 import { getVenueListings } from "@/lib/venueData";
 import type { KaraokeEventListing, VenueListing } from "@/types";
 import { getDistanceInMiles } from "@/utils/distance";
@@ -12,6 +13,8 @@ import { getDistanceInMiles } from "@/utils/distance";
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+type ProximityTier = "walkable" | "quick" | "far";
 
 function usable(value: string | undefined) {
   const trimmed = value?.trim();
@@ -31,19 +34,39 @@ function eventMatchesDay(event: KaraokeEventListing, day: string) {
   return event.karaokeDay.toLowerCase().includes(day.toLowerCase());
 }
 
-function tierVenue(
-  venue: VenueListing,
+function proximityTier(
   distanceMiles: number,
   hotel: NonNullable<ReturnType<typeof getHotelGuide>>,
-): HotelGuideVenue["tier"] | null {
+): ProximityTier | null {
   const walkableMiles = hotel.walkableMiles ?? 0.8;
   const quickTripMiles = hotel.quickTripMiles ?? 4.5;
   const standoutMiles = hotel.standoutMiles ?? 10;
 
   if (distanceMiles <= walkableMiles) return "walkable";
   if (distanceMiles <= quickTripMiles) return "quick";
-  if (distanceMiles <= standoutMiles) return "standout";
+  if (distanceMiles <= standoutMiles) return "far";
   return null;
+}
+
+function standoutReason(
+  venue: VenueListing,
+  events: KaraokeEventListing[],
+): string | undefined {
+  if (venue.venueType === "private_room") return "Private-room karaoke";
+
+  const evidence = [
+    venue.description,
+    ...(venue.vibeTags ?? []),
+    ...events.map((event) => event.eventNotes || ""),
+    ...events.map((event) => event.hostName || ""),
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  if (/live[- ]?band karaoke/.test(evidence)) return "Live-band karaoke";
+  if (/full[- ]?stage/.test(evidence)) return "Full-stage karaoke";
+
+  return undefined;
 }
 
 function makeVenue(
@@ -52,29 +75,26 @@ function makeVenue(
   distanceMiles: number,
   tier: HotelGuideVenue["tier"],
   tonightDay: string,
+  standout?: string,
 ): HotelGuideVenue {
   const tonightEvent = events.find((event) => eventMatchesDay(event, tonightDay));
-  const estimatedMinutes =
-    tier === "walkable"
-      ? Math.max(2, Math.round((distanceMiles / 3) * 60))
-      : Math.max(4, Math.round(distanceMiles * 3.2));
+  const enhancement = getVenueEnhancement(venue.slug);
+  const imageUrl = usable(venue.bannerImageUrl) || usable(enhancement?.heroImageUrl);
 
   return {
     slug: venue.slug,
     name: venue.venueName,
     neighborhood: venue.neighborhood,
     address: venue.address,
-    imageUrl: venue.bannerImageUrl,
+    imageUrl: imageUrl || undefined,
     distanceMiles,
-    distanceLabel:
-      tier === "walkable"
-        ? `~${estimatedMinutes} min walk · ${distanceMiles.toFixed(1)} mi`
-        : `~${estimatedMinutes} min trip · ${distanceMiles.toFixed(1)} mi`,
+    distanceLabel: `${distanceMiles.toFixed(1)} mi from hotel`,
     tier,
     vibeTags: venue.vibeTags ?? [],
     venueType: venue.venueType === "private_room" ? "private_room" : "live_bar",
     tonightSchedule: tonightEvent ? formatSchedule(tonightEvent) : undefined,
     weekSchedule: events.map(formatSchedule).filter(Boolean),
+    standoutReason: standout,
   };
 }
 
@@ -119,54 +139,74 @@ export default async function HotelGuidePage({ params }: Props) {
     {},
   );
 
-  const candidates = venues
+  const nearby = venues
     .map((venue) => {
       const distanceMiles = getDistanceInMiles(
         { latitude: hotel.latitude, longitude: hotel.longitude },
         { latitude: venue.latitude!, longitude: venue.longitude! },
       );
-      const tier = tierVenue(venue, distanceMiles, hotel);
-      if (!tier) return null;
+      const proximity = proximityTier(distanceMiles, hotel);
+      if (!proximity) return null;
 
-      return makeVenue(
+      return {
         venue,
-        eventsByVenue[venue.slug] ?? [],
+        events: eventsByVenue[venue.slug] ?? [],
         distanceMiles,
-        tier,
-        tonightDay,
-      );
+        proximity,
+      };
     })
-    .filter((venue): venue is HotelGuideVenue => Boolean(venue))
-    .sort((a, b) => {
-      const tierRank = { walkable: 0, quick: 1, standout: 2 };
-      const rankDifference = tierRank[a.tier] - tierRank[b.tier];
-      if (rankDifference !== 0) return rankDifference;
+    .filter((item): item is NonNullable<typeof item> => Boolean(item));
 
-      if (a.tier === "standout") {
-        const aDistinctive = a.venueType === "private_room" || a.vibeTags.some((tag) => /live band|private|iconic/i.test(tag));
-        const bDistinctive = b.venueType === "private_room" || b.vibeTags.some((tag) => /live band|private|iconic/i.test(tag));
-        if (aDistinctive !== bDistinctive) return aDistinctive ? -1 : 1;
-      }
+  const buildVenues = (mode: "tonight" | "week") =>
+    nearby
+      .map(({ venue, events, distanceMiles, proximity }) => {
+        const relevantEvents =
+          mode === "tonight"
+            ? events.filter((event) => eventMatchesDay(event, tonightDay))
+            : events;
 
-      return a.distanceMiles - b.distanceMiles;
-    });
+        const available =
+          venue.venueType === "private_room" || relevantEvents.length > 0;
+        if (!available) return null;
 
-  const tonightVenues = candidates.filter(
-    (venue) => venue.venueType === "private_room" || Boolean(venue.tonightSchedule),
-  );
+        let tier: HotelGuideVenue["tier"];
+        let reason: string | undefined;
 
-  const weekVenues = candidates.filter(
-    (venue) => venue.venueType === "private_room" || venue.weekSchedule.length > 0,
-  );
+        if (proximity === "walkable") {
+          tier = "walkable";
+        } else if (proximity === "quick") {
+          tier = "quick";
+        } else {
+          reason = standoutReason(venue, relevantEvents);
+          if (!reason) return null;
+          tier = "standout";
+        }
+
+        return makeVenue(
+          venue,
+          events,
+          distanceMiles,
+          tier,
+          tonightDay,
+          reason,
+        );
+      })
+      .filter((venue): venue is HotelGuideVenue => Boolean(venue))
+      .sort((a, b) => {
+        const tierRank = { walkable: 0, quick: 1, standout: 2 };
+        const rankDifference = tierRank[a.tier] - tierRank[b.tier];
+        if (rankDifference !== 0) return rankDifference;
+        return a.distanceMiles - b.distanceMiles;
+      });
+
+  const tonightVenues = buildVenues("tonight");
+  const weekVenues = buildVenues("week");
 
   return (
     <HotelGuideExperience
       hotelName={hotel.name}
       hotelShortName={hotel.shortName}
       heroImageUrl={hotel.heroImageUrl}
-      wordmarkImageUrl={hotel.wordmarkImageUrl}
-      wordmarkInvert={hotel.wordmarkInvert}
-      heroFallback={hotel.heroFallback}
       tonightVenues={tonightVenues}
       weekVenues={weekVenues}
     />
