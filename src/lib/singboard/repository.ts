@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type SingBoardRegion = "east-county" | "central" | "beach" | "downtown" | "south-bay" | "north-county";
-export type SingBoardPostType = "image" | "note";
+export type SingBoardPostType = "image" | "note" | "wanted";
 export type SingBoardNoteColor = "yellow" | "pink" | "blue" | "green" | "white";
 export type SingBoardPosterType = "venue" | "kj" | "admin";
 export type PersistedSingBoardPost = { id:string; postType:SingBoardPostType; title:string; venue:string; neighborhood:string; region:SingBoardRegion; detail:string; x:number; y:number; rotation:number; imageUrl?:string; noteText?:string; noteColor?:SingBoardNoteColor; pinned:true; eventDate:string; startTime?:string; hostName?:string; linkUrl?:string };
