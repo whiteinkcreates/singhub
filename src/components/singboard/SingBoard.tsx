@@ -230,7 +230,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             type="button"
             onClick={post.pinned?()=>window.location.assign(post.postType==="wanted"&&post.linkUrl?post.linkUrl:`/events/${post.id}`):undefined}
             title={post.pinned?`View ${post.title}`:"Flyer placement preview"}
-            className={`absolute w-[22%] select-none text-left shadow-[0_18px_28px_rgba(0,0,0,.5)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
+            className={`absolute ${post.postType==="wanted"?"w-[28%]":"w-[22%]"} select-none text-left shadow-[0_18px_28px_rgba(0,0,0,.5)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
             style={{left:`${post.x}%`,top:`${post.y}%`,transform:`rotate(${post.rotation}deg)`,zIndex:post.pinned?10:35}}
           >
             {post.pinned&&<span className={`absolute left-1/2 top-2 z-20 h-5 w-5 -translate-x-1/2 rounded-full ${pinClass(post.id)}`}/>} 
@@ -238,40 +238,35 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
               ?<img src={post.imageUrl} alt={post.title} className="block max-h-[390px] w-full border border-white/5 object-contain" draggable={false}/>
               :post.postType==="wanted"
                 ?<span
-                  className="relative block overflow-hidden border-[2px] border-slate-950 bg-[#f4f1e8] px-2 pb-2 pt-5 text-slate-950 shadow-[0_10px_22px_rgba(0,0,0,.45)]"
-                  style={{backgroundImage:"radial-gradient(circle at 12% 18%,rgba(15,23,42,.08) 0 1px,transparent 1.4px),radial-gradient(circle at 82% 72%,rgba(15,23,42,.06) 0 1px,transparent 1.5px)",backgroundSize:"14px 14px,18px 18px"}}
+                  className="relative flex aspect-[4/5] w-full flex-col overflow-hidden border-[2px] border-slate-950 bg-[#f5f2ea] p-2 text-slate-950 shadow-[0_10px_24px_rgba(0,0,0,.45)]"
+                  style={{backgroundImage:"radial-gradient(circle at 18% 23%,rgba(15,23,42,.05) 0 1px,transparent 1.3px),radial-gradient(circle at 72% 68%,rgba(15,23,42,.045) 0 1px,transparent 1.4px)",backgroundSize:"16px 16px,20px 20px"}}
                 >
-                  <span className="absolute left-1 top-1 h-2.5 w-2.5 rounded-full border border-slate-700 bg-slate-300 shadow-inner"/>
-                  <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border border-slate-700 bg-slate-300 shadow-inner"/>
-                  <span className="absolute bottom-1 left-1 h-2.5 w-2.5 rounded-full border border-slate-700 bg-slate-300 shadow-inner"/>
-                  <span className="absolute bottom-1 right-1 h-2.5 w-2.5 rounded-full border border-slate-700 bg-slate-300 shadow-inner"/>
+                  <span className="block border-y-[2px] border-slate-950 py-1 text-center text-[24px] font-black uppercase leading-[.88] tracking-[-.055em] sm:text-[34px]">WANTED</span>
 
-                  <span className="block border-y-2 border-slate-950 py-1 text-center text-[26px] font-black uppercase leading-none tracking-[-.04em] sm:text-[34px]">WANTED</span>
-
-                  <strong className="mt-1 block bg-[#ef4a2c] px-1 py-1.5 text-center text-[9px] font-black uppercase tracking-[.04em] text-white sm:text-[12px]">
+                  <strong className="mt-1 block shrink-0 bg-[#ef4a2c] px-1 py-1 text-center text-[8px] font-black uppercase leading-none tracking-[.02em] text-white sm:text-[11px]">
                     ★ {post.title} ★
                   </strong>
 
-                  <span className="mt-2 flex items-center gap-2">
+                  <span className="mt-1.5 flex items-center gap-1">
                     <span className="h-px flex-1 bg-slate-950"/>
-                    <span className="text-center text-[8px] font-black leading-none sm:text-[10px]">{post.venue} is hiring</span>
+                    <span className="shrink-0 text-center text-[7px] font-black leading-none sm:text-[9px]">{post.venue} is hiring</span>
                     <span className="h-px flex-1 bg-slate-950"/>
                   </span>
 
-                  <span className="mt-2 grid grid-cols-3 gap-1">
-                    {wantedRoles(post.noteText).map((role,index)=><span key={`${post.id}-role-${index}`} className="flex min-h-[62px] flex-col items-center justify-between border border-slate-950 bg-white/30 px-1 py-1.5 text-center">
-                      <span className={`flex h-9 w-9 items-center justify-center rounded-full text-white ${index===1?"bg-cyan-500":"bg-[#ef4a2c]"}`}>
+                  <span className="mt-1.5 grid grid-cols-3 gap-1">
+                    {wantedRoles(post.noteText).map((role,index)=><span key={`${post.id}-role-${index}`} className="flex min-h-[52px] flex-col items-center justify-between border border-slate-950 bg-white/25 px-0.5 py-1 text-center sm:min-h-[64px]">
+                      <span className={`flex h-7 w-7 items-center justify-center rounded-full text-white sm:h-9 sm:w-9 ${index===1?"bg-cyan-500":"bg-[#ef4a2c]"}`}>
                         <WantedRoleIcon role={role}/>
                       </span>
-                      <span className="mt-1 text-[6px] font-black uppercase leading-[.95] sm:text-[8px]">{role}</span>
+                      <span className="mt-1 w-full text-[5px] font-black uppercase leading-[.9] sm:text-[7px]">{role}</span>
                     </span>)}
                   </span>
 
-                  <span className="mt-2 block text-center text-[6px] font-black leading-tight sm:text-[8px]">Know someone great? Send them our way.</span>
+                  <span className="mt-1.5 block text-center text-[5px] font-black leading-tight sm:text-[7px]">Know someone great? Send them our way.</span>
 
-                  <span className="mt-2 block border-2 border-slate-950 bg-slate-950 px-1.5 py-2 text-center text-white">
-                    <span className="block text-[9px] font-black uppercase tracking-[.04em] sm:text-[12px]">★ Full ad on SingHUB ★</span>
-                    <span className="mt-1 block border-t border-white/70 pt-1 text-[6px] font-black text-cyan-300 sm:text-[8px]">{wantedLinkLabel(post.linkUrl)}</span>
+                  <span className="mt-auto block border-[2px] border-slate-950 bg-slate-950 px-1 py-1.5 text-center text-white">
+                    <span className="block text-[7px] font-black uppercase leading-none tracking-[.02em] sm:text-[10px]">★ Full ad on SingHUB ★</span>
+                    <span className="mt-1 block border-t border-white/60 pt-1 text-[4px] font-black leading-none text-cyan-300 sm:text-[6px]">{wantedLinkLabel(post.linkUrl)}</span>
                   </span>
                 </span>
                 :<span className={`block min-h-44 p-5 pt-9 text-slate-950 shadow-inner ${noteColors[post.noteColor||"yellow"]}`}>
