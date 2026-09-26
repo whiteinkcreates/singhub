@@ -86,7 +86,7 @@ function VenueCard({
             ) : null}
             {venue.standoutReason ? (
               <span className="rounded-full border border-amber-200/30 bg-[#1a1407]/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-amber-100 backdrop-blur">
-                {venue.standoutReason}
+                Standout
               </span>
             ) : null}
           </div>
@@ -103,7 +103,7 @@ function VenueCard({
             ) : null}
             {venue.standoutReason ? (
               <span className="rounded-full border border-amber-200/20 bg-amber-200/[0.06] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-amber-100">
-                {venue.standoutReason}
+                Standout
               </span>
             ) : null}
           </div>
@@ -124,6 +124,15 @@ function VenueCard({
             ›
           </span>
         </div>
+
+        {venue.standoutReason ? (
+          <div className="mt-3 rounded-xl border border-amber-300/15 bg-amber-300/[0.05] px-3 py-2.5">
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-amber-300">
+              Why it stands out
+            </p>
+            <p className="mt-1 text-sm font-bold text-amber-50">{venue.standoutReason}</p>
+          </div>
+        ) : null}
 
         {venue.venueType === "private_room" ? (
           <p className="mt-3 text-sm leading-5 text-slate-300">
