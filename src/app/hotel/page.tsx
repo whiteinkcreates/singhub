@@ -45,7 +45,7 @@ export default function HotelGuideIndexPage() {
     <main className="min-h-screen bg-[#06101e] px-5 py-12 text-white">
       <div className="mx-auto max-w-3xl">
         <img
-          src="/images/hero/singhub-logo-glow.svg"
+          src="/images/header-singhub-logo.png"
           alt="SingHUB"
           className="h-auto w-[220px]"
         />
