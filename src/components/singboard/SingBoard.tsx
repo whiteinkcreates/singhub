@@ -39,6 +39,43 @@ function pinClass(id:string){
   return pinColors[seed%pinColors.length];
 }
 
+function wantedRoles(noteText?:string){
+  return (noteText||"")
+    .split(/\n|•|\|/)
+    .map(role=>role.trim())
+    .filter(Boolean)
+    .slice(0,3);
+}
+
+function wantedLinkLabel(linkUrl?:string){
+  if(!linkUrl)return "singhub.app";
+  if(linkUrl.startsWith("/"))return `singhub.app${linkUrl}`;
+  try{
+    const url=new URL(linkUrl);
+    return `${url.host}${url.pathname}`;
+  }catch{
+    return linkUrl.replace(/^https?:\/\//,"");
+  }
+}
+
+function WantedRoleIcon({role}:{role:string}){
+  const value=role.toLowerCase();
+  if(value.includes("bartend")||value.includes("bar staff")){
+    return <svg viewBox="0 0 48 48" aria-hidden="true" className="h-7 w-7 sm:h-9 sm:w-9">
+      <path d="M8 10h32L27 26v10h7v4H14v-4h7V26L8 10Zm8 5 8 10 8-10H16Z" fill="currentColor"/>
+      <path d="M30 7l3-4 2 2-3 4-2-2Z" fill="currentColor"/>
+    </svg>;
+  }
+  if(value.includes("server")||value.includes("wait")){
+    return <svg viewBox="0 0 48 48" aria-hidden="true" className="h-7 w-7 sm:h-9 sm:w-9">
+      <path d="M9 30h30v4H9v-4Zm5-3c1-9 7-14 10-14s9 5 10 14H14Zm8-17a3 3 0 1 1 4 0h-4Z" fill="currentColor"/>
+    </svg>;
+  }
+  return <svg viewBox="0 0 48 48" aria-hidden="true" className="h-7 w-7 sm:h-9 sm:w-9">
+    <path d="M13 5h3v14h3V5h3v14c0 4-2 7-5 9v15h-5V28c-3-2-5-5-5-9V5h3v11h3V5Zm19 0c5 5 6 11 2 17l-3 4v17h-5V25l4-6c2-3 2-6 1-9L32 5Z" fill="currentColor"/>
+  </svg>;
+}
+
 export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
   const boardRef=useRef<HTMLDivElement>(null);
   const fileRef=useRef<File|null>(null);
@@ -200,12 +237,42 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             {post.postType==="image"&&post.imageUrl
               ?<img src={post.imageUrl} alt={post.title} className="block max-h-[390px] w-full border border-white/5 object-contain" draggable={false}/>
               :post.postType==="wanted"
-                ?<span className="block min-h-44 border-[3px] border-slate-950 bg-[#f7f5ef] p-3 pt-8 text-slate-950 shadow-inner">
-                  <span className="block border-y-[3px] border-slate-950 py-1 text-center text-[11px] font-black uppercase tracking-[.18em] sm:text-sm">Wanted</span>
-                  <strong className="mt-2 block text-center text-sm font-black uppercase leading-tight text-[#e5482d] sm:text-base">{post.title}</strong>
-                  <span className="mt-2 block text-center text-[10px] font-black uppercase tracking-[.08em] sm:text-xs">{post.venue}</span>
-                  <span className="mt-2 block whitespace-pre-wrap text-center text-[10px] font-bold leading-4 sm:text-xs">{post.noteText}</span>
-                  <span className="mt-3 block border-t-2 border-slate-950 pt-2 text-center text-[9px] font-black uppercase tracking-[.12em]">Tap for full ad</span>
+                ?<span
+                  className="relative block overflow-hidden border-[2px] border-slate-950 bg-[#f4f1e8] px-2 pb-2 pt-5 text-slate-950 shadow-[0_10px_22px_rgba(0,0,0,.45)]"
+                  style={{backgroundImage:"radial-gradient(circle at 12% 18%,rgba(15,23,42,.08) 0 1px,transparent 1.4px),radial-gradient(circle at 82% 72%,rgba(15,23,42,.06) 0 1px,transparent 1.5px)",backgroundSize:"14px 14px,18px 18px"}}
+                >
+                  <span className="absolute left-1 top-1 h-2.5 w-2.5 rounded-full border border-slate-700 bg-slate-300 shadow-inner"/>
+                  <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full border border-slate-700 bg-slate-300 shadow-inner"/>
+                  <span className="absolute bottom-1 left-1 h-2.5 w-2.5 rounded-full border border-slate-700 bg-slate-300 shadow-inner"/>
+                  <span className="absolute bottom-1 right-1 h-2.5 w-2.5 rounded-full border border-slate-700 bg-slate-300 shadow-inner"/>
+
+                  <span className="block border-y-2 border-slate-950 py-1 text-center text-[26px] font-black uppercase leading-none tracking-[-.04em] sm:text-[34px]">WANTED</span>
+
+                  <strong className="mt-1 block bg-[#ef4a2c] px-1 py-1.5 text-center text-[9px] font-black uppercase tracking-[.04em] text-white sm:text-[12px]">
+                    ★ {post.title} ★
+                  </strong>
+
+                  <span className="mt-2 flex items-center gap-2">
+                    <span className="h-px flex-1 bg-slate-950"/>
+                    <span className="text-center text-[8px] font-black leading-none sm:text-[10px]">{post.venue} is hiring</span>
+                    <span className="h-px flex-1 bg-slate-950"/>
+                  </span>
+
+                  <span className="mt-2 grid grid-cols-3 gap-1">
+                    {wantedRoles(post.noteText).map((role,index)=><span key={`${post.id}-role-${index}`} className="flex min-h-[62px] flex-col items-center justify-between border border-slate-950 bg-white/30 px-1 py-1.5 text-center">
+                      <span className={`flex h-9 w-9 items-center justify-center rounded-full text-white ${index===1?"bg-cyan-500":"bg-[#ef4a2c]"}`}>
+                        <WantedRoleIcon role={role}/>
+                      </span>
+                      <span className="mt-1 text-[6px] font-black uppercase leading-[.95] sm:text-[8px]">{role}</span>
+                    </span>)}
+                  </span>
+
+                  <span className="mt-2 block text-center text-[6px] font-black leading-tight sm:text-[8px]">Know someone great? Send them our way.</span>
+
+                  <span className="mt-2 block border-2 border-slate-950 bg-slate-950 px-1.5 py-2 text-center text-white">
+                    <span className="block text-[9px] font-black uppercase tracking-[.04em] sm:text-[12px]">★ Full ad on SingHUB ★</span>
+                    <span className="mt-1 block border-t border-white/70 pt-1 text-[6px] font-black text-cyan-300 sm:text-[8px]">{wantedLinkLabel(post.linkUrl)}</span>
+                  </span>
                 </span>
                 :<span className={`block min-h-44 p-5 pt-9 text-slate-950 shadow-inner ${noteColors[post.noteColor||"yellow"]}`}>
                   <strong className="block text-lg leading-tight">{post.title}</strong>
