@@ -207,6 +207,8 @@ export default async function HotelGuidePage({ params }: Props) {
       hotelName={hotel.name}
       hotelShortName={hotel.shortName}
       heroImageUrl={hotel.heroImageUrl}
+      hotelWordmarkImageUrl={hotel.wordmarkImageUrl}
+      hotelWordmarkInvert={hotel.wordmarkInvert}
       tonightVenues={tonightVenues}
       weekVenues={weekVenues}
     />
