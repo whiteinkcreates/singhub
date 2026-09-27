@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { HOTEL_AT_MARK_SRC } from "@/lib/hotelAtMark";
 import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
+import { HotelGuideMap } from "@/components/hotel/HotelGuideMap";
 
 export type HotelGuideVenue = {
   slug: string;
@@ -11,6 +12,8 @@ export type HotelGuideVenue = {
   neighborhood: string;
   address: string;
   imageUrl?: string;
+  latitude: number;
+  longitude: number;
   distanceMiles: number;
   distanceLabel: string;
   tier: "walkable" | "quick" | "standout";
@@ -24,6 +27,9 @@ export type HotelGuideVenue = {
 type Props = {
   hotelName: string;
   hotelShortName: string;
+  hotelAddress: string;
+  hotelLatitude: number;
+  hotelLongitude: number;
   heroImageUrl?: string;
   hotelWordmarkImageUrl?: string;
   hotelWordmarkInvert?: boolean;
@@ -268,6 +274,9 @@ function TierSection({
 export function HotelGuideExperience({
   hotelName,
   hotelShortName,
+  hotelAddress,
+  hotelLatitude,
+  hotelLongitude,
   heroImageUrl,
   hotelWordmarkImageUrl,
   hotelWordmarkInvert = false,
@@ -306,12 +315,16 @@ export function HotelGuideExperience({
               alt="SingHUB"
               className="h-auto w-[220px] drop-shadow-[0_0_18px_rgba(34,211,238,0.16)] sm:w-[280px]"
             />
-            <img
-              src={HOTEL_AT_MARK_SRC}
-              alt=""
-              aria-hidden
-              className="-mt-1 h-auto w-[92px] sm:w-[108px]"
-            />
+            <div className="relative -mt-1">
+              <div className="pointer-events-none absolute -left-5 -top-3 h-16 w-16 rounded-full bg-fuchsia-500/25 blur-2xl" />
+              <div className="pointer-events-none absolute bottom-[-18px] left-1/2 h-12 w-24 -translate-x-1/2 rounded-full bg-cyan-400/20 blur-2xl" />
+              <img
+                src={HOTEL_AT_MARK_SRC}
+                alt=""
+                aria-hidden
+                className="relative h-auto w-[100px] drop-shadow-[0_0_14px_rgba(34,211,238,.45)] sm:w-[116px]"
+              />
+            </div>
 
             {hotelWordmarkImageUrl && hotelWordmarkVisible ? (
               <div className="-mt-3 flex min-h-[66px] w-full items-center justify-center px-5">
@@ -320,7 +333,8 @@ export function HotelGuideExperience({
                   alt={hotelName}
                   className="max-h-[62px] max-w-[285px] object-contain sm:max-h-[70px] sm:max-w-[360px]"
                   style={{
-                    filter: `${hotelWordmarkInvert ? "invert(1) brightness(1.75) " : ""}drop-shadow(0 -5px 10px rgba(34,211,238,.68)) drop-shadow(0 0 18px rgba(34,211,238,.22))`,
+                    filter: `${hotelWordmarkInvert ? "invert(1) grayscale(1) brightness(1.6) " : ""}drop-shadow(0 -5px 10px rgba(34,211,238,.68)) drop-shadow(0 0 18px rgba(34,211,238,.22))`,
+                    mixBlendMode: hotelWordmarkInvert ? "screen" : "normal",
                   }}
                   onError={() => setHotelWordmarkVisible(false)}
                 />
@@ -377,6 +391,26 @@ export function HotelGuideExperience({
       <div className="relative">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,.045),transparent_28%)]" />
         <div className="relative mx-auto max-w-5xl px-5 pb-16">
+          {activeVenues.length > 0 ? (
+            <div className="pt-7 sm:pt-9">
+              <HotelGuideMap
+                hotelName={hotelName}
+                hotelAddress={hotelAddress}
+                hotelLatitude={hotelLatitude}
+                hotelLongitude={hotelLongitude}
+                venues={activeVenues.map((venue) => ({
+                  slug: venue.slug,
+                  name: venue.name,
+                  neighborhood: venue.neighborhood,
+                  latitude: venue.latitude,
+                  longitude: venue.longitude,
+                  distanceLabel: venue.distanceLabel,
+                  tier: venue.tier,
+                }))}
+              />
+            </div>
+          ) : null}
+
           {activeVenues.length === 0 ? (
             <div className="mx-auto max-w-xl py-16 text-center">
               <p className="text-xl font-black text-white">
