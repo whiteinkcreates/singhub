@@ -106,21 +106,21 @@
     "about": "The North Bar is an Escondido neighborhood bar and live-music venue with a big-screen sports wall, darts, a full bar, a dedicated stage, and karaoke four nights a week.",
     "phone": "(760) 480-8228",
     "menuUrl": "https://www.thenorthbar.com/menu",
-    "heroImageUrl": "https://static.wixstatic.com/media/84770f_7753be3a48154ac7b3c0c624563e9c4c~mv2.jpg",
-    "heroImageAlt": "The North Bar in Escondido",
+    "heroImageUrl": "https://static.wixstatic.com/media/2b174f_9e090f2f7947e2bd93db60913ebe64~mv2.jpg",
+    "heroImageAlt": "Featured taps behind the bar at The North Bar",
     "heroPosition": "center",
     "logoImageUrl": "https://static.wixstatic.com/media/2b174f_95fa0e15cdda46ff82f14653986da8a3~mv2.png",
     "logoImageAlt": "The North Bar logo",
     "gallery": [
       {
-        "url": "https://static.wixstatic.com/media/84770f_7753be3a48154ac7b3c0c624563e9c4c~mv2.jpg",
-        "alt": "The North Bar in Escondido",
-        "caption": "Your neighborhood elevated dive bar and live-music venue"
+        "url": "https://static.wixstatic.com/media/2b174f_9e090f2f7947e2bd93db60913ebe64~mv2.jpg",
+        "alt": "Featured taps behind the bar at The North Bar",
+        "caption": "Full bar and rotating taps"
       },
       {
-        "url": "https://static.wixstatic.com/media/2b174f_9e090f2f1f7947e2bd93db60913ebe64~mv2.jpg",
-        "alt": "Featured taps at The North Bar",
-        "caption": "Full bar and rotating taps"
+        "url": "https://static.wixstatic.com/media/84770f_7753be3a48154ac7b3c0c624563e9c4c~mv2.jpg",
+        "alt": "The North Bar interior in Escondido",
+        "caption": "Your neighborhood elevated dive bar and live-music venue"
       }
     ],
     "amenities": [
