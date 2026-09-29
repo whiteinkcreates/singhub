@@ -4,6 +4,7 @@ import { VibeCheckLauncher } from "@/components/venue/VibeCheckLauncher";
 import { VenueSignalBadges, VenueSignalDetails } from "@/components/venue/VenueSignals";
 import { LitUpVenueProfile } from "@/components/venue/LitUpVenueProfile";
 import { SingersSay } from "@/components/venue/SingersSay";
+import { SaveVenueButton } from "@/components/venue/SaveVenueButton";
 import { isLitUpVenue, type VenueEnhancement } from "@/lib/venueEnhancements";
 import type { SingersSaySummary } from "@/lib/singersSay.server";
 import type { KaraokeEventListing, VenueListing } from "@/types";
@@ -96,6 +97,9 @@ export function VenueProfile({ venue, events = [], enhancement, singersSay }: Ve
       {enhanced
         ? <LitUpVenueProfile venue={venue} events={events} enhancement={enhancement} singersSay={singersSay} />
         : <><BasicProfile venue={venue} events={events} />{singersSay ? <SingersSay summary={singersSay} /> : null}</>}
+      <div className="mt-6 flex justify-end">
+        <SaveVenueButton slug={venue.slug} name={venue.venueName} neighborhood={venue.neighborhood} />
+      </div>
       <VibeCheckLauncher venue={{ id: venue.id, slug: venue.slug, name: venue.venueName }} events={vibeCheckEvents} />
     </>
   );
