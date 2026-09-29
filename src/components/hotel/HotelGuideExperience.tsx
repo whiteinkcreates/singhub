@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { HOTEL_AT_MARK_SRC } from "@/lib/hotelAtMark";
 import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
 import { HotelGuideMap } from "@/components/hotel/HotelGuideMap";
+import { createClient } from "@/lib/supabase/client";
 
 export type HotelGuideVenue = {
   slug: string;
@@ -25,14 +26,13 @@ export type HotelGuideVenue = {
 };
 
 type Props = {
+  hotelSlug: string;
   hotelName: string;
   hotelShortName: string;
   hotelAddress: string;
   hotelLatitude: number;
   hotelLongitude: number;
   heroImageUrl?: string;
-  hotelWordmarkImageUrl?: string;
-  hotelWordmarkInvert?: boolean;
   tonightVenues: HotelGuideVenue[];
   weekVenues: HotelGuideVenue[];
 };
@@ -40,15 +40,15 @@ type Props = {
 const tierMeta = {
   walkable: {
     label: "Walkable",
-    helper: "Close enough to reasonably walk from your hotel",
+    helper: "If you want something you can walk to in about 5–10 minutes…",
   },
   quick: {
     label: "Quick Trip",
-    helper: "Nearby karaoke that is better reached by a short ride",
+    helper: "If you do not mind a short drive or Uber, you have a few more options.",
   },
   standout: {
     label: "Standout Spots",
-    helper: "Special-format karaoke, not simply venues that are farther away",
+    helper: "If distance is no problem, these are San Diego karaoke experiences worth talking about when you get home.",
   },
 } as const;
 
@@ -117,9 +117,11 @@ function TierIcon({ tier }: { tier: keyof typeof tierMeta }) {
 function VenueCard({
   venue,
   mode,
+  onAddToPlan,
 }: {
   venue: HotelGuideVenue;
   mode: "tonight" | "week";
+  onAddToPlan: (venue: HotelGuideVenue) => void;
 }) {
   const [imageVisible, setImageVisible] = useState(Boolean(venue.imageUrl));
   const schedule =
@@ -217,13 +219,14 @@ function VenueCard({
           </div>
         ) : null}
 
-        <Link
-          href={`/venues/${venue.slug}`}
-          className="mt-5 inline-flex items-center gap-2 text-sm font-black text-cyan-200 transition hover:text-cyan-100"
-        >
-          View venue
-          <span aria-hidden>→</span>
-        </Link>
+        <div className="mt-5 flex flex-wrap items-center gap-3">
+          <Link href={`/venues/${venue.slug}`} className="inline-flex items-center gap-2 text-sm font-black text-cyan-200 transition hover:text-cyan-100">
+            View venue <span aria-hidden>→</span>
+          </Link>
+          <button type="button" onClick={() => onAddToPlan(venue)} className="rounded-full border border-white/15 bg-white/[0.045] px-3 py-1.5 text-xs font-black text-white transition hover:border-cyan-300/35 hover:bg-cyan-300/10">
+            Add to plan
+          </button>
+        </div>
       </div>
     </article>
   );
@@ -233,10 +236,12 @@ function TierSection({
   tier,
   venues,
   mode,
+  onAddToPlan,
 }: {
   tier: keyof typeof tierMeta;
   venues: HotelGuideVenue[];
   mode: "tonight" | "week";
+  onAddToPlan: (venue: HotelGuideVenue) => void;
 }) {
   if (venues.length === 0) return null;
 
@@ -264,7 +269,7 @@ function TierSection({
 
       <div className="-mx-5 grid snap-x snap-mandatory grid-flow-col auto-cols-[84%] gap-3 overflow-x-auto px-5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3">
         {visibleVenues.map((venue) => (
-          <VenueCard key={venue.slug} venue={venue} mode={mode} />
+          <VenueCard key={venue.slug} venue={venue} mode={mode} onAddToPlan={onAddToPlan} />
         ))}
       </div>
     </section>
@@ -272,26 +277,86 @@ function TierSection({
 }
 
 export function HotelGuideExperience({
+  hotelSlug,
   hotelName,
   hotelShortName,
   hotelAddress,
   hotelLatitude,
   hotelLongitude,
   heroImageUrl,
-  hotelWordmarkImageUrl,
-  hotelWordmarkInvert = false,
   tonightVenues,
   weekVenues,
 }: Props) {
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
   const [heroVisible, setHeroVisible] = useState(Boolean(heroImageUrl));
-  const [hotelWordmarkVisible, setHotelWordmarkVisible] = useState(
-    Boolean(hotelWordmarkImageUrl),
-  );
+  const [planVenue, setPlanVenue] = useState<HotelGuideVenue | null>(null);
+  const [planEmail, setPlanEmail] = useState("");
+  const [planMessage, setPlanMessage] = useState("");
   const activeVenues = mode === "tonight" ? tonightVenues : weekVenues;
   const grouped = useMemo(() => splitByTier(activeVenues), [activeVenues]);
   const visibleOptionCount = Math.min(grouped.walkable.length, 6) + Math.min(grouped.quick.length, 3) + Math.min(grouped.standout.length, 3);
   const visibleWalkableCount = Math.min(grouped.walkable.length, 6);
+
+  const savePlan = useCallback(async (userId: string, venue: HotelGuideVenue) => {
+    const supabase = createClient();
+    const { error } = await supabase.from("hotel_guest_plans").upsert({
+      user_id: userId,
+      hotel_slug: hotelSlug,
+      hotel_name: hotelName,
+      venue_slug: venue.slug,
+      venue_name: venue.name,
+    });
+    if (error) throw error;
+    await supabase.from("singer_saved_hotels").upsert({
+      user_id: userId,
+      hotel_slug: hotelSlug,
+      hotel_name: hotelName,
+    });
+  }, [hotelName, hotelSlug]);
+
+  useEffect(() => {
+    const pendingSlug = new URLSearchParams(window.location.search).get("plan");
+    if (!pendingSlug) return;
+    const venue = [...tonightVenues, ...weekVenues].find((item) => item.slug === pendingSlug);
+    if (!venue) return;
+    void createClient().auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      try {
+        await savePlan(data.user.id, venue);
+        setPlanMessage(`${venue.name} is in your ${hotelShortName} plan.`);
+        window.history.replaceState({}, "", `/hotel/${hotelSlug}`);
+      } catch (error) {
+        setPlanMessage(error instanceof Error ? error.message : "We could not save that stop.");
+      }
+    });
+  }, [hotelShortName, hotelSlug, savePlan, tonightVenues, weekVenues]);
+
+  async function addToPlan(venue: HotelGuideVenue) {
+    const { data } = await createClient().auth.getUser();
+    if (data.user) {
+      try {
+        await savePlan(data.user.id, venue);
+        setPlanMessage(`${venue.name} is in your ${hotelShortName} plan.`);
+      } catch (error) {
+        setPlanMessage(error instanceof Error ? error.message : "We could not save that stop.");
+      }
+      return;
+    }
+    setPlanVenue(venue);
+  }
+
+  async function emailPlanLink(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!planVenue || !planEmail.trim()) return;
+    const next = `/hotel/${hotelSlug}?plan=${encodeURIComponent(planVenue.slug)}`;
+    const redirectUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
+    const { error } = await createClient().auth.signInWithOtp({
+      email: planEmail.trim(),
+      options: { emailRedirectTo: redirectUrl, shouldCreateUser: true },
+    });
+    setPlanMessage(error ? error.message : `Check your email to save ${planVenue.name} to your plan.`);
+    if (!error) setPlanVenue(null);
+  }
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#050d17] text-white">
@@ -312,44 +377,17 @@ export function HotelGuideExperience({
 
         <div className="mx-auto max-w-5xl px-5 pb-9 pt-6 text-center sm:pb-12 sm:pt-8">
           <div className="mx-auto flex max-w-xl flex-col items-center">
-            <img
-              src={SITE_WORDMARK_SRC}
-              alt="SingHUB"
-              className="h-auto w-[220px] drop-shadow-[0_0_18px_rgba(34,211,238,0.16)] sm:w-[280px]"
-            />
-            <div className="relative -mt-1">
+            <div className="inline-flex flex-col items-start">
+              <div className="flex items-center">
+                <img src={SITE_WORDMARK_SRC} alt="SingHUB" className="h-auto w-[220px] drop-shadow-[0_0_18px_rgba(34,211,238,0.16)] sm:w-[280px]" />
+                <div className="relative -ml-4 sm:-ml-5">
               <div className="pointer-events-none absolute -left-5 -top-3 h-16 w-16 rounded-full bg-fuchsia-500/25 blur-2xl" />
               <div className="pointer-events-none absolute bottom-[-18px] left-1/2 h-12 w-24 -translate-x-1/2 rounded-full bg-cyan-400/20 blur-2xl" />
-              <img
-                src={HOTEL_AT_MARK_SRC}
-                alt=""
-                aria-hidden
-                className="relative h-auto w-[100px] drop-shadow-[0_0_14px_rgba(34,211,238,.45)] sm:w-[116px]"
-              />
+                  <img src={HOTEL_AT_MARK_SRC} alt=" at " className="relative h-auto w-[62px] drop-shadow-[0_0_14px_rgba(34,211,238,.45)] sm:w-[76px]" />
+                </div>
+              </div>
+              <p className="-mt-3 pl-2 text-left text-lg font-black tracking-[0.08em] text-white drop-shadow-[0_-4px_8px_rgba(34,211,238,.55)] sm:text-xl">{hotelName}</p>
             </div>
-
-            {hotelWordmarkImageUrl && hotelWordmarkVisible ? (
-              <div className="-mt-3 flex min-h-[66px] w-full items-center justify-center px-5">
-                <img
-                  src={hotelWordmarkImageUrl}
-                  alt={hotelName}
-                  className="max-h-[62px] max-w-[285px] object-contain sm:max-h-[70px] sm:max-w-[360px]"
-                  style={{
-                    filter: `${hotelWordmarkInvert ? "invert(1) grayscale(1) brightness(1.6) " : ""}drop-shadow(0 -5px 10px rgba(34,211,238,.68)) drop-shadow(0 0 18px rgba(34,211,238,.22))`,
-                    mixBlendMode: hotelWordmarkInvert ? "screen" : "normal",
-                  }}
-                  onError={() => setHotelWordmarkVisible(false)}
-                />
-              </div>
-            ) : (
-              <div className="-mt-1 flex w-full max-w-xl items-center gap-3">
-                <span className="h-px flex-1 bg-gradient-to-r from-transparent to-cyan-300/50" />
-                <span className="text-sm font-black uppercase tracking-[0.14em] text-white drop-shadow-[0_-4px_8px_rgba(34,211,238,.55)] sm:text-base">
-                  {hotelName}
-                </span>
-                <span className="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-300/50" />
-              </div>
-            )}
 
             <p className="mt-2 text-[10px] font-black uppercase tracking-[0.3em] text-cyan-200/75">
               Hotel Guest Guide
@@ -393,6 +431,16 @@ export function HotelGuideExperience({
       <div className="relative">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,.045),transparent_28%)]" />
         <div className="relative mx-auto max-w-5xl px-5 pb-16">
+          <section className="pt-8 sm:pt-10">
+            <div className="rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/[0.065] to-transparent p-6 shadow-[0_24px_70px_rgba(0,0,0,.24)] sm:p-8">
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-300">Curated for guests of {hotelName}</p>
+              <h2 className="mt-3 max-w-3xl text-2xl font-black leading-tight text-white sm:text-3xl">New in town? Looking for a mic? Let me show you where San Diego really sings.</h2>
+              <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-300 sm:text-base">San Diego has more than 100 places to sing karaoke in a typical week. {mode === "tonight" ? `Tonight, you have ${visibleOptionCount} current options in this guide.` : `This week, you have ${visibleOptionCount} current options in this guide.`} Take a look and build your local gig tour.</p>
+            </div>
+          </section>
+
+          {planMessage ? <p role="status" className="mt-5 rounded-2xl border border-cyan-300/25 bg-cyan-300/10 px-4 py-3 text-center text-sm font-bold text-cyan-100">{planMessage}</p> : null}
+
           {activeVenues.length > 0 ? (
             <div className="pt-7 sm:pt-9">
               <HotelGuideMap
@@ -439,9 +487,9 @@ export function HotelGuideExperience({
             </div>
           ) : (
             <>
-              <TierSection tier="walkable" venues={grouped.walkable} mode={mode} />
-              <TierSection tier="quick" venues={grouped.quick} mode={mode} />
-              <TierSection tier="standout" venues={grouped.standout} mode={mode} />
+              <TierSection tier="walkable" venues={grouped.walkable} mode={mode} onAddToPlan={addToPlan} />
+              <TierSection tier="quick" venues={grouped.quick} mode={mode} onAddToPlan={addToPlan} />
+              <TierSection tier="standout" venues={grouped.standout} mode={mode} onAddToPlan={addToPlan} />
             </>
           )}
 
@@ -455,6 +503,22 @@ export function HotelGuideExperience({
           </div>
         </div>
       </div>
+
+      {planVenue ? (
+        <div className="fixed inset-0 z-[80] grid place-items-center bg-black/80 p-4 backdrop-blur" role="dialog" aria-modal="true" aria-labelledby="plan-title" onClick={() => setPlanVenue(null)}>
+          <div className="w-full max-w-md rounded-[2rem] border border-cyan-300/25 bg-[#07111d] p-6 shadow-2xl" onClick={(event) => event.stopPropagation()}>
+            <p className="text-xs font-black uppercase tracking-[0.22em] text-cyan-300">Your {hotelShortName} plan</p>
+            <h2 id="plan-title" className="mt-2 text-2xl font-black text-white">Add {planVenue.name}</h2>
+            <p className="mt-3 text-sm leading-6 text-slate-300">Enter your email so this stop stays with you after you leave the hotel guide.</p>
+            <form onSubmit={emailPlanLink} className="mt-5 space-y-3">
+              <label className="sr-only" htmlFor="plan-email">Email address</label>
+              <input id="plan-email" type="email" required value={planEmail} onChange={(event) => setPlanEmail(event.target.value)} placeholder="you@example.com" className="min-h-12 w-full rounded-full border border-white/15 bg-black/35 px-5 text-white outline-none focus:border-cyan-300" />
+              <button className="min-h-12 w-full rounded-full bg-gradient-to-r from-cyan-300 to-sky-400 px-5 text-sm font-black text-slate-950">Email my plan link</button>
+            </form>
+            <button type="button" onClick={() => setPlanVenue(null)} className="mt-3 w-full py-2 text-sm font-bold text-slate-500 hover:text-white">Not now</button>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
