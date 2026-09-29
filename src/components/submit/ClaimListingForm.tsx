@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import type { VenueListing } from "@/types";
+import { trackEvent } from "@/lib/analytics";
 
 type ClaimListingFormProps = {
   venues: VenueListing[];
@@ -69,6 +70,10 @@ export function ClaimListingForm({ venues, selectedVenueSlug }: ClaimListingForm
       }
 
       setSubmittedMessage(`Thanks. Your update for ${venueName} was sent to SingHUB.`);
+      trackEvent("claim_listing_submit", {
+        venue_slug: selectedSlug || "not_listed",
+        venue_name: venueName,
+      });
       form.reset();
       setSelectedSlug("");
     } catch (error) {
@@ -80,7 +85,7 @@ export function ClaimListingForm({ venues, selectedVenueSlug }: ClaimListingForm
   }
 
   return (
-    <form onSubmit={handleSubmit} className="mt-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 md:p-8">
+    <form id="claim-listing" name="claim-listing" onSubmit={handleSubmit} className="mt-10 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 md:p-8">
       <div className="hidden" aria-hidden="true">
         <label htmlFor="company-website">Company website</label>
         <input id="company-website" name="company-website" type="text" tabIndex={-1} autoComplete="off" />

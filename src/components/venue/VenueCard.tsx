@@ -77,6 +77,10 @@ function BasicVenueActions({
       {directionsUrl && (
         <a
           href={directionsUrl}
+          data-analytics-event="directions_click"
+          data-destination-type="google_maps"
+          data-venue-slug={venue.slug}
+          data-venue-name={venue.venueName}
           target="_blank"
           rel="noreferrer"
           className="inline-flex items-center justify-center rounded-full border border-cyan-400/45 bg-cyan-400/10 px-4 py-2 text-sm font-bold text-cyan-100 transition hover:bg-cyan-400/20 focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-offset-2 focus:ring-offset-slate-950"

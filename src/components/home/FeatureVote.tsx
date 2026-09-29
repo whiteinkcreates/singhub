@@ -7,6 +7,7 @@ import {
   type FeatureOptionId,
   type FeatureVoteApiResponse,
 } from "@/lib/featureVote";
+import { trackEvent } from "@/lib/analytics";
 
 type VoteReceipt = {
   version: 2;
@@ -146,6 +147,11 @@ export function FeatureVote() {
       setHasVoted(true);
       setShowEmailStep(false);
       setMessage("Vote counted. Here is where singers are leaning.");
+      trackEvent("feature_vote_submit", {
+        poll_slug: CURRENT_FEATURE_POLL.slug,
+        option_id: selectedOptionId,
+        product_updates_opt_in: productUpdatesOptIn,
+      });
     } catch (error) {
       setMessage(
         error instanceof Error
@@ -256,6 +262,8 @@ export function FeatureVote() {
 
           {showEmailStep ? (
             <form
+              id="feature-vote-form"
+              name="feature-vote-form"
               onSubmit={submitVote}
               className="mt-5 rounded-xl border border-dashed border-cyan-300/35 bg-cyan-300/[.045] p-4"
             >

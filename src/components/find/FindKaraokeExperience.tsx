@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { VenueMap } from "@/components/map/VenueMap";
 import { VenueCard } from "@/components/venue/VenueCard";
+import { trackEvent } from "@/lib/analytics";
 import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
 import type { KaraokeEventListing, ListingStatus, VenueListing, VenueType } from "@/types";
 import {
@@ -421,8 +422,10 @@ export function FindKaraokeExperience({
     (userLocation !== null && radiusFilter !== "all");
 
   function handleUseLocation() {
+    trackEvent("find_karaoke_location_request");
     if (!("geolocation" in navigator)) {
       setLocationStatus("unsupported");
+      trackEvent("find_karaoke_location_result", { outcome: "unsupported" });
       return;
     }
 
@@ -436,14 +439,17 @@ export function FindKaraokeExperience({
         });
         setLocationStatus("success");
         setRadiusFilter(10);
+        trackEvent("find_karaoke_location_result", { outcome: "success" });
       },
       (error) => {
         if (error.code === error.PERMISSION_DENIED) {
           setLocationStatus("denied");
+          trackEvent("find_karaoke_location_result", { outcome: "denied" });
           return;
         }
 
         setLocationStatus("error");
+        trackEvent("find_karaoke_location_result", { outcome: "error" });
       },
       {
         enableHighAccuracy: true,
@@ -459,6 +465,14 @@ export function FindKaraokeExperience({
     setStatusFilter("all");
     setRadiusFilter("all");
     setSearchQuery("");
+    trackEvent("find_karaoke_filters_cleared");
+  }
+
+  function trackFilter(filterType: string, filterValue: string | number) {
+    trackEvent("find_karaoke_filter", {
+      filter_type: filterType,
+      filter_value: String(filterValue),
+    });
   }
 
   return (
@@ -500,6 +514,14 @@ export function FindKaraokeExperience({
             type="search"
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
+            onBlur={() => {
+              if (searchQuery.trim()) {
+                trackEvent("find_karaoke_search", {
+                  search_length: searchQuery.trim().length,
+                  result_count: visibleVenues.length,
+                });
+              }
+            }}
             placeholder="Search venue, neighborhood, city, address, or host"
             className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-base font-semibold text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300/70 focus:ring-2 focus:ring-cyan-300/20"
           />
@@ -514,7 +536,10 @@ export function FindKaraokeExperience({
               <button
                 key={filter.value}
                 type="button"
-                onClick={() => setDayFilter(filter.value)}
+                onClick={() => {
+                  setDayFilter(filter.value);
+                  trackFilter("day", filter.value);
+                }}
                 className={`rounded-full border px-4 py-2 text-sm font-bold transition ${
                   dayFilter === filter.value
                     ? "border-fuchsia-300 bg-fuchsia-300 text-slate-950"
@@ -536,7 +561,10 @@ export function FindKaraokeExperience({
               <button
                 key={filter.value}
                 type="button"
-                onClick={() => setVenueTypeFilter(filter.value)}
+                onClick={() => {
+                  setVenueTypeFilter(filter.value);
+                  trackFilter("venue_type", filter.value);
+                }}
                 className={`rounded-full border px-4 py-2 text-sm font-bold transition ${
                   venueTypeFilter === filter.value
                     ? "border-cyan-300 bg-cyan-300 text-slate-950"
@@ -558,7 +586,10 @@ export function FindKaraokeExperience({
               <button
                 key={filter.value}
                 type="button"
-                onClick={() => setStatusFilter(filter.value)}
+                onClick={() => {
+                  setStatusFilter(filter.value);
+                  trackFilter("listing_status", filter.value);
+                }}
                 className={`rounded-full border px-4 py-2 text-sm font-bold transition ${
                   statusFilter === filter.value
                     ? "border-violet-300 bg-violet-300 text-slate-950"
@@ -581,7 +612,10 @@ export function FindKaraokeExperience({
                 <button
                   key={filter.label}
                   type="button"
-                  onClick={() => setRadiusFilter(filter.value)}
+                  onClick={() => {
+                    setRadiusFilter(filter.value);
+                    trackFilter("radius", filter.value);
+                  }}
                   className={`rounded-full border px-4 py-2 text-sm font-bold transition ${
                     radiusFilter === filter.value
                       ? "border-cyan-300 bg-cyan-300 text-slate-950"

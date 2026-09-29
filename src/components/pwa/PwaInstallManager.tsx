@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -37,11 +38,6 @@ function dismissedRecently() {
   return Date.now() - dismissedAt < DISMISS_DAYS * 24 * 60 * 60 * 1000;
 }
 
-function track(eventName: string, params: Record<string, unknown> = {}) {
-  const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
-  gtag?.("event", eventName, params);
-}
-
 export function PwaInstallManager() {
   const pathname = usePathname();
   const deferredPrompt = useRef<BeforeInstallPromptEvent | null>(null);
@@ -61,18 +57,18 @@ export function PwaInstallManager() {
       deferredPrompt.current = null;
       setShowPrompt(false);
       setShowIosHelp(false);
-      track("pwa_install_completed");
+      trackEvent("pwa_install_completed");
       window.dispatchEvent(new Event("singhub:install-state-changed"));
     };
 
     const requestInstall = async () => {
-      track("pwa_install_clicked", { source: "install_button" });
+      trackEvent("pwa_install_clicked", { source: "install_button" });
 
       if (deferredPrompt.current) {
         const prompt = deferredPrompt.current;
         await prompt.prompt();
         const choice = await prompt.userChoice;
-        track("pwa_install_choice", { outcome: choice.outcome });
+        trackEvent("pwa_install_choice", { outcome: choice.outcome });
         if (choice.outcome === "accepted") deferredPrompt.current = null;
         return;
       }
@@ -109,7 +105,7 @@ export function PwaInstallManager() {
     if (viewed.size >= 2) {
       const timer = window.setTimeout(() => {
         setShowPrompt(true);
-        track("pwa_install_prompt_shown", { source: "venue_view", venue_views: viewed.size });
+        trackEvent("pwa_install_prompt_shown", { source: "venue_view", venue_views: viewed.size });
       }, 3500);
       return () => window.clearTimeout(timer);
     }
@@ -119,18 +115,18 @@ export function PwaInstallManager() {
     localStorage.setItem(DISMISS_KEY, String(Date.now()));
     setShowPrompt(false);
     setShowIosHelp(false);
-    track("pwa_install_prompt_dismissed");
+    trackEvent("pwa_install_prompt_dismissed");
   };
 
   const install = async () => {
-    track("pwa_install_clicked", { source: "venue_prompt" });
+    trackEvent("pwa_install_clicked", { source: "venue_prompt" });
     setShowPrompt(false);
 
     if (deferredPrompt.current) {
       const prompt = deferredPrompt.current;
       await prompt.prompt();
       const choice = await prompt.userChoice;
-      track("pwa_install_choice", { outcome: choice.outcome });
+      trackEvent("pwa_install_choice", { outcome: choice.outcome });
       if (choice.outcome === "accepted") deferredPrompt.current = null;
       return;
     }
