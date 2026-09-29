@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import {
   GA_MEASUREMENT_ID,
   INTERNAL_ANALYTICS_KEY,
@@ -34,7 +34,6 @@ export function AnalyticsProvider() {
     PUBLIC_HOSTS.has(window.location.hostname) &&
     !isAdminPath &&
     window.localStorage.getItem(INTERNAL_ANALYTICS_KEY) !== "1";
-  const [ready, setReady] = useState(false);
   const lastTrackedPath = useRef<string | undefined>(undefined);
 
   useEffect(() => {
@@ -45,7 +44,14 @@ export function AnalyticsProvider() {
   }, [enabled, isAdminPath]);
 
   useEffect(() => {
-    if (!enabled || !ready) return;
+    if (!enabled) return;
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || ((...args: unknown[]) => {
+      window.dataLayer?.push(args);
+    });
+    window.gtag("js", new Date());
+    window.gtag("config", GA_MEASUREMENT_ID, { send_page_view: false });
 
     const pagePath = cleanPath(pathname);
     if (lastTrackedPath.current === pagePath) return;
@@ -68,7 +74,7 @@ export function AnalyticsProvider() {
         source_path: pagePath,
       });
     }
-  }, [enabled, pathname, ready]);
+  }, [enabled, pathname]);
 
   useEffect(() => {
     function handleClick(event: MouseEvent) {
@@ -115,19 +121,6 @@ export function AnalyticsProvider() {
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
         strategy="afterInteractive"
       />
-      <Script
-        id="singhub-google-analytics"
-        strategy="afterInteractive"
-        onReady={() => setReady(true)}
-      >
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          window.gtag = window.gtag || gtag;
-          gtag('js', new Date());
-          gtag('config', '${GA_MEASUREMENT_ID}', { send_page_view: false });
-        `}
-      </Script>
     </>
   );
 }
