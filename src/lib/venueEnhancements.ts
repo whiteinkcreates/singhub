@@ -36,6 +36,7 @@ export type VenueEnhancement = {
   logoImageAlt?: string;
   gallery: VenueGalleryItem[];
   amenities: string[];
+  standoutFeatures?: string[];
   weeklySpecials: VenueSpecial[];
   dailyDeals: VenueDailyDeal[];
 };
@@ -58,6 +59,20 @@ export const VENUE_FACT_OPTIONS = [
   "Patio",
   "Game night",
   "Late night food",
+] as const;
+
+export const VENUE_STANDOUT_OPTIONS = [
+  "Great food",
+  "Bingo",
+  "Trivia",
+  "Live music",
+  "Big-screen sports",
+  "Darts",
+  "Patio",
+  "Game night",
+  "Drink specials",
+  "Late night food",
+  "Pool tables",
 ] as const;
 
 const enhancements = enhancementData as Record<string, VenueEnhancement>;
