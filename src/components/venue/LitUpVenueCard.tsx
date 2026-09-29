@@ -32,7 +32,16 @@ export function LitUpVenueCard({ venue, events = [], distanceLabel }: LitUpVenue
   const imageAlt = clean(venue.bannerImageAlt) || clean(fallbackEnhancement?.heroImageAlt) || `${venue.venueName} venue`;
   const imagePosition = venue.bannerImagePosition || fallbackEnhancement?.heroPosition || "center";
   const schedule = scheduleLabel(venue, events);
-  const highlights = (venue.enhancementAmenities?.length ? venue.enhancementAmenities : fallbackEnhancement?.amenities.length ? fallbackEnhancement.amenities : venue.vibeTags).slice(0, 3);
+  const standoutFeatures = (fallbackEnhancement?.standoutFeatures ?? []).filter(Boolean).slice(0, 3);
+  const highlights = (
+    standoutFeatures.length
+      ? standoutFeatures
+      : venue.enhancementAmenities?.length
+        ? venue.enhancementAmenities
+        : fallbackEnhancement?.amenities.length
+          ? fallbackEnhancement.amenities
+          : venue.vibeTags
+  ).slice(0, 3);
   const summary = venue.enhancementTagline || fallbackEnhancement?.tagline || venue.description;
 
   return (
@@ -59,7 +68,27 @@ export function LitUpVenueCard({ venue, events = [], distanceLabel }: LitUpVenue
             <span className="mt-1 text-xl text-fuchsia-300 transition group-hover:translate-x-0.5" aria-hidden>→</span>
           </div>
           {summary && <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-200">{summary}</p>}
-          {highlights.length > 0 && <div className="mt-4 flex flex-wrap gap-2">{highlights.map((item) => { const icon = venueFactIconName(item); return <span key={item} className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-semibold text-slate-300">{icon ? <VenueSemanticIcon name={icon} className="h-3.5 w-3.5 shrink-0 text-cyan-200" /> : null}{item}</span>; })}</div>}
+          {highlights.length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {highlights.map((item) => {
+                const icon = venueFactIconName(item);
+                const standout = standoutFeatures.includes(item);
+                return (
+                  <span
+                    key={item}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold ${
+                      standout
+                        ? "border-cyan-300/30 bg-cyan-300/[0.07] text-cyan-50"
+                        : "border-white/10 bg-white/[0.05] text-slate-300"
+                    }`}
+                  >
+                    {icon ? <VenueSemanticIcon name={icon} className={`h-3.5 w-3.5 shrink-0 ${standout ? "text-fuchsia-300" : "text-cyan-200"}`} /> : null}
+                    {item}
+                  </span>
+                );
+              })}
+            </div>
+          )}
         </div>
       </Link>
     </article>
