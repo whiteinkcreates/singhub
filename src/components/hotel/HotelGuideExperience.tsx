@@ -290,6 +290,8 @@ export function HotelGuideExperience({
   );
   const activeVenues = mode === "tonight" ? tonightVenues : weekVenues;
   const grouped = useMemo(() => splitByTier(activeVenues), [activeVenues]);
+  const visibleOptionCount = Math.min(grouped.walkable.length, 6) + Math.min(grouped.quick.length, 3) + Math.min(grouped.standout.length, 3);
+  const visibleWalkableCount = Math.min(grouped.walkable.length, 6);
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#050d17] text-white">
@@ -380,8 +382,8 @@ export function HotelGuideExperience({
 
           {activeVenues.length > 0 ? (
             <div className="mx-auto mt-5 flex max-w-lg flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] font-bold uppercase tracking-[0.11em] text-slate-500">
-              <span><strong className="text-cyan-200">{activeVenues.length}</strong> current options</span>
-              {grouped.walkable.length > 0 ? <span><strong className="text-cyan-200">{grouped.walkable.length}</strong> walkable</span> : null}
+              <span><strong className="text-cyan-200">{visibleOptionCount}</strong> current options</span>
+              {grouped.walkable.length > 0 ? <span><strong className="text-cyan-200">{visibleWalkableCount}</strong> walkable</span> : null}
               {grouped.quick.length > 0 ? <span><strong className="text-cyan-200">{grouped.quick.length}</strong> quick trip</span> : null}
             </div>
           ) : null}
