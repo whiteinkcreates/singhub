@@ -57,6 +57,7 @@ export const VENUE_FACT_OPTIONS = [
   "Bar games",
   "Dance floor",
   "Patio",
+  "Outdoor seating",
   "Game night",
   "Late night food",
 ] as const;
