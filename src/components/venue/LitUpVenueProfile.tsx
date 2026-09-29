@@ -43,15 +43,23 @@ function ActionLink({
   label,
   symbol,
   variant = "quiet",
+  analyticsEvent,
+  venue,
 }: {
   href: string;
   label: string;
   symbol: string;
   variant?: "primary" | "secondary" | "quiet";
+  analyticsEvent: string;
+  venue: Pick<VenueListing, "slug" | "venueName">;
 }) {
   return (
     <a
       href={href}
+      data-analytics-event={analyticsEvent}
+      data-destination-type={label.toLowerCase().replaceAll(" ", "_")}
+      data-venue-slug={venue.slug}
+      data-venue-name={venue.venueName}
       target="_blank"
       rel="noreferrer"
       className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-full text-sm font-black transition ${ACTION_LINK_STYLES[variant]}`}
@@ -115,12 +123,12 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
         </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-2 border-y border-white/10 py-4">
-          {directionsUrl ? <ActionLink href={directionsUrl} label="Get directions" symbol="⌖" variant="primary" /> : null}
-          {phone ? <ActionLink href={`tel:${phone}`} label="Call" symbol="☎" variant="secondary" /> : null}
+          {directionsUrl ? <ActionLink href={directionsUrl} label="Get directions" symbol="⌖" variant="primary" analyticsEvent="directions_click" venue={venue} /> : null}
+          {phone ? <ActionLink href={`tel:${phone}`} label="Call" symbol="☎" variant="secondary" analyticsEvent="venue_call_click" venue={venue} /> : null}
           <div className="flex flex-wrap items-center gap-1 sm:ml-1">
-            {websiteUrl ? <ActionLink href={websiteUrl} label="Website" symbol="↗" /> : null}
-            {instagramUrl ? <ActionLink href={instagramUrl} label="Instagram" symbol="◎" /> : null}
-            {enhancement.menuUrl ? <ActionLink href={enhancement.menuUrl} label="Menu" symbol="≡" /> : null}
+            {websiteUrl ? <ActionLink href={websiteUrl} label="Website" symbol="↗" analyticsEvent="venue_website_click" venue={venue} /> : null}
+            {instagramUrl ? <ActionLink href={instagramUrl} label="Instagram" symbol="◎" analyticsEvent="venue_instagram_click" venue={venue} /> : null}
+            {enhancement.menuUrl ? <ActionLink href={enhancement.menuUrl} label="Menu" symbol="≡" analyticsEvent="venue_menu_click" venue={venue} /> : null}
           </div>
         </div>
 

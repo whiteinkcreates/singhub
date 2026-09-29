@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import type { VenueListing } from "@/types";
+import { trackEvent } from "@/lib/analytics";
 
 type FoundingVenueInquiryFormProps = {
   venues: VenueListing[];
@@ -87,6 +88,10 @@ export function FoundingVenueInquiryForm({
       setSubmittedMessage(
         `Thanks, ${contactName}. Your Founding Venue inquiry for ${venueName} is in. Corey will follow up personally.`,
       );
+      trackEvent("founding_venue_inquiry_submit", {
+        venue_slug: selectedSlug || "not_listed",
+        venue_name: venueName,
+      });
       form.reset();
       setSelectedSlug("");
     } catch (error) {
@@ -99,6 +104,8 @@ export function FoundingVenueInquiryForm({
 
   return (
     <form
+      id="founding-venue-inquiry"
+      name="founding-venue-inquiry"
       onSubmit={handleSubmit}
       className="mt-8 rounded-[2rem] border border-fuchsia-300/35 bg-slate-950/80 p-5 shadow-2xl shadow-fuchsia-950/30 sm:p-7 md:p-8"
     >

@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { trackEvent } from "@/lib/analytics";
 
 const karaokeDays = [
   "Sunday",
@@ -90,6 +91,10 @@ export function SubmitListingForm() {
 
       const venueName = payload.venueName || "that karaoke tip";
       setSubmittedMessage(`Thanks. ${venueName} was sent to SingHUB for review.`);
+      trackEvent("listing_submit", {
+        venue_name: payload.venueName || "not_provided",
+        submitted_days: selectedDays.length,
+      });
       form.reset();
     } catch (error) {
       const message = error instanceof Error ? error.message : "Submission failed. Please try again.";
@@ -101,6 +106,8 @@ export function SubmitListingForm() {
 
   return (
     <form
+      id="submit-karaoke-listing"
+      name="submit-karaoke-listing"
       onSubmit={handleSubmit}
       className="mt-10 grid gap-5 rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 md:grid-cols-2 md:p-8"
     >
