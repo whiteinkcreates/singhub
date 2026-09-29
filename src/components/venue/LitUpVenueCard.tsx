@@ -32,7 +32,7 @@ export function LitUpVenueCard({ venue, events = [], distanceLabel }: LitUpVenue
   const imageAlt = clean(venue.bannerImageAlt) || clean(fallbackEnhancement?.heroImageAlt) || `${venue.venueName} venue`;
   const imagePosition = venue.bannerImagePosition || fallbackEnhancement?.heroPosition || "center";
   const schedule = scheduleLabel(venue, events);
-  const standoutFeatures = (fallbackEnhancement?.standoutFeatures ?? []).filter(Boolean).slice(0, 3);
+  const standoutFeatures = (venue.enhancementStandoutFeatures?.length ? venue.enhancementStandoutFeatures : fallbackEnhancement?.standoutFeatures ?? []).filter(Boolean).slice(0, 3);
   const highlights = (
     standoutFeatures.length
       ? standoutFeatures
