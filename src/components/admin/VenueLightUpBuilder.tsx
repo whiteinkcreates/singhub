@@ -113,7 +113,7 @@ function AdminPreview({ venue, profile, mode }: { venue?: VenueOption; profile: 
   if (!venue) return <div className="rounded-2xl border border-white/10 p-5 text-sm text-slate-500">Choose a venue to preview it.</div>;
   const heroPosition = profile.heroPosition || "center";
   const hero = profile.heroImageUrl;
-  const tags = profile.amenities.slice(0, 3);
+  const tags = (profile.standoutFeatures?.length ? profile.standoutFeatures : profile.amenities).slice(0, 3);
 
   if (mode === "list") {
     return (
@@ -329,7 +329,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
                 <div><p className={labelClass}>Stand out in venue lists</p><p className="mt-2 text-sm leading-6 text-slate-400">Choose up to 3 quick reasons to pick this venue. These appear on the Enhanced listing card under the karaoke details.</p></div>
                 <p className="text-xs font-black text-cyan-200">{standoutFeatures.length}/3 selected</p>
               </div>
-              <div className="mt-4 flex flex-wrap gap-2">{VENUE_STANDOUT_OPTIONS.map((feature) => { const active = selectedStandouts.has(feature); const locked = !active && standoutFeatures.length >= 3; return <button key={feature} type="button" disabled={locked} onClick={() => toggleStandout(feature)} className={`rounded-full border px-3 py-2 text-xs font-bold transition ${active ? "border-fuchsia-300/55 bg-fuchsia-300/12 text-fuchsia-100" : locked ? "cursor-not-allowed border-white/5 text-slate-700" : "border-white/10 bg-white/[0.03] text-slate-400 hover:border-cyan-300/40 hover:text-white"}`}>{venueFactIconName(feature) ? <VenueSemanticIcon name={venueFactIconName(feature)!} className="mr-1.5 inline h-4 w-4 align-text-bottom" /> : null}{feature}</button>; })}</div>
+              <div className="mt-4 flex flex-wrap gap-2">{VENUE_STANDOUT_OPTIONS.map((feature) => { const active = selectedStandouts.has(feature); const locked = !active && standoutFeatures.length >= 3; return <button key={feature} type="button" disabled={locked} onClick={() => toggleStandout(feature)} className={`rounded-full border px-3 py-2 text-xs font-bold transition ${active ? "border-fuchsia-300/55 bg-fuchsia-300/15 text-fuchsia-100" : locked ? "cursor-not-allowed border-white/5 text-slate-700" : "border-white/10 bg-white/[0.03] text-slate-400 hover:border-cyan-300/40 hover:text-white"}`}>{venueFactIconName(feature) ? <VenueSemanticIcon name={venueFactIconName(feature)!} className="mr-1.5 inline h-4 w-4 align-text-bottom" /> : null}{feature}</button>; })}</div>
             </section>
 
             <SpecialEditor specials={weeklySpecials} onChange={setWeeklySpecials} />
