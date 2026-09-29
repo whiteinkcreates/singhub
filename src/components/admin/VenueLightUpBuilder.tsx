@@ -6,6 +6,7 @@ import { VenueMediaLibrary } from "@/components/admin/VenueMediaLibrary";
 import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 import {
   VENUE_FACT_OPTIONS,
+  VENUE_STANDOUT_OPTIONS,
   type HeroPosition,
   type VenueDailyDeal,
   type VenueEnhancement,
@@ -50,6 +51,7 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     logoImageAlt: "",
     gallery: [],
     amenities: [],
+    standoutFeatures: [],
     weeklySpecials: [],
     dailyDeals: [],
   };
@@ -160,6 +162,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [logoImageAlt, setLogoImageAlt] = useState(initialProfile.logoImageAlt || "");
   const [gallery, setGallery] = useState<VenueGalleryItem[]>(initialProfile.gallery || []);
   const [amenities, setAmenities] = useState(initialProfile.amenities || []);
+  const [standoutFeatures, setStandoutFeatures] = useState(initialProfile.standoutFeatures || []);
   const [weeklySpecials, setWeeklySpecials] = useState<VenueSpecial[]>(initialProfile.weeklySpecials || []);
   const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);
   const [previewMode, setPreviewMode] = useState<PreviewMode>("open");
@@ -169,6 +172,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
   const selectedVenue = venues.find((venue) => venue.slug === slug);
   const selectedFacts = new Set(amenities);
+  const selectedStandouts = new Set(standoutFeatures);
 
   function applyProfile(profile: VenueEnhancement, venue = selectedVenue) {
     setEnabled(profile.enabled);
@@ -185,6 +189,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setLogoImageAlt(profile.logoImageAlt || "");
     setGallery(profile.gallery || []);
     setAmenities(profile.amenities || []);
+    setStandoutFeatures(profile.standoutFeatures || []);
     setWeeklySpecials(profile.weeklySpecials || []);
     setDailyDeals(profile.dailyDeals || []);
   }
@@ -225,10 +230,11 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     logoImageUrl: logoImageUrl.trim() || undefined,
     logoImageAlt: logoImageAlt.trim() || undefined,
     amenities,
+    standoutFeatures,
     weeklySpecials: weeklySpecials.filter((special) => special.title.trim()),
     dailyDeals: dailyDeals.filter((deal) => deal.title.trim()),
     gallery,
-  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, phone, tagline, weeklySpecials]);
+  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, phone, standoutFeatures, tagline, weeklySpecials]);
 
   const completionChecks = useMemo(() => [
     { label: "Hero + alt text", done: Boolean(heroImageUrl.trim() && heroImageAlt.trim()) },
@@ -244,6 +250,14 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
   function toggleFact(label: string) {
     setAmenities((current) => current.includes(label) ? current.filter((item) => item !== label) : [...current, label]);
+  }
+
+  function toggleStandout(label: string) {
+    setStandoutFeatures((current) => {
+      if (current.includes(label)) return current.filter((item) => item !== label);
+      if (current.length >= 3) return current;
+      return [...current, label];
+    });
   }
 
   async function saveProfile() {
@@ -308,6 +322,14 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
               <p className="mt-2 text-sm leading-6 text-slate-400">Choose factual venue traits. These are separate from Singers Say.</p>
               <div className="mt-4 flex flex-wrap gap-2">{VENUE_FACT_OPTIONS.map((fact) => { const active = selectedFacts.has(fact); return <button key={fact} type="button" onClick={() => toggleFact(fact)} className={`rounded-full border px-3 py-2 text-xs font-bold transition ${active ? "border-cyan-300/60 bg-cyan-300/15 text-cyan-100" : "border-white/10 bg-white/[0.03] text-slate-400 hover:border-white/25 hover:text-white"}`}>{venueFactIconName(fact) ? <VenueSemanticIcon name={venueFactIconName(fact)!} className="mr-1.5 inline h-4 w-4 align-text-bottom" /> : null}{fact}</button>; })}</div>
               <details className="mt-4"><summary className="cursor-pointer text-xs font-bold text-slate-500">Add custom facts</summary><textarea className={`${fieldClass} min-h-24`} value={amenities.join("\n")} onChange={(event) => setAmenities(event.target.value.split("\n").map((item) => item.trim()).filter(Boolean))} placeholder="One fact per line" /></details>
+            </section>
+
+            <section className="md:col-span-2 rounded-2xl border border-cyan-300/15 bg-cyan-300/[0.035] p-4">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div><p className={labelClass}>Stand out in venue lists</p><p className="mt-2 text-sm leading-6 text-slate-400">Choose up to 3 quick reasons to pick this venue. These appear on the Enhanced listing card under the karaoke details.</p></div>
+                <p className="text-xs font-black text-cyan-200">{standoutFeatures.length}/3 selected</p>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">{VENUE_STANDOUT_OPTIONS.map((feature) => { const active = selectedStandouts.has(feature); const locked = !active && standoutFeatures.length >= 3; return <button key={feature} type="button" disabled={locked} onClick={() => toggleStandout(feature)} className={`rounded-full border px-3 py-2 text-xs font-bold transition ${active ? "border-fuchsia-300/55 bg-fuchsia-300/12 text-fuchsia-100" : locked ? "cursor-not-allowed border-white/5 text-slate-700" : "border-white/10 bg-white/[0.03] text-slate-400 hover:border-cyan-300/40 hover:text-white"}`}>{venueFactIconName(feature) ? <VenueSemanticIcon name={venueFactIconName(feature)!} className="mr-1.5 inline h-4 w-4 align-text-bottom" /> : null}{feature}</button>; })}</div>
             </section>
 
             <SpecialEditor specials={weeklySpecials} onChange={setWeeklySpecials} />
