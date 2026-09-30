@@ -64,7 +64,7 @@ const laMesa: HotelGuide[] = [
     wordmarkStatus: "ready",
     heroFallback: "downtown",
     walkableMiles: 0.7,
-    quickTripMiles: 3.5,
+    quickTripMiles: 5,
     standoutMiles: 8,
   },
 ];
