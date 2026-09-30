@@ -7,7 +7,7 @@ export function generateStaticParams() {
 }
 
 type GuidePageProps = {
-  params: Promise<{ slug: string }> | { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: GuidePageProps) {

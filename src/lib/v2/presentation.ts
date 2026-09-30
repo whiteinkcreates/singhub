@@ -10,6 +10,7 @@ export type HotelRowData = {
   nightCount:number;venueType:string;
 };
 export function usable(value?:string){return value && !/^(tbd|unknown|-|n\/a)$/i.test(value.trim())?value.trim():'';}
+export function compactTime(value?:string){return usable(value).replace(/(\d{1,2}):00(?=\s*[AP]M)/gi,'$1');}
 export function verificationDate(events:KaraokeEventListing[], venue?:VenueListing){
   const dates=[venue?.lastVerified,...events.map(event=>event.lastVerified)].filter((value):value is string=>Boolean(value&&/^\d{4}-\d{2}-\d{2}/.test(value)&&!Number.isNaN(Date.parse(value))));
   return dates.sort().at(-1);
