@@ -7,13 +7,14 @@ const out=process.env.V2_REVIEW_OUTPUT||'/tmp/singhub-v2-review';
 await mkdir(out,{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.V2_CHROME_PATH||undefined,args:['--no-sandbox']});
 const review=[];
-const routes=[['discovery','/','index.html'],['directory','/find-karaoke','venues.html'],['basic','/venues/the-lamplighter','design-board.html'],['enhanced','/venues/barlando','redwing.html'],['hotel','/hotel/pendry-san-diego','hotel.html'],['account','/account','singer.html']];
+const routes=[['discovery','/','index.html'],['directory','/find-karaoke','venues.html'],['basic','/venues/the-lamplighter','design-board.html'],['enhanced','/venues/'+(process.env.V2_ENHANCED_SLUG||'barlando'),'redwing.html'],['hotel','/hotel/pendry-san-diego','hotel.html'],['account','/account','singer.html']];
 try{
  for(const width of [1440,390])for(const [name,path,file] of routes){
   const pair={name,width,screenshots:[],notes:[]};
   for(const [kind,url] of [['production',base+path],['reference',reference+'/'+file]]){
    const page=await browser.newPage({ignoreHTTPSErrors:process.env.V2_PROXY_CERT==='1',viewport:{width,height:1000}});
    const errors=[];page.on('pageerror',error=>errors.push(error.message));
+   if(kind==='production'&&process.env.V2_ACCESS_URL)await page.goto(process.env.V2_ACCESS_URL,{waitUntil:'networkidle'});
    const response=await page.goto(url,{waitUntil:'networkidle'});assert.equal(response.status(),200,url);
    await page.evaluate(()=>document.fonts.ready);
    if(name==='basic'&&kind==='reference')await page.evaluate(()=>{
@@ -21,7 +22,7 @@ try{
    });
    assert.deepEqual(errors,[],url+' runtime errors');
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,url+' horizontal overflow');
-   const screenshot=out+'/'+name+'-'+kind+'-'+width+'.png';await page.screenshot({path:screenshot,fullPage:true});pair.screenshots.push(screenshot);
+   const screenshot=out+'/'+name+'-'+kind+'-'+width+'.png';await page.screenshot({path:screenshot,fullPage:true});await page.screenshot({path:screenshot.replace('.png','-viewport.png')});pair.screenshots.push(screenshot);
    pair[kind]=await page.locator('h1').first().evaluate(el=>{const c=getComputedStyle(el),r=el.getBoundingClientRect();return {text:el.textContent,font:c.fontFamily,size:c.fontSize,line:c.lineHeight,width:r.width,height:r.height}});
    if(kind==='production'){
     if(name==='discovery'){

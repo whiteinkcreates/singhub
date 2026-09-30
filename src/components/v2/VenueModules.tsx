@@ -17,7 +17,7 @@ export function VenueSpecials({enhancement,weekday}:{enhancement?:VenueEnhanceme
  return specials.length?<div className="placeholder">{specials.map((special,index)=><p key={index}><strong>{special.title}{special.price?' · '+special.price:''}</strong>{special.detail?<><br />{special.detail}</>:null}</p>)}</div>:<div className="placeholder">Current specials will appear here when published by the venue, with dates and terms attached.</div>;
 }
 export function VenueBoard({posts}:{posts:PersistedSingBoardPost[]}){
- return posts.length?<>{posts.map(post=><a className="board-item" key={post.id} href={'/events/'+post.id}><span>VENUE POST</span><strong>{post.title}</strong><p>{post.detail}</p></a>)}</>:<div className="board-item"><span>VENUE POST</span><strong>FROM THE VENUE</strong><p>Flyers, one-off events, and room updates pin here when published.</p></div>;
+ return posts.length?<>{posts.map(post=><div className="board-item" key={post.id} role="link" tabIndex={0} onClick={()=>location.assign('/events/'+post.id)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();location.assign('/events/'+post.id);}}}><span>VENUE POST</span><strong>{post.title}</strong><p>{post.detail}</p></div>)}</>:<div className="board-item"><span>VENUE POST</span><strong>FROM THE VENUE</strong><p>Flyers, one-off events, and room updates pin here when published.</p></div>;
 }
 export function VenueFeedback({summary,venue,events}:{summary?:SingersSaySummary;venue:VenueListing;events:KaraokeEventListing[]}){
  const [open,setOpen]=useState(false);
