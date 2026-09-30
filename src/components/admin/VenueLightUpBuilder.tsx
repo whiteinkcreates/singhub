@@ -44,6 +44,7 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     about: "",
     phone: "",
     menuUrl: "",
+    singerSignupUrl: "",
     heroImageUrl: "",
     heroImageAlt: "",
     heroPosition: "center",
@@ -154,6 +155,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [tagline, setTagline] = useState(initialProfile.tagline || "");
   const [about, setAbout] = useState(initialProfile.about || "");
   const [phone, setPhone] = useState(initialProfile.phone || "");
+  const [singerSignupUrl, setSingerSignupUrl] = useState(initialProfile.singerSignupUrl || "");
   const [menuUrl, setMenuUrl] = useState(initialProfile.menuUrl || "");
   const [heroImageUrl, setHeroImageUrl] = useState(initialProfile.heroImageUrl || "");
   const [heroImageAlt, setHeroImageAlt] = useState(initialProfile.heroImageAlt || "");
@@ -182,6 +184,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setAbout(profile.about || "");
     setPhone(profile.phone || "");
     setMenuUrl(profile.menuUrl || "");
+    setSingerSignupUrl(profile.singerSignupUrl || "");
     setHeroImageUrl(profile.heroImageUrl || "");
     setHeroImageAlt(profile.heroImageAlt || "");
     setHeroPosition(profile.heroPosition || "center");
@@ -224,6 +227,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     about: about.trim() || undefined,
     phone: phone.trim() || undefined,
     menuUrl: menuUrl.trim() || undefined,
+    singerSignupUrl: singerSignupUrl.trim() || undefined,
     heroImageUrl: heroImageUrl.trim() || undefined,
     heroImageAlt: heroImageAlt.trim() || undefined,
     heroPosition,
@@ -234,7 +238,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     weeklySpecials: weeklySpecials.filter((special) => special.title.trim()),
     dailyDeals: dailyDeals.filter((deal) => deal.title.trim()),
     gallery,
-  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, phone, standoutFeatures, tagline, weeklySpecials]);
+  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, tagline, weeklySpecials]);
 
   const completionChecks = useMemo(() => [
     { label: "Hero + alt text", done: Boolean(heroImageUrl.trim() && heroImageAlt.trim()) },
@@ -309,6 +313,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 md:p-7">
           <div className="grid gap-5 md:grid-cols-2">
             <label className={labelClass}>Phone<input className={fieldClass} value={phone} onChange={(event) => setPhone(event.target.value)} /></label>
+            <label className={labelClass}>Singer signup URL<input className={fieldClass} type="url" value={singerSignupUrl} onChange={(event) => setSingerSignupUrl(event.target.value)} placeholder="Optional KJ / venue signup link" /></label>
             <label className={labelClass}>Menu URL<input className={fieldClass} value={menuUrl} onChange={(event) => setMenuUrl(event.target.value)} /></label>
             <label className={`${labelClass} md:col-span-2`}>Tagline<input className={fieldClass} value={tagline} onChange={(event) => setTagline(event.target.value)} /></label>
             <label className={`${labelClass} md:col-span-2`}>About<textarea className={`${fieldClass} min-h-28`} value={about} onChange={(event) => setAbout(event.target.value)} /></label>

@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useRef,useState } from 'react';
 import { useV2Actions,useViewerInitials } from './actions';
+import { useListReturn } from './listReturn';
 import { DirectoryRow } from './VenueRows';
 import { filterRows,type VenueRowData } from '@/lib/v2/presentation';
 
@@ -11,11 +12,12 @@ import "./styles/directory.css";
 export function VenueDirectoryExperience({rows,initialQuery="",initialType="",initialDay=""}:{rows:VenueRowData[];initialQuery?:string;initialType?:string;initialDay?:string}) {
 const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();const actions=useV2Actions(root,{venues:rows.map(row=>row.venue)});
 const [query,setQuery]=useState(initialQuery);const [quick,setQuick]=useState(initialType==='private_room'?'private rooms':'');const [selected,setSelected]=useState<string[]>([]);
+useListReturn({query,quick,selected},saved=>{if(typeof saved?.query==='string')setQuery(saved.query);if(typeof saved?.quick==='string')setQuick(saved.quick);if(Array.isArray(saved?.selected))setSelected(saved.selected.filter(term=>typeof term==='string'));});
 const visible=filterRows(rows,query,quick,'directory').filter(item=>selected.every(term=>item.search.includes(term)) && (!initialDay || item.events.some(event=>event.karaokeDay.toLowerCase().includes(initialDay.toLowerCase()))));
 
 return <div className="v2-directory" ref={root}>
 
-<header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link href="/">{"Discover"}</Link><a className="active" href="/find-karaoke">{"Venues"}</a><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
+<header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link href="/">{"Discover"}</Link><a className="active" href="/find-karaoke">{"Venues"}</a><Link href="/hosts">{"Hosts"}</Link><Link href="/hotel">{"Hotels"}</Link><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
 <main>
 <section className="venue-world" aria-labelledby="venue-page-title"><img src="/images/singhub-v2/singhub-venues-alley.webp" alt="A neon-lit alley leading to SingHUB karaoke venues" /><div className="venue-world-inner"><div className="venue-world-copy"><p className="eyebrow">{"SAN DIEGO VENUES"}</p><h1 id="venue-page-title">{"Know the room before you go."}</h1><p>{"Browse verified karaoke venues, recurring nights, and the details that actually shape the experience."}</p></div></div></section>
 <section className="directory" aria-label="Venue directory">
@@ -27,7 +29,7 @@ return <div className="v2-directory" ref={root}>
 </section>
 </main>
 <dialog id="filter-sheet" aria-labelledby="filter-title" onClose={event=>{if(event.currentTarget.returnValue==='apply')setSelected([...event.currentTarget.querySelectorAll<HTMLInputElement>('input:checked')].map(input=>input.value));}}><form method="dialog"><header className="filter-sheet-head"><div><p className="eyebrow">{"FIND YOUR ROOM"}</p><h2 id="filter-title">{"More filters"}</h2></div><button className="close-filter" value="cancel" aria-label="Close filters">{"×"}</button></header><div className="filter-groups"><section className="filter-group"><h3>{"Karaoke format"}</h3><div className="filter-options"><label className="filter-option"><input type="checkbox" defaultValue="public" /><span>{"Public stage"}</span></label><label className="filter-option"><input type="checkbox" defaultValue="private rooms" /><span>{"Private rooms"}</span></label><label className="filter-option"><input type="checkbox" defaultValue="live band" /><span>{"Live band karaoke nights"}</span></label></div></section><section className="filter-group"><h3>{"Environment"}</h3><div className="filter-options"><label className="filter-option"><input type="checkbox" defaultValue="lgbtq friendly" /><span>{"LGBTQ+ friendly"}</span></label><label className="filter-option"><input type="checkbox" defaultValue="beginner friendly" /><span>{"Beginner-friendly"}</span></label><label className="filter-option"><input type="checkbox" defaultValue="neighborhood" /><span>{"Neighborhood room"}</span></label><label className="filter-option"><input type="checkbox" defaultValue="dive bar" /><span>{"Dive bar"}</span></label></div></section><section className="filter-group"><h3>{"Details"}</h3><div className="filter-options"><label className="filter-option"><input type="checkbox" defaultValue="21+" /><span>{"21+"}</span></label><label className="filter-option"><input type="checkbox" defaultValue="photos" /><span>{"Photos"}</span></label><label className="filter-option"><input type="checkbox" defaultValue="seven nights" /><span>{"Seven nights"}</span></label></div></section></div><footer className="filter-sheet-actions"><button type="button" id="clear-filters" onClick={()=>{root.current?.querySelectorAll<HTMLInputElement>('#filter-sheet input').forEach(input=>input.checked=false);setSelected([]);}}>{"Clear"}</button><button className="apply" value="apply">{"Apply filters"}</button></footer></form></dialog>
-<nav className="mobile-nav" aria-label="Mobile navigation"><Link href="/"><b>{"⌕"}</b>{"Discover"}</Link><a className="active" href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
+<nav className="mobile-nav" aria-label="Mobile navigation"><Link href="/"><b>{"⌕"}</b>{"Discover"}</Link><a className="active" href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><Link href="/hosts"><b>{"♪"}</b>{"Hosts"}</Link><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
 <div className="toast" role="status" aria-live="polite"></div>
 
 

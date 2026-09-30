@@ -1,8 +1,10 @@
 /* Literal port of authoritative Site v37. Preserve markup and CSS relationships. */
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import Link from "next/link";
 import { useRef } from 'react';
 import { useV2Actions,useViewerInitials } from './actions';
+import { goBackToList } from './listReturn';
 import { makeVenueRow,usable,compactTime } from '@/lib/v2/presentation';
 import { VenueFeedback } from './VenueModules';
 import type { VenueTemplateProps } from './VenueModules';
@@ -10,17 +12,17 @@ import type { VenueTemplateProps } from './VenueModules';
 import "./styles/basic.css";
 export function BasicVenueTemplate({venue,events,enhancement,weekday,singersSay}:VenueTemplateProps) {
 const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();void viewerInitials;
-const row=makeVenueRow(venue,events,weekday,enhancement);const actions=useV2Actions(root,{venue,events});
+const row=makeVenueRow(venue,events,weekday,enhancement);const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl});
 const details=[['Address',venue.address],['Room type',row.kind],['Age policy',venue.agePolicy],['Parking',venue.parkingInfo],['Accessibility',venue.accessibilityNotes],['Cover',venue.coverCharge],['About the room',venue.description]].filter((item):item is [string,string]=>Boolean(item[1]));
 
-return <div className="v2-basic" ref={root}>
+return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <article className="app-view active">
 <header className="app-header">
-<button className="icon-button" aria-label="Go back" onClick={()=>window.location.assign('/find-karaoke')}>{"‹"}</button>
+<button className="icon-button" aria-label="Go back" onClick={goBackToList}>{"‹"}</button>
 <img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" />
 <button className="icon-button" aria-label="Share venue" data-toast="Share options opened">{"↗"}</button>
 </header>
-<div className="content">
+<nav className="basic-browse-nav" aria-label="Primary"><Link href="/">Discover</Link><Link href="/find-karaoke">Venues</Link><Link href="/hosts">Hosts</Link><Link href="/hotel">Hotels</Link><Link href="/account">My SingHUB</Link></nav><div className="content">
 <section className="section">
 <span className="tier-badge">{"BASIC PROFILE"}</span>
 <h1>{venue.venueName}</h1>

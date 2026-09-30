@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useRef,useState } from 'react';
 import { useV2Actions,useViewerInitials } from './actions';
+import { goBackToList } from './listReturn';
 import { makeVenueRow,usable } from '@/lib/v2/presentation';
 import { VenueFeatures,VenueSpecials,VenueBoard,VenueFeedback } from './VenueModules';
 import type { VenueTemplateProps } from './VenueModules';
@@ -14,15 +15,15 @@ const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials()
 const heroUrl=enhancement?.heroImageUrl||venue.bannerImageUrl;
 const photos=heroUrl ? [{url:heroUrl,alt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName},...(enhancement?.gallery||[]).filter(item=>item.url!==heroUrl)] : enhancement?.gallery||[];
 const [photoIndex,setPhotoIndex]=useState(0);const photo=photos[Math.min(photoIndex,Math.max(0,photos.length-1))];
-const actions=useV2Actions(root,{venue,events});
+const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl});
 const selectPhoto=(index:number)=>{const images=root.current?.querySelectorAll<HTMLElement>('#hero-image,#gallery-main');images?.forEach(image=>image.style.opacity='.25');setTimeout(()=>{setPhotoIndex(index);images?.forEach(image=>image.style.opacity='1');},120);};
 void actions;
 
 return <div className="v2-enhanced" ref={root}>
 
-<header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link href="/">{"Discover"}</Link><a className="active" href="/find-karaoke">{"Venues"}</a><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
+<header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link href="/">{"Discover"}</Link><a className="active" href="/find-karaoke">{"Venues"}</a><Link href="/hosts">{"Hosts"}</Link><Link href="/hotel">{"Hotels"}</Link><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
 <main className="page">
-<p className="breadcrumbs"><Link href="/find-karaoke">Venues</Link>{" / "}{venue.neighborhood+' / '+venue.venueName}</p>
+<p className="breadcrumbs"><button className="venue-back" onClick={goBackToList}>‹ Venues</button>{" / "}{venue.neighborhood+' / '+venue.venueName}</p>
 <section className="hero" aria-labelledby="venue-name">
 <div className={'hero-media'+(photo ? '' : ' no-media')}><img id="hero-image" src={photo?.url} alt={photo?.alt || venue.venueName} /><span className="status">{row.trust}</span><span className="photo-count" id="counter" hidden={photos.length < 2}>{photos.length ? (photoIndex+1)+' / '+photos.length : ''}</span><div className="identity"><h1 id="venue-name">{venue.venueName}</h1><p>{[venue.neighborhood, row.trust].filter(Boolean).join(' · ')}</p><div className="identity-tags">{row.tags.map(tag=><span key={tag}>{tag}</span>)}</div></div></div>
 <aside className="tonight" id="tonight"><div className="live"><i hidden={!row.tonight}></i>{row.tonight ? 'LIVE TONIGHT' : 'KARAOKE SCHEDULE'}</div><div className="tonight-main"><p className="eyebrow">{weekday.toUpperCase()}</p><h2>{"KARAOKE"}</h2><p className="event-time">{row.tonightTime}</p><p className="muted">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Walk in and join the room.' : 'Check the weekly schedule before heading out.'}</p></div><div><button className="singhere-action" aria-label="SingHERE tonight" data-toast="SingHERE check-in opened"><img src="/images/singhub-v2/singhere-neon-transparent.png" alt="" aria-hidden="true" /></button><div className="subactions"><button data-toast="Directions opened">{"Directions"}</button><button data-toast="Venue saved">{"Save"}</button><button data-toast="Share options opened">{"Share"}</button></div><button className="offer-action" data-toast="Venue offers are coming soon">{"Unlock venue offer "}<span>{"Coming soon"}</span></button></div></aside>
@@ -42,7 +43,7 @@ return <div className="v2-enhanced" ref={root}>
 </div>
 </main>
 <footer><span>{enhancement?.heroImageUrl ? 'Venue imagery supplied through SingHUB.' : 'SingHUB venue information'}</span><span>{"SingHUB venue profile"}</span></footer>
-<nav className="mobile-nav" aria-label="Mobile navigation"><Link href="/"><b>{"⌕"}</b>{"Discover"}</Link><a className="active" href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
+<nav className="mobile-nav" aria-label="Mobile navigation"><Link href="/"><b>{"⌕"}</b>{"Discover"}</Link><a className="active" href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><Link href="/hosts"><b>{"♪"}</b>{"Hosts"}</Link><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
 <div className="toast" role="status" aria-live="polite"></div>
 
 

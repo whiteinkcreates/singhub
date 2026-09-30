@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getHotelGuideWithMedia } from "@/lib/hotelProfiles.server";
 import { HotelGuideTemplate } from "@/components/v2/HotelGuideTemplate";
 import { makeVenueRow,type HotelRowData } from "@/lib/v2/presentation";
 import { getKaraokeEventListings } from "@/lib/eventData";
@@ -65,7 +66,8 @@ function standoutReason(
     .join(" ")
     .toLowerCase();
 
-  if (/live[- ]?band karaoke/.test(evidence)) return "Live-band karaoke";
+  const liveBandDays=[...new Set(events.filter(event=>/live[- ]?band karaoke/i.test([event.eventNotes,event.hostName].join(" "))).map(event=>event.karaokeDay.slice(0,3)))];
+  if (liveBandDays.length) return "Live-band karaoke · "+liveBandDays.join(" / ");
   if (/full[- ]?stage/.test(evidence)) return "Full-stage karaoke";
 
   return undefined;
@@ -125,7 +127,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function HotelGuidePage({ params }: Props) {
   const { slug } = await params;
-  const hotel = getHotelGuide(slug);
+  const hotel = await getHotelGuideWithMedia(slug);
   if (!hotel) notFound();
 
   const [allVenues, allEvents] = await Promise.all([
@@ -215,6 +217,8 @@ export default async function HotelGuidePage({ params }: Props) {
       hotelSlug={hotel.slug}
       hotelArea={hotel.area==='downtown'?'San Diego · Gaslamp Quarter':hotel.area==='la-jolla'?'San Diego · La Jolla':'San Diego · La Mesa'}
       heroImageUrl={hotel.heroImageUrl}
+      heroAlt={hotel.heroAlt}
+      heroPosition={hotel.heroPosition}
       tonightVenues={tonightVenues}
       weekVenues={weekVenues}
       weeklyCount={allEvents.filter(event=>venues.some(venue=>venue.slug===event.venueSlug)).length}

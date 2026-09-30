@@ -9,6 +9,8 @@ export type HotelGuide = {
   latitude: number;
   longitude: number;
   heroImageUrl?: string;
+  heroAlt?: string;
+  heroPosition?: import("@/lib/venueEnhancements").HeroPosition;
   wordmarkImageUrl?: string;
   wordmarkSourceUrl?: string;
   wordmarkStatus?: "ready" | "cleanup" | "partner-file";

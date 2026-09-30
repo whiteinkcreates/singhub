@@ -6,6 +6,7 @@ import { ProductionChrome } from "@/components/layout/ProductionChrome";
 import { PwaInstallManager } from "@/components/pwa/PwaInstallManager";
 import { PwaRegister } from "@/components/pwa/PwaRegister";
 import "./globals.css";
+import "@/components/v2/styles/review-revisions.css";
 
 const siteTitle = "SingHUB | Find Karaoke Near You";
 const siteDescription =

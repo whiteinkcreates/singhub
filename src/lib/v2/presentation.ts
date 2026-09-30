@@ -23,11 +23,16 @@ export function makeVenueRow(venue:VenueListing,events:KaraokeEventListing[],wee
   const verified=venue.listingStatus==='verified';
   const kind=venue.venueType==='private_room'?'Private rooms':venue.venueType==='event_producer'?'Karaoke events':'Karaoke bar';
   const rhythm=venue.venueType==='private_room'?'Private rooms':nightCount===7?'Every night':nightCount?nightCount+' nights':'Schedule pending';
-  const tags=[nightCount===7?'Seven nights':nightCount?nightCount+' nights':'',...venue.vibeTags,usable(venue.agePolicy)].filter(Boolean);
+  const liveBandEvents=events.filter(event=>/live[- ]?band/i.test([event.eventNotes,event.hostName].join(' ')));
+  const liveBandDays=[...new Set(liveBandEvents.map(event=>event.karaokeDay.slice(0,3)))];
+  const everydayTags=venue.vibeTags.filter(tag=>!/^live[- ]?band/i.test(tag)&&!/(monday|tuesday|wednesday|thursday|friday|saturday|sunday) karaoke/i.test(tag)&&tag.toLowerCase()!==venue.neighborhood.toLowerCase());
+  const tags=[nightCount===7?'Seven nights':nightCount?nightCount+' nights':'',liveBandDays.length?'Live band '+liveBandDays.join(' / '):'',...everydayTags,usable(venue.agePolicy)].filter(Boolean);
+  const liveBandTonight=liveBandEvents.some(event=>today.includes(event));
+  const tonightTags=[nightCount===7?'Seven nights':nightCount?nightCount+' nights':'',liveBandTonight?'Live band tonight':'',...everydayTags,usable(venue.agePolicy)].filter(Boolean).slice(0,4);
   const photo=venue.bannerImageUrl || enhancement?.heroImageUrl;
-  const liveBand=events.find(event=>/live[- ]?band/i.test(event.eventNotes||''));
+  const liveBand=liveBandEvents[0];
   const search=[venue.venueName,venue.neighborhood,venue.city,venue.description,kind,...tags,photo?'photos':'',venue.venueType==='private_room'?'private rooms':'public stage',...events.map(event=>event.hostName||''),liveBand?'live band':''].join(' ').toLowerCase().replaceAll('lgbtq+','lgbtq');
-  return {venue,events,tonight:today[0],nightCount,kind,rhythm,tags:tags.slice(0,4),photo,photoAlt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName,
+  return {venue,events,tonight:today[0],nightCount,kind,rhythm,tags:tags.slice(0,4),tonightTags,liveBandTonight,photo,photoAlt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName,
     trust:verified?'✓ Verified karaoke':venue.listingStatus==='claimed'?'Updated listing':'Schedule awaiting verification',
     verification:date?(verified?'Verified ':'Updated ')+new Date(date.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}):'Verification date pending',
     verificationDate:date,tonightTime:today[0]?usable(today[0].startTime)||'Time pending':venue.venueType==='private_room'?'Reserve a room':'No confirmed karaoke tonight',

@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useRef, useState } from 'react';
 import { useV2Actions, useViewerInitials } from './actions';
+import { useListReturn } from './listReturn';
 import { DiscoveryRow } from './VenueRows';
 import { filterRows, type VenueRowData } from '@/lib/v2/presentation';
 
@@ -14,11 +15,12 @@ const [mode,setMode]=useState<'tonight'|'week'>('tonight'); const [query,setQuer
 const [filter,setFilter]=useState('All karaoke'); const [dismissedHotel,setDismissedHotel]=useState(false);
 const [position,setPosition]=useState<{latitude:number;longitude:number}|null>(null);
 const actions=useV2Actions(root,{venues:rows.map(row=>row.venue)}); const selectFilter=(label:string)=>{setFilter(label);if(label==='Near me')navigator.geolocation?.getCurrentPosition(p=>setPosition({latitude:p.coords.latitude,longitude:p.coords.longitude}),()=>actions.toast('Location access is unavailable. Search by neighborhood.'));if(label==='Neighborhood')root.current?.querySelector<HTMLInputElement>('#venue-search')?.focus();};
+useListReturn({mode,query,filter,position,dismissedHotel},saved=>{if(typeof saved?.query==='string')setQuery(saved.query);if(saved?.mode==='tonight'||saved?.mode==='week')setMode(saved.mode);if(typeof saved?.filter==='string')setFilter(saved.filter);setPosition(saved?.position||null);setDismissedHotel(Boolean(saved?.dismissedHotel));});
 const visible=filterRows(rows,query,filter,mode,position);
 
 return <div className={"v2-discovery"+(mode === "week" ? " week-mode" : "")} ref={root}>
 
-<header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link className="active" href="/">{"Discover"}</Link><a href="/find-karaoke">{"Venues"}</a><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
+<header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link className="active" href="/">{"Discover"}</Link><a href="/find-karaoke">{"Venues"}</a><Link href="/hosts">{"Hosts"}</Link><Link href="/hotel">{"Hotels"}</Link><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
 <main id="discovery">
 <section className="world-window" aria-labelledby="discovery-title"><img className="world-photo" src="/images/singhub-v2/singhub-city-discovery.webp" alt="" aria-hidden="true" /><div className="city-pins" aria-hidden="true"><img className="city-pin pin-1" src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" /><img className="city-pin pin-2" src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" /><img className="city-pin pin-3" src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" /><img className="city-pin pin-4" src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" /><img className="city-pin pin-5" src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" /></div><div className="world-inner"><div className="world-copy"><p className="eyebrow">{"SAN DIEGO KARAOKE"}</p><h1 id="discovery-title">{"Find your mic tonight."}</h1><p>{"Verified karaoke schedules, room types and local context without digging through three social feeds first."}</p></div></div></section>
 <section className="discovery" aria-label="Karaoke discovery">
@@ -32,7 +34,7 @@ return <div className={"v2-discovery"+(mode === "week" ? " week-mode" : "")} ref
 
 </section>
 </main>
-<nav className="mobile-nav" aria-label="Mobile navigation"><Link className="active" href="/"><b>{"⌕"}</b>{"Discover"}</Link><a href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
+<nav className="mobile-nav" aria-label="Mobile navigation"><Link className="active" href="/"><b>{"⌕"}</b>{"Discover"}</Link><a href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><Link href="/hosts"><b>{"♪"}</b>{"Hosts"}</Link><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
 <div className="toast" role="status" aria-live="polite"></div>
 
 

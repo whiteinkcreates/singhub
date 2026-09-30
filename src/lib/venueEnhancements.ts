@@ -29,6 +29,7 @@ export type VenueEnhancement = {
   about?: string;
   phone?: string;
   menuUrl?: string;
+  singerSignupUrl?: string;
   heroImageUrl?: string;
   heroImageAlt?: string;
   heroPosition?: HeroPosition;

@@ -1,16 +1,19 @@
 /* Literal port of authoritative Site v37. Preserve markup and CSS relationships. */
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import { HotelHero } from "./HotelHero";
 import Link from "next/link";
 import { useCallback,useEffect,useRef,useState,type FormEvent } from 'react';
 import { useV2Actions,useViewerInitials } from './actions';
+import { useListReturn } from './listReturn';
 import { HotelVenueCard } from './VenueRows';
 import { selectHotelStandouts,type HotelRowData } from '@/lib/v2/presentation';
 
 import {accountClient,saveHotelPlan,sendAccountLink} from '@/lib/v2/singerAccount';
 import "./styles/hotel.css";
-export function HotelGuideTemplate({hotelName,hotelShortName,hotelSlug,hotelArea,heroImageUrl,tonightVenues,weekVenues,weeklyCount,tonightCount}:{hotelName:string;hotelShortName:string;hotelSlug:string;hotelArea:string;heroImageUrl?:string;tonightVenues:HotelRowData[];weekVenues:HotelRowData[];weeklyCount:number;tonightCount:number}) {
+export function HotelGuideTemplate({hotelName,hotelShortName,hotelSlug,hotelArea,heroImageUrl,heroAlt,heroPosition,tonightVenues,weekVenues,weeklyCount,tonightCount}:{hotelName:string;hotelShortName:string;hotelSlug:string;hotelArea:string;heroImageUrl?:string;heroAlt?:string;heroPosition?:string;tonightVenues:HotelRowData[];weekVenues:HotelRowData[];weeklyCount:number;tonightCount:number}) {
 const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();const [mode,setMode]=useState<'tonight'|'week'>('tonight');const [planVenue,setPlanVenue]=useState<HotelRowData|null>(null);
+useListReturn({mode},saved=>{if(saved?.mode==='tonight'||saved?.mode==='week')setMode(saved.mode);});
 const active=mode==='tonight'?tonightVenues:weekVenues;const groups={walkable:active.filter(item=>item.tier==='walkable'),quick:active.filter(item=>item.tier==='quick'),standout:selectHotelStandouts(active)};
 const actions=useV2Actions(root,{venues:active.map(row=>row.venue)});const {toast}=actions;
 const [savedPlans,setSavedPlans]=useState<string[]>([]);const [email,setEmail]=useState('');const [saving,setSaving]=useState(false);
@@ -23,9 +26,9 @@ useEffect(()=>{const listener=(event:KeyboardEvent)=>{if(event.key==='Escape')se
 
 return <div className={"v2-hotel"+(mode === "week" ? " week-mode" : "")} ref={root}>
 
-<header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link href="/">{"Discover"}</Link><a className="active" href={"/hotel/"+hotelSlug}>{"Hotel guide"}</a><a href="/find-karaoke">{"Venues"}</a><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
+<header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link href="/">{"Discover"}</Link><a className="active" href={"/hotel/"+hotelSlug}>{"Hotel guide"}</a><a href="/find-karaoke">{"Venues"}</a><Link href="/hosts">{"Hosts"}</Link><Link href="/hotel">{"Hotels"}</Link><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
 <main>
-<section className="hero" aria-labelledby="hotel-name"><img className="hero-photo" src={heroImageUrl || undefined} alt={hotelName+' exterior'} /><div className="hero-inner"><div className="hero-lockup"><div className="hotel-id"><div className="relationship-line"><img className="relationship-wordmark" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /><img className="hero-at" src="/images/singhub-v2/hotel-at-mark-transparent.png" alt="at" /></div><h1 id="hotel-name">{hotelShortName}</h1><p className="hero-meta">{hotelArea}</p></div></div></div></section>
+<HotelHero hotelName={hotelName} hotelShortName={hotelShortName} hotelArea={hotelArea} heroImageUrl={heroImageUrl} heroAlt={heroAlt} heroPosition={heroPosition} />
 <div className="experience-shell">
 <section className="concierge" aria-labelledby="welcome-title"><div className="concierge-inner"><div><p className="eyebrow">{'CURATED FOR GUESTS OF '+hotelShortName.toUpperCase()}</p><h2 id="welcome-title">{"New in town? Looking for a mic? Let me show you where San Diego really sings."}</h2></div><div className="concierge-copy"><p>{'San Diego has '+weeklyCount+' confirmed karaoke nights this week. Tonight, SingHUB has '+tonightCount+' live-karaoke listings to choose from.'}</p><p>{"Take a look at a few nearby options and plan your own local gig tour."}</p></div></div></section>
 <section className="guide" aria-labelledby="guide-title">
@@ -40,8 +43,8 @@ return <div className={"v2-hotel"+(mode === "week" ? " week-mode" : "")} ref={ro
 </section>
 </div>
 </main>
-<nav className="mobile-nav" aria-label="Mobile navigation"><Link href="/"><b>{"⌕"}</b>{"Discover"}</Link><a className="active" href={"/hotel/"+hotelSlug}><b>{"@"}</b>{"Hotel"}</a><a href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
-<div className="plan-modal" id="plan-modal" hidden={!planVenue} onClick={event=>{if(event.target===event.currentTarget)setPlanVenue(null);}}><section className="plan-dialog" role="dialog" aria-modal="true" aria-labelledby="plan-title"><button className="plan-close" type="button" aria-label="Close" onClick={()=>setPlanVenue(null)}>{"×"}</button><p className="eyebrow">{"YOUR LOCAL GIG TOUR"}</p><h2 id="plan-title">{"Add "}<span id="plan-venue">{planVenue?.name || 'this venue'}</span>{" to your plan."}</h2><p>{"Enter your email and we’ll keep your karaoke picks together for this trip."}</p><form className="plan-form" onSubmit={submitPlan}><label htmlFor="plan-email">{"Email address"}</label><input id="plan-email" type="email" value={email} onChange={event=>setEmail(event.target.value)} autoComplete="email" placeholder="you@example.com" required /><label className="plan-check"><input id="save-hotel" name="saveHotel" type="checkbox" defaultChecked /><span>{'Save '+hotelShortName+' with this trip so your hotel guide is waiting in My SingHUB.'}</span></label><button className="plan-submit" type="submit" disabled={saving}>{saving?'Saving…':'Save my plan'}</button><p className="plan-privacy">{"We’ll use this email to save and send your plan. No marketing opt-in is implied."}</p></form></section></div>
+<nav className="mobile-nav" aria-label="Mobile navigation"><Link href="/"><b>{"⌕"}</b>{"Discover"}</Link><a className="active" href={"/hotel/"+hotelSlug}><b>{"@"}</b>{"Hotel"}</a><a href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><Link href="/hosts"><b>{"♪"}</b>{"Hosts"}</Link><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
+<div className="plan-modal" id="plan-modal" hidden={!planVenue} onClick={event=>{if(event.target===event.currentTarget)setPlanVenue(null);}}><section className="plan-dialog" role="dialog" aria-modal="true" aria-labelledby="plan-title"><button className="plan-close" type="button" aria-label="Close" onClick={()=>setPlanVenue(null)}>{"×"}</button><p className="eyebrow">{"YOUR LOCAL GIG TOUR"}</p><h2 id="plan-title">{"Add "}<span id="plan-venue">{planVenue?.name || 'this venue'}</span>{" to your plan."}</h2><p>{"Enter your email and we’ll keep your karaoke picks together for this trip."}</p><form className="plan-form" onSubmit={submitPlan}><label htmlFor="plan-email">{"Email address"}</label><input id="plan-email" type="email" value={email} onChange={event=>setEmail(event.target.value)} autoComplete="email" placeholder="you@example.com" required /><label className="plan-check"><input id="save-hotel" name="saveHotel" type="checkbox" defaultChecked /><span>{'Save '+hotelShortName+' with this trip so your hotel guide is waiting in My SingHUB.'}</span></label><button className="plan-submit" type="submit" disabled={saving}>{saving?'Saving…':'Save my plan'}</button><p className="plan-privacy">{"We’ll email a sign-in link so you can save your plan to My SingHUB. No marketing opt-in is implied."}</p></form></section></div>
 <div className="toast" role="status" aria-live="polite"></div>
 
 

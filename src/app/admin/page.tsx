@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 const tools = [
+  { href: "/admin/hotels", eyebrow: "Hotel Partnerships", title: "Hotel Media", description: "Choose or upload hotel hero images, preview desktop and mobile crops, and save hotel media settings." },
   {
     href: "/admin/daily-mic",
     eyebrow: "Social Acquisition",
