@@ -45,6 +45,17 @@ function validHttpUrl(value) {
   return !text || /^https?:\/\/\S+$/i.test(text);
 }
 
+function validBannerImageUrl(value) {
+  const text = clean(value);
+  if (validHttpUrl(text)) return true;
+  // Canonical snapshots already use local images, e.g. The North Bar. Keep
+  // those identities intact, but require an existing file under public/images.
+  if (!text.startsWith("/images/") || /[?#\\]/.test(text)) return false;
+  const root = path.resolve(ROOT, "public", "images");
+  const file = path.resolve(ROOT, "public", "." + text);
+  return file.startsWith(root + path.sep) && fs.existsSync(file) && fs.statSync(file).isFile();
+}
+
 function publicSchemaFailures(venues, events) {
   const failures = [];
 
@@ -56,8 +67,8 @@ function publicSchemaFailures(venues, events) {
     if (!validIsoDate(venue.last_verified)) {
       failures.push(`${label}: last_verified must use YYYY-MM-DD`);
     }
-    if (!validHttpUrl(venue.banner_image_url)) {
-      failures.push(`${label}: banner_image_url is not an HTTP(S) URL`);
+    if (!validBannerImageUrl(venue.banner_image_url)) {
+      failures.push(`${label}: banner_image_url must be an HTTP(S) URL or an existing public/images file`);
     }
     if (clean(venue.is_featured) && !booleanCell(venue.is_featured)) {
       failures.push(`${label}: is_featured must be boolean`);

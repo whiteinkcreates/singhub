@@ -1,0 +1,180 @@
+/* Original declarations and media queries are retained verbatim; selectors are scoped. */
+.v2-account { min-height:100vh; line-height:normal; font-size:16px; isolation:isolate; }
+.v2-account :where(*) { all:revert; box-sizing:border-box; }
+
+    .v2-account { color-scheme:dark; --bg:#050609; --surface:#0d1117; --surface-2:#141922; --line:#2a303a; --line-hi:#46515e; --text:#f7f8fb; --muted:#9da7b5; --cyan:#00c8ff; --pink:#ff19a8; --gold:#ffce4e; --sans:"Barlow",sans-serif; --display:"Barlow Condensed",sans-serif; }
+    .v2-account * { box-sizing:border-box; }
+    .v2-account { scroll-behavior:smooth; }
+    .v2-account { margin:0; min-width:320px; overflow-x:hidden; background:var(--bg); color:var(--text); font-family:var(--sans); }
+    .v2-account button,.v2-account a { font:inherit; } .v2-account button { color:inherit; } .v2-account a { color:inherit; } .v2-account img { display:block; max-width:100%; }
+    .v2-account button:focus-visible,.v2-account a:focus-visible { outline:3px solid var(--cyan); outline-offset:3px; }
+    .v2-account .appbar { position:fixed; inset:0 0 auto; z-index:60; display:grid; grid-template-columns:auto 1fr auto; align-items:center; min-height:70px; padding:7px clamp(18px,4vw,54px); border-bottom:1px solid rgba(255,255,255,.1); background:linear-gradient(180deg,rgba(4,5,8,.96),rgba(4,5,8,.72)); backdrop-filter:blur(18px); }
+    .v2-account .logo { width:128px; height:52px; object-fit:contain; }
+    .v2-account .primary-nav { display:flex; justify-content:center; gap:5px; }
+    .v2-account .primary-nav a { padding:10px 13px; color:var(--muted); text-decoration:none; font-size:.87rem; font-weight:700; }
+    .v2-account .primary-nav a:hover,.v2-account .primary-nav a.active { color:white; box-shadow:inset 0 -2px var(--pink); }
+    .v2-account .account { display:flex; align-items:center; gap:10px; color:white; text-decoration:none; font-size:.84rem; font-weight:800; }
+    .v2-account .avatar { display:grid; place-items:center; width:36px; height:36px; border:1px solid rgba(255,25,168,.62); border-radius:50%; background:rgba(255,25,168,.1); font-style:normal; }
+    .v2-account .hero { position:relative; min-height:min(690px,78svh); display:flex; align-items:flex-end; overflow:hidden; isolation:isolate; background:#050609 url("/images/singhub-v2/my-singhub-backstage-crowd-v2.png") 52% center/cover no-repeat; }
+    .v2-account .hero:before { content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(90deg,rgba(2,3,6,.93) 0%,rgba(2,3,6,.7) 34%,rgba(2,3,6,.1) 66%,rgba(2,3,6,.2) 100%),linear-gradient(0deg,#050609 0%,rgba(2,3,6,.24) 38%,rgba(0,0,0,.08) 100%); }
+    .v2-account .hero:after { content:""; position:absolute; inset:0; z-index:-1; opacity:.16; pointer-events:none; background-image:radial-gradient(circle,rgba(255,255,255,.35) 0,.55px,transparent .8px); background-size:5px 5px; mix-blend-mode:soft-light; }
+    .v2-account .hero-inner { position:relative; z-index:3; width:min(1180px,calc(100% - 40px)); margin:0 auto; padding:132px 0 74px; }
+    .v2-account .eyebrow { margin:0 0 9px; color:var(--pink); font-size:.72rem; font-weight:900; letter-spacing:.18em; text-transform:uppercase; }
+    .v2-account .hero h1 { max-width:560px; margin:0; font-family:var(--display); font-size:clamp(4.5rem,8.4vw,7.4rem); line-height:.77; letter-spacing:-.045em; text-transform:uppercase; }
+    .v2-account .hero-sub { max-width:500px; margin:22px 0 0; color:#d3d9e2; font-size:1.04rem; line-height:1.5; }
+    .v2-account .alias { display:flex; align-items:center; gap:11px; width:max-content; max-width:100%; margin-top:25px; padding:11px 13px; border:1px solid rgba(255,255,255,.18); background:rgba(7,9,13,.68); backdrop-filter:blur(12px); }
+    .v2-account .alias span { color:var(--muted); font-size:.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    .v2-account .alias strong { font-size:.86rem; }
+    .v2-account .alias button { border:0; background:none; color:var(--cyan); cursor:pointer; font-size:.72rem; font-weight:850; }
+    .v2-account .hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+    .v2-account .button { min-height:46px; padding:0 18px; border:1px solid rgba(255,255,255,.22); background:rgba(8,10,14,.78); cursor:pointer; font-size:.79rem; font-weight:900; letter-spacing:.02em; }
+    .v2-account .button.primary { border-color:rgba(255,25,168,.75); background:linear-gradient(135deg,#d70085,#ff19a8); box-shadow:0 8px 30px rgba(255,25,168,.22); color:white; }
+    .v2-account .button:hover { border-color:var(--cyan); }
+    .v2-account .scroll-note { position:absolute; left:50%; bottom:18px; transform:translateX(-50%); color:rgba(255,255,255,.62); font-size:.67rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    .v2-account .jacket-layer { position:relative; width:100%; aspect-ratio:1199/1312; }
+    .v2-account .jacket-layer>img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none; }
+    .v2-account .patch-slot { position:absolute; width:8.2%; aspect-ratio:1; transform:translate(-50%,-50%) rotate(var(--r,0deg)); border:1px dashed rgba(210,222,235,.35); border-radius:14%; background:rgba(7,9,13,.17); box-shadow:inset 0 0 0 1px rgba(0,0,0,.34); cursor:default; }
+    .v2-account .patch-slot.empty:after { content:"+"; position:absolute; inset:0; display:grid; place-items:center; color:rgba(235,242,250,.28); font-size:clamp(.45rem,1vw,.72rem); font-weight:900; }
+    .v2-account .patch-slot.earned { border:0; background-image:url("/images/singhub-v2/achievement-patch-direction.png"); background-repeat:no-repeat; background-size:400% auto; box-shadow:0 4px 8px rgba(0,0,0,.55); }
+    .v2-account .patch-slot.p1 { background-position:0% 16%; } .v2-account .patch-slot.p2 { background-position:33.333% 16%; } .v2-account .patch-slot.p3 { background-position:66.666% 16%; } .v2-account .patch-slot.p4 { background-position:100% 16%; } .v2-account .patch-slot.p5 { background-position:0% 36%; } .v2-account .patch-slot.p6 { background-position:33.333% 36%; }
+    .v2-account .performance-star { position:absolute; z-index:3; transform:translate(-50%,-50%) rotate(var(--r,0deg)); color:var(--gold); font-size:clamp(.48rem,1.1vw,.86rem); line-height:1; text-shadow:0 1px 2px #000,0 0 7px rgba(255,206,78,.6); pointer-events:none; }
+    .v2-account .surface { position:relative; z-index:5; width:min(1180px,calc(100% - 34px)); margin:-34px auto 110px; }
+    .v2-account .career-strip { display:grid; grid-template-columns:1.35fr repeat(4,.65fr); border:1px solid var(--line-hi); border-top-color:#657181; background:linear-gradient(145deg,rgba(27,33,42,.98),rgba(10,13,18,.98)); box-shadow:0 28px 65px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.09); }
+    .v2-account .career-name,.v2-account .metric { min-height:94px; padding:18px 20px; border-left:1px solid var(--line); }
+    .v2-account .career-name { border-left:0; }
+    .v2-account .career-name strong { display:block; font-family:var(--display); font-size:1.75rem; line-height:1; }
+    .v2-account .career-name span,.v2-account .metric span { display:block; margin-top:6px; color:var(--muted); font-size:.72rem; }
+    .v2-account .metric strong { display:block; font-family:var(--display); font-size:1.72rem; line-height:1; }
+    .v2-account .metric.star strong { color:var(--gold); }
+    .v2-account .section-nav { position:sticky; top:70px; z-index:30; display:flex; gap:3px; margin:16px 0; padding:5px; overflow-x:auto; border:1px solid var(--line); background:rgba(10,13,18,.94); backdrop-filter:blur(16px); scrollbar-width:none; }
+    .v2-account .section-nav::-webkit-scrollbar { display:none; }
+    .v2-account .section-nav a { flex:1 0 auto; min-width:125px; padding:12px 14px; color:var(--muted); text-align:center; text-decoration:none; font-size:.79rem; font-weight:850; }
+    .v2-account .section-nav a:first-child { background:var(--surface-2); color:white; box-shadow:inset 0 -2px var(--pink); }
+    .v2-account .panel { overflow:hidden; border:1px solid var(--line); background:var(--surface); }
+    .v2-account .panel-bevel { border-color:#38414d; border-top-color:#5e6a79; border-left-color:#4b5664; background:linear-gradient(145deg,#181d25,#0c1016 64%); box-shadow:inset 0 1px rgba(255,255,255,.08),0 18px 42px rgba(0,0,0,.28); }
+    .v2-account .panel-head { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding:20px 22px; border-bottom:1px solid var(--line); }
+    .v2-account .panel-head h2 { margin:0; font-family:var(--display); font-size:2.2rem; line-height:.92; text-transform:uppercase; }
+    .v2-account .panel-head p { margin:8px 0 0; color:var(--muted); font-size:.82rem; line-height:1.45; }
+    .v2-account .text-button { align-self:center; border:0; background:none; color:var(--cyan); cursor:pointer; font-size:.75rem; font-weight:900; white-space:nowrap; }
+    .v2-account .jacket-console { display:grid; grid-template-columns:1.08fr .92fr; margin-bottom:18px; }
+    .v2-account .jacket-view { min-height:390px; display:grid; grid-template-columns:.86fr 1.14fr; align-items:center; gap:12px; padding:26px; background:linear-gradient(90deg,rgba(5,7,10,.98),rgba(5,7,10,.54)),url("/images/singhub-v2/backstage-empty.png") center/cover; }
+    .v2-account .jacket-view h2 { max-width:420px; margin:5px 0 0; font-family:var(--display); font-size:clamp(3.5rem,6vw,5.7rem); line-height:.8; text-transform:uppercase; }
+    .v2-account .jacket-view p:not(.eyebrow) { max-width:410px; margin:19px 0 0; color:#c8d0da; line-height:1.55; }
+    .v2-account .jacket-view .button { margin-top:25px; }
+    .v2-account .jacket-thumb { min-width:0; filter:drop-shadow(0 18px 30px rgba(0,0,0,.68)); }
+    .v2-account .patch-board { display:flex; flex-direction:column; min-width:0; border-left:1px solid var(--line-hi); }
+    .v2-account .patch-top { display:flex; justify-content:space-between; gap:15px; padding:19px 20px; border-bottom:1px solid var(--line); }
+    .v2-account .patch-top strong { font-family:var(--display); font-size:1.35rem; text-transform:uppercase; }
+    .v2-account .patch-top span { color:var(--muted); font-size:.72rem; }
+    .v2-account .patches { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; flex:1; background:var(--line); }
+    .v2-account .patch { position:relative; min-height:104px; padding:17px; background:#0c1016; }
+    .v2-account .patch:before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:linear-gradient(var(--pink),var(--cyan)); }
+    .v2-account .patch b { display:block; font-size:.83rem; }
+    .v2-account .patch span { display:block; margin-top:6px; color:var(--muted); font-size:.7rem; }
+    .v2-account .patch.locked { opacity:.42; filter:saturate(.4); }
+    .v2-account .patch.locked:before { background:#5b6572; }
+    .v2-account .patch-rule { padding:13px 18px; border-top:1px solid var(--line); color:var(--muted); font-size:.72rem; }
+    .v2-account .skin-switch { display:flex; gap:5px; margin-left:auto; }
+    .v2-account .skin-switch button { min-height:30px; padding:0 9px; border:1px solid var(--line); background:#0a0d12; color:var(--muted); cursor:pointer; font-size:.66rem; font-weight:850; }
+    .v2-account .skin-switch button.active { border-color:var(--cyan); color:white; box-shadow:inset 0 -2px var(--cyan); }
+    .v2-account dialog { width:min(980px,calc(100% - 24px)); max-width:none; height:min(880px,calc(100svh - 24px)); padding:0; overflow:hidden; border:1px solid #4e5a68; background:#080b10; color:white; box-shadow:0 30px 100px rgba(0,0,0,.82); }
+    .v2-account dialog::backdrop { background:rgba(0,0,0,.84); backdrop-filter:blur(8px); }
+    .v2-account .modal-shell { height:100%; display:grid; grid-template-rows:auto 1fr auto; }
+    .v2-account .modal-head { display:flex; align-items:center; gap:14px; padding:14px 17px; border-bottom:1px solid var(--line); background:#0d1117; }
+    .v2-account .modal-head strong { font-family:var(--display); font-size:1.45rem; text-transform:uppercase; }
+    .v2-account .modal-head .skin-switch { margin-left:auto; }
+    .v2-account .icon-button { width:38px; height:38px; border:1px solid var(--line); background:#121720; cursor:pointer; font-size:1.15rem; }
+    .v2-account .jacket-viewport { min-height:0; overflow:auto; background:radial-gradient(circle at 50% 38%,rgba(255,25,168,.11),transparent 30%),radial-gradient(circle at 60% 42%,rgba(0,200,255,.1),transparent 32%),url("/images/singhub-v2/backstage-empty.png") center/cover; }
+    .v2-account .jacket-zoom { width:calc(520px * var(--zoom,1)); margin:18px auto 60px; transition:width .18s ease; filter:drop-shadow(0 28px 40px rgba(0,0,0,.75)); }
+    .v2-account .patch-detail { position:sticky; top:14px; z-index:12; width:min(270px,calc(100% - 28px)); margin:14px 14px -160px auto; padding:14px; border:1px solid #657181; background:rgba(9,12,17,.96); box-shadow:0 18px 45px rgba(0,0,0,.62); backdrop-filter:blur(16px); }
+    .v2-account .patch-detail[hidden] { display:none; }
+    .v2-account .patch-detail-top { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+    .v2-account .patch-detail-art { width:108px; aspect-ratio:1; margin:4px auto 13px; background-image:url("/images/singhub-v2/achievement-patch-direction.png"); background-repeat:no-repeat; background-size:400% auto; filter:drop-shadow(0 9px 12px rgba(0,0,0,.6)); }
+    .v2-account .patch-detail-art.p1 { background-position:0% 16%; } .v2-account .patch-detail-art.p2 { background-position:33.333% 16%; } .v2-account .patch-detail-art.p3 { background-position:66.666% 16%; } .v2-account .patch-detail-art.p4 { background-position:100% 16%; } .v2-account .patch-detail-art.p5 { background-position:0% 36%; } .v2-account .patch-detail-art.p6 { background-position:33.333% 36%; }
+    .v2-account .patch-detail h3 { margin:0; font-family:var(--display); font-size:1.65rem; line-height:.92; text-transform:uppercase; }
+    .v2-account .patch-detail p { margin:8px 0 0; color:var(--muted); font-size:.75rem; line-height:1.45; }
+    .v2-account .modal-foot { display:flex; align-items:center; gap:13px; padding:12px 16px; border-top:1px solid var(--line); background:#0d1117; }
+    .v2-account .modal-foot label { color:var(--muted); font-size:.72rem; font-weight:800; }
+    .v2-account .modal-foot input { flex:1; accent-color:var(--pink); }
+    .v2-account .modal-foot span { color:var(--muted); font-size:.7rem; }
+    .v2-account .content-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(300px,.72fr); gap:18px; align-items:start; }
+    .v2-account .stack { display:grid; gap:18px; }
+    .v2-account .song-list { padding:0 19px 8px; }
+    .v2-account .song-row { display:grid; grid-template-columns:38px minmax(0,1fr) auto; gap:13px; align-items:center; min-height:76px; border-bottom:1px solid var(--line); }
+    .v2-account .song-row:last-child { border-bottom:0; }
+    .v2-account .song-star { display:grid; place-items:center; width:34px; height:34px; border:1px solid rgba(255,25,168,.34); border-radius:50%; background:rgba(255,25,168,.07); color:var(--pink); }
+    .v2-account .song-row strong { display:block; font-size:.9rem; }
+    .v2-account .song-row p { margin:4px 0 0; color:var(--muted); font-size:.76rem; }
+    .v2-account .song-row time { color:var(--muted); font-size:.72rem; white-space:nowrap; }
+    .v2-account .free-rule { margin:12px 18px 18px; padding:12px 14px; border-left:2px solid var(--pink); background:#090c11; color:#cbd2dc; font-size:.76rem; line-height:1.45; }
+    .v2-account .venue-list { padding:2px 18px 9px; }
+    .v2-account .venue-row { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; min-height:68px; border-bottom:1px solid var(--line); }
+    .v2-account .venue-row:last-child { border-bottom:0; }
+    .v2-account .venue-row strong { display:block; font-size:.84rem; }
+    .v2-account .venue-row span { display:block; margin-top:3px; color:var(--muted); font-size:.72rem; }
+    .v2-account .venue-row button { border:0; background:none; color:var(--cyan); cursor:pointer; font-size:.72rem; font-weight:850; }
+    .v2-account .share-panel { padding:22px; background:radial-gradient(circle at 95% 10%,rgba(255,25,168,.15),transparent 42%),linear-gradient(145deg,#151a22,#0b0e13); }
+    .v2-account .share-panel h2 { margin:3px 0 0; font-family:var(--display); font-size:2.45rem; line-height:.86; text-transform:uppercase; }
+    .v2-account .share-panel>p:not(.eyebrow) { margin:14px 0 0; color:var(--muted); font-size:.8rem; line-height:1.5; }
+    .v2-account .caption { margin-top:17px; padding:14px; border:1px solid var(--line); background:#090c11; color:#e1e6ed; font-size:.8rem; line-height:1.45; }
+    .v2-account .caption b { color:var(--pink); }
+    .v2-account .share-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+    .v2-account .share-actions .button { padding:0 9px; }
+    .v2-account .share-note { margin-top:10px!important; font-size:.68rem!important; }
+    .v2-account .merch-panel { display:grid; grid-template-columns:1fr auto; gap:20px; align-items:center; padding:22px; background:radial-gradient(circle at 92% 18%,rgba(0,200,255,.13),transparent 38%),linear-gradient(145deg,#151a22,#0b0e13); }
+    .v2-account .merch-panel h2 { margin:3px 0 0; font-family:var(--display); font-size:2.25rem; line-height:.88; text-transform:uppercase; }
+    .v2-account .merch-panel>div>p:not(.eyebrow) { max-width:38ch; margin:13px 0 0; color:var(--muted); font-size:.8rem; line-height:1.5; }
+    .v2-account .merch-panel .button { min-width:168px; border-color:rgba(0,200,255,.38); color:var(--cyan); cursor:not-allowed; }
+    .v2-account .coming-soon { display:block; margin-top:3px; color:var(--muted); font-size:.58rem; letter-spacing:.11em; text-transform:uppercase; }
+    .v2-account .premium-panel { display:grid; grid-template-columns:.72fr 1.28fr; margin-top:18px; }
+    .v2-account .premium-intro { padding:29px; border-right:1px solid var(--line); background:radial-gradient(circle at 10% 15%,rgba(0,200,255,.12),transparent 55%),#0b0f15; }
+    .v2-account .premium-intro h2 { margin:3px 0 0; font-family:var(--display); font-size:3.2rem; line-height:.84; text-transform:uppercase; }
+    .v2-account .premium-intro>p:not(.eyebrow) { margin:17px 0 0; color:#c6ced8; line-height:1.55; }
+    .v2-account .powered { display:block; margin-top:14px; color:var(--cyan); font-size:.72rem; font-weight:850; }
+    .v2-account .premium-intro .button { width:100%; margin-top:22px; }
+    .v2-account .premium-features { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--line); }
+    .v2-account .premium-feature { min-height:142px; padding:22px; background:#10141a; }
+    .v2-account .premium-feature strong { display:block; }
+    .v2-account .premium-feature p { margin:7px 0 0; color:var(--muted); font-size:.77rem; line-height:1.45; }
+    .v2-account .premium-feature i { display:grid; place-items:center; width:36px; height:36px; margin-bottom:14px; border:1px solid #414b58; background:linear-gradient(145deg,#202731,#10141a); color:var(--cyan); font-style:normal; font-weight:900; }
+    .v2-account .free-forever { grid-column:1/-1; margin:0; padding:14px 20px; border-top:1px solid var(--line); background:#090c11; color:var(--muted); font-size:.75rem; }
+    .v2-account .free-forever b { color:#e8ecf1; }
+    .v2-account .mobile-nav { display:none; }
+    .v2-account .toast { position:fixed; left:50%; bottom:24px; z-index:80; transform:translate(-50%,24px); max-width:calc(100% - 28px); padding:11px 15px; border:1px solid var(--line); border-radius:99px; background:#171c24; opacity:0; pointer-events:none; transition:.2s; white-space:nowrap; }
+    .v2-account .toast.show { opacity:1; transform:translate(-50%,0); }
+    @media (max-width:900px) {
+      .v2-account .primary-nav { display:none; } .v2-account .appbar { grid-template-columns:1fr auto; } .v2-account .account span { display:none; }
+      .v2-account .hero { min-height:72svh; background-position:50% center; }
+      .v2-account .hero:before { background:linear-gradient(0deg,#050609 0%,rgba(2,3,6,.76) 38%,rgba(2,3,6,.14) 76%),linear-gradient(90deg,rgba(2,3,6,.74),transparent 74%); }
+      .v2-account .hero-inner { display:flex; flex-direction:column; justify-content:flex-end; min-height:72svh; padding:110px 0 72px; }
+      .v2-account .career-strip { grid-template-columns:1fr repeat(4,.55fr); } .v2-account .career-name,.v2-account .metric { padding:16px 13px; }
+      .v2-account .jacket-console,.v2-account .premium-panel { grid-template-columns:1fr; } .v2-account .jacket-view { grid-template-columns:1fr 1fr; }
+      .v2-account .patch-board,.v2-account .premium-intro { border-left:0; border-right:0; border-top:1px solid var(--line); }
+      .v2-account .content-grid { grid-template-columns:1fr; } .v2-account .side { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:600px) {
+      .v2-account .appbar { min-height:62px; padding:4px 14px; } .v2-account .logo { width:112px; height:48px; }
+      .v2-account .hero { min-height:68svh; background-position:47% center; }
+      .v2-account .hero-inner { width:calc(100% - 28px); min-height:68svh; padding:92px 0 56px; }
+      .v2-account .hero h1 { font-size:3.95rem; } .v2-account .hero-sub { max-width:330px; margin-top:15px; font-size:.89rem; }
+      .v2-account .alias { gap:8px; margin-top:18px; padding:9px 10px; } .v2-account .hero-actions { margin-top:16px; }
+      .v2-account .surface { width:calc(100% - 18px); margin-top:-26px; margin-bottom:96px; }
+      .v2-account .career-strip { grid-template-columns:repeat(2,1fr); } .v2-account .career-name { grid-column:1/-1; min-height:78px; }
+      .v2-account .metric { min-height:78px; border-top:1px solid var(--line); } .v2-account .metric:nth-child(2),.v2-account .metric:nth-child(4) { border-left:0; }
+      .v2-account .section-nav { top:62px; }
+      .v2-account .jacket-view { min-height:0; grid-template-columns:1fr; padding:22px 18px; background:linear-gradient(0deg,rgba(4,6,9,.96),rgba(4,6,9,.5)),url("/images/singhub-v2/backstage-empty.png") center/cover; }
+      .v2-account .jacket-view h2 { font-size:4.15rem; } .v2-account .patches { grid-template-columns:1fr; } .v2-account .patch { min-height:76px; }
+      .v2-account .jacket-thumb { width:min(100%,390px); margin:0 auto; grid-row:1; } .v2-account .jacket-view-copy { grid-row:2; }
+      .v2-account .modal-head { flex-wrap:wrap; } .v2-account .modal-head .skin-switch { order:3; width:100%; margin-left:0; } .v2-account .modal-head .skin-switch button { flex:1; }
+      .v2-account .jacket-zoom { width:calc(360px * var(--zoom,1)); } .v2-account .modal-foot span { display:none; }
+      .v2-account .side { grid-template-columns:1fr; } .v2-account .panel-head { padding:18px; } .v2-account .song-list { padding:0 15px 6px; }
+      .v2-account .merch-panel { grid-template-columns:1fr; } .v2-account .merch-panel .button { width:100%; }
+      .v2-account .song-row { grid-template-columns:34px 1fr; padding:11px 0; } .v2-account .song-row time { grid-column:2; }
+      .v2-account .premium-features { grid-template-columns:1fr; } .v2-account .premium-feature { min-height:0; }
+      .v2-account .mobile-nav { position:fixed; left:0; right:0; bottom:0; z-index:70; display:grid; grid-template-columns:repeat(3,1fr); padding:7px 8px max(7px,env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(9,11,15,.96); backdrop-filter:blur(16px); }
+      .v2-account .mobile-nav a { display:grid; gap:3px; justify-items:center; color:var(--muted); text-decoration:none; font-size:.65rem; font-weight:700; }
+      .v2-account .mobile-nav a.active { color:var(--pink); } .v2-account .mobile-nav b { font-size:1.05rem; }
+      .v2-account .toast { bottom:82px; white-space:normal; text-align:center; }
+    }
+  
+.v2-account .account-service-form { display:grid; gap:16px; } .v2-account .account-service-form label { display:grid; gap:8px; }

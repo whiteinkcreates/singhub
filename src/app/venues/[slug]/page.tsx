@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { Button } from "@/components/ui/Button";
+import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
 import { VenueProfile } from "@/components/venue/VenueProfile";
 import { getKaraokeEventsByVenueSlug } from "@/lib/eventData";
 import { getPublicVenues, isPublicVenue } from "@/lib/publicVenueFilters";
@@ -51,14 +51,15 @@ export default async function VenuePage({ params }: VenuePageProps) {
   const venue = await getVenueListingBySlug(canonicalSlug);
   if (!venue || !isPublicVenue(venue)) notFound();
 
-  const [events, enhancement, singersSay] = await Promise.all([
+  const [events, enhancement, singersSay, posts] = await Promise.all([
     getKaraokeEventsByVenueSlug(venue.slug),
     getPersistedVenueEnhancement(venue.slug),
     getSingersSaySummary(venue.id),
+    getActiveSingBoardFlyers().catch(() => []),
   ]);
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
+    <>
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -72,8 +73,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
           ],
         }}
       />
-      <div className="mb-8"><Button href="/find-karaoke" variant="ghost">← Back to all listings</Button></div>
-      <VenueProfile venue={venue} events={events} enhancement={enhancement} singersSay={singersSay} />
-    </main>
+      <VenueProfile venue={venue} events={events} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venue.toLowerCase() === venue.venueName.toLowerCase())} />
+    </>
   );
 }

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
-import { SiteFooter } from "@/components/layout/SiteFooter";
-import { SiteHeader } from "@/components/layout/SiteHeader";
+import { ProductionChrome } from "@/components/layout/ProductionChrome";
+
 import { PwaInstallManager } from "@/components/pwa/PwaInstallManager";
 import { PwaRegister } from "@/components/pwa/PwaRegister";
 import "./globals.css";
@@ -53,15 +53,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" /><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0&display=swap" /></head>
       <body>
         <Suspense fallback={null}>
           <AnalyticsProvider />
         </Suspense>
         <PwaRegister />
         <PwaInstallManager />
-        <SiteHeader />
+        <ProductionChrome position="header" />
         {children}
-        <SiteFooter />
+        <ProductionChrome position="footer" />
       </body>
     </html>
   );

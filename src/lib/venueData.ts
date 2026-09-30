@@ -140,6 +140,7 @@ function rowToVenueListing(row: VenueSourceRow, fallback: VenueSourceRow | undef
   return {
     id,
     venueName: getAny(row, fallback, ["venue_name"]) || "",
+    lastVerified: getAny(row, fallback, ["last_verified"]),
     slug,
     profileTier: normalizeProfileTier(getAny(row, fallback, ["profile_tier"])),
     listingStatus: normalizeListingStatus(getAny(row, fallback, ["listing_status"]), getAny(row, fallback, ["review_status"])),

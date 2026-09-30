@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050609">
+  <meta name="description" content="SingHUB at The Pendry San Diego, a local guide to verified karaoke.">
+  <title>SingHUB at The Pendry</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&amp;family=Barlow+Condensed:wght@600;700;800;900&amp;family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0&amp;display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme:dark; --bg:#050609; --shell:#090b0f; --surface:#11141a; --surface-2:#171b22; --line:#292e38; --line-bright:#424a56; --text:#f7f8fb; --muted:#9ca6b5; --cyan:#00c8ff; --pink:#ff19a8; --sans:"Barlow",sans-serif; --display:"Barlow Condensed",sans-serif; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; min-width:320px; background:radial-gradient(circle at 13% 9%,rgba(0,200,255,.035),transparent 24%),linear-gradient(145deg,#06080b,#030407 62%); color:var(--text); font-family:var(--sans); }
+    body:before { content:""; position:fixed; inset:0; z-index:100; pointer-events:none; opacity:.08; mix-blend-mode:soft-light; background-image:radial-gradient(circle,rgba(255,255,255,.25) 0,.55px,transparent .8px); background-size:6px 6px; }
+    button,a { font:inherit; } button { color:inherit; } button:focus-visible,a:focus-visible { outline:3px solid var(--cyan); outline-offset:3px; } img { display:block; max-width:100%; }
+    .material-symbols-rounded { font-variation-settings:'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24; }
+    .appbar { position:sticky; top:0; z-index:30; display:grid; grid-template-columns:auto 1fr auto; align-items:center; min-height:70px; padding:7px clamp(18px,4vw,54px); border-bottom:1px solid rgba(255,255,255,.1); background:rgba(5,6,9,.94); backdrop-filter:blur(18px); }
+    .logo { width:128px; height:52px; object-fit:contain; }
+    .primary-nav { display:flex; justify-content:center; gap:4px; }
+    .primary-nav a { padding:10px 13px; color:var(--muted); text-decoration:none; font-size:.87rem; font-weight:700; }
+    .primary-nav a:hover,.primary-nav a.active { color:white; box-shadow:inset 0 -2px var(--cyan); }
+    .account { display:flex; align-items:center; gap:10px; color:var(--muted); text-decoration:none; font-size:.84rem; font-weight:700; }
+    .avatar { display:grid; place-items:center; width:36px; height:36px; border:1px solid var(--line-bright); border-radius:50%; background:var(--surface); color:white; font-style:normal; }
+
+    .hero { position:sticky; top:70px; z-index:0; min-height:calc(100svh - 70px); overflow:hidden; border-bottom:1px solid var(--line-bright); background:#07080a; }
+    .hero-photo { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 46%; filter:brightness(1.08) saturate(1.03); }
+    .hero:before { content:""; position:absolute; inset:0; z-index:1; opacity:.46; mix-blend-mode:soft-light; background-image:radial-gradient(circle,rgba(255,255,255,.28) 0,.65px,transparent .9px),repeating-linear-gradient(102deg,transparent 0,transparent 4px,rgba(255,255,255,.085) 5px,transparent 6px); background-size:5px 5px,auto; }
+    .hero:after { content:""; position:absolute; inset:0; background:radial-gradient(circle at 17% 72%,rgba(0,200,255,.29),transparent 27%),radial-gradient(circle at 34% 84%,rgba(0,200,255,.12),transparent 31%),linear-gradient(90deg,rgba(0,0,0,.66) 0,rgba(0,0,0,.42) 43%,rgba(0,0,0,.1) 76%,rgba(0,0,0,.27) 100%),linear-gradient(180deg,rgba(0,0,0,.03),rgba(0,0,0,.52)); }
+    .hero-inner { position:relative; z-index:2; display:flex; align-items:flex-end; width:min(1240px,calc(100% - 56px)); min-height:calc(100svh - 70px); margin:0 auto; padding:72px 0; }
+    .hero-lockup { text-align:left; filter:drop-shadow(0 14px 30px rgba(0,0,0,.48)); }
+    .relationship-line { display:flex; align-items:flex-end; gap:clamp(4px,.5vw,7px); margin-bottom:-4px; }
+    .relationship-wordmark { width:clamp(150px,17vw,220px); height:auto; }
+    .hero-at { width:clamp(57px,6.4vw,84px); height:clamp(57px,6.4vw,84px); object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,200,255,.3)); }
+    .hotel-id { display:inline-block; }
+    .hotel-id h1 { margin:0; font-family:var(--display); font-size:clamp(5rem,11vw,10rem); font-weight:700; line-height:.72; letter-spacing:-.04em; text-shadow:0 6px 30px rgba(0,0,0,.58); }
+    .hero-meta { margin:27px 0 0; color:#dce2ea; font-size:.78rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+    .experience-shell { position:relative; z-index:4; margin-top:-22px; border-top:1px solid rgba(255,255,255,.2); background:radial-gradient(ellipse at 24% 0,rgba(0,200,255,.055),transparent 30%),linear-gradient(118deg,rgba(255,255,255,.025),transparent 24%),linear-gradient(160deg,#080a0e,#030407 66%); box-shadow:0 -32px 72px rgba(0,0,0,.64),inset 0 1px rgba(255,255,255,.05); }
+
+    .concierge { position:relative; overflow:hidden; border-top:1px solid rgba(255,255,255,.1); border-bottom:1px solid #303845; background:radial-gradient(ellipse at 8% 34%,rgba(0,200,255,.09),transparent 35%),linear-gradient(112deg,rgba(255,255,255,.065) 0,rgba(255,255,255,.012) 18%,transparent 38%),linear-gradient(118deg,#10151c 0,#07090d 58%,#0b0e13 100%); box-shadow:inset 0 1px rgba(255,255,255,.08),inset 0 -28px 55px rgba(0,0,0,.38),0 20px 60px rgba(0,0,0,.22); }
+    .concierge:after { content:""; position:absolute; inset:0; pointer-events:none; opacity:.32; background:linear-gradient(104deg,transparent 4%,rgba(255,255,255,.06) 17%,transparent 29%); }
+    .concierge-inner { display:grid; grid-template-columns:minmax(300px,.9fr) minmax(360px,1.1fr); gap:clamp(34px,8vw,120px); align-items:center; width:min(1160px,calc(100% - 56px)); margin:0 auto; padding:clamp(42px,6vw,76px) 0; }
+    .eyebrow { margin:0 0 10px; color:var(--cyan); font-size:.72rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+    .concierge h2 { margin:0; font-family:var(--display); font-size:clamp(2.7rem,4.6vw,4.35rem); line-height:.9; letter-spacing:-.025em; }
+    .concierge-copy { position:relative; z-index:1; padding:4px 0 4px 24px; border-left:3px solid var(--cyan); }
+    .concierge-copy p { margin:0; color:#d0d6df; font-size:clamp(1rem,1.5vw,1.18rem); line-height:1.65; }
+    .concierge-copy p+p { margin-top:12px; color:var(--muted); font-size:.94rem; }
+
+    .guide { width:min(1160px,calc(100% - 56px)); margin:0 auto; padding:clamp(54px,7vw,92px) 0 80px; }
+    .guide-head { display:grid; grid-template-columns:1fr auto; gap:26px; align-items:end; padding-bottom:22px; border-bottom:2px solid #dfe4eb; }
+    .guide-head h2 { margin:3px 0 0; font-family:var(--display); font-size:clamp(3rem,5vw,4.7rem); line-height:.86; }
+    .guide-controls { display:flex; align-items:center; gap:18px; }
+    .plan-status { display:flex; align-items:center; gap:7px; min-height:40px; padding:0 12px; border:1px solid var(--line-bright); background:#0b0e13; color:#d7dde6; font-size:.75rem; font-weight:800; }
+    .plan-status strong { display:grid; place-items:center; min-width:20px; height:20px; padding:0 5px; background:var(--cyan); color:#00151c; font-size:.7rem; }
+    .guide-notes { display:grid; grid-template-columns:1.15fr .85fr; border-bottom:1px solid var(--line); }
+    .guide-note { min-height:82px; padding:18px 22px 18px 0; color:#cbd3dd; }
+    .guide-note + .guide-note { padding-left:22px; border-left:1px solid var(--line); }
+    .guide-note strong,.guide-note summary { color:white; font-size:.87rem; font-weight:850; }
+    .guide-note p { margin:5px 0 0; color:var(--muted); font-size:.79rem; line-height:1.5; }
+    details.guide-note summary { cursor:pointer; list-style:none; }
+    details.guide-note summary::-webkit-details-marker { display:none; }
+    details.guide-note summary:after { content:"+"; float:right; color:var(--cyan); font-size:1.05rem; }
+    details.guide-note[open] summary:after { content:"−"; }
+    .mode-switch { display:flex; border:1px solid #4c5664; box-shadow:inset 0 1px rgba(255,255,255,.09),0 10px 28px rgba(0,0,0,.26); }
+    .mode-switch button { min-height:40px; padding:0 15px; border:0; border-right:1px solid #3f4854; background:linear-gradient(180deg,#161b22,#090c11); color:var(--muted); cursor:pointer; font-size:.78rem; font-weight:800; }
+    .mode-switch button:last-child { border-right:0; }
+    .mode-switch button.active { background:var(--cyan); color:#00151c; }
+    .map-button { min-height:40px; padding:0 3px; border:0; border-bottom:1px solid #737c89; background:none; cursor:pointer; color:#d4dae3; font-size:.78rem; font-weight:800; }
+    .category { padding:38px 0; border-bottom:1px solid var(--line); }
+    .category-head { display:grid; grid-template-columns:auto 1fr auto; gap:15px; align-items:center; margin-bottom:18px; }
+    .category-icon { display:grid; place-items:center; width:46px; height:46px; border:1px solid #4c5765; background:linear-gradient(145deg,#202731,#0c1016 64%); color:var(--cyan); box-shadow:inset 0 1px rgba(255,255,255,.16),inset 1px 0 rgba(255,255,255,.05),0 10px 24px rgba(0,0,0,.3); }
+    .category-icon .material-symbols-rounded { font-size:28px; }
+    .category h3 { margin:0; font-family:var(--display); font-size:1.75rem; line-height:1; }
+    .category-head p { max-width:710px; margin:7px 0 0; color:#aeb7c4; font-size:.9rem; line-height:1.45; }
+    .slider-buttons { display:flex; gap:5px; }
+    .slider-buttons button { display:grid; place-items:center; width:38px; height:38px; border:1px solid var(--line-bright); background:transparent; cursor:pointer; font-size:1.25rem; }
+    .venue-slider { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(280px,350px); gap:1px; overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; background:var(--line); border:1px solid var(--line); }
+    .venue-slider::-webkit-scrollbar { display:none; }
+    .venue-card { position:relative; min-height:282px; padding:22px 22px 66px; background:linear-gradient(112deg,rgba(255,255,255,.085) 0,rgba(255,255,255,.015) 17%,transparent 34%),radial-gradient(ellipse at 85% 8%,rgba(0,200,255,.055),transparent 32%),linear-gradient(155deg,#171c24 0,#0b0e13 52%,#07090c 100%); color:inherit; scroll-snap-align:start; box-shadow:inset 0 1px rgba(255,255,255,.15),inset 1px 0 rgba(255,255,255,.035),inset 0 -2px 6px rgba(0,0,0,.88),0 16px 34px rgba(0,0,0,.16); transition:filter .18s,transform .18s; }
+    .venue-card:hover { filter:brightness(1.12); transform:translateY(-3px); }
+    .venue-card-link { color:inherit; text-decoration:none; }
+    .card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; }
+    .card-kicker { color:var(--cyan); font-size:.69rem; font-weight:900; letter-spacing:.14em; text-transform:uppercase; }
+    .card-open { padding-bottom:2px; border-bottom:1px solid #52606d; color:#d7dde6; font-size:.68rem; font-weight:800; text-transform:uppercase; }
+    .venue-name { display:block; margin-top:34px; font-size:1.06rem; }
+    .venue-card p { margin:5px 0 0; color:var(--muted); font-size:.8rem; }
+    .schedule-copy { display:block; margin-top:18px; font-family:var(--display); font-size:1.55rem; font-weight:700; }
+    .schedule-copy[data-week] { display:none; }
+    body.week-mode .schedule-copy[data-tonight] { display:none; }
+    body.week-mode .schedule-copy[data-week] { display:block; }
+    .venue-tags { display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:15px; color:#cbd2dc; font-size:.69rem; font-weight:700; }
+    .venue-tags span:before { content:"·"; margin-right:5px; color:var(--cyan); }
+    .travel-time { display:flex; align-items:center; gap:6px; margin-top:13px; color:#e2e7ed; font-size:.72rem; font-weight:800; }
+    .travel-time .material-symbols-rounded { color:var(--cyan); font-size:17px; }
+    .plan-add { position:absolute; left:22px; bottom:15px; min-height:30px; padding:0 10px; border:1px solid #50606d; background:rgba(4,7,10,.78); color:#e8edf4; cursor:pointer; font-size:.68rem; font-weight:850; }
+    .plan-add:hover,.plan-add.added { border-color:var(--cyan); color:var(--cyan); }
+    .verified { position:absolute; right:22px; bottom:17px; color:#8994a2; font-size:.68rem; font-weight:700; }
+    .private-label { color:var(--cyan); }
+    .guide-exit { display:grid; grid-template-columns:auto 1fr auto; gap:17px; align-items:center; padding:30px 0 0; }
+    .key-mark { display:grid; place-items:center; width:42px; height:42px; border:1px solid var(--cyan); color:var(--cyan); font-weight:900; }
+    .guide-exit strong { display:block; font-size:.9rem; } .guide-exit p { margin:4px 0 0; color:var(--muted); font-size:.79rem; }
+    .view-all { color:var(--cyan); padding-bottom:3px; border-bottom:1px solid currentColor; text-decoration:none; font-size:.8rem; font-weight:850; }
+    .install-strip { display:flex; justify-content:space-between; gap:28px; align-items:center; margin-top:46px; padding:28px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+    .install-strip strong { display:block; font-family:var(--display); font-size:clamp(1.7rem,3vw,2.4rem); line-height:1; }
+    .install-strip button { min-height:44px; padding:0 18px; border:1px solid var(--cyan); background:linear-gradient(180deg,rgba(0,200,255,.18),rgba(0,200,255,.055)); color:var(--cyan); box-shadow:inset 0 1px rgba(255,255,255,.16),0 10px 28px rgba(0,200,255,.08); cursor:pointer; font-size:.78rem; font-weight:900; }
+    footer { display:flex; justify-content:space-between; gap:20px; margin-top:36px; padding:28px 0 10px; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; }
+    .mobile-nav { display:none; }
+    .toast { position:fixed; left:50%; bottom:24px; z-index:60; transform:translate(-50%,25px); padding:11px 15px; border:1px solid var(--line); border-radius:99px; background:#171b22; opacity:0; pointer-events:none; transition:.2s; } .toast.show { opacity:1; transform:translate(-50%,0); }
+    .plan-modal[hidden] { display:none; }
+    .plan-modal { position:fixed; inset:0; z-index:80; display:grid; place-items:center; padding:18px; background:rgba(0,0,0,.74); backdrop-filter:blur(10px); }
+    .plan-dialog { position:relative; width:min(500px,100%); padding:30px; border:1px solid #4b5664; background:radial-gradient(circle at 92% 5%,rgba(0,200,255,.12),transparent 34%),linear-gradient(145deg,#171c24,#080a0e 67%); box-shadow:inset 0 1px rgba(255,255,255,.16),0 34px 90px rgba(0,0,0,.7); }
+    .plan-dialog h2 { margin:4px 34px 8px 0; font-family:var(--display); font-size:2.35rem; line-height:.95; }
+    .plan-dialog > p { margin:0 0 22px; color:var(--muted); line-height:1.55; }
+    .plan-close { position:absolute; top:14px; right:14px; width:34px; height:34px; border:1px solid var(--line-bright); background:transparent; cursor:pointer; font-size:1.2rem; }
+    .plan-form label { display:block; margin:0 0 8px; color:#dfe5ec; font-size:.75rem; font-weight:850; }
+    .plan-form input[type="email"] { width:100%; min-height:48px; padding:0 13px; border:1px solid #596574; border-radius:0; background:#080b0f; color:white; font:inherit; }
+    .plan-check { display:flex!important; gap:10px; align-items:flex-start; margin:15px 0!important; color:#c7d0db!important; font-weight:600!important; line-height:1.4; }
+    .plan-check input { margin-top:3px; accent-color:var(--cyan); }
+    .plan-submit { width:100%; min-height:46px; border:1px solid var(--cyan); background:var(--cyan); color:#00151c; cursor:pointer; font-weight:900; }
+    .plan-privacy { margin:11px 0 0; color:#828e9d; font-size:.68rem; line-height:1.45; }
+    @media (max-width:860px) { .primary-nav { display:none; } .appbar { grid-template-columns:1fr auto; } .account span { display:none; } .hero-inner { width:calc(100% - 34px); } .concierge-inner,.guide { width:calc(100% - 34px); } .concierge-inner { grid-template-columns:1fr; } .concierge-copy { padding-left:19px; } .guide-head { grid-template-columns:1fr; align-items:start; } .guide-controls { justify-content:space-between; } .guide-notes { grid-template-columns:1fr; } .guide-note + .guide-note { padding-left:0; border-top:1px solid var(--line); border-left:0; } }
+    @media (max-width:560px) { .appbar { min-height:62px; padding:4px 14px; } .logo { width:112px; height:48px; } .hero { top:62px; min-height:calc(100svh - 62px); } .hero-inner { min-height:calc(100svh - 62px); width:calc(100% - 28px); padding:38px 0 62px; } .relationship-wordmark { width:139px; } .hero-at { width:53px; height:53px; } .hotel-id h1 { font-size:3.85rem; line-height:.78; } .hero-meta { margin-top:17px; font-size:.66rem; letter-spacing:.1em; } .experience-shell { margin-top:-16px; } .concierge-inner,.guide { width:calc(100% - 28px); } .concierge-inner { padding:40px 0 44px; gap:26px; } .concierge h2 { font-size:2.8rem; } .guide { padding:48px 0 90px; } .guide-controls { align-items:flex-end; } .mode-switch button { padding:0 12px; } .venue-slider { grid-auto-columns:minmax(270px,85vw); } .category { padding:30px 0; } .slider-buttons button { width:34px; height:34px; } .guide-exit { grid-template-columns:auto 1fr; } .view-all { grid-column:2; justify-self:start; } .install-strip { align-items:flex-start; flex-direction:column; } footer { padding-bottom:85px; } .mobile-nav { position:fixed; left:0; right:0; bottom:0; z-index:40; display:grid; grid-template-columns:repeat(4,1fr); padding:7px 8px max(7px,env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(9,11,15,.96); backdrop-filter:blur(16px); } .mobile-nav a { display:grid; gap:3px; justify-items:center; color:var(--muted); text-decoration:none; font-size:.65rem; font-weight:700; } .mobile-nav a.active { color:var(--cyan); } .mobile-nav b { font-size:1.05rem; } }
+  </style>
+</head>
+<body>
+  <header class="appbar"><a href="index.html"><img class="logo" src="assets/singhub-wordmark.png" alt="SingHUB"></a><nav class="primary-nav" aria-label="Primary"><a href="index.html">Discover</a><a class="active" href="hotel.html">Hotel guide</a><a href="venues.html">Venues</a><a href="redwing.html#board">SingBOARD</a></nav><a class="account" href="singer.html"><span>My SingHUB</span><i class="avatar">CR</i></a></header>
+  <main>
+    <section class="hero" aria-labelledby="hotel-name"><img class="hero-photo" src="https://uploads.pendry.com/redesign/wp-content/uploads/sites/2/2018/12/10211411/1-4.jpeg" alt="Pendry San Diego exterior at night"><div class="hero-inner"><div class="hero-lockup"><div class="hotel-id"><div class="relationship-line"><img class="relationship-wordmark" src="assets/singhub-wordmark.png" alt="SingHUB"><img class="hero-at" src="assets/hotel-at-mark-transparent.png" alt="at"></div><h1 id="hotel-name">The Pendry</h1><p class="hero-meta">San Diego · Gaslamp Quarter</p></div></div></div></section>
+    <div class="experience-shell">
+    <section class="concierge" aria-labelledby="welcome-title"><div class="concierge-inner"><div><p class="eyebrow">CURATED FOR GUESTS OF THE PENDRY</p><h2 id="welcome-title">New in town? Looking for a mic? Let me show you where San Diego really sings.</h2></div><div class="concierge-copy"><p>San Diego has well over 100 karaoke nights in a typical week. Tonight, SingHUB has <strong>24 live-karaoke listings</strong> to choose from.</p><p>Take a look at a few nearby options and plan your own local gig tour.</p></div></div></section>
+    <section class="guide" aria-labelledby="guide-title">
+      <header class="guide-head"><div><p class="eyebrow">KARAOKE NEAR YOU</p><h2 id="guide-title">Find your room.</h2></div><div class="guide-controls"><div class="plan-status" aria-live="polite">My plan <strong id="plan-count">0</strong></div><div class="mode-switch" role="group" aria-label="Schedule range"><button class="active" data-mode="tonight" aria-pressed="true">Tonight</button><button data-mode="week" aria-pressed="false">This week</button></div><button class="map-button" data-toast="Map view opened">Map view</button></div></header>
+      <div class="guide-notes" aria-label="Using the hotel guide"><div class="guide-note"><strong>Start with the night.</strong><p>Use Tonight for what’s happening now. Switch to This Week if you’re planning around the rest of your stay.</p></div><details class="guide-note"><summary>What is SingHUB?</summary><p>SingHUB is San Diego’s karaoke discovery guide. We bring venue schedules, room details, and recent verification dates into one place so you can spend less time searching and more time singing.</p></details></div>
+
+      <section class="category"><header class="category-head"><span class="category-icon" aria-hidden="true"><span class="material-symbols-rounded">directions_walk</span></span><div><h3>Walkable</h3><p>If you want something you can reach in about 5–10 minutes, start here. Step outside, pick a room, and go.</p></div><div class="slider-buttons"><button data-slide="prev" aria-label="Previous walkable venues">‹</button><button data-slide="next" aria-label="Next walkable venues">›</button></div></header><div class="venue-slider">
+        <article class="venue-card"><a class="venue-card-link" href="#" data-toast="Whiskey Girl profile opened"><div class="card-top"><span class="card-kicker">Walkable</span><span class="card-open">View venue</span></div><strong class="venue-name">Whiskey Girl</strong><p>Gaslamp Quarter</p><span class="schedule-copy" data-tonight>8:30 PM tonight</span><span class="schedule-copy" data-week>4 nights this week</span><div class="venue-tags"><span>Live band Thursdays</span><span>Late night</span></div><span class="travel-time"><span class="material-symbols-rounded">directions_walk</span>About 5 min from The Pendry</span></a><button class="plan-add" data-plan="Whiskey Girl">Add to plan</button><span class="verified">Verified Sep 25</span></article>
+        <article class="venue-card"><a class="venue-card-link" href="#" data-toast="Gaslamplighter profile opened"><div class="card-top"><span class="card-kicker">Walkable</span><span class="card-open">View venue</span></div><strong class="venue-name">Gaslamplighter</strong><p>Gaslamp Quarter</p><span class="schedule-copy" data-tonight>9 PM tonight</span><span class="schedule-copy" data-week>Tue through Sun · 9 PM</span><div class="venue-tags"><span>Six nights</span><span>Until last call</span></div><span class="travel-time"><span class="material-symbols-rounded">directions_walk</span>About 6 min from The Pendry</span></a><button class="plan-add" data-plan="Gaslamplighter">Add to plan</button><span class="verified">Verified Sep 24</span></article>
+        <article class="venue-card"><a class="venue-card-link" href="#" data-toast="Happy Does profile opened"><div class="card-top"><span class="card-kicker">Walkable</span><span class="card-open">View venue</span></div><strong class="venue-name">Happy Does</strong><p>Gaslamp Quarter</p><span class="schedule-copy" data-tonight>8:30 PM tonight</span><span class="schedule-copy" data-week>Thu through Sat · 8:30 PM</span><div class="venue-tags"><span>Weekend room</span><span>Late night</span></div><span class="travel-time"><span class="material-symbols-rounded">directions_walk</span>About 4 min from The Pendry</span></a><button class="plan-add" data-plan="Happy Does">Add to plan</button><span class="verified">Verified Sep 26</span></article>
+      </div></section>
+
+      <section class="category"><header class="category-head"><span class="category-icon" aria-hidden="true"><span class="material-symbols-rounded">directions_car</span></span><div><h3>Quick Ride</h3><p>If you don’t mind a short drive or rideshare, you have a few more neighborhood options.</p></div><div class="slider-buttons"><button data-slide="prev" aria-label="Previous quick ride venues">‹</button><button data-slide="next" aria-label="Next quick ride venues">›</button></div></header><div class="venue-slider">
+        <article class="venue-card"><a class="venue-card-link" href="redwing.html"><div class="card-top"><span class="card-kicker">Quick ride</span><span class="card-open">View venue</span></div><strong class="venue-name">Redwing Bar &amp; Grill</strong><p>North Park</p><span class="schedule-copy" data-tonight>7 PM tonight</span><span class="schedule-copy" data-week>Every night · 7 PM</span><div class="venue-tags"><span>Neighborhood bar</span><span>Photos + full details</span></div><span class="travel-time"><span class="material-symbols-rounded">directions_car</span>About 12 min from The Pendry</span></a><button class="plan-add" data-plan="Redwing Bar &amp; Grill">Add to plan</button><span class="verified">Verified Sep 28</span></article>
+        <article class="venue-card"><a class="venue-card-link" href="#" data-toast="U-31 profile opened"><div class="card-top"><span class="card-kicker">Quick ride</span><span class="card-open">View venue</span></div><strong class="venue-name">U-31</strong><p>North Park</p><span class="schedule-copy" data-tonight>9 PM tonight</span><span class="schedule-copy" data-week>Tue 9 PM · Thu 10 PM</span><div class="venue-tags"><span>Neighborhood room</span><span>DJ Harvest Thursdays</span></div><span class="travel-time"><span class="material-symbols-rounded">directions_car</span>About 11 min from The Pendry</span></a><button class="plan-add" data-plan="U-31">Add to plan</button><span class="verified">Verified Sep 26</span></article>
+        <article class="venue-card"><a class="venue-card-link" href="#" data-toast="#1 Fifth Avenue profile opened"><div class="card-top"><span class="card-kicker">Quick ride</span><span class="card-open">View venue</span></div><strong class="venue-name">#1 Fifth Avenue</strong><p>Hillcrest</p><span class="schedule-copy" data-tonight>Check tonight’s schedule</span><span class="schedule-copy" data-week>Multiple nights this week</span><div class="venue-tags"><span>Hillcrest staple</span><span>Neighborhood room</span></div><span class="travel-time"><span class="material-symbols-rounded">directions_car</span>About 9 min from The Pendry</span></a><button class="plan-add" data-plan="#1 Fifth Avenue">Add to plan</button><span class="verified">Verified Sep 28</span></article>
+      </div></section>
+
+      <section class="category"><header class="category-head"><span class="category-icon" aria-hidden="true"><span class="material-symbols-rounded">star</span></span><div><h3>Local Standouts</h3><p>If distance is no problem, these are the San Diego karaoke experiences worth talking about when you get home.</p></div><div class="slider-buttons"><button data-slide="prev" aria-label="Previous local standouts">‹</button><button data-slide="next" aria-label="Next local standouts">›</button></div></header><div class="venue-slider">
+        <article class="venue-card"><a class="venue-card-link" href="#" data-toast="The Lamplighter profile opened"><div class="card-top"><span class="card-kicker">San Diego staple</span><span class="card-open">View venue</span></div><strong class="venue-name">The Lamplighter</strong><p>Mission Hills</p><span class="schedule-copy" data-tonight>9 PM tonight</span><span class="schedule-copy" data-week>Every night · 9 PM</span><div class="venue-tags"><span>Seven nights</span><span>Classic karaoke</span></div><span class="travel-time"><span class="material-symbols-rounded">directions_car</span>About 10 min from The Pendry</span></a><button class="plan-add" data-plan="The Lamplighter">Add to plan</button><span class="verified">Verified Sep 27</span></article>
+        <article class="venue-card"><a class="venue-card-link" href="#" data-toast="Rabbit Hole profile opened"><div class="card-top"><span class="card-kicker">SingHUB pick</span><span class="card-open">View venue</span></div><strong class="venue-name">The Rabbit Hole</strong><p>Normal Heights</p><span class="schedule-copy" data-tonight>Friday · 9:30 PM</span><span class="schedule-copy" data-week>Friday · 9:30 PM to 12:30 AM</span><div class="venue-tags"><span>Live band karaoke</span><span>One standout night</span></div><span class="travel-time"><span class="material-symbols-rounded">directions_car</span>About 13 min from The Pendry</span></a><button class="plan-add" data-plan="The Rabbit Hole">Add to plan</button><span class="verified">Verified Sep 27</span></article>
+        <article class="venue-card"><a class="venue-card-link" href="#" data-toast="Hive Karaoke profile opened"><div class="card-top"><span class="card-kicker">Private room pick</span><span class="card-open">View venue</span></div><strong class="venue-name">Hive Karaoke</strong><p>Kearny Mesa · <span class="private-label">Private rooms</span></p><span class="schedule-copy" data-tonight>Rooms available</span><span class="schedule-copy" data-week>Reserve any night this week</span><div class="venue-tags"><span>Private rooms</span><span>No stage or KJ</span></div><span class="travel-time"><span class="material-symbols-rounded">directions_car</span>About 16 min from The Pendry</span></a><button class="plan-add" data-plan="Hive Karaoke">Add to plan</button><span class="verified">Verified Sep 27</span></article>
+      </div></section>
+
+      <div class="guide-exit"><span class="key-mark">SH</span><div><strong>The venue pin means verified karaoke on SingHUB.</strong><p>Keep exploring with your hotel visit carried into the main SingHUB experience.</p></div><a class="view-all" href="index.html?source=hotel-pendry#discovery">View all karaoke</a></div>
+      <section class="install-strip" aria-label="Install SingHUB"><div><p class="eyebrow">TAKE IT WITH YOU</p><strong>Keep SingHUB one tap away.</strong></div><button data-toast="SingHUB install prompt opened">Install SingHUB</button></section>
+      <footer><span>SingHUB local karaoke guide</span><span>Schedules shown for prototype review.</span></footer>
+    </section>
+    </div>
+  </main>
+  <nav class="mobile-nav" aria-label="Mobile navigation"><a href="index.html"><b>⌕</b>Discover</a><a class="active" href="hotel.html"><b>@</b>Hotel</a><a href="venues.html"><b>●</b>Venues</a><a href="singer.html"><b>◎</b>My SingHUB</a></nav>
+  <div class="plan-modal" id="plan-modal" hidden><section class="plan-dialog" role="dialog" aria-modal="true" aria-labelledby="plan-title"><button class="plan-close" type="button" aria-label="Close">×</button><p class="eyebrow">YOUR LOCAL GIG TOUR</p><h2 id="plan-title">Add <span id="plan-venue">this venue</span> to your plan.</h2><p>Enter your email and we’ll keep your karaoke picks together for this trip.</p><form class="plan-form"><label for="plan-email">Email address</label><input id="plan-email" type="email" autocomplete="email" placeholder="you@example.com" required><label class="plan-check"><input id="save-hotel" type="checkbox" checked><span>Save The Pendry with this trip so your hotel guide is waiting in My SingHUB.</span></label><button class="plan-submit" type="submit">Save my plan</button><p class="plan-privacy">We’ll use this email to save and send your plan. No marketing opt-in is implied.</p></form></section></div>
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script>
+    const toast=document.querySelector('.toast');let timer;
+    document.querySelectorAll('[data-toast]').forEach(item=>item.addEventListener('click',event=>{if(item.getAttribute('href')==='#')event.preventDefault();toast.textContent=item.dataset.toast;toast.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>toast.classList.remove('show'),1700);}));
+    const modeButtons=[...document.querySelectorAll('[data-mode]')];
+    modeButtons.forEach(button=>button.addEventListener('click',()=>{const week=button.dataset.mode==='week';document.body.classList.toggle('week-mode',week);modeButtons.forEach(item=>{const active=item===button;item.classList.toggle('active',active);item.setAttribute('aria-pressed',String(active));});}));
+    document.querySelectorAll('.category').forEach(category=>{const slider=category.querySelector('.venue-slider');category.querySelectorAll('[data-slide]').forEach(button=>button.addEventListener('click',()=>slider.scrollBy({left:(button.dataset.slide==='next'?1:-1)*Math.min(slider.clientWidth*.8,360),behavior:'smooth'})));});
+    const planModal=document.querySelector('#plan-modal');const planVenue=document.querySelector('#plan-venue');const planEmail=document.querySelector('#plan-email');const planCount=document.querySelector('#plan-count');let activePlanButton;const savedPlans=new Set();
+    document.querySelectorAll('[data-plan]').forEach(button=>button.addEventListener('click',()=>{activePlanButton=button;planVenue.textContent=button.dataset.plan;planModal.hidden=false;requestAnimationFrame(()=>planEmail.focus());}));
+    const closePlan=()=>{planModal.hidden=true;};document.querySelector('.plan-close').addEventListener('click',closePlan);planModal.addEventListener('click',event=>{if(event.target===planModal)closePlan();});document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!planModal.hidden)closePlan();});
+    document.querySelector('.plan-form').addEventListener('submit',event=>{event.preventDefault();savedPlans.add(activePlanButton.dataset.plan);activePlanButton.classList.add('added');activePlanButton.textContent='Added';planCount.textContent=String(savedPlans.size);closePlan();toast.textContent=document.querySelector('#save-hotel').checked?'Added to your plan. The Pendry was saved with this trip.':'Added to your plan.';toast.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>toast.classList.remove('show'),2500);event.target.reset();document.querySelector('#save-hotel').checked=true;});
+  </script>
+</body>
+</html>

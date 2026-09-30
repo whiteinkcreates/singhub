@@ -23,6 +23,7 @@ export type VenueListing = {
   bannerImageAlt?: string;
   bannerImagePosition?: "center" | "top" | "bottom" | "left" | "right";
   tickerText?: string;
+  lastVerified?: string;
   karaokeDay: string;
   startTime: string;
   endTime: string;

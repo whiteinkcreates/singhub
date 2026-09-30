@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050609">
+  <meta name="description" content="Browse verified karaoke venues across San Diego with SingHUB.">
+  <title>San Diego Karaoke Venues | SingHUB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&amp;family=Barlow+Condensed:wght@600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme:dark; --bg:#050609; --shell:#090b0f; --surface:#101319; --surface-2:#171b22; --line:#292f39; --line-bright:#45505e; --text:#f7f8fb; --muted:#9ba5b3; --cyan:#00c8ff; --pink:#ff19a8; --sans:"Barlow",sans-serif; --display:"Barlow Condensed",sans-serif; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; min-width:320px; background:var(--bg); color:var(--text); font-family:var(--sans); }
+    button,input,a { font:inherit; } button { color:inherit; } a { color:inherit; } button:focus-visible,input:focus-visible,a:focus-visible { outline:3px solid var(--pink); outline-offset:3px; }
+    img { display:block; max-width:100%; }
+    .appbar { position:sticky; top:0; z-index:40; display:grid; grid-template-columns:auto 1fr auto; align-items:center; min-height:70px; padding:7px clamp(18px,4vw,54px); border-bottom:1px solid rgba(255,255,255,.1); background:rgba(5,6,9,.94); backdrop-filter:blur(18px); }
+    .logo { width:128px; height:52px; object-fit:contain; }
+    .primary-nav { display:flex; justify-content:center; gap:4px; }
+    .primary-nav a { padding:10px 13px; color:var(--muted); text-decoration:none; font-size:.87rem; font-weight:700; }
+    .primary-nav a:hover,.primary-nav a.active { color:white; box-shadow:inset 0 -2px var(--pink); }
+    .account { display:flex; align-items:center; gap:10px; color:var(--muted); text-decoration:none; font-size:.84rem; font-weight:700; }
+    .avatar { display:grid; place-items:center; width:36px; height:36px; border:1px solid var(--line-bright); border-radius:50%; background:var(--surface); color:white; font-style:normal; }
+    .venue-world { position:relative; min-height:520px; overflow:hidden; border-bottom:1px solid var(--line-bright); background:#050609; }
+    .venue-world>img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 56%; filter:saturate(.94) brightness(1.04); }
+    .venue-world:before { content:""; position:absolute; inset:0; z-index:1; background:linear-gradient(90deg,rgba(2,3,7,.78),rgba(2,3,7,.42) 48%,rgba(2,3,7,.08)),linear-gradient(180deg,rgba(2,3,7,.04),rgba(2,3,7,.78)); }
+    .venue-world:after { content:""; position:absolute; inset:0; z-index:1; opacity:.22; pointer-events:none; background-image:radial-gradient(circle,rgba(255,255,255,.25) 0,.55px,transparent .8px); background-size:5px 5px; mix-blend-mode:soft-light; }
+    .venue-world-inner { position:relative; z-index:2; display:flex; align-items:flex-end; width:min(1160px,calc(100% - 56px)); min-height:520px; margin:0 auto; padding:70px 0 90px; }
+    .venue-world-copy { max-width:580px; }
+    .eyebrow { margin:0 0 10px; color:var(--pink); font-size:.74rem; font-weight:900; letter-spacing:.15em; text-transform:uppercase; }
+    .venue-world-copy .eyebrow { width:max-content; padding:4px 30px 4px 0; color:#fff; text-shadow:0 1px 3px #000,0 3px 14px rgba(0,0,0,.95); background:linear-gradient(90deg,rgba(0,0,0,.45),transparent); }
+    .venue-world h1 { margin:0; font-family:var(--display); font-size:clamp(4.2rem,8vw,7.7rem); font-weight:800; line-height:.8; letter-spacing:-.035em; text-shadow:0 10px 36px rgba(0,0,0,.72); }
+    .venue-world-copy>p:last-child { max-width:470px; margin:22px 0 0; color:#e1e5eb; font-size:1.03rem; line-height:1.55; }
+    .directory { position:relative; z-index:3; width:min(1160px,calc(100% - 56px)); margin:-52px auto 0; padding-bottom:96px; }
+    .search-deck { display:grid; grid-template-columns:1fr auto; gap:12px; padding:16px; border:1px solid var(--line-bright); border-top-color:rgba(255,25,168,.74); background:linear-gradient(145deg,#1a1821,#0b0e13 58%); box-shadow:inset 0 1px rgba(255,255,255,.08),0 26px 70px rgba(0,0,0,.44),0 -8px 36px rgba(255,25,168,.07); }
+    .search-field { display:grid; grid-template-columns:auto 1fr; gap:11px; align-items:center; min-height:54px; padding:0 17px; border:1px solid #404956; background:#080b10; }
+    .search-field b { color:var(--pink); font-size:1.25rem; }
+    .search-field input { width:100%; border:0; outline:0; background:transparent; color:white; font-size:1rem; }
+    .search-field input::placeholder { color:#77818f; }
+    .map-button { min-width:116px; border:1px solid var(--line-bright); background:#12161d; cursor:pointer; font-size:.84rem; font-weight:850; }
+    .map-button:hover { border-color:var(--pink); color:var(--pink); }
+    .filters { display:flex; gap:8px; overflow-x:auto; padding:16px 0 2px; scrollbar-width:none; }
+    .filters::-webkit-scrollbar { display:none; }
+    .filter-chip { flex:0 0 auto; min-height:36px; padding:0 13px; border:1px solid var(--line); background:#0b0e13; color:#c5cbd4; cursor:pointer; font-size:.76rem; font-weight:750; }
+    .filter-chip.active { border-color:rgba(255,25,168,.76); background:rgba(255,25,168,.09); color:#ff68c3; }
+    .filter-chip.more { border-color:rgba(0,200,255,.34); color:var(--cyan); }
+    dialog { width:min(560px,calc(100% - 24px)); max-width:none; padding:0; border:1px solid var(--line-bright); background:#0b0e13; color:white; box-shadow:0 30px 100px rgba(0,0,0,.82); }
+    dialog::backdrop { background:rgba(0,0,0,.82); backdrop-filter:blur(7px); }
+    .filter-sheet-head { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; padding:21px 22px; border-bottom:1px solid var(--line); }
+    .filter-sheet-head h2 { margin:3px 0 0; font-family:var(--display); font-size:2.5rem; line-height:.9; }
+    .close-filter { width:38px; height:38px; border:1px solid var(--line); background:#141921; cursor:pointer; font-size:1.25rem; }
+    .filter-groups { display:grid; gap:1px; background:var(--line); }
+    .filter-group { padding:19px 22px 20px; background:#0d1016; }
+    .filter-group h3 { margin:0 0 13px; color:var(--muted); font-size:.7rem; letter-spacing:.13em; text-transform:uppercase; }
+    .filter-options { display:flex; flex-wrap:wrap; gap:8px; }
+    .filter-option { position:relative; }
+    .filter-option input { position:absolute; opacity:0; pointer-events:none; }
+    .filter-option span { display:block; min-height:38px; padding:9px 12px; border:1px solid #333a45; background:#10141a; color:#d1d6de; font-size:.76rem; font-weight:750; cursor:pointer; }
+    .filter-option input:checked+span { border-color:rgba(255,25,168,.72); background:rgba(255,25,168,.1); color:#ff72c7; }
+    .filter-sheet-actions { display:grid; grid-template-columns:1fr 1fr; gap:9px; padding:16px 22px; }
+    .filter-sheet-actions button { min-height:45px; border:1px solid var(--line-bright); background:#141921; cursor:pointer; font-size:.78rem; font-weight:850; }
+    .filter-sheet-actions .apply { border-color:var(--pink); background:linear-gradient(135deg,#d70085,#ff19a8); }
+    .directory-head { display:flex; justify-content:space-between; gap:24px; align-items:end; padding:31px 0 17px; border-bottom:2px solid var(--pink); }
+    .directory-head h2 { margin:3px 0 0; font-family:var(--display); font-size:clamp(2.8rem,5vw,4.5rem); line-height:.84; }
+    .result-count { color:var(--muted); font-size:.8rem; white-space:nowrap; }
+    .venue-list { display:grid; gap:12px; padding-top:16px; }
+    .venue-card { position:relative; display:grid; grid-template-columns:minmax(0,1fr) auto; min-height:150px; border:1px solid var(--line); background:rgba(12,15,20,.98); box-shadow:inset 0 1px rgba(255,255,255,.025); color:inherit; text-decoration:none; }
+    .venue-card:hover { border-color:rgba(255,25,168,.6); }
+    .venue-card.has-full-profile { grid-template-columns:176px minmax(0,1fr) auto; border-color:rgba(255,25,168,.46); background:linear-gradient(112deg,rgba(255,25,168,.08),rgba(12,15,20,.98) 42%); box-shadow:inset 0 1px rgba(255,255,255,.08),0 12px 34px rgba(255,25,168,.075); }
+    .venue-preview { position:relative; min-height:148px; overflow:hidden; border-right:1px solid var(--line-bright); background:#08090c; }
+    .venue-preview img { width:100%; height:100%; object-fit:cover; filter:saturate(.9) contrast(1.04) brightness(.88); transition:filter .2s ease,transform .35s ease; }
+    .venue-preview:after { content:""; position:absolute; inset:0; background:linear-gradient(90deg,transparent 45%,rgba(8,10,14,.58)),linear-gradient(180deg,transparent 55%,rgba(255,25,168,.14)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.035); pointer-events:none; }
+    .venue-card.has-full-profile:hover .venue-preview img { filter:saturate(1) contrast(1.04) brightness(.98); transform:scale(1.025); }
+    .venue-info { padding:20px; }
+    .title-line { display:flex; gap:10px; align-items:baseline; flex-wrap:wrap; }
+    .venue-name { font-family:var(--display); font-size:1.75rem; font-weight:800; line-height:1; }
+    .venue-kind { color:var(--muted); font-size:.75rem; font-weight:700; }
+    .venue-place { margin:7px 0 0; color:#c8ced7; font-size:.83rem; }
+    .tags { display:flex; flex-wrap:wrap; gap:7px 13px; margin-top:13px; color:var(--muted); font-size:.73rem; font-weight:650; }
+    .tags span:before { content:"·"; margin-right:5px; color:var(--pink); }
+    .venue-rhythm { display:flex; flex-direction:column; justify-content:center; min-width:205px; padding:20px 22px 38px; border-left:1px solid var(--line); background:linear-gradient(145deg,rgba(255,25,168,.025),transparent),#0a0d12; }
+    .rhythm-label { color:var(--pink); font-size:.69rem; font-weight:900; letter-spacing:.13em; text-transform:uppercase; }
+    .rhythm-value { display:block; margin-top:6px; font-family:var(--display); font-size:1.65rem; font-weight:800; line-height:1; }
+    .trust { position:absolute; right:13px; bottom:10px; display:flex; align-items:center; gap:6px; color:#aab4c1; font-size:.68rem; font-weight:700; }
+    .trust i { display:grid; place-items:center; width:16px; height:16px; border:1px solid rgba(0,200,255,.5); border-radius:50%; color:var(--cyan); font-size:.62rem; font-style:normal; }
+    .empty { display:none; padding:46px 20px; border:1px solid var(--line); text-align:center; color:var(--muted); }
+    .empty.show { display:block; }
+    .mobile-nav { display:none; }
+    .toast { position:fixed; left:50%; bottom:24px; z-index:70; transform:translate(-50%,25px); padding:11px 15px; border:1px solid var(--line); border-radius:99px; background:#171b22; opacity:0; pointer-events:none; transition:.2s; white-space:nowrap; }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+    @media (max-width:800px) { .primary-nav { display:none; } .appbar { grid-template-columns:1fr auto; } .account span { display:none; } .venue-world-inner,.directory { width:calc(100% - 30px); } }
+    @media (max-width:560px) { .appbar { min-height:62px; padding:4px 14px; } .logo { width:112px; height:48px; } .venue-world { position:sticky; top:62px; min-height:calc(100svh - 62px); height:calc(100svh - 62px); } .venue-world>img { object-position:center 54%; } .venue-world:before { background:linear-gradient(180deg,rgba(2,3,7,.04) 0,rgba(2,3,7,.16) 48%,rgba(2,3,7,.9) 100%); } .venue-world-inner { width:calc(100% - 28px); min-height:100%; height:100%; padding:48px 0 112px; } .venue-world h1 { max-width:340px; font-size:4.15rem; } .venue-world-copy>p:last-child { max-width:330px; margin-top:17px; font-size:.93rem; } .directory { width:calc(100% - 20px); margin:-48px auto 0; padding:0 6px 104px; background:linear-gradient(180deg,rgba(11,13,18,.965) 0,rgba(5,6,9,.955) 180px); box-shadow:0 -20px 48px rgba(0,0,0,.52); } .search-deck { grid-template-columns:1fr; gap:8px; padding:10px; } .search-field { min-height:52px; } .map-button { min-height:42px; } .directory-head { padding-top:25px; } .directory-head h2 { font-size:3rem; } .venue-card,.venue-card.has-full-profile { grid-template-columns:1fr; } .venue-preview { min-height:156px; border-right:0; border-bottom:1px solid var(--line-bright); } .venue-preview:after { background:linear-gradient(180deg,transparent 45%,rgba(8,10,14,.68)),linear-gradient(90deg,transparent 58%,rgba(255,25,168,.12)); } .venue-info { padding:17px 15px 14px; } .venue-name { font-size:1.5rem; } .venue-rhythm { min-width:0; padding:13px 15px 38px; border-left:0; border-top:1px solid var(--line); } .rhythm-value { font-size:1.45rem; } .mobile-nav { position:fixed; left:0; right:0; bottom:0; z-index:50; display:grid; grid-template-columns:repeat(3,1fr); padding:7px 8px max(7px,env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(9,11,15,.96); backdrop-filter:blur(16px); } .mobile-nav a { display:grid; gap:3px; justify-items:center; color:var(--muted); text-decoration:none; font-size:.65rem; font-weight:700; } .mobile-nav a.active { color:var(--pink); } .mobile-nav b { font-size:1.05rem; } .toast { bottom:82px; max-width:calc(100% - 28px); white-space:normal; text-align:center; } }
+  </style>
+</head>
+<body>
+  <header class="appbar"><a href="index.html"><img class="logo" src="assets/singhub-wordmark.png" alt="SingHUB"></a><nav class="primary-nav" aria-label="Primary"><a href="index.html">Discover</a><a class="active" href="venues.html">Venues</a><a href="redwing.html#board">SingBOARD</a></nav><a class="account" href="singer.html"><span>My SingHUB</span><i class="avatar">CR</i></a></header>
+  <main>
+    <section class="venue-world" aria-labelledby="venue-page-title"><img src="assets/singhub-venues-alley.webp" alt="A neon-lit alley leading to SingHUB karaoke venues"><div class="venue-world-inner"><div class="venue-world-copy"><p class="eyebrow">SAN DIEGO VENUES</p><h1 id="venue-page-title">Know the room before you go.</h1><p>Browse verified karaoke venues, recurring nights, and the details that actually shape the experience.</p></div></div></section>
+    <section class="directory" aria-label="Venue directory">
+      <div class="search-deck"><label class="search-field"><b aria-hidden="true">⌕</b><input id="venue-search" type="search" placeholder="Venue, neighborhood or room type" autocomplete="off" aria-label="Search karaoke venues"></label><button class="map-button" data-toast="Map view opens from this venue list">Map view</button></div>
+      <div class="filters" aria-label="Venue filters"><button class="filter-chip active" data-quick-filter="" aria-pressed="true">All venues</button><button class="filter-chip" data-quick-filter="seven nights" aria-pressed="false">Seven nights</button><button class="filter-chip" data-quick-filter="private rooms" aria-pressed="false">Private rooms</button><button class="filter-chip more" id="open-filters" aria-haspopup="dialog">Filters</button></div>
+      <header class="directory-head"><div><p class="eyebrow">VERIFIED ROOMS</p><h2>Venue directory</h2></div><span class="result-count"><b id="result-count">6</b> venues</span></header>
+      <div class="venue-list" id="venue-list">
+        <a class="venue-card" href="#" data-toast="The Lamplighter profile opens here" data-search="lamplighter mission hills classic public stage seven nights staple 21+"><div class="venue-info"><div class="title-line"><strong class="venue-name">The Lamplighter</strong><span class="venue-kind">Classic karaoke bar</span></div><p class="venue-place">Mission Hills · Public karaoke</p><div class="tags"><span>Seven nights</span><span>San Diego staple</span><span>21+</span></div></div><div class="venue-rhythm"><span class="rhythm-label">Weekly rhythm</span><strong class="rhythm-value">Every night</strong></div><div class="trust"><i>✓</i>Verified Sep 26</div></a>
+        <a class="venue-card" href="#" data-toast="Gaslamplighter profile opens here" data-search="gaslamplighter gaslamp downtown public stage six nights late night 21+"><div class="venue-info"><div class="title-line"><strong class="venue-name">Gaslamplighter</strong><span class="venue-kind">Karaoke bar</span></div><p class="venue-place">Gaslamp Quarter · Public karaoke</p><div class="tags"><span>Six nights</span><span>Until last call</span><span>21+</span></div></div><div class="venue-rhythm"><span class="rhythm-label">Weekly rhythm</span><strong class="rhythm-value">Tue to Sun</strong></div><div class="trust"><i>✓</i>Verified Sep 24</div></a>
+        <a class="venue-card" href="#" data-toast="Whiskey Girl profile opens here" data-search="whiskey girl gaslamp downtown public stage four nights live band late night 21+"><div class="venue-info"><div class="title-line"><strong class="venue-name">Whiskey Girl</strong><span class="venue-kind">Downtown bar</span></div><p class="venue-place">Gaslamp Quarter · Public karaoke</p><div class="tags"><span>Live band Thursdays</span><span>Four nights</span><span>21+</span></div></div><div class="venue-rhythm"><span class="rhythm-label">Standout night</span><strong class="rhythm-value">Live band Thu</strong></div><div class="trust"><i>✓</i>Verified Sep 25</div></a>
+        <a class="venue-card has-full-profile" href="redwing.html" data-search="redwing bar grill north park neighborhood public stage seven nights photos lgbtq friendly inclusive 21+"><div class="venue-preview"><img src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/13/3b794f11b54b428c0b50b41edc5c75/%3Aoriginal" alt="Inside Redwing Bar and Grill"></div><div class="venue-info"><div class="title-line"><strong class="venue-name">Redwing Bar &amp; Grill</strong><span class="venue-kind">Neighborhood bar</span></div><p class="venue-place">North Park · Public karaoke</p><div class="tags"><span>Seven nights</span><span>LGBTQ+ friendly</span><span>Photos + details</span><span>21+</span></div></div><div class="venue-rhythm"><span class="rhythm-label">Weekly rhythm</span><strong class="rhythm-value">Every night</strong></div><div class="trust"><i>✓</i>Verified Sep 28</div></a>
+        <a class="venue-card" href="#" data-toast="Hive Karaoke profile opens here" data-search="hive karaoke kearny mesa private rooms reservations"><div class="venue-info"><div class="title-line"><strong class="venue-name">Hive Karaoke</strong><span class="venue-kind">Private rooms</span></div><p class="venue-place">Kearny Mesa · Reservations</p><div class="tags"><span>No public stage</span><span>Private-room karaoke</span></div></div><div class="venue-rhythm"><span class="rhythm-label">Room type</span><strong class="rhythm-value">Private rooms</strong></div><div class="trust"><i>✓</i>Verified Sep 22</div></a>
+        <a class="venue-card" href="#" data-toast="North Bar profile opens here" data-search="north bar escondido public stage four nights rotating kjs 21+"><div class="venue-info"><div class="title-line"><strong class="venue-name">North Bar</strong><span class="venue-kind">Neighborhood bar</span></div><p class="venue-place">Escondido · Public karaoke</p><div class="tags"><span>Four nights</span><span>Rotating KJs</span><span>21+</span></div></div><div class="venue-rhythm"><span class="rhythm-label">Weekly rhythm</span><strong class="rhythm-value">4 nights</strong></div><div class="trust"><i>✓</i>Verified Sep 28</div></a>
+      </div>
+      <div class="empty" id="empty-state"><strong>No matching venues yet.</strong><p>Try another venue, neighborhood, or room type.</p></div>
+    </section>
+  </main>
+  <dialog id="filter-sheet" aria-labelledby="filter-title"><form method="dialog"><header class="filter-sheet-head"><div><p class="eyebrow">FIND YOUR ROOM</p><h2 id="filter-title">More filters</h2></div><button class="close-filter" value="cancel" aria-label="Close filters">×</button></header><div class="filter-groups"><section class="filter-group"><h3>Karaoke format</h3><div class="filter-options"><label class="filter-option"><input type="checkbox" value="public"><span>Public stage</span></label><label class="filter-option"><input type="checkbox" value="private rooms"><span>Private rooms</span></label><label class="filter-option"><input type="checkbox" value="live band"><span>Live band karaoke nights</span></label></div></section><section class="filter-group"><h3>Environment</h3><div class="filter-options"><label class="filter-option"><input type="checkbox" value="lgbtq friendly"><span>LGBTQ+ friendly</span></label><label class="filter-option"><input type="checkbox" value="beginner friendly"><span>Beginner-friendly</span></label><label class="filter-option"><input type="checkbox" value="neighborhood"><span>Neighborhood room</span></label><label class="filter-option"><input type="checkbox" value="dive bar"><span>Dive bar</span></label></div></section><section class="filter-group"><h3>Details</h3><div class="filter-options"><label class="filter-option"><input type="checkbox" value="21+"><span>21+</span></label><label class="filter-option"><input type="checkbox" value="photos"><span>Photos</span></label><label class="filter-option"><input type="checkbox" value="seven nights"><span>Seven nights</span></label></div></section></div><footer class="filter-sheet-actions"><button type="button" id="clear-filters">Clear</button><button class="apply" value="apply">Apply filters</button></footer></form></dialog>
+  <nav class="mobile-nav" aria-label="Mobile navigation"><a href="index.html"><b>⌕</b>Discover</a><a class="active" href="venues.html"><b>●</b>Venues</a><a href="singer.html"><b>◎</b>My SingHUB</a></nav>
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script>
+    const toast=document.querySelector('.toast');let timer;const showToast=message=>{toast.textContent=message;toast.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>toast.classList.remove('show'),1900);};document.querySelectorAll('[data-toast]').forEach(item=>item.addEventListener('click',event=>{if(item.getAttribute('href')==='#')event.preventDefault();showToast(item.dataset.toast);}));
+    const search=document.querySelector('#venue-search');const cards=[...document.querySelectorAll('[data-search]')];const sheet=document.querySelector('#filter-sheet');let quickFilter='';let selectedFilters=[];const applySearch=()=>{const query=search.value.trim().toLowerCase();let visible=0;cards.forEach(card=>{const haystack=card.dataset.search;const show=haystack.includes(query)&&(!quickFilter||haystack.includes(quickFilter))&&selectedFilters.every(term=>haystack.includes(term));card.hidden=!show;if(show)visible++;});document.querySelector('#result-count').textContent=visible;document.querySelector('#empty-state').classList.toggle('show',visible===0);};search.addEventListener('input',applySearch);
+    document.querySelectorAll('[data-quick-filter]').forEach(chip=>chip.addEventListener('click',()=>{document.querySelectorAll('[data-quick-filter]').forEach(item=>{item.classList.toggle('active',item===chip);item.setAttribute('aria-pressed',String(item===chip));});quickFilter=chip.dataset.quickFilter;applySearch();}));
+    document.querySelector('#open-filters').addEventListener('click',()=>sheet.showModal());
+    sheet.addEventListener('close',()=>{if(sheet.returnValue!=='apply')return;selectedFilters=[...sheet.querySelectorAll('input:checked')].map(input=>input.value);document.querySelector('#open-filters').textContent=selectedFilters.length?`Filters (${selectedFilters.length})`:'Filters';applySearch();});
+    document.querySelector('#clear-filters').addEventListener('click',()=>{sheet.querySelectorAll('input').forEach(input=>input.checked=false);selectedFilters=[];document.querySelector('#open-filters').textContent='Filters';applySearch();});
+  </script>
+</body>
+</html>

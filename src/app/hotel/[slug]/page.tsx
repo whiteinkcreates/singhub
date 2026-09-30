@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { HotelGuideExperience, type HotelGuideVenue } from "@/components/hotel/HotelGuideExperience";
+import { HotelGuideTemplate } from "@/components/v2/HotelGuideTemplate";
+import { makeVenueRow,type HotelRowData } from "@/lib/v2/presentation";
 import { getKaraokeEventListings } from "@/lib/eventData";
 import { getHotelGuide, hotelGuides, isHotelGuideVenueCandidate } from "@/lib/hotelGuides";
 import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
@@ -53,6 +54,7 @@ function standoutReason(
   events: KaraokeEventListing[],
 ): string | undefined {
   if (venue.venueType === "private_room") return "Private-room karaoke";
+  if (new Set(events.map(event=>event.karaokeDay)).size===7) return "Seven-night karaoke";
 
   const evidence = [
     venue.description,
@@ -73,27 +75,31 @@ function makeVenue(
   venue: VenueListing,
   events: KaraokeEventListing[],
   distanceMiles: number,
-  tier: HotelGuideVenue["tier"],
+  tier: HotelRowData["tier"],
   tonightDay: string,
   standout?: string,
-): HotelGuideVenue {
+): HotelRowData {
   const tonightEvent = events.find((event) => eventMatchesDay(event, tonightDay));
   const enhancement = getVenueEnhancement(venue.slug);
-  const imageUrl = usable(venue.bannerImageUrl) || usable(enhancement?.heroImageUrl);
+
 
   return {
+    venue,
+    tags: makeVenueRow(venue,events,tonightDay,enhancement).tags,
+    verification: makeVenueRow(venue,events,tonightDay,enhancement).verification,
+    nightCount: new Set(events.map(event=>event.karaokeDay)).size,
     slug: venue.slug,
     name: venue.venueName,
     neighborhood: venue.neighborhood,
-    address: venue.address,
-    imageUrl: imageUrl || undefined,
+
+
     distanceMiles,
-    distanceLabel: `${distanceMiles.toFixed(1)} mi from hotel`,
+
     tier,
-    vibeTags: venue.vibeTags ?? [],
+
     venueType: venue.venueType === "private_room" ? "private_room" : "live_bar",
     tonightSchedule: tonightEvent ? formatSchedule(tonightEvent) : undefined,
-    weekSchedule: events.map(formatSchedule).filter(Boolean),
+    weekSchedule: events.length ? [makeVenueRow(venue,events,tonightDay,enhancement).rhythm+" · "+makeVenueRow(venue,events,tonightDay,enhancement).typicalStart] : [],
     standoutReason: standout,
   };
 }
@@ -169,15 +175,15 @@ export default async function HotelGuidePage({ params }: Props) {
           venue.venueType === "private_room" || relevantEvents.length > 0;
         if (!available) return null;
 
-        let tier: HotelGuideVenue["tier"];
-        let reason: string | undefined;
+        let tier: HotelRowData["tier"];
+        let reason: string | undefined = standoutReason(venue, events);
 
         if (proximity === "walkable") {
           tier = "walkable";
         } else if (proximity === "quick") {
           tier = "quick";
         } else {
-          reason = standoutReason(venue, relevantEvents);
+          reason = standoutReason(venue, events);
           if (!reason) return null;
           tier = "standout";
         }
@@ -191,7 +197,7 @@ export default async function HotelGuidePage({ params }: Props) {
           reason,
         );
       })
-      .filter((venue): venue is HotelGuideVenue => Boolean(venue))
+      .filter((venue): venue is HotelRowData => Boolean(venue))
       .sort((a, b) => {
         const tierRank = { walkable: 0, quick: 1, standout: 2 };
         const rankDifference = tierRank[a.tier] - tierRank[b.tier];
@@ -203,14 +209,16 @@ export default async function HotelGuidePage({ params }: Props) {
   const weekVenues = buildVenues("week");
 
   return (
-    <HotelGuideExperience
+    <HotelGuideTemplate
       hotelName={hotel.name}
       hotelShortName={hotel.shortName}
+      hotelSlug={hotel.slug}
+      hotelArea={hotel.area==='downtown'?'San Diego · Gaslamp Quarter':hotel.area==='la-jolla'?'San Diego · La Jolla':'San Diego · La Mesa'}
       heroImageUrl={hotel.heroImageUrl}
-      hotelWordmarkImageUrl={hotel.wordmarkImageUrl}
-      hotelWordmarkInvert={hotel.wordmarkInvert}
       tonightVenues={tonightVenues}
       weekVenues={weekVenues}
+      weeklyCount={allEvents.filter(event=>venues.some(venue=>venue.slug===event.venueSlug)).length}
+      tonightCount={tonightVenues.length}
     />
   );
 }
