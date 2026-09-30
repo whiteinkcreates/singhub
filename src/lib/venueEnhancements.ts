@@ -4,7 +4,7 @@ export type HeroPosition = "center" | "top" | "bottom" | "left" | "right";
 
 export type VenueGalleryItem = { url: string; alt: string; caption?: string; };
 export type VenueSpecial = { day: string; title: string; price?: string; detail?: string; };
-export type VenueDailyDeal = { title: string; price?: string; detail?: string; };
+export type VenueDailyDeal = { title: string; price?: string; detail?: string; };\nexport type SingHereConfig = { mode?: "instructions" | "external"; url?: string; instructions?: string; linkLabel?: string; title?: string; };
 
 export type VenueEnhancement = {
   /** Partner status. Base-profile fields remain usable when this is false. */
@@ -23,7 +23,7 @@ export type VenueEnhancement = {
   gallery: VenueGalleryItem[];
   amenities: string[];
   weeklySpecials: VenueSpecial[];
-  dailyDeals: VenueDailyDeal[];
+  dailyDeals: VenueDailyDeal[];\n  singHere?: SingHereConfig;
 };
 
 export const VENUE_FACT_OPTIONS = [
