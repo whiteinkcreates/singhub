@@ -39,7 +39,7 @@ const tierMeta = {
   },
   standout: {
     label: "Local Standouts",
-    helper: "Special-format karaoke worth going a little farther",
+    helper: "A little farther, still worth the trip",
   },
 } as const;
 
@@ -49,6 +49,43 @@ function splitByTier(venues: HotelGuideVenue[]) {
     quick: venues.filter((venue) => venue.tier === "quick"),
     standout: venues.filter((venue) => venue.tier === "standout"),
   };
+}
+
+function KaraokeMicBackdrop({ color }: { color: string }) {
+  return (
+    <svg
+      viewBox="0 0 620 1500"
+      aria-hidden
+      className="pointer-events-none absolute right-[-230px] top-[300px] z-0 h-[1250px] w-[620px] opacity-[0.07] sm:right-[-210px] sm:top-[340px] sm:h-[1380px] sm:w-[680px]"
+      style={{ color }}
+      fill="none"
+    >
+      <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+        <g transform="translate(345 120) rotate(-9 90 230)">
+          <rect x="52" y="34" width="138" height="168" rx="68" strokeWidth="14" />
+          <path d="M72 82h98M66 112h110M68 142h106" strokeWidth="7" opacity="0.7" />
+          <path d="M88 202h66l-12 310H100L88 202Z" strokeWidth="14" />
+          <path d="M104 265h34M102 320h38M100 375h40" strokeWidth="6" opacity="0.55" />
+          <path d="M121 512v88" strokeWidth="12" />
+        </g>
+
+        <path d="M405 555c38 2 64 27 64 64v54" strokeWidth="13" />
+        <path d="M469 672v430" strokeWidth="14" />
+        <path d="M394 1104h150" strokeWidth="15" />
+        <path d="M420 1104c8 45 27 74 49 74s42-29 50-74" strokeWidth="10" opacity="0.75" />
+
+        <path
+          d="M465 565c76 66 105 154 90 258-18 126-8 246 33 331 42 88 18 164-79 189-126 32-262 11-393 39-69 15-106 44-124 76"
+          strokeWidth="12"
+        />
+        <path
+          d="M588 1154c-88 40-175 59-261 58-111-1-194 27-255 80"
+          strokeWidth="7"
+          opacity="0.6"
+        />
+      </g>
+    </svg>
+  );
 }
 
 function TierIcon({
@@ -248,7 +285,7 @@ function TierSection({
     <section className="py-5">
       <div className="mb-3 flex items-end justify-between gap-3">
         <div>
-          <h2 className="flex items-center gap-2 text-lg font-black uppercase tracking-[0.12em]" style={{ color: textColor }}>
+          <h2 className="flex items-center gap-2 text-xl font-black uppercase tracking-[0.14em]" style={{ color: textColor }}>
             <TierIcon tier={tier} color={primaryColor} />
             {meta.label}
           </h2>
@@ -329,8 +366,9 @@ export function BrandedHotelExperience({
         fontFamily: bodyFontFamily,
       }}
     >
-      <div className="mx-auto min-h-screen max-w-3xl bg-white shadow-[0_24px_80px_rgba(15,23,42,.12)]">
-        <header className="flex items-center justify-between gap-4 px-5 py-4 sm:px-8">
+      <div className="relative isolate mx-auto min-h-screen max-w-3xl overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,.12)]">
+        <KaraokeMicBackdrop color={primaryColor} />
+        <header className="relative z-10 flex items-center justify-between gap-4 bg-white/95 px-5 py-4 backdrop-blur-[1px] sm:px-8">
           <a
             href={hotelSiteUrl}
             target="_blank"
@@ -360,7 +398,7 @@ export function BrandedHotelExperience({
         </header>
 
         {heroImageUrl && heroVisible ? (
-          <div className="relative h-48 overflow-hidden sm:h-60">
+          <div className="relative z-10 h-48 overflow-hidden sm:h-60">
             <img
               src={heroImageUrl}
               alt=""
@@ -368,10 +406,14 @@ export function BrandedHotelExperience({
               onError={() => setHeroVisible(false)}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+            <div
+              className="pointer-events-none absolute -bottom-[58px] left-1/2 h-[86px] w-[132%] -translate-x-1/2 bg-white"
+              style={{ borderRadius: "50%" }}
+            />
           </div>
         ) : null}
 
-        <section className="px-5 pb-3 pt-7 sm:px-8 sm:pt-9">
+        <section className="relative z-10 bg-white/88 px-5 pb-3 pt-7 backdrop-blur-[1px] sm:px-8 sm:pt-9">
           <p
             className="text-xs font-black uppercase tracking-[0.24em]"
             style={{ color: primaryColor }}
@@ -416,7 +458,7 @@ export function BrandedHotelExperience({
           </div>
         </section>
 
-        <div className="px-5 sm:px-8">
+        <div className="relative z-10 px-5 sm:px-8">
           {activeVenues.length === 0 ? (
             <div className="my-8 rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
               <p className="text-lg font-black" style={{ color: textColor }}>
@@ -475,7 +517,7 @@ export function BrandedHotelExperience({
           )}
         </div>
 
-        <footer className="mt-5 border-t border-slate-200 px-5 py-7 sm:px-8">
+        <footer className="relative z-10 mt-5 border-t border-slate-200 bg-white/92 px-5 py-7 backdrop-blur-[1px] sm:px-8">
           <Link
             href={`/find-karaoke?source=${encodeURIComponent(experienceSlug)}`}
             onClick={() =>
@@ -484,8 +526,12 @@ export function BrandedHotelExperience({
                 mode,
               })
             }
-            className="flex w-full items-center justify-center rounded-2xl px-5 py-3.5 text-center text-sm font-black text-white transition hover:brightness-105"
-            style={{ backgroundColor: primaryColor }}
+            className="flex w-full items-center justify-center rounded-2xl border border-white/20 px-5 py-3.5 text-center text-sm font-black transition hover:brightness-105"
+            style={{
+              background: "linear-gradient(135deg, #003B70 0%, #0067B9 100%)",
+              color: "#FFFFFF",
+              boxShadow: "0 12px 28px rgba(0, 59, 112, 0.24)",
+            }}
           >
             Explore more local karaoke on SingHUB
           </Link>
