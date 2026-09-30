@@ -43,7 +43,6 @@ export type VenueListing = {
   featuredPriority?: number;
   enhancementTagline?: string;
   enhancementAmenities?: string[];
-  enhancementStandoutFeatures?: string[];
 };
 
 export type KaraokeEventListing = {

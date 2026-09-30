@@ -18,7 +18,6 @@ type EnhancementMediaRow = {
     featuredPriority?: number;
     tagline?: string;
     amenities?: string[];
-    standoutFeatures?: string[];
     heroImageUrl?: string;
     heroImageAlt?: string;
     heroPosition?: "center" | "top" | "bottom" | "left" | "right";
@@ -207,7 +206,6 @@ export async function getVenueListings(): Promise<VenueListing[]> {
         bannerImagePosition: enhancement.heroPosition || "center",
         enhancementTagline: getOptionalValue(enhancement.tagline),
         enhancementAmenities: enhancement.amenities?.filter(Boolean) || [],
-        enhancementStandoutFeatures: enhancement.standoutFeatures?.filter(Boolean) || [],
       };
     })
     .filter((venue) => venue.id && venue.venueName && venue.slug);

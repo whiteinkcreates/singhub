@@ -87,8 +87,6 @@ function makeVenue(
     neighborhood: venue.neighborhood,
     address: venue.address,
     imageUrl: imageUrl || undefined,
-    latitude: venue.latitude!,
-    longitude: venue.longitude!,
     distanceMiles,
     distanceLabel: `${distanceMiles.toFixed(1)} mi from hotel`,
     tier,
@@ -206,13 +204,11 @@ export default async function HotelGuidePage({ params }: Props) {
 
   return (
     <HotelGuideExperience
-      hotelSlug={hotel.slug}
       hotelName={hotel.name}
       hotelShortName={hotel.shortName}
-      hotelAddress={hotel.address}
-      hotelLatitude={hotel.latitude}
-      hotelLongitude={hotel.longitude}
       heroImageUrl={hotel.heroImageUrl}
+      hotelWordmarkImageUrl={hotel.wordmarkImageUrl}
+      hotelWordmarkInvert={hotel.wordmarkInvert}
       tonightVenues={tonightVenues}
       weekVenues={weekVenues}
     />

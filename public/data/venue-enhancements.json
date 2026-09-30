@@ -98,11 +98,6 @@
         "price": "$22",
         "detail": "Burger, burrito, or flatbread"
       }
-    ],
-    "standoutFeatures": [
-      "Great food",
-      "Game night",
-      "Outdoor seating"
     ]
   },
   "the-north-bar-escondido": {
@@ -137,11 +132,6 @@
       "21+"
     ],
     "weeklySpecials": [],
-    "dailyDeals": [],
-    "standoutFeatures": [
-      "Live music",
-      "Big-screen sports",
-      "Darts"
-    ]
+    "dailyDeals": []
   }
 }
