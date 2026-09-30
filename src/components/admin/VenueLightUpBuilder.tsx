@@ -161,7 +161,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [gallery, setGallery] = useState<VenueGalleryItem[]>(initialProfile.gallery || []);
   const [amenities, setAmenities] = useState(initialProfile.amenities || []);
   const [weeklySpecials, setWeeklySpecials] = useState<VenueSpecial[]>(initialProfile.weeklySpecials || []);
-  const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);
+  const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);\n  const [singHereMode, setSingHereMode] = useState<"instructions" | "external">(initialProfile.singHere?.mode || "instructions");\n  const [singHereUrl, setSingHereUrl] = useState(initialProfile.singHere?.url || "");\n  const [singHereInstructions, setSingHereInstructions] = useState(initialProfile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");\n  const [singHereLinkLabel, setSingHereLinkLabel] = useState(initialProfile.singHere?.linkLabel || "Join the list");
   const [previewMode, setPreviewMode] = useState<PreviewMode>("open");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -186,7 +186,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setGallery(profile.gallery || []);
     setAmenities(profile.amenities || []);
     setWeeklySpecials(profile.weeklySpecials || []);
-    setDailyDeals(profile.dailyDeals || []);
+    setDailyDeals(profile.dailyDeals || []);\n    setSingHereMode(profile.singHere?.mode || "instructions");\n    setSingHereUrl(profile.singHere?.url || "");\n    setSingHereInstructions(profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");\n    setSingHereLinkLabel(profile.singHere?.linkLabel || "Join the list");
   }
 
   async function selectVenue(nextSlug: string) {
@@ -308,6 +308,18 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
               <p className="mt-2 text-sm leading-6 text-slate-400">Choose factual venue traits. These are separate from Singers Say.</p>
               <div className="mt-4 flex flex-wrap gap-2">{VENUE_FACT_OPTIONS.map((fact) => { const active = selectedFacts.has(fact); return <button key={fact} type="button" onClick={() => toggleFact(fact)} className={`rounded-full border px-3 py-2 text-xs font-bold transition ${active ? "border-cyan-300/60 bg-cyan-300/15 text-cyan-100" : "border-white/10 bg-white/[0.03] text-slate-400 hover:border-white/25 hover:text-white"}`}>{venueFactIconName(fact) ? <VenueSemanticIcon name={venueFactIconName(fact)!} className="mr-1.5 inline h-4 w-4 align-text-bottom" /> : null}{fact}</button>; })}</div>
               <details className="mt-4"><summary className="cursor-pointer text-xs font-bold text-slate-500">Add custom facts</summary><textarea className={`${fieldClass} min-h-24`} value={amenities.join("\n")} onChange={(event) => setAmenities(event.target.value.split("\n").map((item) => item.trim()).filter(Boolean))} placeholder="One fact per line" /></details>
+            </section>
+
+            <section className="md:col-span-2 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.04] p-4">
+              <p className={labelClass}>SingHERE</p>
+              <p className="mt-2 text-sm leading-6 text-slate-400">What happens when a singer taps SingHERE at this venue. No SingHUB account required.</p>
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <label className={labelClass}>Signup method<select className={fieldClass} value={singHereMode} onChange={(event)=>setSingHereMode(event.target.value as "instructions"|"external")}><option value="instructions">Sign up with the KJ / instructions</option><option value="external">Venue or KJ online signup link</option></select></label>
+                {singHereMode==="external"?<label className={labelClass}>Signup URL<input className={fieldClass} value={singHereUrl} onChange={(event)=>setSingHereUrl(event.target.value)} placeholder="Existing venue or KJ signup link"/></label>:null}
+                <label className={`${labelClass} md:col-span-2`}>Popup instructions<textarea className={`${fieldClass} min-h-20`} value={singHereInstructions} onChange={(event)=>setSingHereInstructions(event.target.value)}/></label>
+                {singHereMode==="external"?<label className={labelClass}>Button label<input className={fieldClass} value={singHereLinkLabel} onChange={(event)=>setSingHereLinkLabel(event.target.value)} placeholder="Join the list"/></label>:null}
+              </div>
+              <p className="mt-3 text-xs text-slate-500">Future SingHUB-hosted signup can plug into this same action without changing the public SingHERE experience.</p>
             </section>
 
             <SpecialEditor specials={weeklySpecials} onChange={setWeeklySpecials} />
