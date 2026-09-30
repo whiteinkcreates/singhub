@@ -56,7 +56,7 @@ function KaraokeMicBackdrop({ color }: { color: string }) {
     <svg
       viewBox="0 0 620 1500"
       aria-hidden
-      className="pointer-events-none absolute right-[-230px] top-[300px] z-0 h-[1250px] w-[620px] opacity-[0.07] sm:right-[-210px] sm:top-[340px] sm:h-[1380px] sm:w-[680px]"
+      className="pointer-events-none absolute right-[-105px] top-[285px] z-[5] h-[1240px] w-[610px] opacity-[0.14] mix-blend-multiply sm:right-[-90px] sm:top-[315px] sm:h-[1360px] sm:w-[670px]"
       style={{ color }}
       fill="none"
     >
@@ -413,7 +413,7 @@ export function BrandedHotelExperience({
           </div>
         ) : null}
 
-        <section className="relative z-10 bg-white/[0.88] px-5 pb-3 pt-7 backdrop-blur-[1px] sm:px-8 sm:pt-9">
+        <section className="relative z-10 bg-white/[0.68] px-5 pb-3 pt-7 sm:px-8 sm:pt-9">
           <p
             className="text-xs font-black uppercase tracking-[0.24em]"
             style={{ color: primaryColor }}
@@ -517,7 +517,7 @@ export function BrandedHotelExperience({
           )}
         </div>
 
-        <footer className="relative z-10 mt-5 border-t border-slate-200 bg-white/[0.92] px-5 py-7 backdrop-blur-[1px] sm:px-8">
+        <footer className="relative z-10 mt-5 border-t border-slate-200 bg-white/[0.76] px-5 py-7 sm:px-8">
           <Link
             href={`/find-karaoke?source=${encodeURIComponent(experienceSlug)}`}
             onClick={() =>
