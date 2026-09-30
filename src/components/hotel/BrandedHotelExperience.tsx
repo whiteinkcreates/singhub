@@ -296,7 +296,7 @@ function TierSection({
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        {venues.slice(0, tier === "walkable" ? 4 : 3).map((venue) => (
+        {(tier === "standout" ? venues.slice(0, 3) : venues).map((venue) => (
           <VenueCard
             key={venue.slug}
             venue={venue}
@@ -368,7 +368,7 @@ export function BrandedHotelExperience({
     >
       <div className="relative isolate mx-auto min-h-screen max-w-3xl overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,.12)]">
         <KaraokeMicBackdrop color={primaryColor} />
-        <header className="relative z-10 flex items-center justify-between gap-4 bg-white/95 px-5 py-4 backdrop-blur-[1px] sm:px-8">
+        <header className="relative z-10 flex items-center justify-between gap-4 bg-white/[0.95] px-5 py-4 backdrop-blur-[1px] sm:px-8">
           <a
             href={hotelSiteUrl}
             target="_blank"
@@ -413,7 +413,7 @@ export function BrandedHotelExperience({
           </div>
         ) : null}
 
-        <section className="relative z-10 bg-white/88 px-5 pb-3 pt-7 backdrop-blur-[1px] sm:px-8 sm:pt-9">
+        <section className="relative z-10 bg-white/[0.88] px-5 pb-3 pt-7 backdrop-blur-[1px] sm:px-8 sm:pt-9">
           <p
             className="text-xs font-black uppercase tracking-[0.24em]"
             style={{ color: primaryColor }}
@@ -517,7 +517,7 @@ export function BrandedHotelExperience({
           )}
         </div>
 
-        <footer className="relative z-10 mt-5 border-t border-slate-200 bg-white/92 px-5 py-7 backdrop-blur-[1px] sm:px-8">
+        <footer className="relative z-10 mt-5 border-t border-slate-200 bg-white/[0.92] px-5 py-7 backdrop-blur-[1px] sm:px-8">
           <Link
             href={`/find-karaoke?source=${encodeURIComponent(experienceSlug)}`}
             onClick={() =>
