@@ -1,82 +1,87 @@
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+This project uses Next.js 16.2.6 and React 19.2.4. Read the relevant guide in `node_modules/next/dist/docs/` before changing framework-sensitive code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
 # SingHUB Agent Guidelines
 
 ## Project Overview
-**SingHUB** is a web-based karaoke venue finder for San Diego. Phase 1 focuses on connecting singers with karaoke venues using mock data.
+**SingHUB** is the production karaoke discovery ecosystem, currently centered on San Diego. It is no longer a Phase 1 mock-data prototype.
 
-**Primary Product Question:** "Where can I sing karaoke tonight?"
+**Primary product question:** "Where can I sing karaoke tonight?"
+
+The live product includes real venue/event data, reusable venue profiles, enhanced ("Lit Up") profiles, hotel guest guides, admin tooling, SingBOARD, public data sync, Supabase-backed persistence, analytics, and PWA behavior.
 
 ## Tech Stack
-- **Framework:** Next.js 16.2.6 (App Router)
+- **Framework:** Next.js 16.2.6 App Router
 - **Language:** TypeScript 5
-- **Styling:** Tailwind CSS 4
 - **React:** 19.2.4
-- **Directory Structure:** `src/app` (App Router pattern)
+- **Styling:** Tailwind CSS 4
+- **Data:** canonical TSV/public data pipeline plus Supabase-backed persistent features
+- **Deployment:** Vercel
+- **Directory structure:** `src/app`, reusable components in `src/components`, data/services in `src/lib`
 
-## Key Constraints for Phase 1
-- ❌ No Supabase/database integration
-- ❌ No authentication (public app)
-- ❌ No payments
-- ❌ No host dashboard
-- ❌ No singer queue system
-- ❌ No merch functionality
-- ❌ No native app behavior
-- ✅ Mock data only
-- ✅ Read-only venue listings
+## Production Rules
 
-## Pages to Build (Phase 1)
+### Do not downgrade the app
+- Do not replace production data flows with mock data.
+- Do not remove or bypass Supabase-backed persistence unless explicitly required.
+- Do not create fake/demo-only architecture when the production system already exists.
+- Preserve canonical venue/event data integrity and current sync behavior.
 
-1. **Homepage** (`/`) - Landing page with search call-to-action
-2. **Find Karaoke** (`/find`) - Browse/search San Diego venues
-3. **Venue Detail** (`/venues/[id]`) - Individual venue information
-4. **Claim Listing** (`/claim-listing`) - Form to claim a venue
-5. **Submit Listing** (`/submit-listing`) - Form to add new venue
-6. **Premium Profile Creation** (`/premium-profile`) - Create enhanced venue profile
-7. **SingHUB Scout** (`/scout`) - Explanation of venue discovery program
+### Venue profiles are templates, not one-off pages
+The venue system must remain data-driven.
 
-## Development Guidelines
+- `VenueProfile` is the shared entry point.
+- Basic venues render the shared Basic profile treatment.
+- Lit Up venues render the shared Lit Up treatment through `LitUpVenueProfile`.
+- Redwing, Lamplighter, Cheers, BarLando, North Bar, etc. are **reference/data instances**, not bespoke page implementations.
+- Never create a venue-specific page component to reproduce a design unless there is a documented product requirement that cannot be represented by the shared schema.
+- New venue presentation capabilities belong in the shared enhancement schema/components so they can propagate to every eligible venue.
 
-### File Organization
-- Page components in `src/app/` following App Router structure
-- Reusable components in `src/components/`
-- Mock data in `src/data/` or `src/mocks/`
-- Type definitions in `src/types/`
-- Utilities in `src/utils/`
+### Visual source of truth
+For the SingHUB 2.0 redesign, approved prototype/design work is the visual source of truth.
 
-### Styling
-- Use Tailwind CSS utility classes
-- Follow mobile-first responsive design
-- Maintain consistent spacing and typography
+Implementation should reproduce the approved:
+- Discovery / City Signal treatment
+- Basic venue hierarchy
+- Lit Up / Backstage Editorial venue treatment
+- hotel concierge treatment
+- Singer Account treatment
 
-### Type Safety
-- Always use TypeScript interfaces/types
-- Export types from components that use them
-- No `any` types without justification
+Do not reinterpret approved layouts as loose inspiration. Engineering adaptations are allowed for real data, responsive behavior, accessibility, and platform constraints, but the production result should remain recognizably the same design system.
 
-### Component Patterns
-- Use functional components with hooks
-- Keep components focused and reusable
-- Implement proper error boundaries where needed
+### Data ownership
+- Venue identity and schedule data comes from the canonical data pipeline.
+- Enhanced venue content is represented by `VenueEnhancement` and persisted through the existing enhancement system.
+- Prefer extending the shared schema over adding venue-name conditionals.
+- Never hard-code a venue's schedule into UI components when canonical event data is available.
 
-### Mock Data Strategy
-- Store venue mock data in `src/data/venues.ts` or similar
-- Include: name, address, hours, amenities, contact, pricing
-- Create realistic San Diego venue data for Phase 1
+### Safe delivery
+- Build substantial redesign work on a feature branch.
+- Do not overwrite `main` before validation.
+- Run lint/build/tests available in the repo before requesting merge.
+- Use Vercel preview deployments for visual QA before production merge.
 
-### Code Quality
-- Run `npm run lint` before commits
-- Follow Next.js best practices from official docs
-- Keep bundle sizes optimized
+## Current important paths
+- `src/app/venues/[slug]/page.tsx` - production venue route
+- `src/components/venue/VenueProfile.tsx` - shared Basic/Lit Up resolver
+- `src/components/venue/LitUpVenueProfile.tsx` - enhanced profile template
+- `src/components/venue/LitUpVenueCard.tsx` - enhanced discovery card
+- `src/lib/venueData.ts` - canonical venue presentation layer
+- `src/lib/venueEnhancements.ts` - enhancement schema and helpers
+- `src/lib/venueEnhancements.server.ts` - Supabase persistence/fallback
+- `public/data/venues.tsv` - public canonical venue snapshot
+- `public/data/venue-enhancements.json` - enhancement fallback data
+- `src/components/hotel/` and `src/lib/hotelGuides.ts` - hotel experience
 
-## How to Use These Instructions
+## Code quality
+- Keep components reusable and typed.
+- No `any` without justification.
+- Follow existing production patterns before inventing new ones.
+- Prefer schema/component changes that scale to all venues.
+- Run `npm run lint` and the relevant build/tests before merge.
 
-When building features:
-1. Reference `PRODUCT_SPEC.md` for feature requirements
-2. Check `ROADMAP.md` for phasing and priorities
-3. Consult `TASKS.md` for specific implementation tasks
-4. Follow this `AGENTS.md` for technical decisions
+## Planning references
+`PRODUCT_SPEC.md`, `ROADMAP.md`, and `TASKS.md` may contain historical material. Treat the current production code and current approved product direction as authoritative when those documents conflict with the live system.
