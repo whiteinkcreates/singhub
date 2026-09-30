@@ -258,7 +258,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Profile could not be saved.");
-      const status = enabled ? "Saved and live." : "Saved as a draft. Light Up is off.";
+      const status = enabled ? "Saved and live." : "Saved. Base profile remains live; Partner features are off.";
       setSaveMessage(featured ? `${status} Featured priority ${output.featuredPriority}.` : status);
     } catch (error) {
       setSaveMessage(error instanceof Error ? error.message : "Profile could not be saved.");
@@ -280,7 +280,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             </select>
           </label>
           <div className="flex min-w-64 items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 p-3">
-            <div><p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Light Up</p><p className="mt-1 text-sm font-bold text-white">{enabled ? "Enhanced profile live" : "Draft / standard listing"}</p></div>
+            <div><p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Partner</p><p className="mt-1 text-sm font-bold text-white">{enabled ? "Partner features live" : "Base profile only"}</p></div>
             <button type="button" onClick={() => setEnabled((current) => !current)} aria-pressed={enabled} className={`relative h-8 w-14 shrink-0 rounded-full transition ${enabled ? "bg-fuchsia-400" : "bg-slate-700"}`}><span className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${enabled ? "left-7" : "left-1"}`} /></button>
           </div>
           <div className="min-w-64 rounded-2xl border border-white/10 bg-black/20 p-3">
@@ -319,7 +319,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
         <aside className="self-start space-y-4 xl:sticky xl:top-6">
           <section className="rounded-[2rem] border border-fuchsia-300/20 bg-[#081018] p-5 md:p-6">
-            <div className="flex items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Profile readiness</p><h2 className="mt-2 text-2xl font-black text-white">{completionPercent}% complete</h2></div><span className={`rounded-full px-3 py-1 text-xs font-black ${enabled ? "bg-emerald-300/15 text-emerald-200" : "bg-white/[0.06] text-slate-400"}`}>{enabled ? "LIVE" : "DRAFT"}</span></div>
+            <div className="flex items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Profile readiness</p><h2 className="mt-2 text-2xl font-black text-white">{completionPercent}% complete</h2></div><span className={`rounded-full px-3 py-1 text-xs font-black ${enabled ? "bg-emerald-300/15 text-emerald-200" : "bg-white/[0.06] text-slate-400"}`}>{enabled ? "PARTNER" : "BASE"}</span></div>
             <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.06]"><div className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-fuchsia-400 transition-all" style={{ width: `${completionPercent}%` }} /></div>
             <div className="mt-4 grid grid-cols-2 gap-2">{completionChecks.map((item) => <div key={item.label} className={`rounded-xl border px-3 py-2 text-xs font-bold ${item.done ? "border-emerald-300/20 bg-emerald-300/[0.06] text-emerald-100" : "border-white/10 text-slate-500"}`}>{item.done ? "✓" : "○"} {item.label}</div>)}</div>
           </section>
@@ -331,8 +331,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
           <section className="rounded-[2rem] border border-white/10 bg-[#081018] p-5 md:p-6">
             {saveMessage ? <p className="mb-4 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-sm text-slate-200">{saveMessage}</p> : null}
-            <button type="button" onClick={saveProfile} disabled={saving || loading || !slug.trim()} className="w-full rounded-full bg-[#ff2aa3] px-5 py-3 text-sm font-black text-white transition hover:bg-[#ff4bb2] disabled:cursor-not-allowed disabled:opacity-40">{saving ? "Saving..." : enabled ? "Save + Publish" : "Save Draft"}</button>
-            {enabled ? <a href={`/venues/${slug}`} target="_blank" rel="noreferrer" className="mt-3 block w-full rounded-full border border-cyan-300/30 px-5 py-3 text-center text-sm font-black text-cyan-100">Open live profile ↗</a> : null}
+            <button type="button" onClick={saveProfile} disabled={saving || loading || !slug.trim()} className="w-full rounded-full bg-[#ff2aa3] px-5 py-3 text-sm font-black text-white transition hover:bg-[#ff4bb2] disabled:cursor-not-allowed disabled:opacity-40">{saving ? "Saving..." : enabled ? "Save + Publish Partner" : "Save Base Profile"}</button>
+            <a href={`/venues/${slug}`} target="_blank" rel="noreferrer" className="mt-3 block w-full rounded-full border border-cyan-300/30 px-5 py-3 text-center text-sm font-black text-cyan-100">Open live profile ↗</a>
           </section>
         </aside>
       </div>
