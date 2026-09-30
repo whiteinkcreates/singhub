@@ -4,7 +4,7 @@ import { EventSchedule } from "@/components/venue/EventSchedule";
 import { VibeCheckLauncher } from "@/components/venue/VibeCheckLauncher";
 import { VenueSignalBadges, VenueSignalDetails } from "@/components/venue/VenueSignals";
 import { LitUpVenueProfile } from "@/components/venue/LitUpVenueProfile";
-import { SingersSay } from "@/components/venue/SingersSay";
+import { SingersSay } from "@/components/venue/SingersSay";\nimport { SingHereAction } from "@/components/venue/SingHereAction";
 import { isPartnerVenue, type VenueEnhancement } from "@/lib/venueEnhancements";
 import type { SingersSaySummary } from "@/lib/singersSay.server";
 import type { KaraokeEventListing, VenueListing } from "@/types";
@@ -56,7 +56,7 @@ function BasicProfile({venue,events=[],enhancement}:VenueProfileProps) {
         <dl className="mt-4 space-y-3 text-sm text-slate-300">
           <DetailLine label="Address" value={venue.address}/><DetailLine label="KJ / Host" value={hostSummary(venue,events)}/><DetailLine label="Cover" value={venue.coverCharge}/><DetailLine label="Age policy" value={venue.agePolicy}/>
         </dl>
-        <div className="mt-6"><Button href={`/claim-listing?venue=${venue.slug}`} variant="ghost">Own or manage this venue?</Button></div>
+        <div className="mt-6 flex flex-wrap gap-3"><SingHereAction venueName={venue.venueName} config={enhancement?.singHere}/><Button href={`/claim-listing?venue=${venue.slug}`} variant="ghost">Own or manage this venue?</Button></div>
         <p className="mt-3 text-xs leading-5 text-slate-500">SingHUB keeps karaoke listings free. Venue Partners can share specials, events, galleries and more.</p>
       </aside>
     </div>
