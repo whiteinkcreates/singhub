@@ -34,8 +34,8 @@ export const hotelExperienceConfigs: HotelExperienceConfig[] = [
     mutedTextColor: "#52677D",
     headingFontFamily: "Arial, Helvetica, sans-serif",
     bodyFontFamily: "Arial, Helvetica, sans-serif",
-    eyebrow: "A local guide for our guests",
-    headline: "Looking for something fun tonight?",
+    eyebrow: "Local karaoke guide",
+    headline: "In San Diego, we sing karaoke.",
     intro:
       "Here are a few local karaoke spots worth checking out, curated for guests of Holiday Inn Express La Mesa near SDSU.",
   },

@@ -197,8 +197,9 @@ export default async function HotelExperiencePage({ params }: Props) {
         } else if (proximity === "quick") {
           tier = "quick";
         } else {
-          reason = standoutReason(venue, relevantEvents);
-          if (!reason) return null;
+          reason =
+            standoutReason(venue, events) ??
+            (mode === "tonight" ? "Karaoke tonight" : "Karaoke this week");
           tier = "standout";
         }
 
