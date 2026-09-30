@@ -13,7 +13,6 @@ const primaryNavItems = [
   { href: "/places", label: "Venue Index" },
   { href: "/neighborhoods", label: "Neighborhoods" },
   { href: "/hosts", label: "Hosts" },
-  { href: "/account", label: "My SingHUB" },
 ];
 
 const utilityNavItems = [
