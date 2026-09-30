@@ -135,7 +135,7 @@ export function PwaInstallManager() {
     else setShowPrompt(true);
   };
 
-  if (!showPrompt && !showIosHelp) return null;
+  if (pathname.startsWith("/hotelexperience/") || (!showPrompt && !showIosHelp)) return null;
 
   return (
     <div className="fixed inset-x-4 bottom-4 z-[80] mx-auto max-w-md rounded-2xl border border-white/15 bg-slate-950/95 p-4 shadow-2xl shadow-black/60 backdrop-blur">
