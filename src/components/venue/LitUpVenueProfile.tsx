@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Button } from "@/components/ui/Button";
-import { LitUpVenueTabs } from "@/components/venue/LitUpVenueTabs";
+import { LitUpVenueTabs } from "@/components/venue/LitUpVenueTabs";\nimport { SingHereAction } from "@/components/venue/SingHereAction";
 import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 import type { KaraokeEventListing, VenueListing } from "@/types";
 import type { SingersSaySummary } from "@/lib/singersSay.server";
@@ -127,7 +127,7 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
           </div>
         </div>
 
-        <div className="mt-6 flex flex-wrap items-center gap-2 border-y border-white/10 py-4">
+        <div className="mt-6 flex flex-wrap items-center gap-2 border-y border-white/10 py-4">\n          <SingHereAction venueName={venue.venueName} config={enhancement.singHere} />
           {directionsUrl ? <ActionLink href={directionsUrl} label="Get directions" symbol="⌖" variant="primary" analyticsEvent="directions_click" venue={venue} /> : null}
           {phone ? <ActionLink href={`tel:${phone}`} label="Call" symbol="☎" variant="secondary" analyticsEvent="venue_call_click" venue={venue} /> : null}
           <div className="flex flex-wrap items-center gap-1 sm:ml-1">
