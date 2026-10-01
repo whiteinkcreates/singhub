@@ -4,7 +4,7 @@ export type HotelGuide = {
   slug: string;
   name: string;
   shortName: string;
-  area: "downtown" | "la-jolla" | "la-mesa";
+  area: "downtown" | "beach" | "la-jolla" | "la-mesa";
   address: string;
   latitude: number;
   longitude: number;
@@ -33,10 +33,62 @@ const downtown: HotelGuide[] = [
   { slug: "residence-inn-gaslamp", name: "Residence Inn San Diego Downtown/Gaslamp Quarter", shortName: "Residence Inn Gaslamp", area: "downtown", address: "356 6th Ave, San Diego, CA 92101", latitude: 32.7098, longitude: -117.1581, wordmarkSourceUrl: "https://cache.marriott.com/is/image/marriotts7prod/ri-mi-brand-page-ri-log06839-45003", wordmarkStatus: "cleanup", heroFallback: "downtown" },
   { slug: "hotel-indigo-gaslamp", name: "Hotel Indigo San Diego-Gaslamp Quarter", shortName: "Hotel Indigo", area: "downtown", address: "509 9th Ave, San Diego, CA 92101", latitude: 32.7105, longitude: -117.1561, wordmarkSourceUrl: "https://development.ihg.com/sites/ihgplc/files/IHG/EMEAA/hotel-indigo.png", wordmarkStatus: "cleanup", heroFallback: "downtown" },
   { slug: "moxy-gaslamp", name: "Moxy San Diego Downtown/Gaslamp Quarter", shortName: "Moxy Gaslamp", area: "downtown", address: "831 6th Ave, San Diego, CA 92101", latitude: 32.7147, longitude: -117.1590, wordmarkSourceUrl: "https://cache.marriott.com/content/dam/marriott-digital/ox/global-brand-exclusive/en_us/logo/assets/ox-mi-brand-page-ox-log64332-07884.jpg", wordmarkStatus: "cleanup", heroFallback: "downtown" },
-  { slug: "horton-grand", name: "Horton Grand Hotel", shortName: "Horton Grand", area: "downtown", address: "311 Island Ave, San Diego, CA 92101", latitude: 32.7105, longitude: -117.1613, wordmarkSourceUrl: "https://www.hortongrand.com/", wordmarkStatus: "partner-file", heroFallback: "downtown" },
-  { slug: "palihotel-san-diego", name: "Palihotel San Diego", shortName: "Palihotel", area: "downtown", address: "830 6th Ave, San Diego, CA 92101", latitude: 32.7146, longitude: -117.1590, wordmarkSourceUrl: "https://s3.amazonaws.com/palisocietyv3/sd_badge_3-1695224403882.png", wordmarkStatus: "cleanup", heroFallback: "downtown" },
+  { slug: "horton-grand", name: "Horton Grand Hotel", shortName: "Horton Grand", area: "downtown", address: "311 Island Ave, San Diego, CA 92101", latitude: 32.7105, longitude: -117.1613, heroImageUrl: "https://image-tc.galaxy.tf/wijpeg-9g3xekf7l84y750kcp98pqkxb/horton-round2-3991.jpg?width=1600", wordmarkSourceUrl: "https://www.hortongrand.com/", wordmarkStatus: "partner-file", heroFallback: "downtown" },
+  { slug: "palihotel-san-diego", name: "Palihotel San Diego", shortName: "Palihotel", area: "downtown", address: "830 6th Ave, San Diego, CA 92101", latitude: 32.7146, longitude: -117.1590, heroImageUrl: "https://s3.amazonaws.com/palisocietyv3/_03_pali_sd_property31944pm17024232465231704320662519-1704394182005.jpg", wordmarkImageUrl: "https://s3.amazonaws.com/palisocietyv3/sd_badge_3-1695224403882.png", wordmarkSourceUrl: "https://www.palisociety.com/hotels/san-diego", wordmarkStatus: "ready", heroFallback: "downtown" },
   { slug: "us-grant", name: "THE US GRANT, a Luxury Collection Hotel", shortName: "THE US GRANT", area: "downtown", address: "326 Broadway, San Diego, CA 92101", latitude: 32.7156, longitude: -117.1616, wordmarkSourceUrl: "https://www.marriott.com/en-us/hotels/sanlc-the-us-grant-a-luxury-collection-hotel-san-diego/overview/", wordmarkStatus: "cleanup", heroFallback: "downtown" },
   { slug: "westin-gaslamp", name: "The Westin San Diego Gaslamp Quarter", shortName: "Westin Gaslamp", area: "downtown", address: "910 Broadway Cir, San Diego, CA 92101", latitude: 32.7150, longitude: -117.1632, wordmarkSourceUrl: "https://cache.marriott.com/content/dam/marriott-digital/wi/global-brand-exclusive/en_us/logo/assets/wi-mi-brand-page-wi-log71095-24388.jpg", wordmarkStatus: "cleanup", heroFallback: "downtown" },
+];
+
+const beach: HotelGuide[] = [
+  {
+    slug: "pacific-terrace",
+    name: "Pacific Terrace Hotel",
+    shortName: "Pacific Terrace",
+    area: "beach",
+    address: "610 Diamond St, San Diego, CA 92109",
+    latitude: 32.7993192,
+    longitude: -117.2578118,
+    heroImageUrl: "https://www.pacificterrace.com/wp-content/uploads/sites/3/2026/02/PT-1440x900.jpg",
+    wordmarkSourceUrl: "https://www.pacificterrace.com/",
+    wordmarkStatus: "partner-file",
+    heroFallback: "coast",
+    walkableMiles: 0.8,
+    quickTripMiles: 5,
+    standoutMiles: 9,
+  },
+  {
+    slug: "tower23",
+    name: "TOWER23 Hotel",
+    shortName: "TOWER23",
+    area: "beach",
+    address: "723 Felspar St, San Diego, CA 92109",
+    latitude: 32.7970732,
+    longitude: -117.256665,
+    heroImageUrl: "https://d18slle4wlf9ku.cloudfront.net/www.t23hotel.com-1090602105/cms/cache/v2/686c251797581.webp/1920x1080/fit/80/7a2874015b06eda7f2f2f6177f0b6f82.jpg",
+    wordmarkImageUrl: "https://d18slle4wlf9ku.cloudfront.net/www.t23hotel.com-1090602105/cms/imagepool/68066e7f277eb.svg",
+    wordmarkSourceUrl: "https://www.t23hotel.com/",
+    wordmarkStatus: "ready",
+    heroFallback: "coast",
+    walkableMiles: 0.8,
+    quickTripMiles: 5,
+    standoutMiles: 9,
+  },
+  {
+    slug: "wayfarer-san-diego",
+    name: "The Wayfarer San Diego",
+    shortName: "The Wayfarer",
+    area: "beach",
+    address: "707 Pacific Beach Dr, San Diego, CA 92109",
+    latitude: 32.7909698,
+    longitude: -117.2548981,
+    heroImageUrl: "https://wayfarersd-cdn.zambezimarketing.io/assets/files/21735/thewafarer_02.612x765.jpg?2f8lyv=",
+    wordmarkSourceUrl: "https://www.wayfarersd.com/",
+    wordmarkStatus: "partner-file",
+    heroFallback: "coast",
+    walkableMiles: 0.8,
+    quickTripMiles: 5,
+    standoutMiles: 9,
+  },
 ];
 
 const laJolla: HotelGuide[] = [
@@ -66,12 +118,12 @@ const laMesa: HotelGuide[] = [
     wordmarkStatus: "ready",
     heroFallback: "downtown",
     walkableMiles: 0.7,
-    quickTripMiles: 3.5,
+    quickTripMiles: 5,
     standoutMiles: 8,
   },
 ];
 
-export const hotelGuides = [...downtown, ...laJolla, ...laMesa];
+export const hotelGuides = [...downtown, ...beach, ...laJolla, ...laMesa];
 
 export function getHotelGuide(slug: string) {
   return hotelGuides.find((hotel) => hotel.slug === slug);

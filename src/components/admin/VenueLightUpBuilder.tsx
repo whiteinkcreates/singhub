@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { VenueMediaLibrary } from "@/components/admin/VenueMediaLibrary";
 import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 import {
+  HOTEL_VIBE_OPTIONS,
   VENUE_FACT_OPTIONS,
   VENUE_STANDOUT_OPTIONS,
   type HeroPosition,
@@ -55,6 +56,17 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     standoutFeatures: [],
     weeklySpecials: [],
     dailyDeals: [],
+    vibeTags: [],
+    foodSummary: "",
+    singersSay: "",
+    singersSaySource: "",
+    singersSayUpdatedAt: "",
+    whyHere: "",
+    singHere: {
+      mode: "instructions",
+      instructions: "Head up to the KJ and ask to join the karaoke list.",
+      linkLabel: "Join the list",
+    },
   };
 }
 
@@ -167,6 +179,16 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [standoutFeatures, setStandoutFeatures] = useState(initialProfile.standoutFeatures || []);
   const [weeklySpecials, setWeeklySpecials] = useState<VenueSpecial[]>(initialProfile.weeklySpecials || []);
   const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);
+  const [vibeTags, setVibeTags] = useState(initialProfile.vibeTags || []);
+  const [foodSummary, setFoodSummary] = useState(initialProfile.foodSummary || "");
+  const [singersSay, setSingersSay] = useState(initialProfile.singersSay || "");
+  const [singersSaySource, setSingersSaySource] = useState(initialProfile.singersSaySource || "");
+  const [singersSayUpdatedAt, setSingersSayUpdatedAt] = useState(initialProfile.singersSayUpdatedAt || "");
+  const [whyHere, setWhyHere] = useState(initialProfile.whyHere || "");
+  const [singHereMode, setSingHereMode] = useState<"instructions" | "external">(initialProfile.singHere?.mode || "instructions");
+  const [singHereUrl, setSingHereUrl] = useState(initialProfile.singHere?.url || "");
+  const [singHereInstructions, setSingHereInstructions] = useState(initialProfile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");
+  const [singHereLinkLabel, setSingHereLinkLabel] = useState(initialProfile.singHere?.linkLabel || "Join the list");
   const [previewMode, setPreviewMode] = useState<PreviewMode>("open");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -195,6 +217,16 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setStandoutFeatures(profile.standoutFeatures || []);
     setWeeklySpecials(profile.weeklySpecials || []);
     setDailyDeals(profile.dailyDeals || []);
+    setVibeTags(profile.vibeTags || []);
+    setFoodSummary(profile.foodSummary || "");
+    setSingersSay(profile.singersSay || "");
+    setSingersSaySource(profile.singersSaySource || "");
+    setSingersSayUpdatedAt(profile.singersSayUpdatedAt || "");
+    setWhyHere(profile.whyHere || "");
+    setSingHereMode(profile.singHere?.mode || "instructions");
+    setSingHereUrl(profile.singHere?.url || "");
+    setSingHereInstructions(profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");
+    setSingHereLinkLabel(profile.singHere?.linkLabel || "Join the list");
   }
 
   async function selectVenue(nextSlug: string) {
@@ -238,7 +270,19 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     weeklySpecials: weeklySpecials.filter((special) => special.title.trim()),
     dailyDeals: dailyDeals.filter((deal) => deal.title.trim()),
     gallery,
-  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, tagline, weeklySpecials]);
+    vibeTags,
+    foodSummary: foodSummary.trim() || undefined,
+    singersSay: singersSay.trim() || undefined,
+    singersSaySource: singersSaySource.trim() || undefined,
+    singersSayUpdatedAt: singersSayUpdatedAt.trim() || undefined,
+    whyHere: whyHere.trim() || undefined,
+    singHere: {
+      mode: singHereMode,
+      url: singHereMode === "external" ? singHereUrl.trim() || undefined : undefined,
+      instructions: singHereInstructions.trim() || undefined,
+      linkLabel: singHereLinkLabel.trim() || undefined,
+    },
+  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const completionChecks = useMemo(() => [
     { label: "Hero + alt text", done: Boolean(heroImageUrl.trim() && heroImageAlt.trim()) },
@@ -264,6 +308,10 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     });
   }
 
+  function toggleVibe(label: string) {
+    setVibeTags((current) => current.includes(label) ? current.filter((item) => item !== label) : current.length >= 4 ? current : [...current, label]);
+  }
+
   async function saveProfile() {
     if (!slug.trim()) return;
     setSaving(true);
@@ -276,7 +324,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Profile could not be saved.");
-      const status = enabled ? "Saved and live." : "Saved as a draft. Light Up is off.";
+      const status = enabled ? "Saved and live." : "Saved. Base profile remains live; Partner features are off.";
       setSaveMessage(featured ? `${status} Featured priority ${output.featuredPriority}.` : status);
     } catch (error) {
       setSaveMessage(error instanceof Error ? error.message : "Profile could not be saved.");
@@ -298,7 +346,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             </select>
           </label>
           <div className="flex min-w-64 items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 p-3">
-            <div><p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Light Up</p><p className="mt-1 text-sm font-bold text-white">{enabled ? "Enhanced profile live" : "Draft / standard listing"}</p></div>
+            <div><p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Partner</p><p className="mt-1 text-sm font-bold text-white">{enabled ? "Partner features live" : "Base profile only"}</p></div>
             <button type="button" onClick={() => setEnabled((current) => !current)} aria-pressed={enabled} className={`relative h-8 w-14 shrink-0 rounded-full transition ${enabled ? "bg-fuchsia-400" : "bg-slate-700"}`}><span className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${enabled ? "left-7" : "left-1"}`} /></button>
           </div>
           <div className="min-w-64 rounded-2xl border border-white/10 bg-black/20 p-3">
@@ -317,6 +365,48 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             <label className={labelClass}>Menu URL<input className={fieldClass} value={menuUrl} onChange={(event) => setMenuUrl(event.target.value)} /></label>
             <label className={`${labelClass} md:col-span-2`}>Tagline<input className={fieldClass} value={tagline} onChange={(event) => setTagline(event.target.value)} /></label>
             <label className={`${labelClass} md:col-span-2`}>About<textarea className={`${fieldClass} min-h-28`} value={about} onChange={(event) => setAbout(event.target.value)} /></label>
+
+            <section className="md:col-span-2 overflow-hidden rounded-[1.75rem] border border-fuchsia-300/20 bg-[radial-gradient(circle_at_top_left,rgba(236,72,153,.12),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,.10),transparent_34%),rgba(0,0,0,.18)] p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Venue intelligence</p>
+                  <h3 className="mt-1 text-xl font-black text-white">What should a traveler know?</h3>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">These fields power Hotel Experience v1.2 and can also improve discovery elsewhere. Use your own firsthand take when you have one. Keep factual claims specific and defensible.</p>
+                </div>
+                <span className="rounded-full border border-cyan-300/25 bg-cyan-300/[0.07] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-cyan-100">Hotel v1.2</span>
+              </div>
+
+              <div className="mt-5">
+                <p className={labelClass}>Vibe <span className="normal-case tracking-normal text-slate-600">choose up to 4</span></p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {HOTEL_VIBE_OPTIONS.map((vibe) => {
+                    const active = vibeTags.includes(vibe);
+                    return <button key={vibe} type="button" onClick={() => toggleVibe(vibe)} className={`rounded-full border px-3.5 py-2 text-xs font-black transition ${active ? "border-fuchsia-300/70 bg-gradient-to-r from-fuchsia-400/20 to-cyan-300/15 text-white shadow-[0_0_20px_rgba(236,72,153,.12)]" : "border-white/10 bg-black/20 text-slate-400 hover:-translate-y-0.5 hover:border-cyan-300/35 hover:text-cyan-100"}`}>{active ? "✓ " : ""}{vibe}</button>;
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <label className={labelClass}>Food
+                  <input className={fieldClass} value={foodSummary} onChange={(event) => setFoodSummary(event.target.value)} placeholder="Full kitchen · kitchen until 10 PM" />
+                  <span className="mt-1.5 block normal-case tracking-normal text-slate-600">Short practical answer, not menu copy.</span>
+                </label>
+                <label className={labelClass}>Why Here
+                  <input className={fieldClass} value={whyHere} onChange={(event) => setWhyHere(event.target.value)} placeholder="Best bet for dinner + karaoke in one stop." />
+                  <span className="mt-1.5 block normal-case tracking-normal text-slate-600">Your editorial recommendation. Leave blank for a data-based fallback.</span>
+                </label>
+                <label className={`${labelClass} md:col-span-2`}>Singers Say
+                  <textarea className={`${fieldClass} min-h-28`} value={singersSay} onChange={(event) => setSingersSay(event.target.value)} placeholder="Friendly regulars, lively room, and a crowd that rewards committing to the song." />
+                  <span className="mt-1.5 block normal-case tracking-normal text-slate-600">A concise firsthand or sourced summary. This is editorial copy, not the community-response percentage system.</span>
+                </label>
+                <label className={labelClass}>Singers Say source
+                  <input className={fieldClass} value={singersSaySource} onChange={(event) => setSingersSaySource(event.target.value)} placeholder="Corey firsthand · public review themes · KJ feedback" />
+                </label>
+                <label className={labelClass}>Last checked
+                  <input type="date" className={fieldClass} value={singersSayUpdatedAt} onChange={(event) => setSingersSayUpdatedAt(event.target.value)} />
+                </label>
+              </div>
+            </section>
 
             <VenueMediaLibrary slug={slug} heroUrl={heroImageUrl} heroAlt={heroImageAlt} heroPosition={heroPosition} logoUrl={logoImageUrl} logoAlt={logoImageAlt} gallery={gallery} onHeroChange={setHeroImageUrl} onHeroPositionChange={setHeroPosition} onLogoChange={setLogoImageUrl} onGalleryChange={setGallery} />
             <label className={labelClass}>Hero image alt text<input className={fieldClass} value={heroImageAlt} onChange={(event) => setHeroImageAlt(event.target.value)} placeholder="Describe the hero photo" /></label>
@@ -337,6 +427,18 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
               <div className="mt-4 flex flex-wrap gap-2">{VENUE_STANDOUT_OPTIONS.map((feature) => { const active = selectedStandouts.has(feature); const locked = !active && standoutFeatures.length >= 3; return <button key={feature} type="button" disabled={locked} onClick={() => toggleStandout(feature)} className={`rounded-full border px-3 py-2 text-xs font-bold transition ${active ? "border-fuchsia-300/55 bg-fuchsia-300/15 text-fuchsia-100" : locked ? "cursor-not-allowed border-white/5 text-slate-700" : "border-white/10 bg-white/[0.03] text-slate-400 hover:border-cyan-300/40 hover:text-white"}`}>{venueFactIconName(feature) ? <VenueSemanticIcon name={venueFactIconName(feature)!} className="mr-1.5 inline h-4 w-4 align-text-bottom" /> : null}{feature}</button>; })}</div>
             </section>
 
+            <section className="md:col-span-2 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.04] p-4">
+              <p className={labelClass}>SingHERE</p>
+              <p className="mt-2 text-sm leading-6 text-slate-400">What happens when a singer taps SingHERE at this venue. No SingHUB account required.</p>
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <label className={labelClass}>Signup method<select className={fieldClass} value={singHereMode} onChange={(event)=>setSingHereMode(event.target.value as "instructions"|"external")}><option value="instructions">Sign up with the KJ / instructions</option><option value="external">Venue or KJ online signup link</option></select></label>
+                {singHereMode==="external"?<label className={labelClass}>Signup URL<input className={fieldClass} value={singHereUrl} onChange={(event)=>setSingHereUrl(event.target.value)} placeholder="Existing venue or KJ signup link"/></label>:null}
+                <label className={`${labelClass} md:col-span-2`}>Popup instructions<textarea className={`${fieldClass} min-h-20`} value={singHereInstructions} onChange={(event)=>setSingHereInstructions(event.target.value)}/></label>
+                {singHereMode==="external"?<label className={labelClass}>Button label<input className={fieldClass} value={singHereLinkLabel} onChange={(event)=>setSingHereLinkLabel(event.target.value)} placeholder="Join the list"/></label>:null}
+              </div>
+              <p className="mt-3 text-xs text-slate-500">Future SingHUB-hosted signup can plug into this same action without changing the public SingHERE experience.</p>
+            </section>
+
             <SpecialEditor specials={weeklySpecials} onChange={setWeeklySpecials} />
             <DailyDealEditor deals={dailyDeals} onChange={setDailyDeals} />
 
@@ -346,7 +448,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
         <aside className="self-start space-y-4 xl:sticky xl:top-6">
           <section className="rounded-[2rem] border border-fuchsia-300/20 bg-[#081018] p-5 md:p-6">
-            <div className="flex items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Profile readiness</p><h2 className="mt-2 text-2xl font-black text-white">{completionPercent}% complete</h2></div><span className={`rounded-full px-3 py-1 text-xs font-black ${enabled ? "bg-emerald-300/15 text-emerald-200" : "bg-white/[0.06] text-slate-400"}`}>{enabled ? "LIVE" : "DRAFT"}</span></div>
+            <div className="flex items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Profile readiness</p><h2 className="mt-2 text-2xl font-black text-white">{completionPercent}% complete</h2></div><span className={`rounded-full px-3 py-1 text-xs font-black ${enabled ? "bg-emerald-300/15 text-emerald-200" : "bg-white/[0.06] text-slate-400"}`}>{enabled ? "PARTNER" : "BASE"}</span></div>
             <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.06]"><div className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-fuchsia-400 transition-all" style={{ width: `${completionPercent}%` }} /></div>
             <div className="mt-4 grid grid-cols-2 gap-2">{completionChecks.map((item) => <div key={item.label} className={`rounded-xl border px-3 py-2 text-xs font-bold ${item.done ? "border-emerald-300/20 bg-emerald-300/[0.06] text-emerald-100" : "border-white/10 text-slate-500"}`}>{item.done ? "✓" : "○"} {item.label}</div>)}</div>
           </section>
@@ -358,8 +460,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
           <section className="rounded-[2rem] border border-white/10 bg-[#081018] p-5 md:p-6">
             {saveMessage ? <p className="mb-4 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-sm text-slate-200">{saveMessage}</p> : null}
-            <button type="button" onClick={saveProfile} disabled={saving || loading || !slug.trim()} className="w-full rounded-full bg-[#ff2aa3] px-5 py-3 text-sm font-black text-white transition hover:bg-[#ff4bb2] disabled:cursor-not-allowed disabled:opacity-40">{saving ? "Saving..." : enabled ? "Save + Publish" : "Save Draft"}</button>
-            {enabled ? <a href={`/venues/${slug}`} target="_blank" rel="noreferrer" className="mt-3 block w-full rounded-full border border-cyan-300/30 px-5 py-3 text-center text-sm font-black text-cyan-100">Open live profile ↗</a> : null}
+            <button type="button" onClick={saveProfile} disabled={saving || loading || !slug.trim()} className="w-full rounded-full bg-[#ff2aa3] px-5 py-3 text-sm font-black text-white transition hover:bg-[#ff4bb2] disabled:cursor-not-allowed disabled:opacity-40">{saving ? "Saving..." : enabled ? "Save + Publish Partner" : "Save Base Profile"}</button>
+            <a href={`/venues/${slug}`} target="_blank" rel="noreferrer" className="mt-3 block w-full rounded-full border border-cyan-300/30 px-5 py-3 text-center text-sm font-black text-cyan-100">Open live profile ↗</a>
           </section>
         </aside>
       </div>

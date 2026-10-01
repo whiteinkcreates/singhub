@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 const REQUIRED_HEADERS = [
   "candidate_id",
+  "market_slug",
   "venue_name",
   "possible_city",
   "possible_neighborhood",
@@ -28,7 +29,7 @@ const REQUIRED_HEADERS = [
 ];
 
 const SAMPLE_TSV = `${REQUIRED_HEADERS.join("\t")}
-import-001\tImported Sample Venue\tSan Diego\tNorth Park\tNeeds review\tThursday\t8:00 PM\tSample KJ\thttps://example.com/source\tvenue_calendar\tPlaceholder import row. Replace with real Scout evidence.\t68\tmedium\tneeds_review\tImported through Scout Import preview.\t\t@samplevenue\t\thttps://example.com\t\t\ttrue`;
+phx-scout-001\tphoenix\tImported Sample Venue\tPhoenix\tDowntown Phoenix\tNeeds review\tThursday\t8:00 PM\tSample KJ\thttps://example.com/source\tvenue_calendar\tPlaceholder import row. Replace with real SCOUT evidence.\t68\tmedium\tneeds_review\tImported through SCOUT candidate import.\t\t@samplevenue\t\thttps://example.com\t\t\ttrue`;
 
 type ParsedRow = Record<string, string>;
 
@@ -75,6 +76,8 @@ function labelize(value: string) {
 
 export function ScoutImportTool() {
   const [input, setInput] = useState(SAMPLE_TSV);
+  const [importStatus, setImportStatus] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
 
   const parsed = useMemo(() => parseTsv(input), [input]);
 
@@ -88,12 +91,14 @@ export function ScoutImportTool() {
 
   const rowsWithMissingIds = parsed.rows.filter((row) => !row.candidate_id?.trim()).length;
   const rowsWithMissingVenueNames = parsed.rows.filter((row) => !row.venue_name?.trim()).length;
+  const rowsWithMissingMarkets = parsed.rows.filter((row) => !row.market_slug?.trim()).length;
   const isValid =
     parsed.headers.length > 0 &&
     parsed.rows.length > 0 &&
     missingHeaders.length === 0 &&
     rowsWithMissingIds === 0 &&
-    rowsWithMissingVenueNames === 0;
+    rowsWithMissingVenueNames === 0 &&
+    rowsWithMissingMarkets === 0;
 
   const canonicalTsv = useMemo(() => toCanonicalTsv(parsed.rows), [parsed.rows]);
 
@@ -111,6 +116,31 @@ export function ScoutImportTool() {
     URL.revokeObjectURL(url);
   }
 
+  async function importIntoScout() {
+    if (!isValid || importing) return;
+    setImporting(true);
+    setImportStatus(null);
+
+    try {
+      const response = await fetch("/api/admin/scout/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tsv: canonicalTsv }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error ?? "SCOUT import failed.");
+      }
+
+      setImportStatus(`Imported/updated ${result.imported ?? parsed.rows.length} candidate rows in SCOUT.`);
+    } catch (error) {
+      setImportStatus(error instanceof Error ? error.message : "SCOUT import failed.");
+    } finally {
+      setImporting(false);
+    }
+  }
+
   return (
     <section className="mt-10 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(320px,420px)]">
       <div className="rounded-3xl border border-white/10 bg-slate-950/75 p-5 shadow-2xl shadow-slate-950/30">
@@ -119,21 +149,22 @@ export function ScoutImportTool() {
             <p className="text-sm font-bold uppercase tracking-[0.25em] text-cyan-300">
               Paste TSV
             </p>
-            <h2 className="mt-2 text-2xl font-black text-white">Scout candidate import</h2>
+            <h2 className="mt-2 text-2xl font-black text-white">SCOUT candidate import</h2>
           </div>
           <button
             className="rounded-full border border-cyan-300/40 bg-cyan-300/10 px-4 py-2 text-sm font-black text-cyan-100 hover:bg-cyan-300/20"
             type="button"
             onClick={() => setInput(SAMPLE_TSV)}
           >
-            Load sample
+            Load Phoenix sample
           </button>
         </div>
 
         <p className="mt-4 text-sm leading-6 text-slate-300">
-          Paste Stage One Scout output here as tab-separated rows. This tool does not write to
-          the repo or publish anything. It previews, validates, and formats rows so they can be
-          copied into <code className="text-cyan-200">public/data/scout_candidates.tsv</code>.
+          Paste source-backed candidate rows from a SCOUT research run. Every row needs a registered
+          <code className="text-cyan-200"> market_slug</code> and stable
+          <code className="text-cyan-200"> candidate_id</code>. Re-importing the same candidate ID updates
+          the existing lead instead of creating a duplicate.
         </p>
 
         <textarea
@@ -159,6 +190,9 @@ export function ScoutImportTool() {
             <p className={rowsWithMissingIds ? "text-rose-300" : "text-cyan-200"}>
               {rowsWithMissingIds ? `${rowsWithMissingIds} rows missing IDs` : "Candidate IDs present"}
             </p>
+            <p className={rowsWithMissingMarkets ? "text-rose-300" : "text-cyan-200"}>
+              {rowsWithMissingMarkets ? `${rowsWithMissingMarkets} rows missing market_slug` : "Market slugs present"}
+            </p>
             <p className={rowsWithMissingVenueNames ? "text-rose-300" : "text-cyan-200"}>
               {rowsWithMissingVenueNames
                 ? `${rowsWithMissingVenueNames} rows missing venue names`
@@ -182,14 +216,22 @@ export function ScoutImportTool() {
         )}
 
         <div className="rounded-3xl border border-white/10 bg-slate-950/75 p-5">
-          <h3 className="text-xl font-black text-white">Export clean TSV</h3>
+          <h3 className="text-xl font-black text-white">Load the queue</h3>
           <p className="mt-2 text-sm leading-6 text-slate-300">
-            Use this after the preview looks right. Then replace the contents of
-            <code className="text-cyan-200"> scout_candidates.tsv</code> and commit.
+            Preview first. Import writes candidates to the internal SCOUT queue only. It does not publish
+            venue listings or contact anyone.
           </p>
           <div className="mt-4 grid gap-3">
             <button
-              className="rounded-full bg-cyan-300 px-4 py-3 text-sm font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-full bg-fuchsia-400 px-4 py-3 text-sm font-black text-slate-950 disabled:cursor-not-allowed disabled:opacity-40"
+              type="button"
+              disabled={!isValid || importing}
+              onClick={importIntoScout}
+            >
+              {importing ? "Importing..." : "Import to SCOUT database"}
+            </button>
+            <button
+              className="rounded-full border border-cyan-300/40 bg-cyan-300/10 px-4 py-3 text-sm font-black text-cyan-100 disabled:cursor-not-allowed disabled:opacity-40"
               type="button"
               disabled={!isValid}
               onClick={copyCanonicalTsv}
@@ -197,7 +239,7 @@ export function ScoutImportTool() {
               Copy formatted TSV
             </button>
             <button
-              className="rounded-full border border-fuchsia-300/40 bg-fuchsia-300/10 px-4 py-3 text-sm font-black text-fuchsia-100 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm font-black text-slate-200 disabled:cursor-not-allowed disabled:opacity-40"
               type="button"
               disabled={!isValid}
               onClick={downloadCanonicalTsv}
@@ -205,6 +247,11 @@ export function ScoutImportTool() {
               Download TSV file
             </button>
           </div>
+          {importStatus ? (
+            <p className="mt-4 rounded-2xl border border-white/10 bg-slate-900/70 p-3 text-sm leading-6 text-slate-200">
+              {importStatus}
+            </p>
+          ) : null}
         </div>
       </aside>
 
@@ -213,7 +260,7 @@ export function ScoutImportTool() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-2xl font-black text-white">Preview</h2>
             <span className="rounded-full border border-white/10 bg-slate-900 px-3 py-1 text-sm font-bold text-slate-200">
-              {isValid ? "Ready to export" : "Needs cleanup"}
+              {isValid ? "Ready to import" : "Needs cleanup"}
             </span>
           </div>
 
@@ -224,7 +271,7 @@ export function ScoutImportTool() {
                 className="rounded-3xl border border-white/10 bg-slate-900/70 p-4"
               >
                 <p className="text-xs font-bold uppercase tracking-[0.25em] text-cyan-300">
-                  {row.candidate_id || `Row ${index + 1}`}
+                  {row.candidate_id || `Row ${index + 1}`} · {row.market_slug || "No market"}
                 </p>
                 <h3 className="mt-2 text-xl font-black text-white">
                   {row.venue_name || "Missing venue name"}

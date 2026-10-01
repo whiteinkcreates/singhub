@@ -103,9 +103,21 @@ const venuePath = path.join(process.cwd(), "public", "data", "venues.tsv");
 const tsv = await readFile(venuePath, "utf8");
 const venues = parseTsv(tsv);
 
+const { data: sanDiegoMarket, error: marketError } = await supabase
+  .from("scout_markets")
+  .select("id")
+  .eq("slug", "san-diego")
+  .single();
+
+if (marketError || !sanDiegoMarket) {
+  console.error("Could not load the San Diego SCOUT market:", marketError?.message ?? "missing market");
+  process.exit(1);
+}
+
 const leads = venues.map((row) => {
   const score = Number.parseInt(row.confidence_score || "0", 10) || 0;
   return {
+    market_id: sanDiegoMarket.id,
     lead_name: row.venue_name,
     canonical_guess: row.venue_name,
     lead_type: row.profile_tier === "premium" ? "premium_venue" : "venue",

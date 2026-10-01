@@ -1,15 +1,34 @@
-# SingHUB Scout Admin
+# SingHUB SCOUT Admin
 
-Internal Scout routes:
+SCOUT is SingHUB's internal karaoke intelligence and market-expansion system.
 
-- `/admin/scout` dashboard
-- `/admin/scout/leads` lead queue
-- `/admin/scout/leads/[id]` lead detail page
+## Admin routes
 
-Public Scout route:
+- `/admin/scout` - market command center
+- `/admin/scout/markets/[slug]` - market status, sourced metrics, run history, and venue graph
+- `/admin/scout/leads` - cross-market venue intelligence queue
+- `/admin/scout/leads?market=phoenix` - market-filtered queue
+- `/admin/scout/leads/[id]` - editable lead detail
+- `/scout/import` - protected source-backed candidate intake
 
-- `/scout` explains the Scout data engine without exposing admin tools.
+## Public route
 
-Footer line:
+- `/scout` explains the SCOUT data engine without exposing admin tools.
 
-- `Karaoke entries powered by SingHUB Scout.`
+## Permanent research state
+
+SCOUT uses Supabase rather than conversation memory for durable state:
+
+- `scout_markets`
+- `scout_market_metrics`
+- `scout_runs`
+- `scout_leads`
+
+Read `docs/SCOUT_OPERATING_SYSTEM.md` before running city research or expansion analysis.
+
+## Current markets
+
+- San Diego: operating market
+- Phoenix: first expansion test, currently in scouting / ready-to-scout state
+
+Do not insert fake Phoenix venues to make the dashboard look populated. The empty state is intentional until a real source-backed SCOUT run begins.

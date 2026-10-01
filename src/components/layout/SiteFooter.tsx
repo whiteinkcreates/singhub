@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 const footerLinks = [
@@ -13,6 +16,9 @@ const footerLinks = [
 ];
 
 export function SiteFooter() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/hotelexperience/")) return null;
+
   return (
     <footer className="border-t border-white/10 bg-slate-950/70">
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-10 text-sm text-slate-400 md:grid-cols-[1fr_auto] md:items-center">

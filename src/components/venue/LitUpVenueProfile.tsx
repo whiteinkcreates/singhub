@@ -1,10 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { Button } from "@/components/ui/Button";
 import { LitUpVenueTabs } from "@/components/venue/LitUpVenueTabs";
+import { SingHereAction } from "@/components/venue/SingHereAction";
 import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 import type { KaraokeEventListing, VenueListing } from "@/types";
 import type { SingersSaySummary } from "@/lib/singersSay.server";
 import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
+import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
 import {
   getTonightSpecials,
   getVenueEnhancement,
@@ -112,6 +114,10 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
         {logoUrl ? <div className="absolute right-5 top-0 flex h-24 w-24 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-300/60 bg-[#071019] p-3 shadow-xl shadow-black/30 md:right-8 md:h-28 md:w-28"><img src={logoUrl} alt={logoAlt} className="h-full w-full object-contain" /></div> : null}
         <div className={`flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between ${logoUrl ? "pr-28 md:pr-32" : ""}`}>
           <div className="max-w-3xl">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-black/25 px-3 py-1.5">
+              <img src={SITE_WORDMARK_SRC} alt="SingHUB" className="h-5 w-auto object-contain" />
+              <span className="bg-gradient-to-r from-cyan-200 to-fuchsia-300 bg-clip-text text-[0.65rem] font-black uppercase tracking-[0.16em] text-transparent">Partner</span>
+            </div>
             <h1 className="text-4xl font-black leading-none text-white md:text-5xl">{venue.venueName}</h1>
             <p className="mt-2 text-sm font-semibold text-slate-400">{[venue.neighborhood || venue.city, clean(venue.address)].filter(Boolean).join(" • ")}</p>
             {enhancement.tagline ? <p className="mt-4 text-base leading-7 text-slate-200 md:text-lg">{enhancement.tagline}</p> : null}
@@ -123,6 +129,7 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
         </div>
 
         <div className="mt-6 flex flex-wrap items-center gap-2 border-y border-white/10 py-4">
+          <SingHereAction venueName={venue.venueName} config={enhancement.singHere} />
           {directionsUrl ? <ActionLink href={directionsUrl} label="Get directions" symbol="⌖" variant="primary" analyticsEvent="directions_click" venue={venue} /> : null}
           {phone ? <ActionLink href={`tel:${phone}`} label="Call" symbol="☎" variant="secondary" analyticsEvent="venue_call_click" venue={venue} /> : null}
           <div className="flex flex-wrap items-center gap-1 sm:ml-1">

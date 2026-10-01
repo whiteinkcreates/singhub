@@ -12,7 +12,7 @@ import type { VenueTemplateProps } from './VenueModules';
 import "./styles/basic.css";
 export function BasicVenueTemplate({venue,events,enhancement,weekday,singersSay}:VenueTemplateProps) {
 const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();void viewerInitials;
-const row=makeVenueRow(venue,events,weekday,enhancement);const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl});
+const row=makeVenueRow(venue,events,weekday,enhancement);const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:enhancement?.singHere});
 const details=[['Address',venue.address],['Room type',row.kind],['Age policy',venue.agePolicy],['Parking',venue.parkingInfo],['Accessibility',venue.accessibilityNotes],['Cover',venue.coverCharge],['About the room',venue.description]].filter((item):item is [string,string]=>Boolean(item[1]));
 
 return <div className="v2-basic" data-responsive-basic="" ref={root}>
@@ -24,7 +24,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 </header>
 <nav className="basic-browse-nav" aria-label="Primary"><Link href="/">Discover</Link><Link href="/find-karaoke">Venues</Link><Link href="/hosts">Hosts</Link><Link href="/hotel">Hotels</Link><Link href="/account">My SingHUB</Link></nav><div className="content">
 <section className="section">
-<span className="tier-badge">{"BASIC PROFILE"}</span>
+<div className="relative mb-5 h-72 overflow-hidden md:h-96"><img src={enhancement?.heroImageUrl||venue.bannerImageUrl||'/images/og/singhub-og.png'} alt={enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName+' venue'} className="h-full w-full object-cover" style={{objectPosition:enhancement?.heroPosition||venue.bannerImagePosition||'center'}} /></div><span className="tier-badge">{"BASIC PROFILE"}</span>
 <h1>{venue.venueName}</h1>
 <div className="verified" title={row.verification}><span className="verified-dot">{venue.listingStatus==='verified'?'✓':'·'}</span>{' '+row.trust.replace(/^✓\s*/, '')}</div>
 <p className="subline" style={{"marginTop": "10px"}}>{venue.neighborhood+' · '+venue.address}</p>

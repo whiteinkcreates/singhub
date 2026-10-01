@@ -59,6 +59,19 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Singer signup URL must start with https:// or http://." }, { status: 400 });
     }
 
+    if (profile.vibeTags !== undefined && (!Array.isArray(profile.vibeTags) || profile.vibeTags.length > 4)) {
+      return NextResponse.json({ error: "Choose four vibe tags or fewer." }, { status: 400 });
+    }
+
+    const conciseFields = [profile.foodSummary, profile.whyHere, profile.singersSaySource];
+    if (conciseFields.some((value) => typeof value === "string" && value.length > 240)) {
+      return NextResponse.json({ error: "Venue intelligence summary fields must be 240 characters or fewer." }, { status: 400 });
+    }
+
+    if (typeof profile.singersSay === "string" && profile.singersSay.length > 600) {
+      return NextResponse.json({ error: "Singers Say must be 600 characters or fewer." }, { status: 400 });
+    }
+
     await saveVenueEnhancement(slug, profile);
     return NextResponse.json({ saved: true, slug, profile });
   } catch (error) {

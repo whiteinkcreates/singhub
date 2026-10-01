@@ -21,7 +21,7 @@ const tools = [
     eyebrow: "Discovery",
     title: "Scout Dashboard",
     description:
-      "Review karaoke leads and turn messy discovery signals into verified venue and event data.",
+      "Run market intelligence, review venue leads, preserve evidence, and prepare new cities for SingHUB expansion.",
   },
   {
     href: "/admin/roundups",
@@ -47,9 +47,9 @@ const tools = [
   {
     href: "/admin/light-up-venues",
     eyebrow: "Venue Partnerships",
-    title: "Light Up a Venue",
+    title: "Venue Profiles + Intelligence",
     description:
-      "Build the structured content layer for enhanced venue profiles, including specials, daily deals, amenities, media, and conversion links.",
+      "Manage venue presentation plus Hotel v1.2 intelligence: vibe, food, Singers Say, Why Here, SingHERE, media, facts, and Partner controls.",
   },
   {
     href: "/admin/venue-comparison",

@@ -19,6 +19,12 @@ export type HotelGuideVenue = {
   tonightSchedule?: string;
   weekSchedule: string[];
   standoutReason?: string;
+  foodSummary?: string;
+  singersSay?: string;
+  singersSaySource?: string;
+  singersSayUpdatedAt?: string;
+  whyHere?: string;
+  hostName?: string;
 };
 
 type Props = {

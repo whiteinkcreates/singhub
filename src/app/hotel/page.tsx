@@ -21,7 +21,7 @@ function Group({
         {hotels.map((hotel) => (
           <Link
             key={hotel.slug}
-            href={`/hotel/${hotel.slug}`}
+            href={`/hotelexperience/${hotel.slug}`}
             className="flex items-center justify-between gap-4 py-4 text-slate-200 transition hover:text-fuchsia-200"
           >
             <span>
@@ -38,6 +38,7 @@ function Group({
 
 export default function HotelGuideIndexPage() {
   const downtown = getHotelGuidesByArea("downtown");
+  const beach = getHotelGuidesByArea("beach");
   const laJolla = getHotelGuidesByArea("la-jolla");
   const laMesa = getHotelGuidesByArea("la-mesa");
 
@@ -45,16 +46,17 @@ export default function HotelGuideIndexPage() {
     <main className="min-h-screen bg-[#06101e] px-5 py-12 text-white">
       <div className="mx-auto max-w-3xl">
         <p className="mt-5 text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">
-          Hotel guest guide previews
+          Hotel Experience v1.2 previews
         </p>
         <h1 className="mt-2 text-4xl font-black tracking-tight">
           Karaoke around your stay.
         </h1>
         <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
-          Preview hotel-aware SingHUB pages using current venue and event data. These pages are outreach demos and do not imply a hotel partnership.
+          Preview Hotel Experience v1.2 using current venue and event data. Every hotel guide now inherits the same nightlife-concierge system. These pages are outreach demos and do not imply a hotel partnership.
         </p>
 
         <Group title="Downtown / Gaslamp" hotels={downtown} />
+        <Group title="Pacific Beach / Mission Beach" hotels={beach} />
         <Group title="La Jolla" hotels={laJolla} />
         <Group title="La Mesa / East County" hotels={laMesa} />
       </div>
