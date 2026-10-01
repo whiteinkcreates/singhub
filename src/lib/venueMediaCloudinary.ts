@@ -29,7 +29,7 @@ function sanitizeSlug(slug: string) {
   return normalized;
 }
 
-function venueFolder(slug: string, kind: "venues" | "hotels" = "venues") {
+function venueFolder(slug: string, kind: "venues" | "hotels" | "hosts" = "venues") {
   return `singhub/${kind}/${sanitizeSlug(slug)}`;
 }
 
@@ -37,7 +37,7 @@ function uploadSignature(folder: string, timestamp: number, apiSecret: string) {
   return createHash("sha1").update(`folder=${folder}&timestamp=${timestamp}${apiSecret}`).digest("hex");
 }
 
-export async function uploadVenueMedia(file: File, slug: string, kind: "venues" | "hotels" = "venues") {
+export async function uploadVenueMedia(file: File, slug: string, kind: "venues" | "hotels" | "hosts" = "venues") {
   const { cloudName, apiKey, apiSecret } = getCloudinaryConfig();
   const folder = venueFolder(slug, kind);
   const timestamp = Math.floor(Date.now() / 1000);
@@ -101,7 +101,7 @@ function mapResources(resources: CloudinaryResource[] | undefined) {
     .sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || "")) satisfies VenueMediaAsset[];
 }
 
-export async function listVenueMedia(slug: string, kind: "venues" | "hotels" = "venues") {
+export async function listVenueMedia(slug: string, kind: "venues" | "hotels" | "hosts" = "venues") {
   const { cloudName, apiKey, apiSecret } = getCloudinaryConfig();
   const folder = venueFolder(slug, kind);
   const authorization = Buffer.from(`${apiKey}:${apiSecret}`).toString("base64");

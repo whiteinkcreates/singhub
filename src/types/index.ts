@@ -88,6 +88,12 @@ export type HostGig = {
 export type HostProfileCompletionLevel = "basic" | "enhanced" | "incomplete";
 
 export type HostProfile = {
+  heroImageUrl?: string;
+  heroImageAlt?: string;
+  heroPosition?: "center" | "top" | "bottom" | "left" | "right";
+  profileImagePosition?: "center" | "top" | "bottom" | "left" | "right";
+  directoryHeroImageUrl?: string;
+  directoryHeroPosition?: "center" | "top" | "bottom" | "left" | "right";
   status: string;
   hostId: string;
   slug: string;

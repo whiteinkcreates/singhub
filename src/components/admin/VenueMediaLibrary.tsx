@@ -16,7 +16,8 @@ const HERO_POSITIONS: Array<{ value: HeroPosition; label: string }> = [
 
 type VenueMediaLibraryProps = {
   slug: string;
-  kind?: "venue" | "hotel";
+  kind?: "venue" | "hotel" | "host";
+  allowPortrait?: boolean;
   heroUrl: string;
   heroAlt: string;
   heroPosition: HeroPosition;
@@ -47,6 +48,7 @@ function defaultAlt(slug: string) {
 export function VenueMediaLibrary({
   slug,
   kind = "venue",
+  allowPortrait = true,
   heroUrl,
   heroAlt,
   heroPosition,
@@ -58,7 +60,7 @@ export function VenueMediaLibrary({
   onLogoChange,
   onGalleryChange,
 }: VenueMediaLibraryProps) {
-  const endpoint = kind === "hotel" ? "/api/admin/hotel-media" : "/api/admin/venue-media";
+  const endpoint = kind === "host" ? "/api/admin/host-media" : kind === "hotel" ? "/api/admin/hotel-media" : "/api/admin/venue-media";
   const [assets, setAssets] = useState<VenueMediaAsset[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -166,9 +168,9 @@ export function VenueMediaLibrary({
     <section className="md:col-span-2 rounded-[1.6rem] border border-cyan-300/15 bg-[#07131a] p-4 md:p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">{kind === "hotel" ? "Hotel media" : "Venue media"}</p>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">{kind === "host" ? "Host media" : kind === "hotel" ? "Hotel media" : "Venue media"}</p>
           <h3 className="mt-1 text-lg font-black normal-case tracking-normal text-white">Cloudinary library</h3>
-          <p className="mt-2 max-w-2xl text-sm font-medium normal-case tracking-normal text-slate-400">{kind === "hotel" ? "Choose a hotel hero from this hotel’s library, or upload a photo. Save your selection in the hotel editor." : "One library, explicit roles. Choose a hero, optional venue mark, and gallery photos without copying image URLs."}</p>
+          <p className="mt-2 max-w-2xl text-sm font-medium normal-case tracking-normal text-slate-400">{kind === "host" ? "Upload photos, assign a portrait or hero, then save your selections in the host editor." : kind === "hotel" ? "Choose a hotel hero from this hotel’s library, or upload a photo. Save your selection in the hotel editor." : "One library, explicit roles. Choose a hero, optional venue mark, and gallery photos without copying image URLs."}</p>
         </div>
         <button type="button" onClick={() => void loadLibrary()} disabled={!slug.trim() || loading} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-black normal-case tracking-normal text-white disabled:opacity-40">{loading ? "Loading…" : "Refresh library"}</button>
       </div>
@@ -184,7 +186,7 @@ export function VenueMediaLibrary({
         <p className="mt-3 text-xs font-semibold normal-case tracking-normal text-cyan-100" aria-live="polite">{message}</p>
       </div>
 
-      <div className={kind === "hotel" ? "mt-4 grid gap-3" : "mt-4 grid gap-3 lg:grid-cols-[1fr_15rem]"}>
+      <div className={kind !== "venue" ? "mt-4 grid gap-3" : "mt-4 grid gap-3 lg:grid-cols-[1fr_15rem]"}>
         {heroUrl ? (
           <div className="overflow-hidden rounded-2xl border border-fuchsia-300/25 bg-black/30">
             <div className="relative aspect-[16/7] overflow-hidden"><img src={heroUrl} alt={heroAlt || "Selected venue hero"} className="h-full w-full object-cover" style={{ objectPosition: heroPosition }} /><span className="absolute left-3 top-3 rounded-full bg-[#ff2aa3] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white">Hero</span></div>
@@ -192,9 +194,9 @@ export function VenueMediaLibrary({
           </div>
         ) : <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/15 text-sm text-slate-600">No hero selected</div>}
 
-        {kind === "venue" && (logoUrl ? (
-          <div className="rounded-2xl border border-cyan-300/20 bg-black/30 p-3"><div className="mx-auto flex aspect-square max-w-36 items-center justify-center overflow-hidden rounded-full border border-cyan-300/30 bg-white/[0.04]"><img src={logoUrl} alt={logoAlt || "Selected venue mark"} className="h-full w-full object-contain p-3" /></div><div className="mt-3 flex items-center justify-between gap-2"><span className="text-xs font-black text-cyan-200">Logo / mark</span><button type="button" onClick={() => onLogoChange("")} className="text-xs font-black text-rose-200">Clear</button></div></div>
-        ) : <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/15 px-4 text-center text-sm text-slate-600">Optional logo / venue mark</div>)}
+        {(kind === "venue" || (kind === "host" && allowPortrait)) && (logoUrl ? (
+          <div className="rounded-2xl border border-cyan-300/20 bg-black/30 p-3"><div className="mx-auto flex aspect-square max-w-36 items-center justify-center overflow-hidden rounded-full border border-cyan-300/30 bg-white/[0.04]"><img src={logoUrl} alt={logoAlt || "Selected venue mark"} className={kind === "host" ? "h-full w-full object-cover" : "h-full w-full object-contain p-3"} /></div><div className="mt-3 flex items-center justify-between gap-2"><span className="text-xs font-black text-cyan-200">{kind === "host" ? "Portrait" : "Logo / mark"}</span><button type="button" onClick={() => onLogoChange("")} className="text-xs font-black text-rose-200">Clear</button></div></div>
+        ) : <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/15 px-4 text-center text-sm text-slate-600">{kind === "host" ? "No portrait selected. Hosts without a photo use initials." : "Optional logo / venue mark"}</div>)}
       </div>
 
       {assets.length > 0 && <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{assets.map((asset) => {
@@ -203,8 +205,8 @@ export function VenueMediaLibrary({
         const inGallery = galleryUrls.has(asset.url);
         const galleryFull = gallery.length >= MAX_GALLERY_PHOTOS && !inGallery;
         return <div key={asset.publicId} className={`overflow-hidden rounded-2xl border bg-black/25 ${isHero ? "border-fuchsia-300/70" : isLogo ? "border-cyan-300/70" : inGallery ? "border-cyan-300/50" : "border-white/10"}`}>
-          <div className="relative aspect-square overflow-hidden bg-black/30"><img src={asset.url} alt="Venue media option" className="h-full w-full object-cover" loading="lazy" /><div className="absolute left-2 top-2 flex flex-wrap gap-1">{isHero && <span className="rounded-full bg-[#ff2aa3] px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-white">Hero</span>}{isLogo && <span className="rounded-full bg-violet-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">Logo</span>}{inGallery && <span className="rounded-full bg-cyan-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">Gallery</span>}</div></div>
-          <div className="grid gap-2 p-2"><button type="button" onClick={() => onHeroChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isHero ? "bg-fuchsia-300 text-slate-950" : "border border-white/15 text-white"}`}>{isHero ? "Selected hero" : "Set as hero"}</button>{kind === "venue" && <button type="button" onClick={() => onLogoChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isLogo ? "bg-violet-300 text-slate-950" : "border border-white/15 text-white"}`}>{isLogo ? "Selected logo" : "Set as logo"}</button>}{kind === "venue" && <button type="button" onClick={() => toggleGallery(asset)} disabled={galleryFull} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal disabled:cursor-not-allowed disabled:opacity-35 ${inGallery ? "bg-cyan-300 text-slate-950" : "border border-white/15 text-white"}`}>{inGallery ? "Remove from gallery" : galleryFull ? "Gallery full" : "Add to gallery"}</button>}</div>
+          <div className="relative aspect-square overflow-hidden bg-black/30"><img src={asset.url} alt="Venue media option" className="h-full w-full object-cover" loading="lazy" /><div className="absolute left-2 top-2 flex flex-wrap gap-1">{isHero && <span className="rounded-full bg-[#ff2aa3] px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-white">Hero</span>}{isLogo && <span className="rounded-full bg-violet-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">{kind === "host" ? "Portrait" : "Logo"}</span>}{inGallery && <span className="rounded-full bg-cyan-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">Gallery</span>}</div></div>
+          <div className="grid gap-2 p-2"><button type="button" onClick={() => onHeroChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isHero ? "bg-fuchsia-300 text-slate-950" : "border border-white/15 text-white"}`}>{isHero ? "Selected hero" : "Set as hero"}</button>{(kind === "venue" || (kind === "host" && allowPortrait)) && <button type="button" onClick={() => onLogoChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isLogo ? "bg-violet-300 text-slate-950" : "border border-white/15 text-white"}`}>{kind === "host" ? (isLogo ? "Selected portrait" : "Set as portrait") : (isLogo ? "Selected logo" : "Set as logo")}</button>}{kind === "venue" && <button type="button" onClick={() => toggleGallery(asset)} disabled={galleryFull} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal disabled:cursor-not-allowed disabled:opacity-35 ${inGallery ? "bg-cyan-300 text-slate-950" : "border border-white/15 text-white"}`}>{inGallery ? "Remove from gallery" : galleryFull ? "Gallery full" : "Add to gallery"}</button>}</div>
         </div>;
       })}</div>}
 

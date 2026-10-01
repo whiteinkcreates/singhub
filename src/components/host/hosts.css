@@ -23,3 +23,5 @@
 .host-trading-portrait{position:absolute;top:24px;right:24px}
 .host-trading-portrait>img,.host-trading-portrait>div{width:88px;height:88px;border:2px solid var(--host-cyan);border-radius:50%;font:800 35px 'Barlow Condensed',sans-serif;background:#182b3d;box-shadow:0 5px 22px #0009}
 @media(max-width:600px){.host-directory-hero .host-hero-photo,.host-profile-hero .host-booth-photo{height:150%;top:auto;bottom:0}.host-trading-identity{padding-right:82px;min-height:80px}.host-trading-portrait{top:18px;right:18px}.host-trading-portrait>img,.host-trading-portrait>div{width:70px;height:70px;font-size:28px}}
+
+@media(max-width:600px){.host-directory-hero .host-custom-directory-photo{height:100%;top:0;bottom:0}}
