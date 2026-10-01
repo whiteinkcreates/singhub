@@ -47,7 +47,7 @@ export async function generateStaticParams() {
 }
 
 type NeighborhoodPageProps = {
-  params: Promise<{ slug: string }> | { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 async function getNeighborhood(slug: string) {

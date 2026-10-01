@@ -7,6 +7,7 @@ import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSe
 import {
   HOTEL_VIBE_OPTIONS,
   VENUE_FACT_OPTIONS,
+  VENUE_STANDOUT_OPTIONS,
   type HeroPosition,
   type VenueDailyDeal,
   type VenueEnhancement,
@@ -44,6 +45,7 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     about: "",
     phone: "",
     menuUrl: "",
+    singerSignupUrl: "",
     heroImageUrl: "",
     heroImageAlt: "",
     heroPosition: "center",
@@ -51,6 +53,7 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     logoImageAlt: "",
     gallery: [],
     amenities: [],
+    standoutFeatures: [],
     weeklySpecials: [],
     dailyDeals: [],
     vibeTags: [],
@@ -123,7 +126,7 @@ function AdminPreview({ venue, profile, mode }: { venue?: VenueOption; profile: 
   if (!venue) return <div className="rounded-2xl border border-white/10 p-5 text-sm text-slate-500">Choose a venue to preview it.</div>;
   const heroPosition = profile.heroPosition || "center";
   const hero = profile.heroImageUrl;
-  const tags = profile.amenities.slice(0, 3);
+  const tags = (profile.standoutFeatures?.length ? profile.standoutFeatures : profile.amenities).slice(0, 3);
 
   if (mode === "list") {
     return (
@@ -164,6 +167,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [tagline, setTagline] = useState(initialProfile.tagline || "");
   const [about, setAbout] = useState(initialProfile.about || "");
   const [phone, setPhone] = useState(initialProfile.phone || "");
+  const [singerSignupUrl, setSingerSignupUrl] = useState(initialProfile.singerSignupUrl || "");
   const [menuUrl, setMenuUrl] = useState(initialProfile.menuUrl || "");
   const [heroImageUrl, setHeroImageUrl] = useState(initialProfile.heroImageUrl || "");
   const [heroImageAlt, setHeroImageAlt] = useState(initialProfile.heroImageAlt || "");
@@ -172,6 +176,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [logoImageAlt, setLogoImageAlt] = useState(initialProfile.logoImageAlt || "");
   const [gallery, setGallery] = useState<VenueGalleryItem[]>(initialProfile.gallery || []);
   const [amenities, setAmenities] = useState(initialProfile.amenities || []);
+  const [standoutFeatures, setStandoutFeatures] = useState(initialProfile.standoutFeatures || []);
   const [weeklySpecials, setWeeklySpecials] = useState<VenueSpecial[]>(initialProfile.weeklySpecials || []);
   const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);
   const [vibeTags, setVibeTags] = useState(initialProfile.vibeTags || []);
@@ -191,6 +196,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
   const selectedVenue = venues.find((venue) => venue.slug === slug);
   const selectedFacts = new Set(amenities);
+  const selectedStandouts = new Set(standoutFeatures);
 
   function applyProfile(profile: VenueEnhancement, venue = selectedVenue) {
     setEnabled(profile.enabled);
@@ -200,6 +206,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setAbout(profile.about || "");
     setPhone(profile.phone || "");
     setMenuUrl(profile.menuUrl || "");
+    setSingerSignupUrl(profile.singerSignupUrl || "");
     setHeroImageUrl(profile.heroImageUrl || "");
     setHeroImageAlt(profile.heroImageAlt || "");
     setHeroPosition(profile.heroPosition || "center");
@@ -207,6 +214,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setLogoImageAlt(profile.logoImageAlt || "");
     setGallery(profile.gallery || []);
     setAmenities(profile.amenities || []);
+    setStandoutFeatures(profile.standoutFeatures || []);
     setWeeklySpecials(profile.weeklySpecials || []);
     setDailyDeals(profile.dailyDeals || []);
     setVibeTags(profile.vibeTags || []);
@@ -251,12 +259,14 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     about: about.trim() || undefined,
     phone: phone.trim() || undefined,
     menuUrl: menuUrl.trim() || undefined,
+    singerSignupUrl: singerSignupUrl.trim() || undefined,
     heroImageUrl: heroImageUrl.trim() || undefined,
     heroImageAlt: heroImageAlt.trim() || undefined,
     heroPosition,
     logoImageUrl: logoImageUrl.trim() || undefined,
     logoImageAlt: logoImageAlt.trim() || undefined,
     amenities,
+    standoutFeatures,
     weeklySpecials: weeklySpecials.filter((special) => special.title.trim()),
     dailyDeals: dailyDeals.filter((deal) => deal.title.trim()),
     gallery,
@@ -272,7 +282,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       instructions: singHereInstructions.trim() || undefined,
       linkLabel: singHereLinkLabel.trim() || undefined,
     },
-  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, phone, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, tagline, vibeTags, weeklySpecials, whyHere]);
+  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const completionChecks = useMemo(() => [
     { label: "Hero + alt text", done: Boolean(heroImageUrl.trim() && heroImageAlt.trim()) },
@@ -288,6 +298,14 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
   function toggleFact(label: string) {
     setAmenities((current) => current.includes(label) ? current.filter((item) => item !== label) : [...current, label]);
+  }
+
+  function toggleStandout(label: string) {
+    setStandoutFeatures((current) => {
+      if (current.includes(label)) return current.filter((item) => item !== label);
+      if (current.length >= 3) return current;
+      return [...current, label];
+    });
   }
 
   function toggleVibe(label: string) {
@@ -343,6 +361,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
         <section className="rounded-[2rem] border border-white/10 bg-white/[0.035] p-5 md:p-7">
           <div className="grid gap-5 md:grid-cols-2">
             <label className={labelClass}>Phone<input className={fieldClass} value={phone} onChange={(event) => setPhone(event.target.value)} /></label>
+            <label className={labelClass}>Singer signup URL<input className={fieldClass} type="url" value={singerSignupUrl} onChange={(event) => setSingerSignupUrl(event.target.value)} placeholder="Optional KJ / venue signup link" /></label>
             <label className={labelClass}>Menu URL<input className={fieldClass} value={menuUrl} onChange={(event) => setMenuUrl(event.target.value)} /></label>
             <label className={`${labelClass} md:col-span-2`}>Tagline<input className={fieldClass} value={tagline} onChange={(event) => setTagline(event.target.value)} /></label>
             <label className={`${labelClass} md:col-span-2`}>About<textarea className={`${fieldClass} min-h-28`} value={about} onChange={(event) => setAbout(event.target.value)} /></label>
@@ -398,6 +417,14 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
               <p className="mt-2 text-sm leading-6 text-slate-400">Choose factual venue traits. These are separate from Singers Say.</p>
               <div className="mt-4 flex flex-wrap gap-2">{VENUE_FACT_OPTIONS.map((fact) => { const active = selectedFacts.has(fact); return <button key={fact} type="button" onClick={() => toggleFact(fact)} className={`rounded-full border px-3 py-2 text-xs font-bold transition ${active ? "border-cyan-300/60 bg-cyan-300/15 text-cyan-100" : "border-white/10 bg-white/[0.03] text-slate-400 hover:border-white/25 hover:text-white"}`}>{venueFactIconName(fact) ? <VenueSemanticIcon name={venueFactIconName(fact)!} className="mr-1.5 inline h-4 w-4 align-text-bottom" /> : null}{fact}</button>; })}</div>
               <details className="mt-4"><summary className="cursor-pointer text-xs font-bold text-slate-500">Add custom facts</summary><textarea className={`${fieldClass} min-h-24`} value={amenities.join("\n")} onChange={(event) => setAmenities(event.target.value.split("\n").map((item) => item.trim()).filter(Boolean))} placeholder="One fact per line" /></details>
+            </section>
+
+            <section className="md:col-span-2 rounded-2xl border border-cyan-300/15 bg-cyan-300/[0.035] p-4">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div><p className={labelClass}>Stand out in venue lists</p><p className="mt-2 text-sm leading-6 text-slate-400">Choose up to 3 quick reasons to pick this venue. These appear on the Enhanced listing card under the karaoke details.</p></div>
+                <p className="text-xs font-black text-cyan-200">{standoutFeatures.length}/3 selected</p>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">{VENUE_STANDOUT_OPTIONS.map((feature) => { const active = selectedStandouts.has(feature); const locked = !active && standoutFeatures.length >= 3; return <button key={feature} type="button" disabled={locked} onClick={() => toggleStandout(feature)} className={`rounded-full border px-3 py-2 text-xs font-bold transition ${active ? "border-fuchsia-300/55 bg-fuchsia-300/15 text-fuchsia-100" : locked ? "cursor-not-allowed border-white/5 text-slate-700" : "border-white/10 bg-white/[0.03] text-slate-400 hover:border-cyan-300/40 hover:text-white"}`}>{venueFactIconName(feature) ? <VenueSemanticIcon name={venueFactIconName(feature)!} className="mr-1.5 inline h-4 w-4 align-text-bottom" /> : null}{feature}</button>; })}</div>
             </section>
 
             <section className="md:col-span-2 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.04] p-4">

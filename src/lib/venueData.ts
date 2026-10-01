@@ -18,6 +18,7 @@ type EnhancementMediaRow = {
     featuredPriority?: number;
     tagline?: string;
     amenities?: string[];
+    standoutFeatures?: string[];
     vibeTags?: string[];
     foodSummary?: string;
     singersSay?: string;
@@ -145,6 +146,7 @@ function rowToVenueListing(row: VenueSourceRow, fallback: VenueSourceRow | undef
   return {
     id,
     venueName: getAny(row, fallback, ["venue_name"]) || "",
+    lastVerified: getAny(row, fallback, ["last_verified"]),
     slug,
     profileTier: normalizeProfileTier(getAny(row, fallback, ["profile_tier"])),
     listingStatus: normalizeListingStatus(getAny(row, fallback, ["listing_status"]), getAny(row, fallback, ["review_status"])),
@@ -219,6 +221,8 @@ export async function getVenueListings(): Promise<VenueListing[]> {
         bannerImageAlt: getOptionalValue(enhancement.heroImageAlt) || venue.bannerImageAlt,
         bannerImagePosition: enhancement.heroPosition || "center",
         enhancementTagline: getOptionalValue(enhancement.tagline),
+        enhancementAmenities: enhancement.amenities?.filter(Boolean) || [],
+        enhancementStandoutFeatures: enhancement.standoutFeatures?.filter(Boolean) || [],
       };
     })
     .filter((venue) => venue.id && venue.venueName && venue.slug);

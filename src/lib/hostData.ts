@@ -1,4 +1,6 @@
 import fs from "node:fs";
+import { getHostMediaOverrides } from "@/lib/hostMedia.server";
+import { HOST_DIRECTORY_MEDIA_KEY, type HostMediaSettings } from "@/lib/hostMedia";
 import path from "node:path";
 import type {
   HostGig,
@@ -470,11 +472,12 @@ export function isHostConfirmed(
   return Boolean(status && HOST_CONFIRMED_STATUSES.has(status));
 }
 
-export async function getHosts() {
-  const [sheetRows, events, venues] = await Promise.all([
+export async function getHosts({includeMedia=true}: {includeMedia?:boolean} = {}) {
+  const [sheetRows, events, venues, media] = await Promise.all([
     getSheetRows(),
     getKaraokeEventListings(),
     getVenueListings(),
+    includeMedia ? getHostMediaOverrides() : Promise.resolve(new Map<string,HostMediaSettings>()),
   ]);
   const usingSheet = Boolean(sheetRows?.length);
   const rows = usingSheet ? sheetRows || [] : getFallbackRows();
@@ -486,14 +489,24 @@ export async function getHosts() {
 
   attachCanonicalSchedules(hosts, events, venues);
 
-  return hosts.map((host) => ({
-    ...host,
-    profileCompletionLevel: getProfileCompletionLevel(host),
-  }));
+  const directory = media.get(HOST_DIRECTORY_MEDIA_KEY);
+  return hosts.map((host) => {
+    const settings = media.get(host.slug);
+    const rendered = { ...host,
+      ...(settings?.portraitUrl === undefined ? {} : { profileImageUrl: settings.portraitUrl || undefined, logoUrl: undefined }),
+      profileImagePosition: settings?.portraitPosition,
+      heroImageUrl: settings?.heroUrl || undefined,
+      heroImageAlt: settings?.heroAlt,
+      heroPosition: settings?.heroPosition,
+      directoryHeroImageUrl: directory?.heroUrl || undefined,
+      directoryHeroPosition: directory?.heroPosition,
+    };
+    return {...rendered, profileCompletionLevel: getProfileCompletionLevel(rendered)};
+  });
 }
 
-export async function getActiveHosts() {
-  return (await getHosts()).filter((host) => isActiveStatus(host.status));
+export async function getActiveHosts(options?: {includeMedia?:boolean}) {
+  return (await getHosts(options)).filter((host) => isActiveStatus(host.status));
 }
 
 export async function getFeaturedHosts() {

@@ -1,62 +1,16 @@
-import { HostDirectory } from "@/components/host/HostDirectory";
-import { Button } from "@/components/ui/Button";
-import { getActiveHosts } from "@/lib/hostData";
-import { getSanDiegoPublicVenues, getSanDiegoRegionHosts } from "@/lib/sanDiegoMarket";
-import { getVenueListings } from "@/lib/venueData";
-
-const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdC5G3JP5JSLrj5Za1S-ueRvSKVPr_l_OuBk0Ru6RZmXi5lOQ/viewform?usp=header";
-
-export const metadata = {
-  title: "San Diego Karaoke Hosts | SingHUB",
-  description: "Meet the KJs and karaoke hosts running rooms across San Diego.",
-  alternates: { canonical: "/hosts" },
-};
-
-export default async function HostsPage() {
-  const [activeHosts, venueListings] = await Promise.all([
-    getActiveHosts(),
-    getVenueListings(),
-  ]);
-  const publicVenues = getSanDiegoPublicVenues(venueListings);
-  const hosts = getSanDiegoRegionHosts(activeHosts, publicVenues);
-
-  return (
-    <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-      <section className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-        <div className="max-w-3xl">
-          <p className="text-sm font-bold uppercase tracking-[0.3em] text-cyan-300">
-            SingHUB Hosts
-          </p>
-          <h1 className="mt-3 text-4xl font-black text-white md:text-6xl">
-            San Diego karaoke KJs and hosts
-          </h1>
-          <p className="mt-5 text-lg leading-8 text-slate-300">
-            Browse active local hosts, their weekly rooms, neighborhoods, and karaoke-night style.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row md:flex-col lg:flex-row">
-          <Button href={FORM_URL} variant="secondary">
-            Claim / Update Your KJ Profile
-          </Button>
-          <Button href={FORM_URL}>
-            Get Listed as a KJ
-          </Button>
-        </div>
-      </section>
-
-      {hosts.length > 0 ? (
-        <HostDirectory hosts={hosts} />
-      ) : (
-        <section className="mt-10 rounded-2xl border border-white/10 bg-slate-950/70 p-6 text-slate-200">
-          <h2 className="text-2xl font-black text-white">Hosts are coming soon.</h2>
-          <p className="mt-3 leading-7">
-            Know who is hosting karaoke in San Diego? Send us the info and we will review it for SingHUB.
-          </p>
-          <div className="mt-5">
-            <Button href={FORM_URL}>Send KJ Info</Button>
-          </div>
-        </section>
-      )}
-    </main>
-  );
+export const revalidate = 300;
+/* eslint-disable @next/next/no-img-element */
+import { HostDirectory } from '@/components/host/HostDirectory';
+import { HostChrome } from '@/components/host/HostChrome';
+import { HOST_FORM_URL } from '@/components/host/HostProfileTemplate';
+import { getHostDirectoryMedia } from '@/lib/hostMedia.server';
+import { getActiveHosts } from '@/lib/hostData';
+import { getSanDiegoPublicVenues,getSanDiegoRegionHosts } from '@/lib/sanDiegoMarket';
+import { getVenueListings } from '@/lib/venueData';
+import '@/components/host/hosts.css';
+export const metadata={title:'San Diego Karaoke Hosts | SingHUB',description:'Meet the KJs and karaoke hosts running rooms across San Diego.',alternates:{canonical:'/hosts'}};
+export default async function HostsPage(){
+ const [activeHosts,venues,media]=await Promise.all([getActiveHosts(),getVenueListings(),getHostDirectoryMedia()]);
+ const hosts=getSanDiegoRegionHosts(activeHosts,getSanDiegoPublicVenues(venues));
+ return <div className="host-system"><HostChrome /><main><section className="host-directory-hero"><img className={`host-hero-photo${media?.heroUrl&&media.heroUrl!=='/images/hosts/hosts-booth.webp'?' host-custom-directory-photo':''}`} src={media?.heroUrl||'/images/hosts/hosts-booth.webp'} style={{objectPosition:media?.heroPosition||'bottom'}} alt={media?.heroAlt||"Karaoke from behind the host's mixer, with a singer and crowd in the room"} /><div className="host-hero-shade" /><div className="host-directory-identity"><p className="host-eyebrow">SINGHUB HOSTS</p><h1>BEHIND THE MIC</h1><p>Meet the KJs who bring San Diego karaoke to life.</p><a className="host-button pink" href={HOST_FORM_URL} target="_blank" rel="noreferrer">Get listed / Update your profile</a></div></section><HostDirectory hosts={hosts.map(({contactEmail,notes,...host})=>{void contactEmail;void notes;return host;})} /></main></div>;
 }

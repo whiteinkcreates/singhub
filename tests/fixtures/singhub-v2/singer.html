@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050609">
+  <meta name="description" content="My SingHUB keeps your karaoke nights, songs, venues, stars, achievements and singer tools together.">
+  <title>My SingHUB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&amp;family=Barlow+Condensed:wght@600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme:dark; --bg:#050609; --surface:#0d1117; --surface-2:#141922; --line:#2a303a; --line-hi:#46515e; --text:#f7f8fb; --muted:#9da7b5; --cyan:#00c8ff; --pink:#ff19a8; --gold:#ffce4e; --sans:"Barlow",sans-serif; --display:"Barlow Condensed",sans-serif; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; min-width:320px; overflow-x:hidden; background:var(--bg); color:var(--text); font-family:var(--sans); }
+    button,a { font:inherit; } button { color:inherit; } a { color:inherit; } img { display:block; max-width:100%; }
+    button:focus-visible,a:focus-visible { outline:3px solid var(--cyan); outline-offset:3px; }
+    .appbar { position:fixed; inset:0 0 auto; z-index:60; display:grid; grid-template-columns:auto 1fr auto; align-items:center; min-height:70px; padding:7px clamp(18px,4vw,54px); border-bottom:1px solid rgba(255,255,255,.1); background:linear-gradient(180deg,rgba(4,5,8,.96),rgba(4,5,8,.72)); backdrop-filter:blur(18px); }
+    .logo { width:128px; height:52px; object-fit:contain; }
+    .primary-nav { display:flex; justify-content:center; gap:5px; }
+    .primary-nav a { padding:10px 13px; color:var(--muted); text-decoration:none; font-size:.87rem; font-weight:700; }
+    .primary-nav a:hover,.primary-nav a.active { color:white; box-shadow:inset 0 -2px var(--pink); }
+    .account { display:flex; align-items:center; gap:10px; color:white; text-decoration:none; font-size:.84rem; font-weight:800; }
+    .avatar { display:grid; place-items:center; width:36px; height:36px; border:1px solid rgba(255,25,168,.62); border-radius:50%; background:rgba(255,25,168,.1); font-style:normal; }
+    .hero { position:relative; min-height:min(690px,78svh); display:flex; align-items:flex-end; overflow:hidden; isolation:isolate; background:#050609 url("assets/my-singhub-backstage-crowd-v2.png") 52% center/cover no-repeat; }
+    .hero:before { content:""; position:absolute; inset:0; z-index:0; background:linear-gradient(90deg,rgba(2,3,6,.93) 0%,rgba(2,3,6,.7) 34%,rgba(2,3,6,.1) 66%,rgba(2,3,6,.2) 100%),linear-gradient(0deg,#050609 0%,rgba(2,3,6,.24) 38%,rgba(0,0,0,.08) 100%); }
+    .hero:after { content:""; position:absolute; inset:0; z-index:-1; opacity:.16; pointer-events:none; background-image:radial-gradient(circle,rgba(255,255,255,.35) 0,.55px,transparent .8px); background-size:5px 5px; mix-blend-mode:soft-light; }
+    .hero-inner { position:relative; z-index:3; width:min(1180px,calc(100% - 40px)); margin:0 auto; padding:132px 0 74px; }
+    .eyebrow { margin:0 0 9px; color:var(--pink); font-size:.72rem; font-weight:900; letter-spacing:.18em; text-transform:uppercase; }
+    .hero h1 { max-width:560px; margin:0; font-family:var(--display); font-size:clamp(4.5rem,8.4vw,7.4rem); line-height:.77; letter-spacing:-.045em; text-transform:uppercase; }
+    .hero-sub { max-width:500px; margin:22px 0 0; color:#d3d9e2; font-size:1.04rem; line-height:1.5; }
+    .alias { display:flex; align-items:center; gap:11px; width:max-content; max-width:100%; margin-top:25px; padding:11px 13px; border:1px solid rgba(255,255,255,.18); background:rgba(7,9,13,.68); backdrop-filter:blur(12px); }
+    .alias span { color:var(--muted); font-size:.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    .alias strong { font-size:.86rem; }
+    .alias button { border:0; background:none; color:var(--cyan); cursor:pointer; font-size:.72rem; font-weight:850; }
+    .hero-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+    .button { min-height:46px; padding:0 18px; border:1px solid rgba(255,255,255,.22); background:rgba(8,10,14,.78); cursor:pointer; font-size:.79rem; font-weight:900; letter-spacing:.02em; }
+    .button.primary { border-color:rgba(255,25,168,.75); background:linear-gradient(135deg,#d70085,#ff19a8); box-shadow:0 8px 30px rgba(255,25,168,.22); color:white; }
+    .button:hover { border-color:var(--cyan); }
+    .scroll-note { position:absolute; left:50%; bottom:18px; transform:translateX(-50%); color:rgba(255,255,255,.62); font-size:.67rem; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    .jacket-layer { position:relative; width:100%; aspect-ratio:1199/1312; }
+    .jacket-layer>img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; pointer-events:none; }
+    .patch-slot { position:absolute; width:8.2%; aspect-ratio:1; transform:translate(-50%,-50%) rotate(var(--r,0deg)); border:1px dashed rgba(210,222,235,.35); border-radius:14%; background:rgba(7,9,13,.17); box-shadow:inset 0 0 0 1px rgba(0,0,0,.34); cursor:default; }
+    .patch-slot.empty:after { content:"+"; position:absolute; inset:0; display:grid; place-items:center; color:rgba(235,242,250,.28); font-size:clamp(.45rem,1vw,.72rem); font-weight:900; }
+    .patch-slot.earned { border:0; background-image:url("assets/achievement-patch-direction.png"); background-repeat:no-repeat; background-size:400% auto; box-shadow:0 4px 8px rgba(0,0,0,.55); }
+    .patch-slot.p1 { background-position:0% 16%; } .patch-slot.p2 { background-position:33.333% 16%; } .patch-slot.p3 { background-position:66.666% 16%; } .patch-slot.p4 { background-position:100% 16%; } .patch-slot.p5 { background-position:0% 36%; } .patch-slot.p6 { background-position:33.333% 36%; }
+    .performance-star { position:absolute; z-index:3; transform:translate(-50%,-50%) rotate(var(--r,0deg)); color:var(--gold); font-size:clamp(.48rem,1.1vw,.86rem); line-height:1; text-shadow:0 1px 2px #000,0 0 7px rgba(255,206,78,.6); pointer-events:none; }
+    .surface { position:relative; z-index:5; width:min(1180px,calc(100% - 34px)); margin:-34px auto 110px; }
+    .career-strip { display:grid; grid-template-columns:1.35fr repeat(4,.65fr); border:1px solid var(--line-hi); border-top-color:#657181; background:linear-gradient(145deg,rgba(27,33,42,.98),rgba(10,13,18,.98)); box-shadow:0 28px 65px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.09); }
+    .career-name,.metric { min-height:94px; padding:18px 20px; border-left:1px solid var(--line); }
+    .career-name { border-left:0; }
+    .career-name strong { display:block; font-family:var(--display); font-size:1.75rem; line-height:1; }
+    .career-name span,.metric span { display:block; margin-top:6px; color:var(--muted); font-size:.72rem; }
+    .metric strong { display:block; font-family:var(--display); font-size:1.72rem; line-height:1; }
+    .metric.star strong { color:var(--gold); }
+    .section-nav { position:sticky; top:70px; z-index:30; display:flex; gap:3px; margin:16px 0; padding:5px; overflow-x:auto; border:1px solid var(--line); background:rgba(10,13,18,.94); backdrop-filter:blur(16px); scrollbar-width:none; }
+    .section-nav::-webkit-scrollbar { display:none; }
+    .section-nav a { flex:1 0 auto; min-width:125px; padding:12px 14px; color:var(--muted); text-align:center; text-decoration:none; font-size:.79rem; font-weight:850; }
+    .section-nav a:first-child { background:var(--surface-2); color:white; box-shadow:inset 0 -2px var(--pink); }
+    .panel { overflow:hidden; border:1px solid var(--line); background:var(--surface); }
+    .panel-bevel { border-color:#38414d; border-top-color:#5e6a79; border-left-color:#4b5664; background:linear-gradient(145deg,#181d25,#0c1016 64%); box-shadow:inset 0 1px rgba(255,255,255,.08),0 18px 42px rgba(0,0,0,.28); }
+    .panel-head { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding:20px 22px; border-bottom:1px solid var(--line); }
+    .panel-head h2 { margin:0; font-family:var(--display); font-size:2.2rem; line-height:.92; text-transform:uppercase; }
+    .panel-head p { margin:8px 0 0; color:var(--muted); font-size:.82rem; line-height:1.45; }
+    .text-button { align-self:center; border:0; background:none; color:var(--cyan); cursor:pointer; font-size:.75rem; font-weight:900; white-space:nowrap; }
+    .jacket-console { display:grid; grid-template-columns:1.08fr .92fr; margin-bottom:18px; }
+    .jacket-view { min-height:390px; display:grid; grid-template-columns:.86fr 1.14fr; align-items:center; gap:12px; padding:26px; background:linear-gradient(90deg,rgba(5,7,10,.98),rgba(5,7,10,.54)),url("assets/backstage-empty.png") center/cover; }
+    .jacket-view h2 { max-width:420px; margin:5px 0 0; font-family:var(--display); font-size:clamp(3.5rem,6vw,5.7rem); line-height:.8; text-transform:uppercase; }
+    .jacket-view p:not(.eyebrow) { max-width:410px; margin:19px 0 0; color:#c8d0da; line-height:1.55; }
+    .jacket-view .button { margin-top:25px; }
+    .jacket-thumb { min-width:0; filter:drop-shadow(0 18px 30px rgba(0,0,0,.68)); }
+    .patch-board { display:flex; flex-direction:column; min-width:0; border-left:1px solid var(--line-hi); }
+    .patch-top { display:flex; justify-content:space-between; gap:15px; padding:19px 20px; border-bottom:1px solid var(--line); }
+    .patch-top strong { font-family:var(--display); font-size:1.35rem; text-transform:uppercase; }
+    .patch-top span { color:var(--muted); font-size:.72rem; }
+    .patches { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; flex:1; background:var(--line); }
+    .patch { position:relative; min-height:104px; padding:17px; background:#0c1016; }
+    .patch:before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:linear-gradient(var(--pink),var(--cyan)); }
+    .patch b { display:block; font-size:.83rem; }
+    .patch span { display:block; margin-top:6px; color:var(--muted); font-size:.7rem; }
+    .patch.locked { opacity:.42; filter:saturate(.4); }
+    .patch.locked:before { background:#5b6572; }
+    .patch-rule { padding:13px 18px; border-top:1px solid var(--line); color:var(--muted); font-size:.72rem; }
+    .skin-switch { display:flex; gap:5px; margin-left:auto; }
+    .skin-switch button { min-height:30px; padding:0 9px; border:1px solid var(--line); background:#0a0d12; color:var(--muted); cursor:pointer; font-size:.66rem; font-weight:850; }
+    .skin-switch button.active { border-color:var(--cyan); color:white; box-shadow:inset 0 -2px var(--cyan); }
+    dialog { width:min(980px,calc(100% - 24px)); max-width:none; height:min(880px,calc(100svh - 24px)); padding:0; overflow:hidden; border:1px solid #4e5a68; background:#080b10; color:white; box-shadow:0 30px 100px rgba(0,0,0,.82); }
+    dialog::backdrop { background:rgba(0,0,0,.84); backdrop-filter:blur(8px); }
+    .modal-shell { height:100%; display:grid; grid-template-rows:auto 1fr auto; }
+    .modal-head { display:flex; align-items:center; gap:14px; padding:14px 17px; border-bottom:1px solid var(--line); background:#0d1117; }
+    .modal-head strong { font-family:var(--display); font-size:1.45rem; text-transform:uppercase; }
+    .modal-head .skin-switch { margin-left:auto; }
+    .icon-button { width:38px; height:38px; border:1px solid var(--line); background:#121720; cursor:pointer; font-size:1.15rem; }
+    .jacket-viewport { min-height:0; overflow:auto; background:radial-gradient(circle at 50% 38%,rgba(255,25,168,.11),transparent 30%),radial-gradient(circle at 60% 42%,rgba(0,200,255,.1),transparent 32%),url("assets/backstage-empty.png") center/cover; }
+    .jacket-zoom { width:calc(520px * var(--zoom,1)); margin:18px auto 60px; transition:width .18s ease; filter:drop-shadow(0 28px 40px rgba(0,0,0,.75)); }
+    .patch-detail { position:sticky; top:14px; z-index:12; width:min(270px,calc(100% - 28px)); margin:14px 14px -160px auto; padding:14px; border:1px solid #657181; background:rgba(9,12,17,.96); box-shadow:0 18px 45px rgba(0,0,0,.62); backdrop-filter:blur(16px); }
+    .patch-detail[hidden] { display:none; }
+    .patch-detail-top { display:flex; justify-content:space-between; gap:10px; align-items:center; }
+    .patch-detail-art { width:108px; aspect-ratio:1; margin:4px auto 13px; background-image:url("assets/achievement-patch-direction.png"); background-repeat:no-repeat; background-size:400% auto; filter:drop-shadow(0 9px 12px rgba(0,0,0,.6)); }
+    .patch-detail-art.p1 { background-position:0% 16%; } .patch-detail-art.p2 { background-position:33.333% 16%; } .patch-detail-art.p3 { background-position:66.666% 16%; } .patch-detail-art.p4 { background-position:100% 16%; } .patch-detail-art.p5 { background-position:0% 36%; } .patch-detail-art.p6 { background-position:33.333% 36%; }
+    .patch-detail h3 { margin:0; font-family:var(--display); font-size:1.65rem; line-height:.92; text-transform:uppercase; }
+    .patch-detail p { margin:8px 0 0; color:var(--muted); font-size:.75rem; line-height:1.45; }
+    .modal-foot { display:flex; align-items:center; gap:13px; padding:12px 16px; border-top:1px solid var(--line); background:#0d1117; }
+    .modal-foot label { color:var(--muted); font-size:.72rem; font-weight:800; }
+    .modal-foot input { flex:1; accent-color:var(--pink); }
+    .modal-foot span { color:var(--muted); font-size:.7rem; }
+    .content-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(300px,.72fr); gap:18px; align-items:start; }
+    .stack { display:grid; gap:18px; }
+    .song-list { padding:0 19px 8px; }
+    .song-row { display:grid; grid-template-columns:38px minmax(0,1fr) auto; gap:13px; align-items:center; min-height:76px; border-bottom:1px solid var(--line); }
+    .song-row:last-child { border-bottom:0; }
+    .song-star { display:grid; place-items:center; width:34px; height:34px; border:1px solid rgba(255,25,168,.34); border-radius:50%; background:rgba(255,25,168,.07); color:var(--pink); }
+    .song-row strong { display:block; font-size:.9rem; }
+    .song-row p { margin:4px 0 0; color:var(--muted); font-size:.76rem; }
+    .song-row time { color:var(--muted); font-size:.72rem; white-space:nowrap; }
+    .free-rule { margin:12px 18px 18px; padding:12px 14px; border-left:2px solid var(--pink); background:#090c11; color:#cbd2dc; font-size:.76rem; line-height:1.45; }
+    .venue-list { padding:2px 18px 9px; }
+    .venue-row { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; min-height:68px; border-bottom:1px solid var(--line); }
+    .venue-row:last-child { border-bottom:0; }
+    .venue-row strong { display:block; font-size:.84rem; }
+    .venue-row span { display:block; margin-top:3px; color:var(--muted); font-size:.72rem; }
+    .venue-row button { border:0; background:none; color:var(--cyan); cursor:pointer; font-size:.72rem; font-weight:850; }
+    .share-panel { padding:22px; background:radial-gradient(circle at 95% 10%,rgba(255,25,168,.15),transparent 42%),linear-gradient(145deg,#151a22,#0b0e13); }
+    .share-panel h2 { margin:3px 0 0; font-family:var(--display); font-size:2.45rem; line-height:.86; text-transform:uppercase; }
+    .share-panel>p:not(.eyebrow) { margin:14px 0 0; color:var(--muted); font-size:.8rem; line-height:1.5; }
+    .caption { margin-top:17px; padding:14px; border:1px solid var(--line); background:#090c11; color:#e1e6ed; font-size:.8rem; line-height:1.45; }
+    .caption b { color:var(--pink); }
+    .share-actions { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+    .share-actions .button { padding:0 9px; }
+    .share-note { margin-top:10px!important; font-size:.68rem!important; }
+    .merch-panel { display:grid; grid-template-columns:1fr auto; gap:20px; align-items:center; padding:22px; background:radial-gradient(circle at 92% 18%,rgba(0,200,255,.13),transparent 38%),linear-gradient(145deg,#151a22,#0b0e13); }
+    .merch-panel h2 { margin:3px 0 0; font-family:var(--display); font-size:2.25rem; line-height:.88; text-transform:uppercase; }
+    .merch-panel>div>p:not(.eyebrow) { max-width:38ch; margin:13px 0 0; color:var(--muted); font-size:.8rem; line-height:1.5; }
+    .merch-panel .button { min-width:168px; border-color:rgba(0,200,255,.38); color:var(--cyan); cursor:not-allowed; }
+    .coming-soon { display:block; margin-top:3px; color:var(--muted); font-size:.58rem; letter-spacing:.11em; text-transform:uppercase; }
+    .premium-panel { display:grid; grid-template-columns:.72fr 1.28fr; margin-top:18px; }
+    .premium-intro { padding:29px; border-right:1px solid var(--line); background:radial-gradient(circle at 10% 15%,rgba(0,200,255,.12),transparent 55%),#0b0f15; }
+    .premium-intro h2 { margin:3px 0 0; font-family:var(--display); font-size:3.2rem; line-height:.84; text-transform:uppercase; }
+    .premium-intro>p:not(.eyebrow) { margin:17px 0 0; color:#c6ced8; line-height:1.55; }
+    .powered { display:block; margin-top:14px; color:var(--cyan); font-size:.72rem; font-weight:850; }
+    .premium-intro .button { width:100%; margin-top:22px; }
+    .premium-features { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--line); }
+    .premium-feature { min-height:142px; padding:22px; background:#10141a; }
+    .premium-feature strong { display:block; }
+    .premium-feature p { margin:7px 0 0; color:var(--muted); font-size:.77rem; line-height:1.45; }
+    .premium-feature i { display:grid; place-items:center; width:36px; height:36px; margin-bottom:14px; border:1px solid #414b58; background:linear-gradient(145deg,#202731,#10141a); color:var(--cyan); font-style:normal; font-weight:900; }
+    .free-forever { grid-column:1/-1; margin:0; padding:14px 20px; border-top:1px solid var(--line); background:#090c11; color:var(--muted); font-size:.75rem; }
+    .free-forever b { color:#e8ecf1; }
+    .mobile-nav { display:none; }
+    .toast { position:fixed; left:50%; bottom:24px; z-index:80; transform:translate(-50%,24px); max-width:calc(100% - 28px); padding:11px 15px; border:1px solid var(--line); border-radius:99px; background:#171c24; opacity:0; pointer-events:none; transition:.2s; white-space:nowrap; }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+    @media (max-width:900px) {
+      .primary-nav { display:none; } .appbar { grid-template-columns:1fr auto; } .account span { display:none; }
+      .hero { min-height:72svh; background-position:50% center; }
+      .hero:before { background:linear-gradient(0deg,#050609 0%,rgba(2,3,6,.76) 38%,rgba(2,3,6,.14) 76%),linear-gradient(90deg,rgba(2,3,6,.74),transparent 74%); }
+      .hero-inner { display:flex; flex-direction:column; justify-content:flex-end; min-height:72svh; padding:110px 0 72px; }
+      .career-strip { grid-template-columns:1fr repeat(4,.55fr); } .career-name,.metric { padding:16px 13px; }
+      .jacket-console,.premium-panel { grid-template-columns:1fr; } .jacket-view { grid-template-columns:1fr 1fr; }
+      .patch-board,.premium-intro { border-left:0; border-right:0; border-top:1px solid var(--line); }
+      .content-grid { grid-template-columns:1fr; } .side { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:600px) {
+      .appbar { min-height:62px; padding:4px 14px; } .logo { width:112px; height:48px; }
+      .hero { min-height:68svh; background-position:47% center; }
+      .hero-inner { width:calc(100% - 28px); min-height:68svh; padding:92px 0 56px; }
+      .hero h1 { font-size:3.95rem; } .hero-sub { max-width:330px; margin-top:15px; font-size:.89rem; }
+      .alias { gap:8px; margin-top:18px; padding:9px 10px; } .hero-actions { margin-top:16px; }
+      .surface { width:calc(100% - 18px); margin-top:-26px; margin-bottom:96px; }
+      .career-strip { grid-template-columns:repeat(2,1fr); } .career-name { grid-column:1/-1; min-height:78px; }
+      .metric { min-height:78px; border-top:1px solid var(--line); } .metric:nth-child(2),.metric:nth-child(4) { border-left:0; }
+      .section-nav { top:62px; }
+      .jacket-view { min-height:0; grid-template-columns:1fr; padding:22px 18px; background:linear-gradient(0deg,rgba(4,6,9,.96),rgba(4,6,9,.5)),url("assets/backstage-empty.png") center/cover; }
+      .jacket-view h2 { font-size:4.15rem; } .patches { grid-template-columns:1fr; } .patch { min-height:76px; }
+      .jacket-thumb { width:min(100%,390px); margin:0 auto; grid-row:1; } .jacket-view-copy { grid-row:2; }
+      .modal-head { flex-wrap:wrap; } .modal-head .skin-switch { order:3; width:100%; margin-left:0; } .modal-head .skin-switch button { flex:1; }
+      .jacket-zoom { width:calc(360px * var(--zoom,1)); } .modal-foot span { display:none; }
+      .side { grid-template-columns:1fr; } .panel-head { padding:18px; } .song-list { padding:0 15px 6px; }
+      .merch-panel { grid-template-columns:1fr; } .merch-panel .button { width:100%; }
+      .song-row { grid-template-columns:34px 1fr; padding:11px 0; } .song-row time { grid-column:2; }
+      .premium-features { grid-template-columns:1fr; } .premium-feature { min-height:0; }
+      .mobile-nav { position:fixed; left:0; right:0; bottom:0; z-index:70; display:grid; grid-template-columns:repeat(3,1fr); padding:7px 8px max(7px,env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(9,11,15,.96); backdrop-filter:blur(16px); }
+      .mobile-nav a { display:grid; gap:3px; justify-items:center; color:var(--muted); text-decoration:none; font-size:.65rem; font-weight:700; }
+      .mobile-nav a.active { color:var(--pink); } .mobile-nav b { font-size:1.05rem; }
+      .toast { bottom:82px; white-space:normal; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+  <header class="appbar"><a href="index.html"><img class="logo" src="assets/singhub-wordmark.png" alt="SingHUB"></a><nav class="primary-nav" aria-label="Primary"><a href="index.html">Discover</a><a href="venues.html">Venues</a><a href="redwing.html#board">SingBOARD</a></nav><a class="account" href="singer.html"><span>My SingHUB</span><i class="avatar">CR</i></a></header>
+  <section class="hero" aria-labelledby="page-title"><div class="hero-inner"><p class="eyebrow">MY SINGHUB</p><h1 id="page-title">Your nights.<br>Your story.</h1><p class="hero-sub">Your karaoke history lives backstage. Build your jacket, collect performance stars and keep the songs and rooms worth coming back to.</p><div class="alias"><span>Karaoke alias</span><strong>Not set yet</strong><button data-toast="Karaoke Alias editor opened">Add yours</button></div><div class="hero-actions"><button class="button primary" data-open-jacket>Open My Jacket</button><button class="button" data-scroll="share">Share your performance</button></div></div><span class="scroll-note">Scroll backstage</span></section>
+  <main class="surface">
+    <section class="career-strip" aria-label="Singer progress"><div class="career-name"><strong>Corey R.</strong><span>Member since 2026 · San Diego</span></div><div class="metric star"><strong>18 ★</strong><span>Performance stars</span></div><div class="metric"><strong>6</strong><span>Patches earned</span></div><div class="metric"><strong>10</strong><span>Recent songs</span></div><div class="metric"><strong>3</strong><span>Saved venues</span></div></section>
+    <nav class="section-nav" aria-label="My SingHUB sections"><a href="#jacket">My Jacket</a><a href="#recent">Recent Setlist</a><a href="#venues">Saved Venues</a><a href="#premium">Singer Tools</a></nav>
+    <section class="panel panel-bevel jacket-console" id="jacket" aria-labelledby="jacket-title"><div class="jacket-view"><div class="jacket-view-copy"><p class="eyebrow">THE FREE BASE JACKET</p><h2 id="jacket-title">My Jacket</h2><p>Your jacket has 24 fixed patch spaces across the back. Performance stars collect separately on the sleeves. Switch materials without moving either.</p><button class="button primary" data-open-jacket>Open and zoom</button></div><div class="jacket-thumb"><div class="jacket-layer" data-jacket-layer aria-label="Denim achievement jacket with 24 patch spaces and performance stars on its sleeves"></div></div></div><div class="patch-board"><div class="patch-top"><strong>Patch case</strong><div class="skin-switch" aria-label="Jacket material"><button class="active" data-skin="denim">Denim · Free</button><button data-skin="neon">Black Neon · Premium</button></div></div><div class="patches"><div class="patch"><b>Mystery Mic Dropper</b><span>Earned</span></div><div class="patch"><b>Sing-Along Superstar</b><span>Earned</span></div><div class="patch"><b>Groupie</b><span>Earned</span></div><div class="patch"><b>Liquid Courage Hero</b><span>Earned</span></div><div class="patch locked"><b>Road Warrior</b><span>Locked</span></div><div class="patch locked"><b>Wildcard</b><span>Locked</span></div></div><div class="patch-rule">6 earned · 18 spaces open. Your 18 performance stars live on the sleeves.</div></div></section>
+    <div class="content-grid"><div class="stack"><section class="panel" id="recent"><header class="panel-head"><div><h2>Recent Setlist</h2><p>Your last 10 performances stay here automatically.</p></div><button class="text-button" data-toast="All 10 recent performances opened">View all 10</button></header><div class="song-list"><article class="song-row"><span class="song-star">★</span><div><strong>Don't Stop Believin'</strong><p>Journey · Redwing Bar &amp; Grill</p></div><time>Sep 21</time></article><article class="song-row"><span class="song-star">★</span><div><strong>Before He Cheats</strong><p>Carrie Underwood · The Lamplighter</p></div><time>Sep 12</time></article><article class="song-row"><span class="song-star">★</span><div><strong>Shallow</strong><p>Lady Gaga &amp; Bradley Cooper · Redwing</p></div><time>Sep 6</time></article><article class="song-row"><span class="song-star">★</span><div><strong>Man! I Feel Like a Woman!</strong><p>Shania Twain · Redwing Bar &amp; Grill</p></div><time>Aug 30</time></article></div><p class="free-rule">Your last 10 songs are free. Singer Tools turns that history into a permanent, searchable songbook.</p></section></div><aside class="stack side"><section class="panel" id="venues"><header class="panel-head"><div><h2>Saved Venues</h2><p>Your favorite rooms stay one tap away.</p></div></header><div class="venue-list"><div class="venue-row"><div><strong>Redwing Bar &amp; Grill</strong><span>North Park</span></div><button data-toast="Redwing opened">Open</button></div><div class="venue-row"><div><strong>The Lamplighter</strong><span>Mission Hills</span></div><button data-toast="Lamplighter opened">Open</button></div><div class="venue-row"><div><strong>Hive Karaoke</strong><span>Kearny Mesa</span></div><button data-toast="Hive Karaoke opened">Open</button></div></div></section><section class="panel panel-bevel share-panel" id="share"><p class="eyebrow">PERFORMANCE SHARE</p><h2>Share your performance.</h2><p>SingHUB gets the venue, caption and link ready. Review it, then share wherever you want.</p><div class="caption">I just rocked the mic at <b>@RedwingBar</b> 🎤<br>Find your karaoke night on SingHUB.</div><div class="share-actions"><button class="button primary" id="share-button">Share performance</button><button class="button" id="copy-button">Copy caption</button></div><p class="share-note">You choose the app and confirm the post before it goes live.</p></section><section class="panel panel-bevel merch-panel" id="merch"><div><p class="eyebrow">MERCH TABLE</p><h2>SingHUB gear is coming.</h2><p>The SingHUB collection will open here when the Merch Table is stocked.</p></div><button class="button" type="button" disabled>Visit Merch Table<span class="coming-soon">Coming soon</span></button></section></aside></div>
+    <section class="panel panel-bevel premium-panel" id="premium" aria-labelledby="premium-title"><div class="premium-intro"><p class="eyebrow">SINGER TOOLS</p><h2 id="premium-title">For deeper song prep.</h2><p>Save a permanent repertoire, remember your keys and find out which connected rooms have your song.</p><span class="powered">Powered by KaraokeList</span><button class="button" data-toast="Singer Tools preview opened">Preview Singer Tools</button></div><div class="premium-features"><article class="premium-feature"><i>∞</i><strong>Permanent Songbook</strong><p>Keep unlimited songs, keys, notes and personal tags beyond your recent 10.</p></article><article class="premium-feature"><i>✓</i><strong>Who Has My Song?</strong><p>Match saved songs against connected venue catalogs before you go.</p></article><article class="premium-feature"><i>♬</i><strong>Song Picker</strong><p>Get help choosing from your own repertoire when decision paralysis hits.</p></article><article class="premium-feature"><i>✦</i><strong>Magic Mic</strong><p>Surface a song that fits the moment when you want the app to choose.</p></article><article class="premium-feature"><i>J</i><strong>Custom Jackets</strong><p>Unlock alternate materials, colors, layouts and personal nameplates.</p></article><p class="free-forever"><b>Always free:</b> the denim My Jacket, performance stars, achievement patches, exports, saved venues and your 10 most recent songs.</p></div></section>
+  </main>
+  <dialog id="jacket-modal" aria-labelledby="jacket-modal-title"><div class="modal-shell"><header class="modal-head"><strong id="jacket-modal-title">My Jacket</strong><div class="skin-switch" aria-label="Jacket material"><button class="active" data-skin="denim">Denim · Free</button><button data-skin="neon">Black Neon · Premium</button></div><button class="icon-button" id="close-jacket" aria-label="Close jacket">×</button></header><div class="jacket-viewport"><aside class="patch-detail" id="patch-detail" hidden><div class="patch-detail-top"><span class="eyebrow">ACHIEVEMENT PATCH</span><button class="icon-button" id="close-patch" aria-label="Close patch details">×</button></div><div class="patch-detail-art p1" id="patch-detail-art"></div><h3 id="patch-detail-name">Mystery Mic Dropper</h3><p>Tap any earned patch to see it up close. Award details will appear here once the achievement rules are locked.</p></aside><div class="jacket-zoom" id="jacket-zoom"><div class="jacket-layer" data-jacket-layer aria-label="Zoomable achievement jacket with 24 fixed patch spaces"></div></div></div><footer class="modal-foot"><label for="zoom-range">Zoom</label><input id="zoom-range" type="range" min="1" max="2.4" value="1" step="0.1"><span>Drag the slider, then scroll around the jacket.</span><button class="button" data-toast="Square jacket export prepared">Export</button></footer></div></dialog>
+  <nav class="mobile-nav" aria-label="Mobile navigation"><a href="index.html"><b>⌕</b>Discover</a><a href="venues.html"><b>●</b>Venues</a><a class="active" href="singer.html"><b>◎</b>My SingHUB</a></nav><div class="toast" role="status" aria-live="polite"></div>
+  <script>
+    const toast=document.querySelector('.toast');let timer;
+    function showToast(message){toast.textContent=message;toast.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>toast.classList.remove('show'),2100);}
+    const slots=[[31,29,-7],[43,28,4],[56,29,-3],[69,29,6],[30,40,4],[43,40,-5],[56,40,5],[70,40,-4],[30,51,-5],[43,51,4],[56,51,-3],[70,51,5],[30,62,5],[43,62,-4],[56,62,3],[70,62,-5],[30,73,-3],[43,73,5],[56,73,-4],[70,73,4],[31,84,4],[44,84,-5],[57,84,5],[69,84,-3]];
+    const stars=[[15,35,-7],[12,43,6],[16,51,-4],[12,59,8],[16,67,-5],[12,75,5],[16,83,-7],[11,88,4],[19,91,-4],[85,35,7],[88,43,-6],[84,51,4],[88,59,-8],[84,67,5],[88,75,-5],[84,83,7],[89,88,-4],[81,91,4]];
+    const patchNames=['Mystery Mic Dropper','Sing-Along Superstar','Groupie','Liquid Courage Hero','Cheer Captain','Born Performer'];
+    function buildJacket(layer){const img=document.createElement('img');img.src='assets/jacket-denim-blank.png';img.alt=layer.getAttribute('aria-hidden')==='true'?'':'Denim SingHUB achievement jacket';img.dataset.jacketImage='';layer.appendChild(img);slots.forEach(([x,y,r],index)=>{const slot=document.createElement(index<6?'button':'span');slot.className='patch-slot '+(index<6?'earned p'+(index+1):'empty');slot.style.left=x+'%';slot.style.top=y+'%';slot.style.setProperty('--r',r+'deg');slot.title=index<6?patchNames[index]:'Open patch space';if(index<6){slot.type='button';slot.dataset.patchIndex=index;slot.setAttribute('aria-label','Open '+patchNames[index]+' patch');}layer.appendChild(slot);});stars.forEach(([x,y,r])=>{const star=document.createElement('span');star.className='performance-star';star.textContent='★';star.style.left=x+'%';star.style.top=y+'%';star.style.setProperty('--r',r+'deg');layer.appendChild(star);});}
+    document.querySelectorAll('[data-jacket-layer]').forEach(buildJacket);
+    let currentSkin='denim';
+    function setSkin(skin){currentSkin=skin;const premium=skin==='neon';document.querySelectorAll('[data-jacket-image]').forEach(img=>{img.src=premium?'assets/jacket-neon-blank.png':'assets/jacket-denim-blank.png';img.alt=(premium?'Black neon premium':'Denim')+' SingHUB achievement jacket';});document.querySelectorAll('[data-skin]').forEach(button=>button.classList.toggle('active',button.dataset.skin===skin));if(premium)showToast('Previewing the Black Neon premium jacket');}
+    document.querySelectorAll('[data-skin]').forEach(button=>button.addEventListener('click',()=>setSkin(button.dataset.skin)));
+    const jacketModal=document.getElementById('jacket-modal');
+    const patchDetail=document.getElementById('patch-detail');
+    document.querySelectorAll('[data-open-jacket]').forEach(button=>button.addEventListener('click',()=>jacketModal.showModal()));
+    document.getElementById('close-jacket').addEventListener('click',()=>{patchDetail.hidden=true;jacketModal.close();});
+    document.getElementById('close-patch').addEventListener('click',()=>patchDetail.hidden=true);
+    document.addEventListener('click',event=>{const patch=event.target.closest('[data-patch-index]');if(!patch)return;const index=Number(patch.dataset.patchIndex);if(!jacketModal.open)jacketModal.showModal();document.getElementById('patch-detail-name').textContent=patchNames[index];document.getElementById('patch-detail-art').className='patch-detail-art p'+(index+1);patchDetail.hidden=false;});
+    jacketModal.addEventListener('click',event=>{if(event.target===jacketModal){patchDetail.hidden=true;jacketModal.close();}});
+    document.getElementById('zoom-range').addEventListener('input',event=>document.getElementById('jacket-zoom').style.setProperty('--zoom',event.target.value));
+    document.querySelectorAll('[data-toast]').forEach(button=>button.addEventListener('click',()=>showToast(button.dataset.toast)));
+    document.querySelectorAll('[data-scroll]').forEach(button=>button.addEventListener('click',()=>document.getElementById(button.dataset.scroll).scrollIntoView({behavior:'smooth',block:'start'})));
+    const caption='I just rocked the mic at @RedwingBar 🎤\nFind your karaoke night on SingHUB.';
+    document.getElementById('copy-button').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(caption);showToast('Caption copied');}catch{showToast('Select the caption to copy it');}});
+    document.getElementById('share-button').addEventListener('click',async()=>{if(navigator.share){try{await navigator.share({title:'My SingHUB night',text:caption,url:location.origin+'/redwing.html'});}catch(error){if(error.name!=='AbortError')showToast('Share could not open');}}else{try{await navigator.clipboard.writeText(caption+' '+location.origin+'/redwing.html');showToast('Caption and link copied');}catch{showToast('Sharing is not supported in this browser');}}});
+  </script>
+</body>
+</html>

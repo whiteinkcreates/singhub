@@ -12,7 +12,9 @@
     "check:data": "node scripts/check-public-data.mjs",
     "test:data": "node --test scripts/check-public-data.test.mjs",
     "check:assets": "node scripts/check-public-assets.mjs",
-    "smoke:admin": "node scripts/smoke-admin-auth.mjs"
+    "smoke:admin": "node scripts/smoke-admin-auth.mjs",
+    "test:v2": "node tests/v2-provenance.test.mjs",
+    "review:v2": "node tests/v2-browser-review.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
@@ -32,6 +34,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "playwright": "^1.62.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

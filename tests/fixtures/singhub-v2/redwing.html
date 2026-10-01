@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#050609">
+  <meta name="description" content="Redwing Bar and Grill karaoke schedule, venue details, and tonight information on SingHUB.">
+  <title>Redwing | SingHUB</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&amp;family=Barlow+Condensed:wght@600;700;800;900&amp;display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme:dark; --bg:#050609; --shell:#090b0f; --surface:#11141a; --surface-2:#171b22; --line:#292e38; --text:#f7f8fb; --muted:#9ca6b5; --cyan:#00c8ff; --pink:#ff19a8; --radius:16px; --sans:"Barlow",sans-serif; --display:"Barlow Condensed",sans-serif; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; min-width:320px; background:var(--bg); color:var(--text); font-family:var(--sans); }
+    button,a { font:inherit; } button { color:inherit; } button:focus-visible,a:focus-visible { outline:3px solid var(--cyan); outline-offset:3px; } img { display:block; max-width:100%; }
+    .appbar { position:sticky; top:0; z-index:30; display:grid; grid-template-columns:auto 1fr auto; align-items:center; min-height:70px; padding:7px clamp(18px,4vw,54px); border-bottom:1px solid rgba(255,255,255,.1); background:rgba(5,6,9,.93); backdrop-filter:blur(18px); }
+    .logo { width:128px; height:52px; object-fit:cover; object-position:top; }
+    .primary-nav { display:flex; justify-content:center; gap:5px; }
+    .primary-nav a { padding:10px 13px; border-radius:10px; color:var(--muted); text-decoration:none; font-size:.87rem; font-weight:700; }
+    .primary-nav a:hover,.primary-nav a.active { background:var(--surface-2); color:white; }
+    .account { display:flex; align-items:center; gap:10px; color:var(--muted); text-decoration:none; font-size:.84rem; font-weight:700; }
+    .avatar { display:grid; place-items:center; width:36px; height:36px; border:1px solid var(--line); border-radius:50%; background:var(--surface); color:white; font-style:normal; }
+    .page { width:min(1240px,calc(100% - 34px)); margin:26px auto 90px; }
+    .breadcrumbs { margin:0 0 14px; color:var(--muted); font-size:.8rem; } .breadcrumbs a { color:inherit; text-decoration:none; }
+    .hero { display:grid; grid-template-columns:minmax(0,1.65fr) minmax(310px,.68fr); min-height:500px; overflow:hidden; border:1px solid var(--line); border-radius:22px; background:var(--surface); box-shadow:0 28px 90px rgba(0,0,0,.38); }
+    .hero-media { position:relative; min-height:500px; overflow:hidden; }
+    .hero-media>img { width:100%; height:100%; object-fit:cover; transition:opacity .16s ease; }
+    .hero-media:after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(5,6,9,.04) 28%,rgba(5,6,9,.86) 100%); pointer-events:none; }
+    .status { position:absolute; z-index:2; left:24px; top:24px; display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; background:var(--cyan); color:#001319; font-size:.7rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
+    .identity { position:absolute; z-index:2; left:clamp(22px,4vw,48px); right:24px; bottom:35px; }
+    .identity h1 { margin:0; font-family:var(--display); font-size:clamp(4.4rem,9vw,8.4rem); font-weight:800; letter-spacing:-.045em; line-height:.78; text-shadow:0 6px 24px rgba(0,0,0,.5); }
+    .identity p { margin:22px 0 0; color:#e1e5eb; font-size:.82rem; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    .identity-tags { display:flex; flex-wrap:wrap; gap:7px; margin-top:13px; }
+    .identity-tags span { padding:6px 9px; border:1px solid rgba(255,25,168,.5); border-radius:99px; background:rgba(4,6,9,.68); color:#ffd0ec; font-size:.69rem; font-weight:850; backdrop-filter:blur(8px); }
+    .photo-count { position:absolute; z-index:2; right:18px; top:18px; padding:7px 10px; border:1px solid rgba(255,255,255,.3); border-radius:99px; background:rgba(5,6,9,.66); font-size:.76rem; font-weight:800; }
+    .tonight { display:flex; flex-direction:column; padding:30px; border-left:1px solid var(--line); background:var(--shell); }
+    .live { display:flex; align-items:center; gap:8px; color:var(--cyan); font-size:.72rem; font-weight:900; letter-spacing:.14em; }
+    .live i { width:8px; height:8px; border-radius:50%; background:var(--cyan); box-shadow:0 0 14px var(--cyan); }
+    .tonight-main { margin:auto 0; }
+    .eyebrow { margin:0 0 9px; color:var(--pink); font-size:.72rem; font-weight:900; letter-spacing:.14em; text-transform:uppercase; }
+    .tonight h2 { margin:0; font-family:var(--display); font-size:clamp(3.5rem,6vw,5.6rem); line-height:.82; }
+    .event-time { margin:24px 0 7px; font-family:var(--display); font-size:2.5rem; font-weight:800; }
+    .muted { color:var(--muted); }
+    .singhere-action { position:relative; display:grid; place-items:center; width:100%; min-height:72px; padding:10px 22px; overflow:hidden; border:1px solid #46505f; border-radius:11px; background:linear-gradient(145deg,#181d26 0,#0b0e14 62%,#121821 100%); box-shadow:inset 0 1px rgba(255,255,255,.12),inset 0 -1px rgba(0,0,0,.82),0 12px 28px rgba(0,0,0,.28); cursor:pointer; }
+    .singhere-action:before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 22% 50%,rgba(255,25,168,.09),transparent 38%),radial-gradient(circle at 78% 50%,rgba(0,200,255,.09),transparent 38%); pointer-events:none; }
+    .singhere-action:after { content:""; position:absolute; inset:1px; border-radius:9px; box-shadow:inset 0 0 0 1px rgba(255,255,255,.025); pointer-events:none; }
+    .singhere-action img { position:relative; z-index:1; width:min(100%,230px); max-height:52px; object-fit:contain; filter:drop-shadow(0 4px 9px rgba(0,0,0,.55)); transition:transform .18s ease,filter .18s ease; }
+    .singhere-action:hover { border-color:#667386; background:linear-gradient(145deg,#1d2430 0,#0d1118 62%,#151d27 100%); }
+    .singhere-action:hover img { transform:translateY(-1px) scale(1.015); filter:drop-shadow(-5px 3px 12px rgba(255,25,168,.15)) drop-shadow(5px 3px 12px rgba(0,200,255,.14)); }
+    .subactions { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-top:8px; }
+    .subactions button { min-height:42px; border:1px solid var(--line); border-radius:10px; background:var(--surface); color:#d9dee7; font-size:.76rem; cursor:pointer; }
+    .offer-action { width:100%; min-height:42px; margin-top:8px; border:1px solid rgba(0,200,255,.34); border-radius:10px; background:rgba(0,200,255,.045); color:#e4edf1; font-size:.76rem; font-weight:850; cursor:pointer; }
+    .offer-action span { margin-left:7px; color:var(--cyan); font-size:.66rem; letter-spacing:.09em; text-transform:uppercase; }
+    .overview { display:grid; grid-template-columns:1.3fr repeat(3,auto); gap:22px; align-items:center; margin:14px 0 22px; padding:18px 20px; border:1px solid #363c47; border-top-color:#555d69; border-left-color:#454c58; border-radius:var(--radius); background:linear-gradient(155deg,#181c23,#101319); box-shadow:inset 0 1px rgba(255,255,255,.08),inset 0 -1px rgba(0,0,0,.65),0 12px 30px rgba(0,0,0,.22); }
+    .venue-address strong { display:block; font-size:.95rem; } .venue-address span,.fact span { display:block; margin-top:3px; color:var(--muted); font-size:.77rem; }
+    .fact { min-width:112px; padding-left:18px; border-left:1px solid var(--line); } .fact strong { font-family:var(--display); font-size:1.35rem; }
+    .dashboard { display:grid; grid-template-columns:minmax(0,1.55fr) minmax(280px,.72fr); gap:18px; align-items:start; }
+    .stack { display:grid; gap:18px; }
+    .panel { border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); overflow:hidden; }
+    .panel-primary { border-width:2px; border-color:#39414d; box-shadow:0 16px 42px rgba(0,0,0,.24); }
+    .panel-bevel { border-color:#363d48; border-top-color:#59616d; border-left-color:#454d59; background:linear-gradient(145deg,#181c23 0,#101319 58%); box-shadow:inset 0 1px rgba(255,255,255,.09),inset 0 -1px rgba(0,0,0,.7),0 14px 34px rgba(0,0,0,.24); }
+    .panel-quiet { border-color:rgba(255,255,255,.1); background:#0d1015; box-shadow:none; }
+    .panel-head { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; padding:20px 22px; border-bottom:1px solid var(--line); }
+    .panel-head h2 { margin:2px 0 0; font-family:var(--display); font-size:1.8rem; line-height:1; } .panel-head p { margin:6px 0 0; color:var(--muted); font-size:.82rem; }
+    .text-link { border:0; background:none; color:var(--cyan); font-size:.8rem; font-weight:800; cursor:pointer; white-space:nowrap; }
+    .schedule { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1px; padding:0; background:var(--line); }
+    .schedule-row { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; min-height:54px; padding:0 20px; background:var(--surface); }
+    .schedule-row .day { color:var(--muted); font-family:var(--display); font-size:1.04rem; font-weight:800; } .schedule-row time { font-size:.82rem; font-weight:800; }
+    .schedule-row.current { background:linear-gradient(90deg,rgba(255,25,168,.1),rgba(255,25,168,.025)); box-shadow:inset 3px 0 var(--pink); } .schedule-row.current .day { color:var(--pink); }
+    .media-module { display:grid; grid-template-columns:1.08fr .92fr; min-height:310px; }
+    .media-main { position:relative; min-height:310px; overflow:hidden; } .media-main img { width:100%; height:100%; object-fit:cover; transition:opacity .16s ease; }
+    .media-copy { display:flex; flex-direction:column; padding:22px; border-left:1px solid var(--line); } .media-copy h2 { margin:4px 0 8px; font-family:var(--display); font-size:2.2rem; line-height:.92; } .media-copy p { margin:0; color:var(--muted); line-height:1.5; font-size:.85rem; }
+    .thumbs { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-top:auto; padding-top:18px; }
+    .thumb { aspect-ratio:1.25; padding:0; border:2px solid transparent; border-radius:9px; overflow:hidden; opacity:.58; background:var(--shell); cursor:pointer; } .thumb img { width:100%; height:100%; object-fit:cover; } .thumb[aria-pressed="true"] { border-color:var(--pink); opacity:1; }
+    .list { padding:0 20px; } .list-row { display:grid; grid-template-columns:38px 1fr auto; gap:12px; align-items:center; min-height:70px; border-bottom:1px solid var(--line); } .list-row:last-child { border-bottom:0; }
+    .list-icon { display:grid; place-items:center; width:34px; height:34px; border-radius:9px; background:var(--surface-2); color:var(--cyan); font-weight:900; }
+    .list-row strong { display:block; font-size:.88rem; } .list-row p { margin:3px 0 0; color:var(--muted); font-size:.77rem; } .state { color:var(--muted); font-size:.72rem; }
+    .signal-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:4px 0; }
+    .signal { min-height:150px; padding:18px 12px 15px; text-align:center; }
+    .signal-icon { display:grid; place-items:center; width:46px; height:46px; margin:0 auto 13px; border:1px solid #424a56; border-top-color:#66707e; border-radius:13px; background:linear-gradient(145deg,#1c2129,#101319); color:var(--cyan); font-family:var(--display); font-size:1.1rem; font-weight:900; box-shadow:inset 0 1px rgba(255,255,255,.08),0 8px 20px rgba(0,0,0,.22); }
+    .signal strong { display:block; font-size:.83rem; }
+    .signal p { margin:6px auto 0; max-width:23ch; color:var(--muted); font-size:.74rem; line-height:1.4; }
+    .placeholder { margin:16px 20px 20px; padding:16px; border:1px dashed #3a404b; border-radius:12px; color:var(--muted); font-size:.82rem; line-height:1.5; }
+    .board-item { margin:16px 20px 20px; padding:18px; border-radius:12px; background:var(--surface-2); } .board-item span { color:var(--pink); font-size:.68rem; font-weight:900; letter-spacing:.13em; } .board-item strong { display:block; margin-top:8px; font-family:var(--display); font-size:1.7rem; line-height:.95; } .board-item p { margin:8px 0 0; color:var(--muted); font-size:.78rem; }
+    footer { display:flex; justify-content:space-between; gap:20px; width:min(1240px,calc(100% - 34px)); margin:0 auto; padding:28px 0 95px; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; }
+    .mobile-nav { display:none; }
+    .toast { position:fixed; left:50%; bottom:24px; z-index:60; transform:translate(-50%,25px); padding:11px 15px; border:1px solid var(--line); border-radius:99px; background:#171b22; opacity:0; pointer-events:none; transition:.2s; } .toast.show { opacity:1; transform:translate(-50%,0); }
+    @media (max-width:900px) { .primary-nav { display:none; } .appbar { grid-template-columns:1fr auto; } .account span { display:none; } .page { width:min(100% - 24px,760px); margin-top:16px; } .hero { grid-template-columns:1fr; } .hero-media { min-height:55vh; } .tonight { min-height:365px; border-left:0; border-top:1px solid var(--line); } .overview { grid-template-columns:1fr 1fr; } .venue-address { grid-column:1/-1; } .fact { padding:0; border-left:0; } .dashboard { grid-template-columns:1fr; } .side { grid-template-columns:1fr 1fr; } .media-module { grid-template-columns:1fr; } .media-copy { min-height:250px; border-left:0; border-top:1px solid var(--line); } }
+    @media (max-width:560px) { .appbar { min-height:62px; padding:4px 14px; } .logo { width:112px; height:48px; } .page { width:calc(100% - 18px); margin-bottom:76px; } .breadcrumbs { padding-left:5px; } .hero { min-height:0; border-radius:16px; } .hero-media { min-height:470px; } .identity h1 { font-size:5rem; } .overview { gap:16px; padding:17px; } .side { grid-template-columns:1fr; } .panel-head { padding:18px; } .schedule-row { min-height:50px; padding:0 15px; } .media-main { min-height:270px; } .signal-strip { grid-template-columns:1fr; gap:0; } .signal { display:grid; grid-template-columns:46px 1fr; gap:14px; min-height:0; text-align:left; } .signal-icon { grid-row:1/3; margin:0; } .signal p { margin:4px 0 0; max-width:none; } footer { width:calc(100% - 28px); padding-bottom:100px; } .mobile-nav { position:fixed; left:0; right:0; bottom:0; z-index:40; display:grid; grid-template-columns:repeat(4,1fr); padding:7px 8px max(7px,env(safe-area-inset-bottom)); border-top:1px solid var(--line); background:rgba(9,11,15,.96); backdrop-filter:blur(16px); } .mobile-nav a { display:grid; gap:3px; justify-items:center; color:var(--muted); text-decoration:none; font-size:.65rem; font-weight:700; } .mobile-nav a.active { color:var(--cyan); } .mobile-nav b { font-size:1.05rem; } }
+    @media (max-width:560px) { .mobile-nav { grid-template-columns:repeat(3,1fr); } }
+  </style>
+</head>
+<body>
+  <header class="appbar"><a href="index.html"><img class="logo" src="assets/singhub-wordmark.png" alt="SingHUB"></a><nav class="primary-nav" aria-label="Primary"><a href="index.html">Discover</a><a class="active" href="venues.html">Venues</a><a href="#board">SingBOARD</a></nav><a class="account" href="singer.html"><span>My SingHUB</span><i class="avatar">CR</i></a></header>
+  <main class="page">
+    <p class="breadcrumbs"><a href="venues.html">Venues</a> / North Park / Redwing Bar &amp; Grill</p>
+    <section class="hero" aria-labelledby="venue-name">
+      <div class="hero-media"><img id="hero-image" src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/13/3b794f11b54b428c0b50b41edc5c75/%3Aoriginal" alt="Interior of Redwing Bar and Grill"><span class="status">✓ Verified karaoke</span><span class="photo-count" id="counter">1 / 3</span><div class="identity"><h1 id="venue-name">Redwing</h1><p>Bar &amp; Grill · North Park · Verified karaoke</p><div class="identity-tags"><span>LGBTQ+ friendly</span></div></div></div>
+      <aside class="tonight" id="tonight"><div class="live"><i></i> LIVE TONIGHT</div><div class="tonight-main"><p class="eyebrow">MONDAY</p><h2>KARAOKE</h2><p class="event-time">7 PM</p><p class="muted">Walk in and join the room.</p></div><div><button class="singhere-action" aria-label="SingHERE tonight" data-toast="SingHERE check-in opened"><img src="assets/singhere-neon-transparent.png" alt="" aria-hidden="true"></button><div class="subactions"><button data-toast="Directions opened">Directions</button><button data-toast="Venue saved">Save</button><button data-toast="Share options opened">Share</button></div><button class="offer-action" data-toast="Venue offers are coming soon">Unlock venue offer <span>Coming soon</span></button></div></aside>
+    </section>
+    <section class="overview" aria-label="Venue overview"><div class="venue-address"><strong>Redwing Bar &amp; Grill</strong><span>4012 30th St, San Diego · North Park</span></div><div class="fact"><strong>7 nights</strong><span>Karaoke weekly</span></div><div class="fact"><strong>7 PM</strong><span>Typical start</span></div><div class="fact"><strong>Verified Sep 28</strong><span>Maintained by SingHUB</span></div></section>
+    <div class="dashboard">
+      <div class="stack">
+        <section class="panel panel-primary"><header class="panel-head"><div><p class="eyebrow">WEEKLY RHYTHM</p><h2>Weekly karaoke</h2><p>Seven confirmed nights. KJ rotation and end times appear once verified.</p></div><button class="text-link" data-toast="Calendar options opened">Add to calendar</button></header><div class="schedule"><div class="schedule-row current"><span class="day">MON</span><time>7 PM</time></div><div class="schedule-row"><span class="day">TUE</span><time>7 PM</time></div><div class="schedule-row"><span class="day">WED</span><time>7 PM</time></div><div class="schedule-row"><span class="day">THU</span><time>7 PM</time></div><div class="schedule-row"><span class="day">FRI</span><time>7 PM</time></div><div class="schedule-row"><span class="day">SAT</span><time>7 PM</time></div><div class="schedule-row"><span class="day">SUN</span><time>7 PM</time></div></div></section>
+        <section class="panel panel-bevel media-module" aria-label="Redwing venue gallery"><div class="media-main"><img id="gallery-main" src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/13/3b794f11b54b428c0b50b41edc5c75/%3Aoriginal" alt="Inside Redwing Bar and Grill"></div><div class="media-copy"><p class="eyebrow">THE ROOM</p><h2>See the room before you go.</h2><p>Get a look at the stage, crowd, patio, and front door before you head out.</p><div class="thumbs"><button class="thumb" aria-pressed="true" data-src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/13/3b794f11b54b428c0b50b41edc5c75/%3Aoriginal" data-alt="Inside Redwing Bar and Grill"><img src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/13/3b794f11b54b428c0b50b41edc5c75/%3Aoriginal" alt="Redwing interior"></button><button class="thumb" aria-pressed="false" data-src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/96/85edf0b2af11e7979c395b9d064721/%3Aoriginal" data-alt="Redwing outdoor patio"><img src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/96/85edf0b2af11e7979c395b9d064721/%3Aoriginal" alt="Redwing patio"></button><button class="thumb" aria-pressed="false" data-src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_70%2Cc_fit%2Ch_864/http%3A/static.spotapps.co/spots/62/a78990b2ae11e7aca2af787713e91a/%3Aoriginal" data-alt="Front of Redwing Bar and Grill"><img src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_70%2Cc_fit%2Ch_864/http%3A/static.spotapps.co/spots/62/a78990b2ae11e7aca2af787713e91a/%3Aoriginal" alt="Redwing exterior"></button></div></div></section>
+        <section class="signal-strip" aria-label="Redwing room features"><article class="signal"><span class="signal-icon">♪</span><div><strong>Karaoke-first room</strong><p>Seven recurring nights make this a regular singer stop.</p></div></article><article class="signal"><span class="signal-icon">✓</span><div><strong>Schedule verified</strong><p>Recurring nights are dated and maintained by SingHUB.</p></div></article><article class="signal"><span class="signal-icon">◎</span><div><strong>LGBTQ+ friendly</strong><p>Redwing intentionally welcomes LGBTQ+ singers and guests.</p></div></article></section>
+      </div>
+      <aside class="stack side">
+        <section class="panel panel-quiet"><header class="panel-head"><div><p class="eyebrow">SPECIALS</p><h2>Tonight at Redwing</h2></div></header><div class="placeholder">Current specials will appear here when published by the venue, with dates and terms attached.</div></section>
+        <section class="panel panel-bevel" id="board"><header class="panel-head"><div><p class="eyebrow">SINGBOARD</p><h2>From the venue</h2></div><button class="text-link" data-toast="SingBOARD opened">Open board</button></header><div class="board-item"><span>VENUE POST</span><strong>REDWING<br>THIS WEEK</strong><p>Flyers, one-off events, and room updates pin here.</p></div></section>
+        <section class="panel panel-quiet"><header class="panel-head"><div><p class="eyebrow">SINGER SIGNAL</p><h2>Room feedback</h2></div></header><div class="placeholder">Singer feedback will summarize wait, sound, crowd energy, and song variety after verified check-ins.</div></section>
+      </aside>
+    </div>
+  </main>
+  <footer><span>Prototype photography sourced from Redwing's official website.</span><span>SingHUB venue profile</span></footer>
+  <nav class="mobile-nav" aria-label="Mobile navigation"><a href="index.html"><b>⌕</b>Discover</a><a class="active" href="venues.html"><b>●</b>Venues</a><a href="singer.html"><b>◎</b>My SingHUB</a></nav>
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script>
+    const hero=document.querySelector('#hero-image'); const galleryMain=document.querySelector('#gallery-main'); const counter=document.querySelector('#counter'); const thumbs=[...document.querySelectorAll('.thumb')];
+    thumbs.forEach((button,index)=>button.addEventListener('click',()=>{ thumbs.forEach(item=>item.setAttribute('aria-pressed','false')); button.setAttribute('aria-pressed','true'); hero.style.opacity='.25'; galleryMain.style.opacity='.25'; setTimeout(()=>{ hero.src=button.dataset.src; hero.alt=button.dataset.alt; galleryMain.src=button.dataset.src; galleryMain.alt=button.dataset.alt; counter.textContent=`${index+1} / ${thumbs.length}`; hero.style.opacity='1'; galleryMain.style.opacity='1'; },120); }));
+    const toast=document.querySelector('.toast'); let timer; document.querySelectorAll('[data-toast]').forEach(button=>button.addEventListener('click',()=>{ toast.textContent=button.dataset.toast; toast.classList.add('show'); clearTimeout(timer); timer=setTimeout(()=>toast.classList.remove('show'),1700); }));
+  </script>
+</body>
+</html>

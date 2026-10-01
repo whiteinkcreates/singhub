@@ -55,6 +55,10 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Profile lists are invalid." }, { status: 400 });
     }
 
+    if (profile.singerSignupUrl && !/^https?:\/\//i.test(profile.singerSignupUrl)) {
+      return NextResponse.json({ error: "Singer signup URL must start with https:// or http://." }, { status: 400 });
+    }
+
     if (profile.vibeTags !== undefined && (!Array.isArray(profile.vibeTags) || profile.vibeTags.length > 4)) {
       return NextResponse.json({ error: "Choose four vibe tags or fewer." }, { status: 400 });
     }

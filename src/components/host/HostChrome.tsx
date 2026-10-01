@@ -1,0 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
+import Link from 'next/link';
+export function HostIcon({name}:{name:string}){return <span className="host-icon material-symbols-rounded" aria-hidden="true">{name}</span>;}
+export function HostChrome(){return <header className="host-appbar"><Link href="/" className="host-brand"><img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav aria-label="Primary"><Link href="/">Discover</Link><Link href="/find-karaoke">Venues</Link><Link href="/hosts" className="active" aria-current="page">Hosts</Link><Link href="/hotel">Hotels</Link><Link href="/singboard">SingBOARD</Link><Link href="/account">My SingHUB</Link></nav><div className="host-nav-tools"><Link href="/hosts#host-search" aria-label="Search hosts"><HostIcon name="search" /></Link><Link href="/account" aria-label="My SingHUB account"><HostIcon name="account_circle" /></Link></div></header>;}

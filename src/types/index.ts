@@ -23,6 +23,7 @@ export type VenueListing = {
   bannerImageAlt?: string;
   bannerImagePosition?: "center" | "top" | "bottom" | "left" | "right";
   tickerText?: string;
+  lastVerified?: string;
   karaokeDay: string;
   startTime: string;
   endTime: string;
@@ -48,6 +49,7 @@ export type VenueListing = {
   featuredPriority?: number;
   enhancementTagline?: string;
   enhancementAmenities?: string[];
+  enhancementStandoutFeatures?: string[];
 };
 
 export type KaraokeEventListing = {
@@ -91,6 +93,12 @@ export type HostGig = {
 export type HostProfileCompletionLevel = "basic" | "enhanced" | "incomplete";
 
 export type HostProfile = {
+  heroImageUrl?: string;
+  heroImageAlt?: string;
+  heroPosition?: "center" | "top" | "bottom" | "left" | "right";
+  profileImagePosition?: "center" | "top" | "bottom" | "left" | "right";
+  directoryHeroImageUrl?: string;
+  directoryHeroPosition?: "center" | "top" | "bottom" | "left" | "right";
   status: string;
   hostId: string;
   slug: string;

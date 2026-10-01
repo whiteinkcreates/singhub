@@ -499,7 +499,7 @@ export function BrandedHotelExperience({
           <section className="relative z-10 border-y border-slate-100 bg-[linear-gradient(180deg,#fff,#f8fafc)] px-5 py-7 sm:px-8">
             <div className="mb-4 flex items-end justify-between gap-4">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: accentColor }}>Tonight's Shortlist</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: accentColor }}>Tonight&apos;s Shortlist</p>
                 <h2 className="mt-1 text-2xl font-black" style={{ color: textColor }}>Three easy places to start</h2>
               </div>
               <p className="hidden max-w-xs text-right text-xs sm:block" style={{ color: mutedTextColor }}>A quick local read before you head out.</p>

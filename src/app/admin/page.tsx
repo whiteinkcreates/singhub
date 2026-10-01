@@ -7,6 +7,8 @@ export const metadata = {
 };
 
 const tools = [
+  { href: "/admin/hosts", eyebrow: "Karaoke Hosts", title: "Host Media", description: "Upload portraits and hero images, choose focal points, and save media for host profiles and trading cards." },
+  { href: "/admin/hotels", eyebrow: "Hotel Partnerships", title: "Hotel Media", description: "Choose or upload hotel hero images, preview desktop and mobile crops, and save hotel media settings." },
   {
     href: "/admin/daily-mic",
     eyebrow: "Social Acquisition",

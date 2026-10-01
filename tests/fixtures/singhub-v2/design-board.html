@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070a12">
+  <meta name="description" content="A code-based SingHUB UI 2.0 prototype using one system across discovery, hotel, venue, and singer experiences.">
+  <title>SingHUB UI 2.0 Prototype</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23070a12'/%3E%3Cpath d='M17 20h18c7 0 11 4 11 9s-4 8-11 8h-7c-3 0-5 2-5 4s2 4 5 4h19' fill='none' stroke='%23ff19a8' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M45 18v28M33 32h24' stroke='%2300c8ff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #05070d;
+      --surface: #0b0f18;
+      --surface-2: #101622;
+      --surface-3: #151c29;
+      --text: #f7f8fc;
+      --muted: #9ba6b7;
+      --quiet: #697487;
+      --line: #263044;
+      --pink: #ff19a8;
+      --cyan: #00c8ff;
+      --amber: #ffbf47;
+      --good: #61dfa5;
+      --radius: 18px;
+      --shadow: 0 24px 80px rgba(0,0,0,.44);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    body { margin: 0; min-width: 320px; background: radial-gradient(circle at 50% -20%, #14213b 0, var(--bg) 44%); color: var(--text); }
+    button, a { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, a:focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+
+    .workbench { min-height: 100vh; }
+    .prototype-bar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      min-height: 76px;
+      padding: 12px clamp(16px, 3vw, 40px);
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      background: rgba(5,7,13,.92);
+      backdrop-filter: blur(18px);
+    }
+    .brand { display: flex; align-items: center; gap: 14px; min-width: max-content; }
+    .brand img { width: 132px; height: 55px; object-fit: cover; object-position: top; }
+    .prototype-name { border-left: 1px solid var(--line); padding-left: 14px; }
+    .prototype-name strong { display: block; font-size: .86rem; letter-spacing: .08em; }
+    .prototype-name span { color: var(--muted); font-size: .75rem; }
+    .view-tabs { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin-left: auto; }
+    .view-tabs::-webkit-scrollbar { display: none; }
+    .view-tab {
+      border: 1px solid var(--line);
+      background: #0d121c;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: var(--muted);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: .18s ease;
+      text-decoration: none;
+    }
+    .view-tab:hover { border-color: #42506a; color: var(--text); }
+    .view-tab[aria-selected="true"] { background: var(--text); color: #080a10; border-color: var(--text); font-weight: 750; }
+
+    .stage {
+      width: min(1180px, calc(100% - 32px));
+      margin: 34px auto 80px;
+      display: grid;
+      grid-template-columns: minmax(330px, 430px) minmax(300px, 1fr);
+      gap: clamp(24px, 4vw, 68px);
+      align-items: start;
+    }
+    .phone-shell {
+      position: sticky;
+      top: 110px;
+      padding: 10px;
+      border-radius: 38px;
+      background: linear-gradient(145deg, #3d4658, #10141e 42%, #687188 50%, #141924 58%);
+      box-shadow: var(--shadow);
+    }
+    .phone {
+      position: relative;
+      height: min(790px, calc(100vh - 145px));
+      min-height: 640px;
+      overflow: hidden;
+      border: 1px solid #30394b;
+      border-radius: 30px;
+      background: var(--bg);
+    }
+    .app-view {
+      display: none;
+      height: 100%;
+      overflow-y: auto;
+      padding-bottom: 92px;
+      scrollbar-width: none;
+    }
+    .app-view::-webkit-scrollbar { display: none; }
+    .app-view.active { display: block; }
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      height: 66px;
+      padding: 6px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      background: rgba(5,7,13,.94);
+      backdrop-filter: blur(14px);
+    }
+    .app-header img { width: 114px; height: 48px; object-fit: cover; object-position: top; justify-self: center; }
+    .icon-button { display: grid; place-items: center; width: 40px; height: 40px; border: 0; background: transparent; border-radius: 50%; cursor: pointer; font-size: 1.25rem; }
+    .icon-button:hover { background: var(--surface-2); }
+    .content { padding: 18px; }
+    .eyebrow { margin: 0 0 8px; color: var(--cyan); font-size: .74rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { margin-bottom: 8px; font-size: clamp(2rem, 8vw, 2.8rem); line-height: .98; letter-spacing: -.045em; }
+    h2 { margin-bottom: 12px; font-size: 1.28rem; line-height: 1.15; letter-spacing: -.02em; }
+    h3 { margin-bottom: 5px; font-size: 1rem; }
+    p { color: var(--muted); line-height: 1.55; }
+    .subline { color: var(--muted); font-size: .92rem; }
+    .verified { display: inline-flex; align-items: center; gap: 7px; color: #caefff; font-size: .84rem; font-weight: 750; }
+    .verified-dot { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--cyan); color: #00131a; font-size: .68rem; }
+    .section { padding: 18px 0; border-top: 1px solid var(--line); }
+    .section:first-child { border-top: 0; padding-top: 0; }
+    .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+    .section-heading a { color: var(--cyan); font-size: .82rem; text-decoration: none; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 999px; color: #d5dbe7; background: #0d121c; font-size: .78rem; }
+    .card { border: 1px solid var(--line); background: var(--surface); border-radius: var(--radius); }
+    .tonight-card { padding: 18px; background: linear-gradient(145deg, #111827, #0a0d15 66%); }
+    .tonight-label { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; color: var(--pink); font-size: .78rem; font-weight: 850; letter-spacing: .14em; }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 12px var(--pink); }
+    .event-row { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
+    .event-row strong { font-size: 1.22rem; }
+    .event-time { color: #fff; font-weight: 750; white-space: nowrap; }
+    .host { margin-top: 8px; color: var(--muted); font-size: .86rem; }
+    .primary-action {
+      width: 100%;
+      min-height: 52px;
+      margin-top: 16px;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(90deg, var(--pink), #d114ff);
+      color: white;
+      font-weight: 850;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(255,25,168,.24);
+    }
+    .secondary-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+    .secondary-actions button { min-height: 44px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: #dce3ed; cursor: pointer; font-size: .78rem; }
+    .schedule-list { display: grid; gap: 2px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--line); }
+    .schedule-row { display: grid; grid-template-columns: 86px 1fr auto; gap: 10px; align-items: center; padding: 13px 14px; background: var(--surface); }
+    .schedule-row strong { font-size: .86rem; }
+    .schedule-row span { color: var(--muted); font-size: .78rem; }
+    .schedule-row time { color: white; font-size: .8rem; font-weight: 700; }
+    .tonight-row { background: #151322; box-shadow: inset 3px 0 var(--pink); }
+    .detail-list { display: grid; gap: 0; }
+    .detail { display: grid; grid-template-columns: 28px 1fr; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+    .detail:last-child { border-bottom: 0; }
+    .detail p { margin: 2px 0 0; font-size: .83rem; }
+    .tier-badge { display: inline-flex; margin: 12px 0 2px; padding: 5px 8px; border-radius: 6px; background: #20283a; color: #c7cfdb; font-size: .68rem; font-weight: 900; letter-spacing: .12em; }
+    .tier-badge.lit { color: #fff; background: var(--pink); }
+
+    .venue-media { margin: -18px -18px 18px; background: #080b11; }
+    .venue-hero { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--surface-2); }
+    .venue-hero > img { width: 100%; height: 100%; object-fit: cover; display: block; transition: opacity .18s ease; }
+    .media-counter { position: absolute; right: 12px; top: 12px; padding: 6px 9px; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; background: rgba(5,7,13,.78); color: white; font-size: .75rem; font-weight: 800; backdrop-filter: blur(8px); }
+    .gallery-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 7px; border-bottom: 1px solid var(--line); }
+    .gallery-thumb { position: relative; aspect-ratio: 16 / 10; overflow: hidden; padding: 0; border: 2px solid transparent; border-radius: 9px; background: var(--surface-2); cursor: pointer; opacity: .66; }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gallery-thumb[aria-pressed="true"] { border-color: var(--pink); opacity: 1; }
+    .media-source { margin: 0; padding: 0 8px 8px; color: var(--quiet); font-size: .68rem; text-align: right; }
+    .enhanced-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .enhanced-card { min-height: 112px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+    .enhanced-card span { color: var(--pink); font-size: 1.1rem; }
+    .enhanced-card p { margin: 6px 0 0; font-size: .78rem; }
+
+    .search-box { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--muted); }
+    .filter-row { display: flex; gap: 8px; margin: 12px 0 18px; overflow-x: auto; scrollbar-width: none; }
+    .filter-row .chip:first-child { color: white; border-color: var(--pink); background: rgba(255,25,168,.12); }
+    .map {
+      position: relative;
+      height: 235px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background-color: #0e1622;
+      background-image: linear-gradient(rgba(64,85,110,.16) 1px, transparent 1px), linear-gradient(90deg, rgba(64,85,110,.16) 1px, transparent 1px);
+      background-size: 34px 34px;
+    }
+    .map:before, .map:after { content: ""; position: absolute; width: 360px; height: 8px; border: 1px solid #263c52; border-width: 1px 0; transform: rotate(-27deg); background: #121f2c; }
+    .map:before { left: -90px; top: 84px; }
+    .map:after { left: 40px; top: 166px; transform: rotate(19deg); }
+    .map-label { position: absolute; color: #718096; font-size: .66rem; font-weight: 800; letter-spacing: .11em; }
+    .map-pin { position: absolute; z-index: 2; width: 52px; height: 52px; object-fit: contain; filter: drop-shadow(0 8px 8px rgba(0,0,0,.8)); }
+    .map-pin.one { left: 16%; top: 24%; }
+    .map-pin.two { left: 61%; top: 48%; }
+    .map-pin.three { left: 43%; top: 10%; }
+    .venue-result { display: grid; grid-template-columns: 46px 1fr auto; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .venue-result:last-child { border-bottom: 0; }
+    .venue-result img { width: 42px; height: 42px; object-fit: contain; }
+    .venue-result p { margin: 3px 0 0; font-size: .76rem; }
+    .venue-result time { color: white; font-weight: 750; font-size: .8rem; }
+
+    .hotel-lockup { display: grid; grid-template-columns: 100px 1fr; gap: 2px; align-items: center; margin: 2px 0 18px; }
+    .hotel-at { width: 100px; height: 100px; object-fit: cover; }
+    .hotel-name small { display: block; color: var(--muted); font-size: .7rem; font-weight: 750; letter-spacing: .14em; text-transform: uppercase; }
+    .hotel-name strong { display: block; margin-top: 4px; font-family: Georgia, serif; font-size: 2.1rem; font-weight: 500; letter-spacing: -.04em; }
+    .concierge-note { padding: 16px; border-left: 3px solid var(--cyan); background: #0e1722; border-radius: 0 14px 14px 0; }
+    .concierge-note p { margin: 5px 0 0; font-size: .85rem; }
+    .hotel-group { padding: 15px 0 5px; border-top: 1px solid var(--line); }
+    .hotel-group:first-of-type { padding-top: 0; border-top: 0; }
+    .hotel-group-title { display: grid; grid-template-columns: 34px 1fr; gap: 10px; align-items: center; margin-bottom: 3px; }
+    .hotel-group-icon { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid #3a465b; border-radius: 9px; background: linear-gradient(145deg, #182131, #0c111a); color: var(--cyan); box-shadow: inset 0 1px rgba(255,255,255,.08); }
+    .hotel-group-icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .hotel-group-title strong { font-size: .92rem; }
+    .hotel-group-title small { display: block; margin-top: 2px; color: var(--muted); font-size: .7rem; }
+    .hotel-group .venue-result { margin-left: 44px; }
+
+    .profile-top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+    .avatar { display: grid; place-items: center; width: 72px; height: 72px; flex: 0 0 auto; border: 2px solid var(--cyan); border-radius: 50%; background: linear-gradient(145deg, #25324a, #111827); color: white; font-size: 1.2rem; font-weight: 850; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+    .stat { padding: 13px 8px; text-align: center; border-right: 1px solid var(--line); }
+    .stat:last-child { border-right: 0; }
+    .stat strong { display: block; font-size: 1.1rem; }
+    .stat span { color: var(--muted); font-size: .68rem; }
+    .performance { padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .performance:last-child { border-bottom: 0; }
+    .performance p { margin: 4px 0 0; font-size: .8rem; }
+
+    .bottom-nav {
+      position: absolute;
+      z-index: 10;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      min-height: 72px;
+      border-top: 1px solid var(--line);
+      background: rgba(8,11,17,.97);
+      backdrop-filter: blur(16px);
+    }
+    .nav-item { display: grid; place-items: center; align-content: center; gap: 3px; border: 0; background: transparent; color: var(--quiet); font-size: .65rem; cursor: pointer; }
+    .nav-item b { font-size: 1.2rem; line-height: 1; font-weight: 500; }
+    .nav-item.active { color: var(--pink); }
+
+    .notes { padding-top: 10px; }
+    .notes h2 { font-size: clamp(1.8rem, 4vw, 3.3rem); max-width: 760px; }
+    .notes > p { max-width: 700px; font-size: 1rem; }
+    .truth-panel { margin-top: 30px; border: 1px solid var(--line); border-radius: 22px; overflow: hidden; background: rgba(11,15,24,.78); }
+    .truth-header { padding: 18px 20px; border-bottom: 1px solid var(--line); }
+    .truth-header .eyebrow { margin-bottom: 5px; }
+    .truth-header h3 { margin: 0; font-size: 1.1rem; }
+    .truth-row { display: grid; grid-template-columns: 130px 1fr; gap: 20px; padding: 15px 20px; border-bottom: 1px solid var(--line); }
+    .truth-row:last-child { border-bottom: 0; }
+    .truth-row strong { font-size: .8rem; color: #c8d0dd; text-transform: uppercase; letter-spacing: .08em; }
+    .truth-row p { margin: 0; font-size: .9rem; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .legend span { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: .78rem; }
+    .legend i { width: 10px; height: 10px; border-radius: 50%; background: var(--pink); }
+    .legend span:nth-child(2) i { background: var(--cyan); }
+    .legend span:nth-child(3) i { background: #8c96a7; }
+
+    .toast { position: fixed; left: 50%; bottom: 24px; z-index: 50; transform: translate(-50%, 30px); padding: 12px 16px; border: 1px solid #3b465a; border-radius: 999px; background: #111827; opacity: 0; pointer-events: none; transition: .2s ease; box-shadow: var(--shadow); font-size: .85rem; }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    @media (max-width: 860px) {
+      .prototype-bar { display: block; padding: 10px 14px 0; }
+      .brand { margin-bottom: 8px; }
+      .prototype-name { display: none; }
+      .view-tabs { margin: 0 -14px; padding: 0 14px 10px; }
+      .stage { width: 100%; margin: 0; display: block; }
+      .phone-shell { position: static; padding: 0; border-radius: 0; background: transparent; box-shadow: none; }
+      .phone { height: calc(100vh - 115px); min-height: 610px; border: 0; border-radius: 0; }
+      .notes { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="workbench">
+    <header class="prototype-bar">
+      <div class="brand">
+        <img src="assets/singhub-wordmark.png" alt="SingHUB">
+        <div class="prototype-name"><strong>UI 2.0 CODE PROTOTYPE</strong><span>Real assets. Real constraints.</span></div>
+      </div>
+      <nav class="view-tabs" aria-label="Prototype views" role="tablist">
+        <button class="view-tab" role="tab" aria-selected="true" data-view="discovery">Discovery</button>
+        <a class="view-tab" role="tab" aria-selected="false" href="hotel.html">Hotel</a>
+        <button class="view-tab" role="tab" aria-selected="false" data-view="basic">Basic venue</button>
+        <a class="view-tab" role="tab" aria-selected="false" href="redwing.html">Lit Up venue</a>
+        <a class="view-tab" role="tab" aria-selected="false" href="singer.html">Singer</a>
+      </nav>
+    </header>
+
+    <div class="stage">
+      <div class="phone-shell">
+        <section class="phone" aria-live="polite">
+          <article class="app-view active" data-panel="discovery">
+            <header class="app-header">
+              <button class="icon-button" aria-label="Open menu">☰</button>
+              <img src="assets/singhub-wordmark.png" alt="SingHUB">
+              <button class="icon-button" aria-label="Search">⌕</button>
+            </header>
+            <div class="content">
+              <section class="section">
+                <p class="eyebrow">San Diego</p>
+                <h1>Find your mic tonight.</h1>
+                <p class="subline">Verified karaoke times, nearby rooms, and the people running them.</p>
+                <div class="search-box">⌕ <span>Venue, neighborhood, or KJ</span></div>
+                <div class="filter-row">
+                  <span class="chip">Tonight</span><span class="chip">Nearby</span><span class="chip">Live band</span><span class="chip">Private rooms</span>
+                </div>
+                <div class="map" aria-label="Map showing SingHUB karaoke venue pins">
+                  <span class="map-label" style="left:16px;top:18px">MISSION HILLS</span>
+                  <span class="map-label" style="right:20px;bottom:18px">NORTH PARK</span>
+                  <img class="map-pin one" src="assets/sh-venue-pin.png" alt="Karaoke venue on SingHUB">
+                  <img class="map-pin two" src="assets/sh-venue-pin.png" alt="Karaoke venue on SingHUB">
+                  <img class="map-pin three" src="assets/sh-venue-pin.png" alt="Karaoke venue on SingHUB">
+                </div>
+              </section>
+              <section class="section">
+                <div class="section-heading"><h2>Happening tonight</h2><a href="#">See all</a></div>
+                <div class="venue-result"><img src="assets/sh-venue-pin.png" alt=""><div><strong>The Lamplighter</strong><p>Mission Hills · Classic karaoke</p></div><time>9 PM</time></div>
+                <div class="venue-result"><img src="assets/sh-venue-pin.png" alt=""><div><strong>Redwing Bar & Grill</strong><p>North Park · Karaoke tonight</p></div><time>8 PM</time></div>
+              </section>
+            </div>
+          </article>
+
+          <article class="app-view" data-panel="hotel">
+            <header class="app-header">
+              <button class="icon-button" aria-label="Open menu">☰</button>
+              <img src="assets/singhub-wordmark.png" alt="SingHUB">
+              <button class="icon-button" aria-label="Search">⌕</button>
+            </header>
+            <div class="content">
+              <section class="section">
+                <p class="eyebrow">Your hotel karaoke guide</p>
+                <div class="hotel-lockup">
+                  <img class="hotel-at" src="assets/hotel-at-mark.png" alt="at">
+                  <div class="hotel-name"><small>SingHUB at</small><strong>The Pendry</strong><small>San Diego</small></div>
+                </div>
+                <div class="concierge-note"><strong>Pick the kind of night you want</strong><p>Verified karaoke organized by effort, not dumped into one generic nearby list.</p></div>
+              </section>
+              <section class="section">
+                <div class="section-heading"><h2>Tonight from The Pendry</h2><a href="#">Map</a></div>
+                <div class="hotel-group"><div class="hotel-group-title"><span class="hotel-group-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="4" r="2"></circle><path d="m10 22 1-7-3-3 2-5 4 2 3 4"></path><path d="m14 22-3-7 4-2 3 2"></path></svg></span><div><strong>Walkable</strong><small>Step outside and go</small></div></div><div class="venue-result"><img src="assets/sh-venue-pin.png" alt="Karaoke venue on SingHUB"><div><strong>Whiskey Girl</strong><p>Gaslamp · 0.3 miles</p></div><time>8:30 PM</time></div></div>
+                <div class="hotel-group"><div class="hotel-group-title"><span class="hotel-group-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 17h14l1-5-3-4H7l-3 4 1 5Z"></path><path d="M7 8 8 5h8l1 3"></path><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle></svg></span><div><strong>Quick Ride</strong><small>A short hop beyond downtown</small></div></div><div class="venue-result"><img src="assets/sh-venue-pin.png" alt="Karaoke venue on SingHUB"><div><strong>Redwing Bar &amp; Grill</strong><p>North Park · 3.2 miles</p></div><time>8 PM</time></div></div>
+                <div class="hotel-group"><div class="hotel-group-title"><span class="hotel-group-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"></path></svg></span><div><strong>Local Standouts</strong><small>Worth going a little farther</small></div></div><div class="venue-result"><img src="assets/sh-venue-pin.png" alt="Karaoke venue on SingHUB"><div><strong>The Lamplighter</strong><p>Mission Hills · 3.4 miles</p></div><time>9 PM</time></div></div>
+              </section>
+            </div>
+          </article>
+
+          <article class="app-view" data-panel="basic">
+            <header class="app-header">
+              <button class="icon-button" aria-label="Go back">‹</button>
+              <img src="assets/singhub-wordmark.png" alt="SingHUB">
+              <button class="icon-button" aria-label="Share venue">↗</button>
+            </header>
+            <div class="content">
+              <section class="section">
+                <span class="tier-badge">BASIC PROFILE</span>
+                <h1>The Lamplighter</h1>
+                <div class="verified"><span class="verified-dot">✓</span> Verified karaoke</div>
+                <p class="subline" style="margin-top:10px">Mission Hills · 817 W Washington St</p>
+                <div class="chips"><span class="chip">Classic karaoke</span><span class="chip">7 nights</span><span class="chip">21+</span></div>
+              </section>
+              <section class="section">
+                <div class="card tonight-card">
+                  <div class="tonight-label"><span class="live-dot"></span> TONIGHT</div>
+                  <div class="event-row"><div><strong>Karaoke</strong><div class="host">Hosted by Raya</div></div><time class="event-time">9 PM - 2 AM</time></div>
+                  <button class="primary-action" data-toast="SingHERE flow would open here">SingHERE tonight</button>
+                </div>
+                <div class="secondary-actions"><button data-toast="Directions opened">Directions</button><button data-toast="Venue saved">Save</button><button data-toast="Share sheet opened">Share</button></div>
+              </section>
+              <section class="section">
+                <div class="section-heading"><h2>Weekly schedule</h2></div>
+                <div class="schedule-list">
+                  <div class="schedule-row"><strong>Monday</strong><span>Jared</span><time>9 PM</time></div>
+                  <div class="schedule-row tonight-row"><strong>Tuesday</strong><span>Raya</span><time>9 PM</time></div>
+                  <div class="schedule-row"><strong>Wednesday</strong><span>Leo</span><time>9 PM</time></div>
+                  <div class="schedule-row"><strong>Thursday</strong><span>Leo</span><time>9 PM</time></div>
+                  <div class="schedule-row"><strong>Friday</strong><span>Ryan</span><time>8 PM</time></div>
+                  <div class="schedule-row"><strong>Saturday</strong><span>Ryan</span><time>8 PM</time></div>
+                  <div class="schedule-row"><strong>Sunday</strong><span>Jared</span><time>9 PM</time></div>
+                </div>
+              </section>
+              <section class="section"><div class="section-heading"><h2>Good to know</h2></div><div class="detail-list"><div class="detail"><span>◷</span><div><strong>Weekdays</strong><p>9 PM to 2 AM</p></div></div><div class="detail"><span>◷</span><div><strong>Weekends</strong><p>8 PM to 2 AM</p></div></div><div class="detail"><span>⌖</span><div><strong>Mission Hills</strong><p>817 W Washington St, San Diego</p></div></div></div></section>
+            </div>
+          </article>
+
+          <article class="app-view" data-panel="litup">
+            <header class="app-header">
+              <button class="icon-button" aria-label="Go back">‹</button>
+              <img src="assets/singhub-wordmark.png" alt="SingHUB">
+              <button class="icon-button" aria-label="Share venue">↗</button>
+            </header>
+            <div class="content">
+              <section class="section">
+                <div class="venue-media">
+                  <div class="venue-hero">
+                    <img id="redwing-hero" src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_70%2Cc_fit%2Ch_864/http%3A/static.spotapps.co/spots/62/a78990b2ae11e7aca2af787713e91a/%3Aoriginal" alt="Exterior of Redwing Bar and Grill">
+                    <span class="media-counter" id="redwing-counter">1 / 3</span>
+                  </div>
+                  <div class="gallery-strip" aria-label="Redwing photo gallery">
+                    <button class="gallery-thumb" type="button" aria-pressed="true" data-gallery-src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_70%2Cc_fit%2Ch_864/http%3A/static.spotapps.co/spots/62/a78990b2ae11e7aca2af787713e91a/%3Aoriginal" data-gallery-alt="Exterior of Redwing Bar and Grill"><img src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_70%2Cc_fit%2Ch_864/http%3A/static.spotapps.co/spots/62/a78990b2ae11e7aca2af787713e91a/%3Aoriginal" alt="Redwing exterior"></button>
+                    <button class="gallery-thumb" type="button" aria-pressed="false" data-gallery-src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/96/85edf0b2af11e7979c395b9d064721/%3Aoriginal" data-gallery-alt="Redwing outdoor patio"><img src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/96/85edf0b2af11e7979c395b9d064721/%3Aoriginal" alt="Redwing patio"></button>
+                    <button class="gallery-thumb" type="button" aria-pressed="false" data-gallery-src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/13/3b794f11b54b428c0b50b41edc5c75/%3Aoriginal" data-gallery-alt="Interior of Redwing Bar and Grill"><img src="https://res.cloudinary.com/spothopper/image/fetch/f_auto%2Cq_auto%3Abest%2Cc_fit%2Ch_1200/http%3A/static.spotapps.co/spots/13/3b794f11b54b428c0b50b41edc5c75/%3Aoriginal" alt="Redwing interior"></button>
+                  </div>
+                  <p class="media-source">Prototype images from Redwing's official site</p>
+                </div>
+                <h1>Redwing Bar &amp; Grill</h1>
+                <div class="verified"><span class="verified-dot">✓</span> Verified karaoke</div>
+                <p class="subline" style="margin-top:10px">North Park · Karaoke six nights a week</p>
+                <div class="chips"><span class="chip">Neighborhood bar</span><span class="chip">Karaoke tonight</span><span class="chip">Late night</span></div>
+              </section>
+              <section class="section">
+                <div class="card tonight-card">
+                  <div class="tonight-label"><span class="live-dot"></span> TONIGHT</div>
+                  <div class="event-row"><div><strong>Karaoke</strong><div class="host">Current KJ shown from listing data</div></div><time class="event-time">8 PM</time></div>
+                  <button class="primary-action" data-toast="SingHERE flow would open here">SingHERE tonight</button>
+                </div>
+                <div class="secondary-actions"><button data-toast="Directions opened">Directions</button><button data-toast="Venue saved">Save</button><button data-toast="Share sheet opened">Share</button></div>
+              </section>
+              <section class="section"><div class="section-heading"><h2>More from Redwing</h2></div><div class="enhanced-grid"><div class="enhanced-card"><span>✦</span><h3>Specials</h3><p>Venue-managed offers with dates and details.</p></div><div class="enhanced-card"><span>▣</span><h3>Events</h3><p>Upcoming programming beyond the karaoke schedule.</p></div><div class="enhanced-card"><span>♫</span><h3>KJ lineup</h3><p>Named hosts tied to each recurring night.</p></div><div class="enhanced-card"><span>▤</span><h3>SingBOARD</h3><p>Current flyers, pinned without rebuilding the profile.</p></div></div></section>
+              <section class="section"><div class="section-heading"><h2>Weekly karaoke</h2></div><div class="schedule-list"><div class="schedule-row"><strong>Monday</strong><span>Karaoke</span><time>8 PM</time></div><div class="schedule-row tonight-row"><strong>Tuesday</strong><span>Karaoke</span><time>8 PM</time></div><div class="schedule-row"><strong>Wednesday</strong><span>Karaoke</span><time>8 PM</time></div><div class="schedule-row"><strong>Friday</strong><span>Karaoke</span><time>8 PM</time></div><div class="schedule-row"><strong>Saturday</strong><span>Karaoke</span><time>7 PM</time></div><div class="schedule-row"><strong>Sunday</strong><span>Karaoke</span><time>8 PM</time></div></div></section>
+            </div>
+          </article>
+
+          <article class="app-view" data-panel="singer">
+            <header class="app-header">
+              <button class="icon-button" aria-label="Open menu">☰</button>
+              <img src="assets/singhub-wordmark.png" alt="SingHUB">
+              <button class="icon-button" aria-label="Account settings">⚙</button>
+            </header>
+            <div class="content">
+              <section class="section">
+                <div class="profile-top"><div class="avatar" aria-label="Profile initials">CR</div><div><p class="eyebrow">Singer account</p><h2 style="margin:0">Corey R.</h2><p style="margin:4px 0 0">San Diego, CA</p></div></div>
+                <div class="stats"><div class="stat"><strong>12</strong><span>check-ins</span></div><div class="stat"><strong>8</strong><span>venues</span></div><div class="stat"><strong>5</strong><span>saved</span></div></div>
+              </section>
+              <section class="section"><div class="section-heading"><h2>Your next mic</h2></div><div class="card tonight-card"><div class="tonight-label"><span class="live-dot"></span> TONIGHT</div><div class="event-row"><div><strong>The Lamplighter</strong><div class="host">Raya · Mission Hills</div></div><time class="event-time">9 PM</time></div><button class="primary-action" data-toast="SingHERE flow would open here">SingHERE</button></div></section>
+              <section class="section"><div class="section-heading"><h2>Recent performances</h2><a href="#">View all</a></div><div class="performance"><strong>Song saved privately</strong><p>The Lamplighter · Last Tuesday</p></div><div class="performance"><strong>Song saved privately</strong><p>Redwing Bar &amp; Grill · September 19</p></div></section>
+              <section class="section"><div class="section-heading"><h2>Saved venues</h2></div><div class="venue-result"><img src="assets/sh-venue-pin.png" alt=""><div><strong>Redwing Bar &amp; Grill</strong><p>North Park</p></div><span>›</span></div><div class="venue-result"><img src="assets/sh-venue-pin.png" alt=""><div><strong>The Lamplighter</strong><p>Mission Hills</p></div><span>›</span></div></section>
+            </div>
+          </article>
+
+          <nav class="bottom-nav" aria-label="Primary navigation">
+            <button class="nav-item active" data-nav-view="discovery"><b>⌖</b>Discover</button>
+            <button class="nav-item" data-nav-view="basic"><b>◇</b>Venues</button>
+            <button class="nav-item" data-toast="SingHERE opens from an active night"><b>♩</b>SingHERE</button>
+            <button class="nav-item" data-nav-view="singer"><b>○</b>Profile</button>
+          </nav>
+        </section>
+      </div>
+
+      <aside class="notes">
+        <p class="eyebrow" id="note-eyebrow">DISCOVERY ALTITUDE</p>
+        <h2 id="note-title">The fastest route from “I want to sing” to a verified room.</h2>
+        <p id="note-copy">Clean, geographic, and information-first. SH pins mean one thing everywhere: this is a karaoke venue on SingHUB.</p>
+        <div class="truth-panel">
+          <div class="truth-header"><p class="eyebrow">BUILD TRUTH</p><h3 id="truth-title">What this screen actually depends on</h3></div>
+          <div class="truth-row"><strong>Content</strong><p id="truth-content">Verified listing records, distance, schedule, and venue type.</p></div>
+          <div class="truth-row"><strong>Imagery</strong><p id="truth-images">None. Map and venue pins are interface assets.</p></div>
+          <div class="truth-row"><strong>Components</strong><p id="truth-components">Search, filters, map, venue result row, and shared navigation.</p></div>
+          <div class="truth-row"><strong>Tier logic</strong><p id="truth-tier">Discovery treats every verified venue consistently.</p></div>
+        </div>
+        <div class="legend"><span><i></i>Magenta: participation</span><span><i></i>Cyan: verified network</span><span><i></i>Gray: product structure</span></div>
+      </aside>
+    </div>
+  </main>
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const viewNotes = {
+      discovery: {
+        eyebrow: "DISCOVERY ALTITUDE",
+        title: "The fastest route from ‘I want to sing’ to a verified room.",
+        copy: "Clean, geographic, and information-first. SH pins mean one thing everywhere: this is a karaoke venue on SingHUB.",
+        content: "Verified listing records, distance, schedule, and venue type.",
+        images: "None. Map and venue pins are interface assets.",
+        components: "Search, filters, map, venue result row, and shared navigation.",
+        tier: "Discovery treats every verified venue consistently."
+      },
+      hotel: {
+        eyebrow: "HOTEL ALTITUDE",
+        title: "SingHUB is present at the hotel, then points guests toward the venues.",
+        copy: "The @ mark expresses the hotel relationship. SH pins remain reserved for karaoke venues, so the visual language never gets muddy.",
+        content: "Hotel identity, verified walkable venues, quick rides, local standouts, and schedules for tonight or the week.",
+        images: "One defining hotel image creates the arrival moment, then the guide returns to SingHUB black.",
+        components: "Hotel relationship lockup, concierge handoff, schedule switch, horizontal venue groups, and an optional map view.",
+        tier: "Hotel context changes the entry point, not the underlying venue data."
+      },
+      basic: {
+        eyebrow: "VENUE ALTITUDE · BASIC",
+        title: "A complete venue profile with absolutely no image dependency.",
+        copy: "Lamplighter gets clarity, credibility, and a strong Tonight state through product design. No invented logo. No custom lamp art. No fake atmosphere.",
+        content: "Name, verified status, address, schedule, KJs, tags, and actions.",
+        images: "Zero. The venue name and live schedule are the hero.",
+        components: "Identity header, Tonight module, SingHERE CTA, actions, schedule, and practical details.",
+        tier: "Basic includes the complete karaoke utility layer."
+      },
+      litup: {
+        eyebrow: "VENUE ALTITUDE · LIT UP",
+        title: "The same venue architecture with richer, venue-owned depth.",
+        copy: "Redwing does not get a second theme. Lit Up unlocks approved media and managed modules while preserving the same information hierarchy.",
+        content: "Everything in Basic, plus approved images, specials, events, KJ lineup, and SingBOARD.",
+        images: "One 16:10 hero with three selectable venue photos. These prototype images come from Redwing's official website and still require venue approval for production.",
+        components: "Basic profile components plus media, specials, events, KJ lineup, and SingBOARD modules.",
+        tier: "Lit Up adds depth. It does not withhold essential karaoke information from Basic."
+      },
+      singer: {
+        eyebrow: "SINGER ALTITUDE",
+        title: "The same system becomes personal without turning into a scrapbook.",
+        copy: "Account data, saved venues, and participation history use the same semantic colors and venue markers as Discovery and Venue.",
+        content: "Singer identity, check-ins, saved venues, and private performance history.",
+        images: "Optional profile photo. Initials are a complete fallback.",
+        components: "Profile header, stats, next mic, performances, saved venue rows, and shared navigation.",
+        tier: "Singer expression grows from activity, not decorative clutter."
+      }
+    };
+
+    const tabs = [...document.querySelectorAll(".view-tab[data-view]")];
+    const panels = [...document.querySelectorAll(".app-view")];
+    const navItems = [...document.querySelectorAll("[data-nav-view]")];
+    const noteFields = {
+      eyebrow: document.querySelector("#note-eyebrow"),
+      title: document.querySelector("#note-title"),
+      copy: document.querySelector("#note-copy"),
+      content: document.querySelector("#truth-content"),
+      images: document.querySelector("#truth-images"),
+      components: document.querySelector("#truth-components"),
+      tier: document.querySelector("#truth-tier")
+    };
+
+    function showView(name) {
+      panels.forEach(panel => panel.classList.toggle("active", panel.dataset.panel === name));
+      tabs.forEach(tab => tab.setAttribute("aria-selected", String(tab.dataset.view === name)));
+      navItems.forEach(item => item.classList.toggle("active", item.dataset.navView === name || (name === "litup" && item.dataset.navView === "basic")));
+      const notes = viewNotes[name];
+      Object.entries(noteFields).forEach(([key, el]) => { el.textContent = notes[key]; });
+      document.querySelector(".app-view.active").scrollTop = 0;
+      history.replaceState(null, "", "#" + name);
+    }
+
+    tabs.forEach(tab => tab.addEventListener("click", () => showView(tab.dataset.view)));
+    navItems.forEach(item => item.addEventListener("click", () => showView(item.dataset.navView)));
+
+    const toast = document.querySelector(".toast");
+    let toastTimer;
+    document.querySelectorAll("[data-toast]").forEach(button => button.addEventListener("click", () => {
+      toast.textContent = button.dataset.toast;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
+    }));
+
+    const heroImage = document.querySelector("#redwing-hero");
+    const heroCounter = document.querySelector("#redwing-counter");
+    const galleryThumbs = [...document.querySelectorAll(".gallery-thumb")];
+    galleryThumbs.forEach((thumb, index) => thumb.addEventListener("click", () => {
+      galleryThumbs.forEach(item => item.setAttribute("aria-pressed", "false"));
+      thumb.setAttribute("aria-pressed", "true");
+      heroImage.style.opacity = ".2";
+      window.setTimeout(() => {
+        heroImage.src = thumb.dataset.gallerySrc;
+        heroImage.alt = thumb.dataset.galleryAlt;
+        heroCounter.textContent = `${index + 1} / ${galleryThumbs.length}`;
+        heroImage.style.opacity = "1";
+      }, 100);
+    }));
+
+    const initial = location.hash.slice(1);
+    if (viewNotes[initial]) showView(initial);
+  </script>
+</body>
+</html>

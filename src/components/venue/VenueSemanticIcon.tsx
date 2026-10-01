@@ -53,6 +53,12 @@ const LABEL_ICON_MAP: Record<string, IconName> = {
   "Karaoke Mondays & Wednesdays": "karaoke",
   "Trivia Thursdays": "trivia",
   "Football on TV": "football",
+  "Great food": "food",
+  "Bingo": "games",
+  "Trivia": "trivia",
+  "Live music": "sound",
+  "Big-screen sports": "football",
+  "Darts": "games",
 };
 
 const VIBE_ICON_MAP: Record<string, IconName> = {

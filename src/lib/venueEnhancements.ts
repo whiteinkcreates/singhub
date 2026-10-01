@@ -35,6 +35,7 @@ export type VenueEnhancement = {
   about?: string;
   phone?: string;
   menuUrl?: string;
+  singerSignupUrl?: string;
   heroImageUrl?: string;
   heroImageAlt?: string;
   heroPosition?: HeroPosition;
@@ -42,6 +43,7 @@ export type VenueEnhancement = {
   logoImageAlt?: string;
   gallery: VenueGalleryItem[];
   amenities: string[];
+  standoutFeatures?: string[];
   weeklySpecials: VenueSpecial[];
   dailyDeals: VenueDailyDeal[];
   singHere?: SingHereConfig;
@@ -59,6 +61,20 @@ export const VENUE_FACT_OPTIONS = [
   "Food available","Full bar","Beer & wine","Outdoor seating","Good for groups","21+","All ages",
   "Free parking","Street parking","Reservations available","Private rooms","Pool tables","Bar games",
   "Dance floor","Patio","Game night","Late night food",
+] as const;
+
+export const VENUE_STANDOUT_OPTIONS = [
+  "Great food",
+  "Bingo",
+  "Trivia",
+  "Live music",
+  "Big-screen sports",
+  "Darts",
+  "Patio",
+  "Game night",
+  "Drink specials",
+  "Late night food",
+  "Pool tables",
 ] as const;
 
 const enhancements = enhancementData as Record<string, VenueEnhancement>;

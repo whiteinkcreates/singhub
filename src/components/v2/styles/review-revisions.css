@@ -1,0 +1,45 @@
+/* Explicitly requested review revisions. Frozen v37 source styles stay intact. */
+.singhere-dialog { box-sizing:border-box; width:min(520px,calc(100% - 28px)); max-height:calc(100svh - 40px); overflow:auto; padding:32px; border:1px solid #45505e; border-radius:18px; background:linear-gradient(145deg,#181c23,#0c0f14); color:#f7f8fb; font-family:"Barlow",sans-serif; box-shadow:0 24px 80px #0009; }
+.singhere-dialog::backdrop { background:#000b; backdrop-filter:blur(5px); }
+.singhere-dialog h2 { margin:8px 0 16px; font-family:"Barlow Condensed",sans-serif; font-size:2.6rem; line-height:1; }
+.singhere-dialog p { line-height:1.55; }
+.singhere-dialog .singhere-eyebrow { color:#00c8ff; font-weight:800; font-size:.8rem; letter-spacing:.1em; text-transform:uppercase; padding-right:24px; }
+.singhere-dialog .singhere-close { position:absolute; top:12px; right:12px; width:40px; height:40px; border:0; background:transparent; color:white; font-size:1.6rem; cursor:pointer; }
+.singhere-dialog .singhere-buttons { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+.singhere-dialog button:not(.singhere-close),.singhere-dialog a.singhere-primary { display:inline-flex; align-items:center; justify-content:center; min-height:46px; padding:10px 18px; border:1px solid #45505e; border-radius:10px; background:#101319; color:white; font:700 .9rem "Barlow",sans-serif; cursor:pointer; text-decoration:none; }
+.singhere-dialog .singhere-primary { background:linear-gradient(90deg,#ff19a8,#d114ff)!important; border-color:transparent!important; }
+.singhere-dialog .singhere-note { color:#9ba5b3; font-size:.8rem; }
+.singhere-dialog .singhere-caption { padding:18px; border:1px solid #45505e; border-radius:10px; background:#090b0f; white-space:pre-wrap; }
+.singhere-dialog .singhere-text { margin-top:14px; }
+.singhere-dialog :focus-visible { outline:2px solid #00c8ff; outline-offset:3px; }
+.v2-basic[data-responsive-basic] .app-view.active { max-width:1120px; }
+.v2-basic .basic-browse-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:12px 18px; border-bottom:1px solid var(--line); }
+.v2-basic .basic-browse-nav a { color:var(--muted); text-decoration:none; font-size:.85rem; font-weight:700; }
+.v2-directory .venue-card.has-full-profile .venue-preview img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.v2-directory .venue-card.has-full-profile .venue-preview { min-width:0; }
+.v2-directory #venue-list .venue-card.has-full-profile { grid-template-columns:minmax(240px,30%) minmax(0,1fr) auto; }
+.v2-discovery #results-list .venue-result.featured { grid-template-columns:minmax(0,1fr) minmax(280px,44%); }
+.v2-enhanced .venue-back { display:inline; padding:0; border:0; background:none; color:inherit; font:inherit; cursor:pointer; }
+@media (min-width:861px) {
+ .v2-basic[data-responsive-basic] .content { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:0 36px; padding:32px; }
+ .v2-basic[data-responsive-basic] .content>.section:first-child { grid-column:1/-1; }
+ .v2-basic[data-responsive-basic] h1 { font-size:3.4rem; }
+ .v2-basic[data-responsive-basic] .content>.section:nth-child(2),.v2-basic[data-responsive-basic] .content>.section:nth-child(3) { border-top:1px solid var(--line); }
+}
+@media (max-width:860px) { .v2-basic[data-responsive-basic] .app-view.active { max-width:760px; } }
+@media (max-width:800px) { .v2-discovery #results-list .venue-result.featured { grid-template-columns:1fr; } }
+@media (max-width:560px) {
+ .v2-directory #venue-list .venue-card.has-full-profile { grid-template-columns:1fr; }
+ .v2-directory .venue-card.has-full-profile .venue-preview { height:196px; min-height:196px; }
+ .v2-discovery .venue-result.featured .feature-media { height:196px; min-height:196px; }
+ .v2-discovery nav.mobile-nav,.v2-directory nav.mobile-nav,.v2-enhanced nav.mobile-nav,.v2-account nav.mobile-nav { grid-template-columns:repeat(4,1fr); }
+ .v2-hotel nav.mobile-nav { grid-template-columns:repeat(5,1fr); }
+}
+
+.v2-account .performance-venue { display:grid; gap:8px; color:var(--muted); margin:16px 0; font-size:.85rem; }
+.v2-account .performance-venue select { width:100%; min-height:44px; padding:10px; color:var(--text); background:var(--surface); border:1px solid var(--line-bright); border-radius:8px; font:inherit; }
+.v2-account .share-actions button:disabled { opacity:.5; cursor:default; }
+
+.v2-account .share-panel .caption { white-space:pre-wrap; }
+.v2-basic .content .placeholder { margin:0; padding:18px; border:1px dashed var(--line); border-radius:12px; color:var(--muted); font-size:.85rem; line-height:1.5; }
+.v2-basic .content .text-link { min-height:40px; padding:8px 0; border:0; background:none; color:var(--cyan); cursor:pointer; font:700 .85rem var(--sans); }

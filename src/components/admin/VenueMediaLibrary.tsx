@@ -1,9 +1,10 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { HeroPosition, VenueGalleryItem } from "@/lib/venueEnhancements";
 import type { VenueMediaAsset } from "@/lib/venueMediaCloudinary";
+
+import { MediaImagePreview } from "./MediaImagePreview";
 
 const MAX_GALLERY_PHOTOS = 15;
 const HERO_POSITIONS: Array<{ value: HeroPosition; label: string }> = [
@@ -16,6 +17,8 @@ const HERO_POSITIONS: Array<{ value: HeroPosition; label: string }> = [
 
 type VenueMediaLibraryProps = {
   slug: string;
+  kind?: "venue" | "hotel" | "host";
+  allowPortrait?: boolean;
   heroUrl: string;
   heroAlt: string;
   heroPosition: HeroPosition;
@@ -45,6 +48,8 @@ function defaultAlt(slug: string) {
 
 export function VenueMediaLibrary({
   slug,
+  kind = "venue",
+  allowPortrait = true,
   heroUrl,
   heroAlt,
   heroPosition,
@@ -56,6 +61,7 @@ export function VenueMediaLibrary({
   onLogoChange,
   onGalleryChange,
 }: VenueMediaLibraryProps) {
+  const endpoint = kind === "host" ? "/api/admin/host-media" : kind === "hotel" ? "/api/admin/hotel-media" : "/api/admin/venue-media";
   const [assets, setAssets] = useState<VenueMediaAsset[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -76,12 +82,12 @@ export function VenueMediaLibrary({
     setLoading(true);
     setMessage("Loading Cloudinary media…");
     try {
-      const response = await fetch(`/api/admin/venue-media?slug=${encodeURIComponent(requestedSlug)}`, { cache: "no-store" });
+      const response = await fetch(`${endpoint}?slug=${encodeURIComponent(requestedSlug)}`, { cache: "no-store" });
       const payload = (await response.json()) as MediaResponse;
       if (currentRequest !== requestSequence.current) return;
       if (!response.ok) throw new Error(payload.error || "Could not load venue media.");
       setAssets(payload.assets || []);
-      setMessage(payload.assets?.length ? `${payload.assets.length} venue image${payload.assets.length === 1 ? "" : "s"} available.` : "No venue images yet. Upload the first one below.");
+      setMessage(payload.assets?.length ? `${payload.assets.length} ${kind} image${payload.assets.length === 1 ? "" : "s"} available.` : "No images yet. Upload the first one below.");
     } catch (error) {
       if (currentRequest !== requestSequence.current) return;
       setAssets([]);
@@ -111,7 +117,7 @@ export function VenueMediaLibrary({
         const form = new FormData();
         form.append("slug", requestedSlug);
         form.append("file", file);
-        const response = await fetch("/api/admin/venue-media", { method: "POST", body: form });
+        const response = await fetch(endpoint, { method: "POST", body: form });
         const payload = (await response.json()) as MediaResponse;
         if (!response.ok || !payload.asset) throw new Error(payload.error || `Could not upload ${file.name}.`);
         uploaded.push(payload.asset);
@@ -163,16 +169,16 @@ export function VenueMediaLibrary({
     <section className="md:col-span-2 rounded-[1.6rem] border border-cyan-300/15 bg-[#07131a] p-4 md:p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">Venue media</p>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">{kind === "host" ? "Host media" : kind === "hotel" ? "Hotel media" : "Venue media"}</p>
           <h3 className="mt-1 text-lg font-black normal-case tracking-normal text-white">Cloudinary library</h3>
-          <p className="mt-2 max-w-2xl text-sm font-medium normal-case tracking-normal text-slate-400">One library, explicit roles. Choose a hero, optional venue mark, and gallery photos without copying image URLs.</p>
+          <p className="mt-2 max-w-2xl text-sm font-medium normal-case tracking-normal text-slate-400">{kind === "host" ? "Upload photos, assign a portrait or hero, then save your selections in the host editor." : kind === "hotel" ? "Choose a hotel hero from this hotel’s library, or upload a photo. Save your selection in the hotel editor." : "One library, explicit roles. Choose a hero, optional venue mark, and gallery photos without copying image URLs."}</p>
         </div>
         <button type="button" onClick={() => void loadLibrary()} disabled={!slug.trim() || loading} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-black normal-case tracking-normal text-white disabled:opacity-40">{loading ? "Loading…" : "Refresh library"}</button>
       </div>
 
       <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 p-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div><p className="text-sm font-black normal-case tracking-normal text-white">Add venue photos</p><p className="mt-1 text-xs font-medium normal-case tracking-normal text-slate-500">JPG, PNG or WebP. Up to 12 MB each.</p></div>
+          <div><p className="text-sm font-black normal-case tracking-normal text-white">Add {kind} photos</p><p className="mt-1 text-xs font-medium normal-case tracking-normal text-slate-500">JPG, PNG or WebP. Up to 12 MB each.</p></div>
           <label className={`cursor-pointer rounded-xl bg-fuchsia-300 px-4 py-2.5 text-xs font-black normal-case tracking-normal text-slate-950 ${uploading || !slug.trim() ? "pointer-events-none opacity-40" : ""}`}>
             {uploading ? "Uploading…" : "Upload photos"}
             <input type="file" accept="image/jpeg,image/png,image/webp" multiple className="sr-only" disabled={uploading || !slug.trim()} onChange={(event) => { void uploadFiles(event.target.files); event.currentTarget.value = ""; }} />
@@ -181,17 +187,17 @@ export function VenueMediaLibrary({
         <p className="mt-3 text-xs font-semibold normal-case tracking-normal text-cyan-100" aria-live="polite">{message}</p>
       </div>
 
-      <div className="mt-4 grid gap-3 lg:grid-cols-[1fr_15rem]">
+      <div className={kind !== "venue" ? "mt-4 grid gap-3" : "mt-4 grid gap-3 lg:grid-cols-[1fr_15rem]"}>
         {heroUrl ? (
           <div className="overflow-hidden rounded-2xl border border-fuchsia-300/25 bg-black/30">
-            <div className="relative aspect-[16/7] overflow-hidden"><img src={heroUrl} alt={heroAlt || "Selected venue hero"} className="h-full w-full object-cover" style={{ objectPosition: heroPosition }} /><span className="absolute left-3 top-3 rounded-full bg-[#ff2aa3] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white">Hero</span></div>
+            <div className="relative aspect-[16/7] overflow-hidden"><MediaImagePreview src={heroUrl} alt={heroAlt || `Selected ${kind} hero`} className="h-full w-full object-cover" style={{ objectPosition: heroPosition }} /><span className="absolute left-3 top-3 rounded-full bg-[#ff2aa3] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white">Hero</span></div>
             <div className="grid gap-3 p-3 sm:grid-cols-[1fr_auto] sm:items-end"><label className="text-xs font-black normal-case tracking-normal text-slate-400">Hero focal point<select value={heroPosition} onChange={(event) => onHeroPositionChange(event.target.value as HeroPosition)} className="mt-1 block w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs text-white">{HERO_POSITIONS.map((position) => <option key={position.value} value={position.value}>{position.label}</option>)}</select></label><button type="button" onClick={() => onHeroChange("")} className="rounded-xl border border-rose-300/20 px-3 py-2 text-xs font-black normal-case tracking-normal text-rose-200">Clear hero</button></div>
           </div>
         ) : <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/15 text-sm text-slate-600">No hero selected</div>}
 
-        {logoUrl ? (
-          <div className="rounded-2xl border border-cyan-300/20 bg-black/30 p-3"><div className="mx-auto flex aspect-square max-w-36 items-center justify-center overflow-hidden rounded-full border border-cyan-300/30 bg-white/[0.04]"><img src={logoUrl} alt={logoAlt || "Selected venue mark"} className="h-full w-full object-contain p-3" /></div><div className="mt-3 flex items-center justify-between gap-2"><span className="text-xs font-black text-cyan-200">Logo / mark</span><button type="button" onClick={() => onLogoChange("")} className="text-xs font-black text-rose-200">Clear</button></div></div>
-        ) : <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/15 px-4 text-center text-sm text-slate-600">Optional logo / venue mark</div>}
+        {(kind === "venue" || (kind === "host" && allowPortrait)) && (logoUrl ? (
+          <div className="rounded-2xl border border-cyan-300/20 bg-black/30 p-3"><div className="mx-auto flex aspect-square max-w-36 items-center justify-center overflow-hidden rounded-full border border-cyan-300/30 bg-white/[0.04]"><MediaImagePreview src={logoUrl} alt={logoAlt || (kind === "host" ? "Host portrait" : "Selected venue mark")} className={kind === "host" ? "h-full w-full object-cover" : "h-full w-full object-contain p-3"} /></div><div className="mt-3 flex items-center justify-between gap-2"><span className="text-xs font-black text-cyan-200">{kind === "host" ? "Portrait" : "Logo / mark"}</span><button type="button" onClick={() => onLogoChange("")} className="text-xs font-black text-rose-200">Clear</button></div></div>
+        ) : <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/15 px-4 text-center text-sm text-slate-600">{kind === "host" ? "No portrait selected. Hosts without a photo use initials." : "Optional logo / venue mark"}</div>)}
       </div>
 
       {assets.length > 0 && <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{assets.map((asset) => {
@@ -200,12 +206,12 @@ export function VenueMediaLibrary({
         const inGallery = galleryUrls.has(asset.url);
         const galleryFull = gallery.length >= MAX_GALLERY_PHOTOS && !inGallery;
         return <div key={asset.publicId} className={`overflow-hidden rounded-2xl border bg-black/25 ${isHero ? "border-fuchsia-300/70" : isLogo ? "border-cyan-300/70" : inGallery ? "border-cyan-300/50" : "border-white/10"}`}>
-          <div className="relative aspect-square overflow-hidden bg-black/30"><img src={asset.url} alt="Venue media option" className="h-full w-full object-cover" loading="lazy" /><div className="absolute left-2 top-2 flex flex-wrap gap-1">{isHero && <span className="rounded-full bg-[#ff2aa3] px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-white">Hero</span>}{isLogo && <span className="rounded-full bg-violet-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">Logo</span>}{inGallery && <span className="rounded-full bg-cyan-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">Gallery</span>}</div></div>
-          <div className="grid gap-2 p-2"><button type="button" onClick={() => onHeroChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isHero ? "bg-fuchsia-300 text-slate-950" : "border border-white/15 text-white"}`}>{isHero ? "Selected hero" : "Set as hero"}</button><button type="button" onClick={() => onLogoChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isLogo ? "bg-violet-300 text-slate-950" : "border border-white/15 text-white"}`}>{isLogo ? "Selected logo" : "Set as logo"}</button><button type="button" onClick={() => toggleGallery(asset)} disabled={galleryFull} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal disabled:cursor-not-allowed disabled:opacity-35 ${inGallery ? "bg-cyan-300 text-slate-950" : "border border-white/15 text-white"}`}>{inGallery ? "Remove from gallery" : galleryFull ? "Gallery full" : "Add to gallery"}</button></div>
+          <div className="relative aspect-square overflow-hidden bg-black/30"><MediaImagePreview src={asset.url} alt={`${kind} media option`} className="h-full w-full object-cover" /><div className="absolute left-2 top-2 flex flex-wrap gap-1">{isHero && <span className="rounded-full bg-[#ff2aa3] px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-white">Hero</span>}{isLogo && <span className="rounded-full bg-violet-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">{kind === "host" ? "Portrait" : "Logo"}</span>}{inGallery && <span className="rounded-full bg-cyan-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">Gallery</span>}</div></div>
+          <div className="grid gap-2 p-2"><button type="button" onClick={() => onHeroChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isHero ? "bg-fuchsia-300 text-slate-950" : "border border-white/15 text-white"}`}>{isHero ? "Selected hero" : "Set as hero"}</button>{(kind === "venue" || (kind === "host" && allowPortrait)) && <button type="button" onClick={() => onLogoChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isLogo ? "bg-violet-300 text-slate-950" : "border border-white/15 text-white"}`}>{kind === "host" ? (isLogo ? "Selected portrait" : "Set as portrait") : (isLogo ? "Selected logo" : "Set as logo")}</button>}{kind === "venue" && <button type="button" onClick={() => toggleGallery(asset)} disabled={galleryFull} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal disabled:cursor-not-allowed disabled:opacity-35 ${inGallery ? "bg-cyan-300 text-slate-950" : "border border-white/15 text-white"}`}>{inGallery ? "Remove from gallery" : galleryFull ? "Gallery full" : "Add to gallery"}</button>}</div>
         </div>;
       })}</div>}
 
-      {gallery.length > 0 && <div className="mt-6"><div className="flex items-center justify-between gap-3"><div><p className="text-sm font-black normal-case tracking-normal text-white">Gallery order and labels</p><p className="mt-1 text-xs font-medium normal-case tracking-normal text-slate-500">These are the photos that will appear on the open venue profile.</p></div><span className="rounded-full border border-white/10 px-3 py-1 text-xs font-black normal-case tracking-normal text-slate-300">{gallery.length}/{MAX_GALLERY_PHOTOS}</span></div><div className="mt-3 grid gap-3">{gallery.map((item, index) => <div key={`${item.url}-${index}`} className="grid gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 sm:grid-cols-[92px_1fr_auto] sm:items-center"><img src={item.url} alt={item.alt} className="aspect-square h-20 w-20 rounded-xl object-cover" /><div className="grid gap-2"><input value={item.alt} onChange={(event) => updateGalleryItem(index, { alt: event.target.value })} placeholder="Alt text" className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs font-semibold normal-case tracking-normal text-white outline-none focus:border-cyan-300/50" /><input value={item.caption || ""} onChange={(event) => updateGalleryItem(index, { caption: event.target.value || undefined })} placeholder="Optional caption" className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs font-semibold normal-case tracking-normal text-white outline-none focus:border-cyan-300/50" /></div><div className="flex gap-1 sm:flex-col"><button type="button" onClick={() => moveGalleryItem(index, -1)} disabled={index === 0} className="rounded-lg border border-white/10 px-2 py-1 text-xs font-black normal-case tracking-normal text-slate-300 disabled:opacity-25">↑</button><button type="button" onClick={() => moveGalleryItem(index, 1)} disabled={index === gallery.length - 1} className="rounded-lg border border-white/10 px-2 py-1 text-xs font-black normal-case tracking-normal text-slate-300 disabled:opacity-25">↓</button><button type="button" onClick={() => onGalleryChange(gallery.filter((_, itemIndex) => itemIndex !== index))} className="rounded-lg border border-rose-300/20 px-2 py-1 text-xs font-black normal-case tracking-normal text-rose-200">×</button></div></div>)}</div></div>}
+      {kind === "venue" && gallery.length > 0 && <div className="mt-6"><div className="flex items-center justify-between gap-3"><div><p className="text-sm font-black normal-case tracking-normal text-white">Gallery order and labels</p><p className="mt-1 text-xs font-medium normal-case tracking-normal text-slate-500">These are the photos that will appear on the open venue profile.</p></div><span className="rounded-full border border-white/10 px-3 py-1 text-xs font-black normal-case tracking-normal text-slate-300">{gallery.length}/{MAX_GALLERY_PHOTOS}</span></div><div className="mt-3 grid gap-3">{gallery.map((item, index) => <div key={`${item.url}-${index}`} className="grid gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 sm:grid-cols-[92px_1fr_auto] sm:items-center"><div className="h-20 w-20"><MediaImagePreview src={item.url} alt={item.alt} className="aspect-square h-20 w-20 rounded-xl object-cover" /></div><div className="grid gap-2"><input value={item.alt} onChange={(event) => updateGalleryItem(index, { alt: event.target.value })} placeholder="Alt text" className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs font-semibold normal-case tracking-normal text-white outline-none focus:border-cyan-300/50" /><input value={item.caption || ""} onChange={(event) => updateGalleryItem(index, { caption: event.target.value || undefined })} placeholder="Optional caption" className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs font-semibold normal-case tracking-normal text-white outline-none focus:border-cyan-300/50" /></div><div className="flex gap-1 sm:flex-col"><button type="button" onClick={() => moveGalleryItem(index, -1)} disabled={index === 0} className="rounded-lg border border-white/10 px-2 py-1 text-xs font-black normal-case tracking-normal text-slate-300 disabled:opacity-25">↑</button><button type="button" onClick={() => moveGalleryItem(index, 1)} disabled={index === gallery.length - 1} className="rounded-lg border border-white/10 px-2 py-1 text-xs font-black normal-case tracking-normal text-slate-300 disabled:opacity-25">↓</button><button type="button" onClick={() => onGalleryChange(gallery.filter((_, itemIndex) => itemIndex !== index))} className="rounded-lg border border-rose-300/20 px-2 py-1 text-xs font-black normal-case tracking-normal text-rose-200">×</button></div></div>)}</div></div>}
     </section>
   );
 }

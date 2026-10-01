@@ -18,7 +18,7 @@ export function generateStaticParams() {
 }
 
 type DayPageProps = {
-  params: Promise<{ day: string }> | { day: string };
+  params: Promise<{ day: string }>;
 };
 
 export async function generateMetadata({ params }: DayPageProps) {
