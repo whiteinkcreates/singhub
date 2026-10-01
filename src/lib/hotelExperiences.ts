@@ -109,6 +109,7 @@ const EXPERIENCE_OVERRIDES: Record<string, ExperienceOverride> = {
     pageBackground: "#F8F4ED",
     textColor: "#34251E",
     mutedTextColor: "#75685F",
+    intro: "Step out of the Victorian calm and into tonight's San Diego karaoke scene. SingHUB keeps current local options organized around Horton Grand, from walkable Gaslamp rooms to standout nights worth a short ride.",
   },
   "palihotel-san-diego": {
     primaryColor: "#273024",
@@ -116,6 +117,7 @@ const EXPERIENCE_OVERRIDES: Record<string, ExperienceOverride> = {
     pageBackground: "#F5F1E9",
     textColor: "#273024",
     mutedTextColor: "#6E716A",
+    intro: "Palihotel puts you in the middle of the Gaslamp. SingHUB helps turn that location into a local karaoke night, with current options organized by distance, food, and the kind of room you actually want to walk into.",
   },
   "la-valencia": {
     primaryColor: "#822D3B",
