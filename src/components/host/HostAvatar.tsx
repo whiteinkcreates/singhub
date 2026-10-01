@@ -13,7 +13,7 @@ function getInitials(name: string) {
   return initials || "SH";
 }
 
-export function HostAvatar({ host, large = false }: { host: HostProfile; large?: boolean }) {
+export function HostAvatar({ host, large = false }: { host: Pick<HostProfile, "publicDisplayName" | "profileImageUrl" | "logoUrl">; large?: boolean }) {
   const imageUrl = host.profileImageUrl || host.logoUrl;
   const sizeClasses = large ? "h-32 w-32 text-4xl" : "h-16 w-16 text-lg";
 
