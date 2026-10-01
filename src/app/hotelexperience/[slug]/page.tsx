@@ -157,7 +157,10 @@ function makeVenue(
 }
 
 export function generateStaticParams() {
-  return hotelExperienceConfigs.map((experience) => ({ slug: experience.slug }));
+  return [
+    ...hotelExperienceConfigs.map((experience) => ({ slug: experience.slug })),
+    { slug: "holidayinnexpresslamesa" },
+  ];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -267,6 +270,10 @@ export default async function HotelExperiencePage({ params }: Props) {
 
   const tonightVenues = buildVenues("tonight");
   const weekVenues = buildVenues("week");
+  const fallbackHeroImageUrl =
+    hotel.heroFallback === "coast"
+      ? "/images/hero/karaoke-near-me-neon.svg"
+      : "/images/hero/san-diego-skyline-hero.svg";
 
   return (
     <BrandedHotelExperience
@@ -276,6 +283,7 @@ export default async function HotelExperiencePage({ params }: Props) {
       hotelSiteUrl={experience.hotelSiteUrl}
       brandLogoUrl={experience.brandLogoUrl}
       heroImageUrl={hotel.heroImageUrl}
+      fallbackHeroImageUrl={fallbackHeroImageUrl}
       primaryColor={experience.primaryColor}
       accentColor={experience.accentColor}
       pageBackground={experience.pageBackground}
