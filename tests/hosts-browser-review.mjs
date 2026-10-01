@@ -14,7 +14,8 @@ for(const width of [1536,390]){
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  await page.screenshot({path:`${output}/directory-${width}.png`,fullPage:true});
  const href=await page.locator('.host-directory-card').first().getAttribute('href');
- await page.locator('#host-search').fill('Savor');await page.evaluate(()=>scrollTo(0,400));const y=await page.evaluate(()=>scrollY);
+ const query=await page.locator('.host-directory-card h3').first().innerText();
+ await page.locator('#host-search').fill(query);await page.evaluate(()=>scrollTo(0,400));const y=await page.evaluate(()=>scrollY);
  await page.locator('.host-directory-card').first().click();await page.waitForURL('**'+href);await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(300);
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
  await page.screenshot({path:`${output}/profile-${width}.png`,fullPage:true});
@@ -25,7 +26,7 @@ for(const width of [1536,390]){
  await page.screenshot({path:`${output}/share-${width}.png`,fullPage:true});
  if(qrLoaded){const download=page.waitForEvent('download');await page.getByRole('button',{name:'Download image',exact:true}).click();const file=await download;await file.saveAs(`${output}/card-${width}.png`);assert.ok((await fs.stat(`${output}/card-${width}.png`)).size>10000);}
  await page.getByRole('button',{name:'Close share profile'}).click();await page.getByRole('link',{name:'Back to Hosts'}).click();await page.waitForURL('**/hosts');await page.waitForTimeout(500);
- assert.equal(await page.locator('#host-search').inputValue(),'Savor');assert.ok(Math.abs(await page.evaluate(()=>scrollY)-y)<5);
+ assert.equal(await page.locator('#host-search').inputValue(),query);assert.ok(Math.abs(await page.evaluate(()=>scrollY)-y)<5);
  assert.deepEqual(errors,[]);results.push({width,href,schedule,qrLoaded,restoredY:y});await context.close();
 }
 await browser.close();await fs.writeFile(output+'/results.json',JSON.stringify(results,null,2));console.log(JSON.stringify(results,null,2));
