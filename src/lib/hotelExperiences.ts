@@ -44,6 +44,9 @@ const HOTEL_SITE_BY_GUIDE: Record<string, string> = {
   "inn-by-the-sea-la-jolla": "https://www.innbytheseaatlajolla.com/",
   "hotel-la-jolla": "https://www.hilton.com/en/hotels/sancuqq-hotel-la-jolla/",
   "la-jolla-beach-tennis-club": "https://www.ljbtc.com/",
+  "pacific-terrace": "https://www.pacificterrace.com/",
+  "tower23": "https://www.t23hotel.com/",
+  "wayfarer-san-diego": "https://www.wayfarersd.com/",
   "holiday-inn-express-la-mesa": "https://www.ihg.com/holidayinnexpress/hotels/us/en/la-mesa/sanpd/hoteldetail",
 };
 
@@ -55,6 +58,14 @@ const AREA_THEME: Record<HotelGuide["area"], Pick<HotelExperienceConfig, "primar
     surfaceColor: "#FFFFFF",
     textColor: "#172338",
     mutedTextColor: "#637083",
+  },
+  beach: {
+    primaryColor: "#123B4B",
+    accentColor: "#D99B63",
+    pageBackground: "#F4F8F8",
+    surfaceColor: "#FFFFFF",
+    textColor: "#133541",
+    mutedTextColor: "#687A80",
   },
   "la-jolla": {
     primaryColor: "#15384A",
@@ -126,6 +137,30 @@ const EXPERIENCE_OVERRIDES: Record<string, ExperienceOverride> = {
     pageBackground: "#F5F8F7",
     textColor: "#183844",
     mutedTextColor: "#68777B",
+  },
+  "pacific-terrace": {
+    primaryColor: "#254553",
+    accentColor: "#C98555",
+    pageBackground: "#F5F7F4",
+    textColor: "#243C46",
+    mutedTextColor: "#6C7777",
+    intro: "Start with what is happening now, find a room that matches your vibe, or choose an easy food-and-karaoke option. SingHUB keeps the local karaoke information current for guests staying beachfront at Pacific Terrace Hotel.",
+  },
+  tower23: {
+    primaryColor: "#20282B",
+    accentColor: "#56AEB8",
+    pageBackground: "#F4F7F7",
+    textColor: "#20282B",
+    mutedTextColor: "#687476",
+    intro: "Pacific Beach already has the energy. SingHUB helps TOWER23 guests find where the microphones are tonight, from easy neighborhood options to karaoke worth a short ride.",
+  },
+  "wayfarer-san-diego": {
+    primaryColor: "#1F5872",
+    accentColor: "#E08D68",
+    pageBackground: "#F3F8FA",
+    textColor: "#20485C",
+    mutedTextColor: "#6B7C84",
+    intro: "You came to experience San Diego like a local. Start with karaoke happening tonight, match the room to your vibe, or find somewhere to grab food and sing without overthinking the night.",
   },
 };
 
