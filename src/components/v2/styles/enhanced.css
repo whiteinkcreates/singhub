@@ -84,3 +84,10 @@
     @media (max-width:560px) { .v2-enhanced .mobile-nav { grid-template-columns:repeat(3,1fr); } }
   
 .v2-enhanced .hero-media.no-media { min-height:360px; } .v2-enhanced .hero-media.no-media img:not([src]) { display:none; }
+
+/* Explicit sizing is required because the prototype reset precedes utilities. */
+.v2-enhanced :is(button,input,select,textarea) { font-family:var(--sans); }
+.v2-enhanced .venue-partner-badge { display:inline-flex; align-items:center; gap:8px; margin-bottom:18px; }
+.v2-enhanced .venue-partner-wordmark { display:block; width:82px; height:30px; object-fit:contain; }
+.v2-enhanced .venue-partner-label { font-family:var(--sans); font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--pink); }
+.v2-enhanced .event-time,.v2-enhanced .fact strong,.v2-enhanced .schedule-row .day,.v2-enhanced .board-item strong { font-family:var(--sans); }
