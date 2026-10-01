@@ -180,7 +180,10 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [singersSaySource, setSingersSaySource] = useState(initialProfile.singersSaySource || "");
   const [singersSayUpdatedAt, setSingersSayUpdatedAt] = useState(initialProfile.singersSayUpdatedAt || "");
   const [whyHere, setWhyHere] = useState(initialProfile.whyHere || "");
-  const [singHereMode, setSingHereMode] = useState<"instructions" | "external">(initialProfile.singHere?.mode || "instructions");\n  const [singHereUrl, setSingHereUrl] = useState(initialProfile.singHere?.url || "");\n  const [singHereInstructions, setSingHereInstructions] = useState(initialProfile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");\n  const [singHereLinkLabel, setSingHereLinkLabel] = useState(initialProfile.singHere?.linkLabel || "Join the list");
+  const [singHereMode, setSingHereMode] = useState<"instructions" | "external">(initialProfile.singHere?.mode || "instructions");
+  const [singHereUrl, setSingHereUrl] = useState(initialProfile.singHere?.url || "");
+  const [singHereInstructions, setSingHereInstructions] = useState(initialProfile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");
+  const [singHereLinkLabel, setSingHereLinkLabel] = useState(initialProfile.singHere?.linkLabel || "Join the list");
   const [previewMode, setPreviewMode] = useState<PreviewMode>("open");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -212,7 +215,10 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setSingersSaySource(profile.singersSaySource || "");
     setSingersSayUpdatedAt(profile.singersSayUpdatedAt || "");
     setWhyHere(profile.whyHere || "");
-    setSingHereMode(profile.singHere?.mode || "instructions");\n    setSingHereUrl(profile.singHere?.url || "");\n    setSingHereInstructions(profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");\n    setSingHereLinkLabel(profile.singHere?.linkLabel || "Join the list");
+    setSingHereMode(profile.singHere?.mode || "instructions");
+    setSingHereUrl(profile.singHere?.url || "");
+    setSingHereInstructions(profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");
+    setSingHereLinkLabel(profile.singHere?.linkLabel || "Join the list");
   }
 
   async function selectVenue(nextSlug: string) {
