@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { trackEvent } from "@/lib/analytics";
 import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
 import type { HotelGuideVenue } from "@/components/hotel/HotelGuideExperience";
@@ -29,6 +29,23 @@ type Props = {
 };
 
 type FocusMode = "all" | "food" | "vibe" | "near";
+
+const CONTROLLED_VIBES = new Set([
+  "Divey",
+  "Big Crowd",
+  "Neighborhood Bar",
+  "Polished",
+  "LGBTQ-Friendly",
+  "Party Crowd",
+  "Serious Singers",
+  "Late Night",
+  "Live Band",
+  "Private Rooms",
+]);
+
+function displayVibes(venue: HotelGuideVenue) {
+  return venue.vibeTags.filter((tag) => CONTROLLED_VIBES.has(tag)).slice(0, 4);
+}
 
 const tierMeta = {
   walkable: { label: "Walkable", helper: "Easy to reach from your stay" },
@@ -135,7 +152,7 @@ function SmallBadge({
   children,
   color,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   color: string;
 }) {
   return (
@@ -185,7 +202,7 @@ function EditorialCard({
         {venue.whyHere ? <p className="mt-2 text-sm font-bold leading-5" style={{ color: primaryColor }}>{venue.whyHere}</p> : null}
         <div className="mt-3 flex flex-wrap gap-1.5">
           {venue.foodSummary ? <SmallBadge color={accentColor}>Food</SmallBadge> : null}
-          {venue.vibeTags.slice(0, 2).map((tag) => <SmallBadge key={tag} color={primaryColor}>{tag}</SmallBadge>)}
+          {displayVibes(venue).slice(0, 2).map((tag) => <SmallBadge key={tag} color={primaryColor}>{tag}</SmallBadge>)}
         </div>
         {venue.tonightSchedule ? <p className="mt-3 text-xs leading-5" style={{ color: mutedTextColor }}>{venue.tonightSchedule}{venue.hostName ? ` · ${venue.hostName}` : ""}</p> : null}
       </div>
@@ -256,7 +273,7 @@ function VenueCard({
 
           <div className="mt-2 flex flex-wrap gap-1">
             {venue.foodSummary ? <SmallBadge color={accentColor}>Food</SmallBadge> : null}
-            {venue.vibeTags.slice(0, 2).map((tag) => <SmallBadge key={tag} color={primaryColor}>{tag}</SmallBadge>)}
+            {displayVibes(venue).slice(0, 2).map((tag) => <SmallBadge key={tag} color={primaryColor}>{tag}</SmallBadge>)}
           </div>
         </div>
       </div>
@@ -265,6 +282,7 @@ function VenueCard({
         <div className="border-t border-slate-100 px-3 py-2.5">
           <p className="text-[9px] font-black uppercase tracking-[0.12em]" style={{ color: accentColor }}>Singers Say</p>
           <p className="mt-1 line-clamp-2 text-[11px] leading-4" style={{ color: mutedTextColor }}>{venue.singersSay}</p>
+          {venue.singersSaySource ? <p className="mt-1 text-[9px] font-semibold" style={{ color: mutedTextColor }}>{venue.singersSaySource}{venue.singersSayUpdatedAt ? ` · ${venue.singersSayUpdatedAt}` : ""}</p> : null}
         </div>
       ) : null}
     </Link>
@@ -361,14 +379,14 @@ export function BrandedHotelExperience({
 
   const baseVenues = mode === "tonight" ? tonightVenues : weekVenues;
   const vibeChoices = useMemo(
-    () => Array.from(new Set(baseVenues.flatMap((venue) => venue.vibeTags))).slice(0, 10),
+    () => Array.from(new Set(baseVenues.flatMap((venue) => displayVibes(venue)))).slice(0, 10),
     [baseVenues],
   );
 
   const activeVenues = useMemo(() => {
     if (focus === "food") return baseVenues.filter((venue) => Boolean(venue.foodSummary));
     if (focus === "near") return baseVenues.filter((venue) => venue.tier !== "standout");
-    if (focus === "vibe" && selectedVibe) return baseVenues.filter((venue) => venue.vibeTags.includes(selectedVibe));
+    if (focus === "vibe" && selectedVibe) return baseVenues.filter((venue) => displayVibes(venue).includes(selectedVibe));
     return baseVenues;
   }, [baseVenues, focus, selectedVibe]);
 
