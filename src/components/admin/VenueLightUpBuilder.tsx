@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { VenueMediaLibrary } from "@/components/admin/VenueMediaLibrary";
 import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 import {
+  HOTEL_VIBE_OPTIONS,
   VENUE_FACT_OPTIONS,
   type HeroPosition,
   type VenueDailyDeal,
@@ -52,6 +53,17 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     amenities: [],
     weeklySpecials: [],
     dailyDeals: [],
+    vibeTags: [],
+    foodSummary: "",
+    singersSay: "",
+    singersSaySource: "",
+    singersSayUpdatedAt: "",
+    whyHere: "",
+    singHere: {
+      mode: "instructions",
+      instructions: "Head up to the KJ and ask to join the karaoke list.",
+      linkLabel: "Join the list",
+    },
   };
 }
 
@@ -161,7 +173,14 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [gallery, setGallery] = useState<VenueGalleryItem[]>(initialProfile.gallery || []);
   const [amenities, setAmenities] = useState(initialProfile.amenities || []);
   const [weeklySpecials, setWeeklySpecials] = useState<VenueSpecial[]>(initialProfile.weeklySpecials || []);
-  const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);\n  const [singHereMode, setSingHereMode] = useState<"instructions" | "external">(initialProfile.singHere?.mode || "instructions");\n  const [singHereUrl, setSingHereUrl] = useState(initialProfile.singHere?.url || "");\n  const [singHereInstructions, setSingHereInstructions] = useState(initialProfile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");\n  const [singHereLinkLabel, setSingHereLinkLabel] = useState(initialProfile.singHere?.linkLabel || "Join the list");
+  const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);
+  const [vibeTags, setVibeTags] = useState(initialProfile.vibeTags || []);
+  const [foodSummary, setFoodSummary] = useState(initialProfile.foodSummary || "");
+  const [singersSay, setSingersSay] = useState(initialProfile.singersSay || "");
+  const [singersSaySource, setSingersSaySource] = useState(initialProfile.singersSaySource || "");
+  const [singersSayUpdatedAt, setSingersSayUpdatedAt] = useState(initialProfile.singersSayUpdatedAt || "");
+  const [whyHere, setWhyHere] = useState(initialProfile.whyHere || "");
+  const [singHereMode, setSingHereMode] = useState<"instructions" | "external">(initialProfile.singHere?.mode || "instructions");\n  const [singHereUrl, setSingHereUrl] = useState(initialProfile.singHere?.url || "");\n  const [singHereInstructions, setSingHereInstructions] = useState(initialProfile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");\n  const [singHereLinkLabel, setSingHereLinkLabel] = useState(initialProfile.singHere?.linkLabel || "Join the list");
   const [previewMode, setPreviewMode] = useState<PreviewMode>("open");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -186,7 +205,14 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setGallery(profile.gallery || []);
     setAmenities(profile.amenities || []);
     setWeeklySpecials(profile.weeklySpecials || []);
-    setDailyDeals(profile.dailyDeals || []);\n    setSingHereMode(profile.singHere?.mode || "instructions");\n    setSingHereUrl(profile.singHere?.url || "");\n    setSingHereInstructions(profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");\n    setSingHereLinkLabel(profile.singHere?.linkLabel || "Join the list");
+    setDailyDeals(profile.dailyDeals || []);
+    setVibeTags(profile.vibeTags || []);
+    setFoodSummary(profile.foodSummary || "");
+    setSingersSay(profile.singersSay || "");
+    setSingersSaySource(profile.singersSaySource || "");
+    setSingersSayUpdatedAt(profile.singersSayUpdatedAt || "");
+    setWhyHere(profile.whyHere || "");
+    setSingHereMode(profile.singHere?.mode || "instructions");\n    setSingHereUrl(profile.singHere?.url || "");\n    setSingHereInstructions(profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");\n    setSingHereLinkLabel(profile.singHere?.linkLabel || "Join the list");
   }
 
   async function selectVenue(nextSlug: string) {
@@ -228,7 +254,19 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     weeklySpecials: weeklySpecials.filter((special) => special.title.trim()),
     dailyDeals: dailyDeals.filter((deal) => deal.title.trim()),
     gallery,
-  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, phone, tagline, weeklySpecials]);
+    vibeTags,
+    foodSummary: foodSummary.trim() || undefined,
+    singersSay: singersSay.trim() || undefined,
+    singersSaySource: singersSaySource.trim() || undefined,
+    singersSayUpdatedAt: singersSayUpdatedAt.trim() || undefined,
+    whyHere: whyHere.trim() || undefined,
+    singHere: {
+      mode: singHereMode,
+      url: singHereMode === "external" ? singHereUrl.trim() || undefined : undefined,
+      instructions: singHereInstructions.trim() || undefined,
+      linkLabel: singHereLinkLabel.trim() || undefined,
+    },
+  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, phone, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const completionChecks = useMemo(() => [
     { label: "Hero + alt text", done: Boolean(heroImageUrl.trim() && heroImageAlt.trim()) },
@@ -244,6 +282,10 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
   function toggleFact(label: string) {
     setAmenities((current) => current.includes(label) ? current.filter((item) => item !== label) : [...current, label]);
+  }
+
+  function toggleVibe(label: string) {
+    setVibeTags((current) => current.includes(label) ? current.filter((item) => item !== label) : current.length >= 4 ? current : [...current, label]);
   }
 
   async function saveProfile() {
@@ -298,6 +340,48 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             <label className={labelClass}>Menu URL<input className={fieldClass} value={menuUrl} onChange={(event) => setMenuUrl(event.target.value)} /></label>
             <label className={`${labelClass} md:col-span-2`}>Tagline<input className={fieldClass} value={tagline} onChange={(event) => setTagline(event.target.value)} /></label>
             <label className={`${labelClass} md:col-span-2`}>About<textarea className={`${fieldClass} min-h-28`} value={about} onChange={(event) => setAbout(event.target.value)} /></label>
+
+            <section className="md:col-span-2 overflow-hidden rounded-[1.75rem] border border-fuchsia-300/20 bg-[radial-gradient(circle_at_top_left,rgba(236,72,153,.12),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,.10),transparent_34%),rgba(0,0,0,.18)] p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Venue intelligence</p>
+                  <h3 className="mt-1 text-xl font-black text-white">What should a traveler know?</h3>
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">These fields power Hotel Experience v1.2 and can also improve discovery elsewhere. Use your own firsthand take when you have one. Keep factual claims specific and defensible.</p>
+                </div>
+                <span className="rounded-full border border-cyan-300/25 bg-cyan-300/[0.07] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-cyan-100">Hotel v1.2</span>
+              </div>
+
+              <div className="mt-5">
+                <p className={labelClass}>Vibe <span className="normal-case tracking-normal text-slate-600">choose up to 4</span></p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {HOTEL_VIBE_OPTIONS.map((vibe) => {
+                    const active = vibeTags.includes(vibe);
+                    return <button key={vibe} type="button" onClick={() => toggleVibe(vibe)} className={`rounded-full border px-3.5 py-2 text-xs font-black transition ${active ? "border-fuchsia-300/70 bg-gradient-to-r from-fuchsia-400/20 to-cyan-300/15 text-white shadow-[0_0_20px_rgba(236,72,153,.12)]" : "border-white/10 bg-black/20 text-slate-400 hover:-translate-y-0.5 hover:border-cyan-300/35 hover:text-cyan-100"}`}>{active ? "✓ " : ""}{vibe}</button>;
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <label className={labelClass}>Food
+                  <input className={fieldClass} value={foodSummary} onChange={(event) => setFoodSummary(event.target.value)} placeholder="Full kitchen · kitchen until 10 PM" />
+                  <span className="mt-1.5 block normal-case tracking-normal text-slate-600">Short practical answer, not menu copy.</span>
+                </label>
+                <label className={labelClass}>Why Here
+                  <input className={fieldClass} value={whyHere} onChange={(event) => setWhyHere(event.target.value)} placeholder="Best bet for dinner + karaoke in one stop." />
+                  <span className="mt-1.5 block normal-case tracking-normal text-slate-600">Your editorial recommendation. Leave blank for a data-based fallback.</span>
+                </label>
+                <label className={`${labelClass} md:col-span-2`}>Singers Say
+                  <textarea className={`${fieldClass} min-h-28`} value={singersSay} onChange={(event) => setSingersSay(event.target.value)} placeholder="Friendly regulars, lively room, and a crowd that rewards committing to the song." />
+                  <span className="mt-1.5 block normal-case tracking-normal text-slate-600">A concise firsthand or sourced summary. This is editorial copy, not the community-response percentage system.</span>
+                </label>
+                <label className={labelClass}>Singers Say source
+                  <input className={fieldClass} value={singersSaySource} onChange={(event) => setSingersSaySource(event.target.value)} placeholder="Corey firsthand · public review themes · KJ feedback" />
+                </label>
+                <label className={labelClass}>Last checked
+                  <input type="date" className={fieldClass} value={singersSayUpdatedAt} onChange={(event) => setSingersSayUpdatedAt(event.target.value)} />
+                </label>
+              </div>
+            </section>
 
             <VenueMediaLibrary slug={slug} heroUrl={heroImageUrl} heroAlt={heroImageAlt} heroPosition={heroPosition} logoUrl={logoImageUrl} logoAlt={logoImageAlt} gallery={gallery} onHeroChange={setHeroImageUrl} onHeroPositionChange={setHeroPosition} onLogoChange={setLogoImageUrl} onGalleryChange={setGallery} />
             <label className={labelClass}>Hero image alt text<input className={fieldClass} value={heroImageAlt} onChange={(event) => setHeroImageAlt(event.target.value)} placeholder="Describe the hero photo" /></label>
