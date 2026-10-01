@@ -16,7 +16,7 @@ export function useListReturn<T>(state:T,setState:(state:T)=>void){
  useEffect(()=>{
   const path=location.pathname+location.search,key=prefix+path;
   function save(){try{sessionStorage.setItem(key,JSON.stringify({version:1,at:Date.now(),y:scrollY,state:current.current}));sessionStorage.setItem('singhub:last-list',path);}catch{}}
-  const click=(event:MouseEvent)=>{const link=(event.target as Element)?.closest<HTMLAnchorElement>('a[href]');if(link&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&event.button===0&&new URL(link.href).pathname.startsWith('/venues/'))save();};
+  const click=(event:MouseEvent)=>{const link=(event.target as Element)?.closest<HTMLAnchorElement>('a[href]');if(link&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&event.button===0&&(/^\/(venues|hosts)\//.test(new URL(link.href).pathname)))save();};
   document.addEventListener('click',click,true);window.addEventListener('pagehide',save);
   let raf=0;
   function restore(){
@@ -31,7 +31,7 @@ export function useListReturn<T>(state:T,setState:(state:T)=>void){
     // its DOM value alongside the retained React filter state in the next frame.
     const restoreFrame=()=>{
      const query=(saved.state as {query?:unknown})?.query;
-     const input=document.querySelector<HTMLInputElement>('#venue-search');
+     const input=document.querySelector<HTMLInputElement>('#venue-search, #host-search');
      if(input&&typeof query==='string'&&input.value!==query)input.value=query;
      window.scrollTo({top:saved.y,behavior:'instant'});
      if(++frames<12)raf=requestAnimationFrame(restoreFrame);
