@@ -92,8 +92,7 @@ alter table public.scout_leads
 
 create index if not exists scout_leads_market_idx on public.scout_leads(market_id);
 create unique index if not exists scout_leads_candidate_key_uq
-  on public.scout_leads(candidate_key)
-  where candidate_key is not null;
+  on public.scout_leads(candidate_key);
 
 insert into public.scout_markets (
   slug, name, anchor_city, state_code, country_code, scope_label, timezone,
