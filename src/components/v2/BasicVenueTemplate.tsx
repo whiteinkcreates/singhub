@@ -24,7 +24,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 </header>
 <nav className="basic-browse-nav" aria-label="Primary"><Link href="/">Discover</Link><Link href="/find-karaoke">Venues</Link><Link href="/hosts">Hosts</Link><Link href="/hotel">Hotels</Link><Link href="/account">My SingHUB</Link></nav><div className="content">
 <section className="section">
-<div className="relative mb-5 h-72 overflow-hidden md:h-96"><img src={enhancement?.heroImageUrl||venue.bannerImageUrl||'/images/og/singhub-og.png'} alt={enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName+' venue'} className="h-full w-full object-cover" style={{objectPosition:enhancement?.heroPosition||venue.bannerImagePosition||'center'}} /></div><span className="tier-badge">{"BASIC PROFILE"}</span>
+<div className="venue-hero"><img src={enhancement?.heroImageUrl||venue.bannerImageUrl||'/images/og/singhub-og.png'} alt={enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName+' venue'} className="venue-hero-photo" style={{objectPosition:enhancement?.heroPosition||venue.bannerImagePosition||'center'}} /></div>
 <h1>{venue.venueName}</h1>
 <div className="verified" title={row.verification}><span className="verified-dot">{venue.listingStatus==='verified'?'✓':'·'}</span>{' '+row.trust.replace(/^✓\s*/, '')}</div>
 <p className="subline" style={{"marginTop": "10px"}}>{venue.neighborhood+' · '+venue.address}</p>
@@ -34,7 +34,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <div className="card tonight-card">
 <div className="tonight-label"><span className="live-dot"></span>{" TONIGHT"}</div>
 <div className="event-row"><div><strong>{"Karaoke"}</strong><div className="host">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Host details pending' : 'No confirmed karaoke tonight'}</div></div><time className="event-time">{row.tonight ? [compactTime(row.tonight.startTime),compactTime(row.tonight.endTime)].filter(Boolean).join(" - ") || "Time pending" : row.tonightTime}</time></div>
-<button className="primary-action" aria-label="SingHERE tonight" data-toast="SingHERE flow would open here"><img src="/images/singhub-v2/singhere-neon-transparent.png" alt="SingHERE" /></button>
+<button className="primary-action" data-toast="SingHERE flow would open here">{"SingHERE tonight"}</button>
 </div>
 <div className="secondary-actions"><button data-toast="Directions opened">{"Directions"}</button><button data-toast="Venue saved">{"Save"}</button><button data-toast="Share sheet opened">{"Share"}</button></div>
 </section>
