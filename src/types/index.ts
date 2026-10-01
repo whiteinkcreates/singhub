@@ -29,6 +29,11 @@ export type VenueListing = {
   hostName?: string;
   vibeTags: string[];
   description: string;
+  foodSummary?: string;
+  singersSay?: string;
+  singersSaySource?: string;
+  singersSayUpdatedAt?: string;
+  hotelWhyHere?: string;
   specials?: string;
   happyHour?: string;
   foodHighlights?: string;
