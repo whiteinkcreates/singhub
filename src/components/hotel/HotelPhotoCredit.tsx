@@ -8,7 +8,7 @@ export function HotelPhotoCredit({ credit }: { credit?: Credit }) {
   if (!credit) return null;
   function show() { panel.current?.showPopover(); }
   return <div className={styles.control}>
-    {credit.status !== "licensed" && <span className={styles.badge}>{credit.status === "illustrative" ? "Illustrative concept" : "Internal demo · permission pending"}</span>}
+    {credit.status !== "licensed" && <span className={styles.badge}>{credit.status === "illustrative" ? "Illustrative concept · internal demo" : "Internal demo · permission pending"}</span>}
     <button type="button" className={styles.trigger} popoverTarget={id} onMouseEnter={show} onFocus={event => { if (event.currentTarget.matches(":focus-visible")) show(); }} onClick={event => { event.preventDefault(); show(); }}>Photo credit ⓘ</button>
     <div ref={panel} id={id} popover="auto" className={styles.popup}>
       <strong>{credit.attribution}</strong>

@@ -12,9 +12,10 @@ test('every pending photo is private by default, even if accidentally saved as m
   const publicGuide=applyHotelPhoto({slug,name:slug,heroImageUrl:candidate.imageUrl});
   assert.notEqual(publicGuide.heroImageUrl,candidate.imageUrl);
   assert.notEqual(publicGuide.heroCredit?.status,'permission-pending');
+  assert.notEqual(publicGuide.heroCredit?.status,'illustrative');
   const demo=applyHotelPhoto({slug,name:slug},true);
   assert.equal(demo.heroImageUrl,candidate.imageUrl);
-  assert.equal(demo.heroCredit.status,'permission-pending');
+  assert.equal(demo.heroCredit.status,candidate.credit.status);
  }
 });
 test('licensed fallbacks supply the original attribution and license',()=>{
