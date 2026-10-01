@@ -34,7 +34,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <div className="card tonight-card">
 <div className="tonight-label"><span className="live-dot"></span>{" TONIGHT"}</div>
 <div className="event-row"><div><strong>{"Karaoke"}</strong><div className="host">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Host details pending' : 'No confirmed karaoke tonight'}</div></div><time className="event-time">{row.tonight ? [compactTime(row.tonight.startTime),compactTime(row.tonight.endTime)].filter(Boolean).join(" - ") || "Time pending" : row.tonightTime}</time></div>
-<button className="primary-action" data-toast="SingHERE flow would open here">{"SingHERE tonight"}</button>
+<button className="primary-action" aria-label="SingHERE tonight" data-toast="SingHERE flow would open here"><img src="/images/singhub-v2/singhere-neon-transparent.png" alt="SingHERE" /></button>
 </div>
 <div className="secondary-actions"><button data-toast="Directions opened">{"Directions"}</button><button data-toast="Venue saved">{"Save"}</button><button data-toast="Share sheet opened">{"Share"}</button></div>
 </section>
