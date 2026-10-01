@@ -138,17 +138,24 @@
     .v2-basic .event-time { color: #fff; font-weight: 750; white-space: nowrap; }
     .v2-basic .host { margin-top: 8px; color: var(--muted); font-size: .86rem; }
     .v2-basic .primary-action {
+      position: relative;
+      display: grid;
+      place-items: center;
       width: 100%;
-      min-height: 52px;
+      min-height: 64px;
       margin-top: 16px;
-      border: 0;
+      padding: 8px 18px;
+      overflow: hidden;
+      border: 1px solid #46505f;
       border-radius: 14px;
-      background: linear-gradient(90deg, var(--pink), #d114ff);
-      color: white;
-      font-weight: 850;
+      background: linear-gradient(145deg,#181d26 0,#0b0e14 62%,#121821 100%);
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(255,25,168,.24);
+      box-shadow: inset 0 1px rgba(255,255,255,.1), 0 10px 26px rgba(0,0,0,.28);
     }
+    .v2-basic .primary-action::before { content:""; position:absolute; inset:0; background:radial-gradient(circle at 24% 50%,rgba(255,25,168,.09),transparent 40%),radial-gradient(circle at 76% 50%,rgba(0,200,255,.09),transparent 40%); pointer-events:none; }
+    .v2-basic .primary-action img { position:relative; z-index:1; width:min(100%,210px); max-height:46px; object-fit:contain; filter:drop-shadow(0 4px 9px rgba(0,0,0,.55)); transition:transform .18s ease,filter .18s ease; }
+    .v2-basic .primary-action:hover { border-color:#667386; background:linear-gradient(145deg,#1d2430 0,#0d1118 62%,#151d27 100%); }
+    .v2-basic .primary-action:hover img { transform:translateY(-1px) scale(1.015); filter:drop-shadow(-5px 3px 12px rgba(255,25,168,.15)) drop-shadow(5px 3px 12px rgba(0,200,255,.14)); }
     .v2-basic .secondary-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
     .v2-basic .secondary-actions button { min-height: 44px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: #dce3ed; cursor: pointer; font-size: .78rem; }
     .v2-basic .schedule-list { display: grid; gap: 2px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--line); }
