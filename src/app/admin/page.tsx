@@ -19,7 +19,7 @@ const tools = [
     eyebrow: "Discovery",
     title: "Scout Dashboard",
     description:
-      "Review karaoke leads and turn messy discovery signals into verified venue and event data.",
+      "Run market intelligence, review venue leads, preserve evidence, and prepare new cities for SingHUB expansion.",
   },
   {
     href: "/admin/roundups",
