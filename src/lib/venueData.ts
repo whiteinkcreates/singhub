@@ -18,6 +18,12 @@ type EnhancementMediaRow = {
     featuredPriority?: number;
     tagline?: string;
     amenities?: string[];
+    vibeTags?: string[];
+    foodSummary?: string;
+    singersSay?: string;
+    singersSaySource?: string;
+    singersSayUpdatedAt?: string;
+    whyHere?: string;
     heroImageUrl?: string;
     heroImageAlt?: string;
     heroPosition?: "center" | "top" | "bottom" | "left" | "right";
@@ -191,21 +197,28 @@ export async function getVenueListings(): Promise<VenueListing[]> {
       if (!enhancement) return venue;
 
       const featuredPriority = parseNumber(enhancement.featuredPriority) ?? undefined;
-      const withPromotion: VenueListing = {
+      const editorialVibes = enhancement.vibeTags?.map((tag) => tag.trim()).filter(Boolean) || [];
+      const withEditorial: VenueListing = {
         ...venue,
         isFeatured: typeof enhancement.featured === "boolean" ? enhancement.featured : venue.isFeatured,
         featuredPriority,
+        vibeTags: editorialVibes.length > 0 ? editorialVibes : venue.vibeTags,
+        foodSummary: getOptionalValue(enhancement.foodSummary) || venue.foodHighlights,
+        singersSay: getOptionalValue(enhancement.singersSay),
+        singersSaySource: getOptionalValue(enhancement.singersSaySource),
+        singersSayUpdatedAt: getOptionalValue(enhancement.singersSayUpdatedAt),
+        hotelWhyHere: getOptionalValue(enhancement.whyHere),
+        enhancementAmenities: enhancement.amenities?.filter(Boolean) || [],
       };
 
-      if (!enhancement.enabled) return withPromotion;
+      if (!enhancement.enabled) return withEditorial;
       return {
-        ...withPromotion,
+        ...withEditorial,
         profileTier: "premium" as const,
         bannerImageUrl: getOptionalValue(enhancement.heroImageUrl) || venue.bannerImageUrl,
         bannerImageAlt: getOptionalValue(enhancement.heroImageAlt) || venue.bannerImageAlt,
         bannerImagePosition: enhancement.heroPosition || "center",
         enhancementTagline: getOptionalValue(enhancement.tagline),
-        enhancementAmenities: enhancement.amenities?.filter(Boolean) || [],
       };
     })
     .filter((venue) => venue.id && venue.venueName && venue.slug);
