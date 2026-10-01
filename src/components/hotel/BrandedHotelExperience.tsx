@@ -10,9 +10,10 @@ type Props = {
   experienceSlug: string;
   hotelName: string;
   hotelShortName: string;
-  hotelSiteUrl: string;
-  brandLogoUrl: string;
+  hotelSiteUrl?: string;
+  brandLogoUrl?: string;
   heroImageUrl?: string;
+  fallbackHeroImageUrl?: string;
   primaryColor: string;
   accentColor: string;
   pageBackground: string;
@@ -357,6 +358,7 @@ export function BrandedHotelExperience({
   hotelSiteUrl,
   brandLogoUrl,
   heroImageUrl,
+  fallbackHeroImageUrl,
   primaryColor,
   accentColor,
   pageBackground,
@@ -374,7 +376,8 @@ export function BrandedHotelExperience({
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
   const [focus, setFocus] = useState<FocusMode>("all");
   const [selectedVibe, setSelectedVibe] = useState("");
-  const [heroVisible, setHeroVisible] = useState(Boolean(heroImageUrl));
+  const [heroSource, setHeroSource] = useState(heroImageUrl || fallbackHeroImageUrl || "");
+  const [heroVisible, setHeroVisible] = useState(Boolean(heroImageUrl || fallbackHeroImageUrl));
   const [logoVisible, setLogoVisible] = useState(Boolean(brandLogoUrl));
 
   const baseVenues = mode === "tonight" ? tonightVenues : weekVenues;
@@ -419,21 +422,42 @@ export function BrandedHotelExperience({
         <KaraokeMicBackdrop color={primaryColor} />
 
         <header className="relative z-10 flex items-center justify-between gap-4 bg-white/[0.96] px-5 py-4 backdrop-blur-sm sm:px-8">
-          <a href={hotelSiteUrl} target="_blank" rel="noreferrer" className="flex min-h-14 items-center" aria-label={`Visit ${hotelName} website`}>
-            {logoVisible ? (
-              <img src={brandLogoUrl} alt={hotelName} className="max-h-14 max-w-[220px] object-contain" onError={() => setLogoVisible(false)} />
-            ) : (
-              <span className="text-lg font-black" style={{ color: primaryColor }}>{hotelShortName}</span>
-            )}
-          </a>
+          {hotelSiteUrl ? (
+            <a href={hotelSiteUrl} target="_blank" rel="noreferrer" className="flex min-h-14 items-center" aria-label={`Visit ${hotelName} website`}>
+              {logoVisible && brandLogoUrl ? (
+                <img src={brandLogoUrl} alt={hotelName} className="max-h-14 max-w-[220px] object-contain" onError={() => setLogoVisible(false)} />
+              ) : (
+                <span className="text-lg font-black" style={{ color: primaryColor }}>{hotelShortName}</span>
+              )}
+            </a>
+          ) : (
+            <div className="flex min-h-14 items-center">
+              {logoVisible && brandLogoUrl ? (
+                <img src={brandLogoUrl} alt={hotelName} className="max-h-14 max-w-[220px] object-contain" onError={() => setLogoVisible(false)} />
+              ) : (
+                <span className="text-lg font-black" style={{ color: primaryColor }}>{hotelShortName}</span>
+              )}
+            </div>
+          )}
           <span className="rounded-full border px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.14em]" style={{ borderColor: `${accentColor}44`, backgroundColor: `${accentColor}10`, color: accentColor }}>
             Local nightlife guide
           </span>
         </header>
 
-        {heroImageUrl && heroVisible ? (
+        {heroSource && heroVisible ? (
           <div className="relative z-10 mx-3 h-52 overflow-hidden rounded-b-[2.5rem] sm:mx-5 sm:h-72">
-            <img src={heroImageUrl} alt="" className="h-full w-full object-cover" onError={() => setHeroVisible(false)} />
+            <img
+              src={heroSource}
+              alt=""
+              className="h-full w-full object-cover"
+              onError={() => {
+                if (fallbackHeroImageUrl && heroSource !== fallbackHeroImageUrl) {
+                  setHeroSource(fallbackHeroImageUrl);
+                  return;
+                }
+                setHeroVisible(false);
+              }}
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
           </div>
         ) : null}
