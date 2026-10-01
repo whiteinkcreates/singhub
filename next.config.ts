@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  outputFileTracingIncludes: {
+    "/admin/hotels/concepts/*": ["./src/assets/hotel-concepts/*.webp"],
+  },
   async redirects() {
     return [
       {
