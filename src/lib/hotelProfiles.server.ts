@@ -1,4 +1,5 @@
 import "server-only";
+import { applyHotelPhoto } from "./hotelPhotoCandidates.server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getHotelGuide } from "@/lib/hotelGuides";
 import { parseHotelMediaProfile, type HotelMediaProfile } from "@/lib/hotelProfiles";
@@ -7,15 +8,15 @@ export async function getHotelMediaProfile(slug: string): Promise<HotelMediaProf
   if (error) throw new Error(`Hotel media could not be loaded: ${error.message}`);
   return data ? parseHotelMediaProfile(data.media) : null;
 }
-export async function getHotelGuideWithMedia(slug: string) {
+export async function getHotelGuideWithMedia(slug: string, demo = false) {
   const hotel = getHotelGuide(slug);
   if (!hotel) return null;
   try {
     const media = await getHotelMediaProfile(slug);
-    return media ? { ...hotel, heroImageUrl: media.heroImageUrl, heroAlt: media.heroAlt, heroPosition: media.heroPosition } : hotel;
+    return applyHotelPhoto(media ? { ...hotel, heroImageUrl: media.heroImageUrl, heroAlt: media.heroAlt, heroPosition: media.heroPosition } : hotel, demo);
   } catch (error) {
     console.error("Hotel media read failed; using registered guide", error);
-    return hotel;
+    return applyHotelPhoto(hotel, demo);
   }
 }
 export async function saveHotelMediaProfile(slug: string, media: HotelMediaProfile) {

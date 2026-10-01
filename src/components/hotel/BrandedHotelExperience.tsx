@@ -1,5 +1,7 @@
 "use client";
 
+import { HotelPhotoCredit } from "./HotelPhotoCredit";
+import type { HotelPhotoCredit as Credit } from "@/lib/hotelPhotoCredit";
 import Link from "next/link";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { trackEvent } from "@/lib/analytics";
@@ -13,6 +15,9 @@ type Props = {
   hotelSiteUrl?: string;
   brandLogoUrl?: string;
   heroImageUrl?: string;
+  heroCredit?: Credit;
+  heroAlt?: string;
+  heroPosition?: string;
   fallbackHeroImageUrl?: string;
   primaryColor: string;
   accentColor: string;
@@ -358,6 +363,9 @@ export function BrandedHotelExperience({
   hotelSiteUrl,
   brandLogoUrl,
   heroImageUrl,
+  heroCredit,
+  heroAlt,
+  heroPosition,
   fallbackHeroImageUrl,
   primaryColor,
   accentColor,
@@ -448,7 +456,8 @@ export function BrandedHotelExperience({
           <div className="relative z-10 mx-3 h-52 overflow-hidden rounded-b-[2.5rem] sm:mx-5 sm:h-72">
             <img
               src={heroSource}
-              alt=""
+              alt={heroAlt || `${hotelName} property photograph`}
+              style={{ objectPosition: heroPosition }}
               className="h-full w-full object-cover"
               onError={() => {
                 if (fallbackHeroImageUrl && heroSource !== fallbackHeroImageUrl) {
@@ -459,6 +468,7 @@ export function BrandedHotelExperience({
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
+            {heroSource === heroImageUrl && <HotelPhotoCredit credit={heroCredit} />}
           </div>
         ) : null}
 
