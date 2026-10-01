@@ -11,6 +11,7 @@ import { getHotelGuide, isHotelGuideVenueCandidate } from "@/lib/hotelGuides";
 import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
 import { getVenueEnhancement } from "@/lib/venueEnhancements";
+import { getVenueSignalData } from "@/lib/venueSignals";
 import { getVenueListings } from "@/lib/venueData";
 import type { KaraokeEventListing, VenueListing } from "@/types";
 import { getDistanceInMiles } from "@/utils/distance";
@@ -82,6 +83,43 @@ function standoutReason(
   return undefined;
 }
 
+function whyHereForVenue(
+  venue: VenueListing,
+  distanceMiles: number,
+  tonightEvent: KaraokeEventListing | undefined,
+  standout?: string,
+) {
+  const adminWhy = usable(venue.hotelWhyHere);
+  if (adminWhy) return adminWhy;
+
+  if (venue.venueType === "private_room") {
+    return "Private-room karaoke if your group would rather keep the mic to itself.";
+  }
+
+  const food = usable(venue.foodSummary);
+  if (food && tonightEvent) {
+    return "A practical one-stop option when you want food and karaoke in the same place.";
+  }
+
+  if (standout === "Live-band karaoke") {
+    return "Worth the trip when you want to sing with a live band instead of a backing track.";
+  }
+
+  if (standout === "Karaoke most nights") {
+    return "A reliable karaoke-first option when you want a room built around singing.";
+  }
+
+  if (distanceMiles <= 1) {
+    return "One of the easiest karaoke options to reach from the hotel.";
+  }
+
+  if (tonightEvent) {
+    return "A verified karaoke option for tonight within a short ride of the hotel.";
+  }
+
+  return standout;
+}
+
 function makeVenue(
   venue: VenueListing,
   events: KaraokeEventListing[],
@@ -92,6 +130,7 @@ function makeVenue(
 ): HotelGuideVenue {
   const tonightEvent = events.find((event) => eventMatchesDay(event, tonightDay));
   const enhancement = getVenueEnhancement(venue.slug);
+  const signalData = getVenueSignalData(venue.slug);
   const imageUrl = usable(venue.bannerImageUrl) || usable(enhancement?.heroImageUrl);
 
   return {
@@ -108,6 +147,12 @@ function makeVenue(
     tonightSchedule: tonightEvent ? formatSchedule(tonightEvent) : undefined,
     weekSchedule: events.map(formatSchedule).filter(Boolean),
     standoutReason: standout,
+    foodSummary: usable(venue.foodSummary) || undefined,
+    singersSay: usable(venue.singersSay) || usable(signalData.singersSay) || undefined,
+    singersSaySource: usable(venue.singersSaySource) || (signalData.singersSay ? "SingHUB firsthand note" : undefined),
+    singersSayUpdatedAt: usable(venue.singersSayUpdatedAt) || undefined,
+    whyHere: whyHereForVenue(venue, distanceMiles, tonightEvent, standout),
+    hostName: usable(tonightEvent?.hostName),
   };
 }
 

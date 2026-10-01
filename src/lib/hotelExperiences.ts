@@ -34,10 +34,10 @@ export const hotelExperienceConfigs: HotelExperienceConfig[] = [
     mutedTextColor: "#52677D",
     headingFontFamily: "Arial, Helvetica, sans-serif",
     bodyFontFamily: "Arial, Helvetica, sans-serif",
-    eyebrow: "Local karaoke guide",
-    headline: "In San Diego, we sing karaoke.",
+    eyebrow: "Your local karaoke guide",
+    headline: "Looking for somewhere to sing tonight?",
     intro:
-      "Here are a few local karaoke spots worth checking out, curated for guests of Holiday Inn Express La Mesa near SDSU.",
+      "Start with what is happening now, find a place that matches your vibe, or pick an easy option for food and a mic. SingHUB keeps the local karaoke information current for guests of Holiday Inn Express La Mesa near SDSU.",
   },
 ];
 

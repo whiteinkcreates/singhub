@@ -4,7 +4,27 @@ export type HeroPosition = "center" | "top" | "bottom" | "left" | "right";
 
 export type VenueGalleryItem = { url: string; alt: string; caption?: string; };
 export type VenueSpecial = { day: string; title: string; price?: string; detail?: string; };
-export type VenueDailyDeal = { title: string; price?: string; detail?: string; };\nexport type SingHereConfig = { mode?: "instructions" | "external"; url?: string; instructions?: string; linkLabel?: string; title?: string; };
+export type VenueDailyDeal = { title: string; price?: string; detail?: string; };
+export type SingHereConfig = {
+  mode?: "instructions" | "external";
+  url?: string;
+  instructions?: string;
+  linkLabel?: string;
+  title?: string;
+};
+
+export const HOTEL_VIBE_OPTIONS = [
+  "Divey",
+  "Big Crowd",
+  "Neighborhood Bar",
+  "Polished",
+  "LGBTQ-Friendly",
+  "Party Crowd",
+  "Serious Singers",
+  "Late Night",
+  "Live Band",
+  "Private Rooms",
+] as const;
 
 export type VenueEnhancement = {
   /** Partner status. Base-profile fields remain usable when this is false. */
@@ -23,7 +43,16 @@ export type VenueEnhancement = {
   gallery: VenueGalleryItem[];
   amenities: string[];
   weeklySpecials: VenueSpecial[];
-  dailyDeals: VenueDailyDeal[];\n  singHere?: SingHereConfig;
+  dailyDeals: VenueDailyDeal[];
+  singHere?: SingHereConfig;
+
+  /** Admin-managed discovery intelligence used across hotel and venue surfaces. */
+  vibeTags?: string[];
+  foodSummary?: string;
+  singersSay?: string;
+  singersSaySource?: string;
+  singersSayUpdatedAt?: string;
+  whyHere?: string;
 };
 
 export const VENUE_FACT_OPTIONS = [

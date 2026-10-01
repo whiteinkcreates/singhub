@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { trackEvent } from "@/lib/analytics";
 import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
 import type { HotelGuideVenue } from "@/components/hotel/HotelGuideExperience";
@@ -28,19 +28,29 @@ type Props = {
   weekVenues: HotelGuideVenue[];
 };
 
+type FocusMode = "all" | "food" | "vibe" | "near";
+
+const CONTROLLED_VIBES = new Set([
+  "Divey",
+  "Big Crowd",
+  "Neighborhood Bar",
+  "Polished",
+  "LGBTQ-Friendly",
+  "Party Crowd",
+  "Serious Singers",
+  "Late Night",
+  "Live Band",
+  "Private Rooms",
+]);
+
+function displayVibes(venue: HotelGuideVenue) {
+  return venue.vibeTags.filter((tag) => CONTROLLED_VIBES.has(tag)).slice(0, 4);
+}
+
 const tierMeta = {
-  walkable: {
-    label: "Walkable",
-    helper: "Closest options from your stay",
-  },
-  quick: {
-    label: "Quick Ride",
-    helper: "Nearby karaoke worth a short ride",
-  },
-  standout: {
-    label: "Local Standouts",
-    helper: "A little farther, still worth the trip",
-  },
+  walkable: { label: "Walkable", helper: "Easy to reach from your stay" },
+  quick: { label: "Quick Ride", helper: "Nearby karaoke worth a short ride" },
+  standout: { label: "Local Standouts", helper: "Distinctive karaoke experiences worth the trip" },
 } as const;
 
 function splitByTier(venues: HotelGuideVenue[]) {
@@ -56,7 +66,7 @@ function KaraokeMicBackdrop({ color }: { color: string }) {
     <svg
       viewBox="0 0 620 1500"
       aria-hidden
-      className="pointer-events-none absolute right-[-105px] top-[285px] z-[5] h-[1240px] w-[610px] opacity-[0.14] mix-blend-multiply sm:right-[-90px] sm:top-[315px] sm:h-[1360px] sm:w-[670px]"
+      className="pointer-events-none absolute right-[-115px] top-[430px] z-[1] h-[1260px] w-[620px] opacity-[0.09] mix-blend-multiply sm:right-[-80px] sm:top-[470px] sm:h-[1380px] sm:w-[680px]"
       style={{ color }}
       fill="none"
     >
@@ -68,80 +78,135 @@ function KaraokeMicBackdrop({ color }: { color: string }) {
           <path d="M104 265h34M102 320h38M100 375h40" strokeWidth="6" opacity="0.55" />
           <path d="M121 512v88" strokeWidth="12" />
         </g>
-
         <path d="M405 555c38 2 64 27 64 64v54" strokeWidth="13" />
         <path d="M469 672v430" strokeWidth="14" />
         <path d="M394 1104h150" strokeWidth="15" />
         <path d="M420 1104c8 45 27 74 49 74s42-29 50-74" strokeWidth="10" opacity="0.75" />
-
-        <path
-          d="M465 565c76 66 105 154 90 258-18 126-8 246 33 331 42 88 18 164-79 189-126 32-262 11-393 39-69 15-106 44-124 76"
-          strokeWidth="12"
-        />
-        <path
-          d="M588 1154c-88 40-175 59-261 58-111-1-194 27-255 80"
-          strokeWidth="7"
-          opacity="0.6"
-        />
+        <path d="M465 565c76 66 105 154 90 258-18 126-8 246 33 331 42 88 18 164-79 189-126 32-262 11-393 39-69 15-106 44-124 76" strokeWidth="12" />
       </g>
     </svg>
   );
 }
 
-function TierIcon({
-  tier,
+function QuickIcon({ kind }: { kind: "mic" | "food" | "spark" | "pin" }) {
+  const cls = "h-5 w-5";
+  if (kind === "food") {
+    return <svg viewBox="0 0 24 24" className={cls} fill="none" aria-hidden><path d="M7 3v7m3-7v7M5 7h7m-3 3v11m7-18v18m0-18c2 1 3 3 3 5s-1 4-3 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>;
+  }
+  if (kind === "spark") {
+    return <svg viewBox="0 0 24 24" className={cls} fill="none" aria-hidden><path d="m12 2 1.6 5.1L19 9l-5.4 1.9L12 16l-1.6-5.1L5 9l5.4-1.9L12 2Zm6 12 .8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8L18 14Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/></svg>;
+  }
+  if (kind === "pin") {
+    return <svg viewBox="0 0 24 24" className={cls} fill="none" aria-hidden><path d="M12 21s6-5.2 6-11a6 6 0 1 0-12 0c0 5.8 6 11 6 11Z" stroke="currentColor" strokeWidth="1.8"/><circle cx="12" cy="10" r="2.2" stroke="currentColor" strokeWidth="1.8"/></svg>;
+  }
+  return <svg viewBox="0 0 24 24" className={cls} fill="none" aria-hidden><rect x="8" y="3" width="8" height="11" rx="4" stroke="currentColor" strokeWidth="1.8"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3m-3 0h6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>;
+}
+
+function QuickAction({
+  active,
+  title,
+  helper,
+  icon,
+  onClick,
+  primaryColor,
+  accentColor,
+  textColor,
+  mutedTextColor,
+}: {
+  active: boolean;
+  title: string;
+  helper: string;
+  icon: "mic" | "food" | "spark" | "pin";
+  onClick: () => void;
+  primaryColor: string;
+  accentColor: string;
+  textColor: string;
+  mutedTextColor: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group relative overflow-hidden rounded-[1.35rem] border p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+      style={{
+        borderColor: active ? `${primaryColor}66` : "#E2E8F0",
+        background: active
+          ? `linear-gradient(135deg, ${primaryColor}14, ${accentColor}12)`
+          : "rgba(255,255,255,.9)",
+        boxShadow: active ? `0 10px 28px ${primaryColor}16` : undefined,
+      }}
+    >
+      <span
+        className="flex h-10 w-10 items-center justify-center rounded-xl"
+        style={{ backgroundColor: `${primaryColor}12`, color: active ? accentColor : primaryColor }}
+      >
+        <QuickIcon kind={icon} />
+      </span>
+      <span className="mt-3 block text-sm font-black" style={{ color: textColor }}>{title}</span>
+      <span className="mt-1 block text-[11px] leading-4" style={{ color: mutedTextColor }}>{helper}</span>
+    </button>
+  );
+}
+
+function SmallBadge({
+  children,
   color,
 }: {
-  tier: keyof typeof tierMeta;
+  children: ReactNode;
   color: string;
 }) {
-  if (tier === "walkable") {
-    return (
-      <svg viewBox="0 0 32 32" className="h-6 w-6" fill="none" aria-hidden style={{ color }}>
-        <circle cx="17" cy="6.5" r="2.6" fill="currentColor" />
-        <path
-          d="M15.7 10.2 13 15.1l-3.7 2.6m6.4-7.5 4.2 3.5 4 .8m-8.2.4 3.8 4.6 1.6 6.3m-5.4-10.9-2 6.6-4.4 4.4"
-          stroke="currentColor"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  if (tier === "quick") {
-    return (
-      <svg viewBox="0 0 32 32" className="h-6 w-6" fill="none" aria-hidden style={{ color }}>
-        <path
-          d="M7.2 20.5v-4.1l2.4-5.2c.45-.98 1.42-1.62 2.5-1.62h7.8c1.08 0 2.05.64 2.5 1.62l2.4 5.2v4.1"
-          stroke="currentColor"
-          strokeWidth="2.1"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M8 16.4h16m-13.9 0 1.6-3.7h8.6l1.6 3.7"
-          stroke="currentColor"
-          strokeWidth="2.1"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <circle cx="10.4" cy="21.3" r="2.1" fill="currentColor" />
-        <circle cx="21.6" cy="21.3" r="2.1" fill="currentColor" />
-      </svg>
-    );
-  }
-
   return (
-    <svg viewBox="0 0 32 32" className="h-6 w-6" fill="none" aria-hidden style={{ color }}>
-      <path
-        d="m16 4.8 3.3 6.7 7.4 1.08-5.35 5.2 1.26 7.35L16 21.65l-6.61 3.48 1.26-7.35-5.35-5.2 7.4-1.08L16 4.8Z"
-        stroke="currentColor"
-        strokeWidth="2.1"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <span
+      className="rounded-full px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.08em]"
+      style={{ backgroundColor: `${color}10`, color }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function EditorialCard({
+  venue,
+  experienceSlug,
+  primaryColor,
+  accentColor,
+  surfaceColor,
+  textColor,
+  mutedTextColor,
+}: {
+  venue: HotelGuideVenue;
+  experienceSlug: string;
+  primaryColor: string;
+  accentColor: string;
+  surfaceColor: string;
+  textColor: string;
+  mutedTextColor: string;
+}) {
+  const [imageVisible, setImageVisible] = useState(Boolean(venue.imageUrl));
+  return (
+    <Link
+      href={`/venues/${venue.slug}?source=${encodeURIComponent(experienceSlug)}`}
+      onClick={() => trackEvent("hotel_experience_editorial_click", { hotel_experience: experienceSlug, venue_slug: venue.slug })}
+      className="group overflow-hidden rounded-[1.6rem] border border-slate-200/90 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+      style={{ backgroundColor: surfaceColor }}
+    >
+      {venue.imageUrl && imageVisible ? (
+        <div className="relative h-36 overflow-hidden">
+          <img src={venue.imageUrl} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.025]" onError={() => setImageVisible(false)} />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+          <div className="absolute bottom-3 left-3"><SmallBadge color="#FFFFFF">{venue.distanceLabel}</SmallBadge></div>
+        </div>
+      ) : null}
+      <div className="p-4">
+        <h3 className="text-lg font-black" style={{ color: textColor }}>{venue.name}</h3>
+        {venue.whyHere ? <p className="mt-2 text-sm font-bold leading-5" style={{ color: primaryColor }}>{venue.whyHere}</p> : null}
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {venue.foodSummary ? <SmallBadge color={accentColor}>Food</SmallBadge> : null}
+          {displayVibes(venue).slice(0, 2).map((tag) => <SmallBadge key={tag} color={primaryColor}>{tag}</SmallBadge>)}
+        </div>
+        {venue.tonightSchedule ? <p className="mt-3 text-xs leading-5" style={{ color: mutedTextColor }}>{venue.tonightSchedule}{venue.hostName ? ` · ${venue.hostName}` : ""}</p> : null}
+      </div>
+    </Link>
   );
 }
 
@@ -165,11 +230,7 @@ function VenueCard({
   mutedTextColor: string;
 }) {
   const [imageVisible, setImageVisible] = useState(Boolean(venue.imageUrl));
-  const schedule =
-    mode === "tonight"
-      ? venue.tonightSchedule
-      : venue.weekSchedule.slice(0, 2).join(" • ");
-
+  const schedule = mode === "tonight" ? venue.tonightSchedule : venue.weekSchedule.slice(0, 2).join(" • ");
   const href = `/venues/${venue.slug}?source=${encodeURIComponent(experienceSlug)}`;
 
   return (
@@ -183,26 +244,14 @@ function VenueCard({
           mode,
         })
       }
-      className="group block rounded-2xl border border-slate-200/90 p-3 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+      className="group block overflow-hidden rounded-[1.45rem] border border-slate-200/90 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
       style={{ backgroundColor: surfaceColor }}
     >
-      <div className="flex gap-3">
+      <div className="flex gap-3 p-3">
         {venue.imageUrl && imageVisible ? (
-          <img
-            src={venue.imageUrl}
-            alt=""
-            className="h-[84px] w-[104px] shrink-0 rounded-xl object-cover"
-            loading="lazy"
-            onError={() => setImageVisible(false)}
-          />
+          <img src={venue.imageUrl} alt="" className="h-[96px] w-[112px] shrink-0 rounded-xl object-cover" loading="lazy" onError={() => setImageVisible(false)} />
         ) : (
-          <div
-            className="flex h-[84px] w-[104px] shrink-0 items-center justify-center rounded-xl text-xs font-black uppercase tracking-[0.12em]"
-            style={{
-              backgroundColor: `${primaryColor}0D`,
-              color: primaryColor,
-            }}
-          >
+          <div className="flex h-[96px] w-[112px] shrink-0 items-center justify-center rounded-xl text-xs font-black uppercase tracking-[0.12em]" style={{ backgroundColor: `${primaryColor}0D`, color: primaryColor }}>
             Karaoke
           </div>
         )}
@@ -210,51 +259,40 @@ function VenueCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <h3 className="truncate text-base font-black" style={{ color: textColor }}>
-                {venue.name}
-              </h3>
-              <p
-                className="mt-0.5 text-[11px] font-bold uppercase tracking-[0.08em]"
-                style={{ color: primaryColor }}
-              >
-                {venue.distanceLabel}
-              </p>
+              <h3 className="truncate text-base font-black" style={{ color: textColor }}>{venue.name}</h3>
+              <p className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.08em]" style={{ color: primaryColor }}>{venue.distanceLabel}</p>
             </div>
-            <span className="pt-0.5 text-xl leading-none" style={{ color: primaryColor }} aria-hidden>
-              ›
-            </span>
+            <span className="pt-0.5 text-xl leading-none" style={{ color: primaryColor }} aria-hidden>›</span>
           </div>
 
-          {venue.standoutReason ? (
-            <p className="mt-1.5 text-xs font-bold" style={{ color: accentColor }}>
-              {venue.standoutReason}
-            </p>
+          {venue.whyHere ? (
+            <p className="mt-1.5 line-clamp-2 text-xs font-semibold leading-5" style={{ color: textColor }}>{venue.whyHere}</p>
           ) : schedule ? (
-            <p className="mt-1.5 line-clamp-2 text-xs leading-5" style={{ color: mutedTextColor }}>
-              {schedule}
-            </p>
+            <p className="mt-1.5 line-clamp-2 text-xs leading-5" style={{ color: mutedTextColor }}>{schedule}</p>
           ) : null}
 
-          {venue.vibeTags.length > 0 ? (
-            <div className="mt-2 flex flex-wrap gap-1">
-              {venue.vibeTags.slice(0, 2).map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.06em]"
-                  style={{
-                    backgroundColor: `${primaryColor}0D`,
-                    color: primaryColor,
-                  }}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          ) : null}
+          <div className="mt-2 flex flex-wrap gap-1">
+            {venue.foodSummary ? <SmallBadge color={accentColor}>Food</SmallBadge> : null}
+            {displayVibes(venue).slice(0, 2).map((tag) => <SmallBadge key={tag} color={primaryColor}>{tag}</SmallBadge>)}
+          </div>
         </div>
       </div>
+
+      {venue.singersSay ? (
+        <div className="border-t border-slate-100 px-3 py-2.5">
+          <p className="text-[9px] font-black uppercase tracking-[0.12em]" style={{ color: accentColor }}>Singers Say</p>
+          <p className="mt-1 line-clamp-2 text-[11px] leading-4" style={{ color: mutedTextColor }}>{venue.singersSay}</p>
+          {venue.singersSaySource ? <p className="mt-1 text-[9px] font-semibold" style={{ color: mutedTextColor }}>{venue.singersSaySource}{venue.singersSayUpdatedAt ? ` · ${venue.singersSayUpdatedAt}` : ""}</p> : null}
+        </div>
+      ) : null}
     </Link>
   );
+}
+
+function TierIcon({ tier, color }: { tier: keyof typeof tierMeta; color: string }) {
+  if (tier === "walkable") return <span aria-hidden style={{ color }}>↗</span>;
+  if (tier === "quick") return <span aria-hidden style={{ color }}>→</span>;
+  return <span aria-hidden style={{ color }}>★</span>;
 }
 
 function TierSection({
@@ -283,20 +321,18 @@ function TierSection({
 
   return (
     <section className="py-5">
-      <div className="mb-3 flex items-end justify-between gap-3">
-        <div>
-          <h2 className="flex items-center gap-2 text-xl font-black uppercase tracking-[0.14em]" style={{ color: textColor }}>
+      <div className="mb-3">
+        <h2 className="flex items-center gap-2 text-xl font-black uppercase tracking-[0.12em]" style={{ color: textColor }}>
+          <span className="flex h-8 w-8 items-center justify-center rounded-xl" style={{ backgroundColor: `${primaryColor}10` }}>
             <TierIcon tier={tier} color={primaryColor} />
-            {meta.label}
-          </h2>
-          <p className="mt-1 text-xs font-medium" style={{ color: mutedTextColor }}>
-            {meta.helper}
-          </p>
-        </div>
+          </span>
+          {meta.label}
+        </h2>
+        <p className="mt-1 text-xs font-medium" style={{ color: mutedTextColor }}>{meta.helper}</p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        {(tier === "standout" ? venues.slice(0, 3) : venues).map((venue) => (
+        {venues.map((venue) => (
           <VenueCard
             key={venue.slug}
             venue={venue}
@@ -336,209 +372,150 @@ export function BrandedHotelExperience({
   weekVenues,
 }: Props) {
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
+  const [focus, setFocus] = useState<FocusMode>("all");
+  const [selectedVibe, setSelectedVibe] = useState("");
   const [heroVisible, setHeroVisible] = useState(Boolean(heroImageUrl));
   const [logoVisible, setLogoVisible] = useState(Boolean(brandLogoUrl));
 
-  const activeVenues = mode === "tonight" ? tonightVenues : weekVenues;
+  const baseVenues = mode === "tonight" ? tonightVenues : weekVenues;
+  const vibeChoices = useMemo(
+    () => Array.from(new Set(baseVenues.flatMap((venue) => displayVibes(venue)))).slice(0, 10),
+    [baseVenues],
+  );
+
+  const activeVenues = useMemo(() => {
+    if (focus === "food") return baseVenues.filter((venue) => Boolean(venue.foodSummary));
+    if (focus === "near") return baseVenues.filter((venue) => venue.tier !== "standout");
+    if (focus === "vibe" && selectedVibe) return baseVenues.filter((venue) => displayVibes(venue).includes(selectedVibe));
+    return baseVenues;
+  }, [baseVenues, focus, selectedVibe]);
+
   const grouped = useMemo(() => splitByTier(activeVenues), [activeVenues]);
+  const shortlist = useMemo(
+    () => [...baseVenues].sort((a, b) => a.distanceMiles - b.distanceMiles).slice(0, 3),
+    [baseVenues],
+  );
 
   useEffect(() => {
-    trackEvent("hotel_experience_view", {
-      hotel_experience: experienceSlug,
-      hotel_name: hotelName,
-    });
+    trackEvent("hotel_experience_view", { hotel_experience: experienceSlug, hotel_name: hotelName, version: "1.2" });
   }, [experienceSlug, hotelName]);
 
   function setExperienceMode(nextMode: "tonight" | "week") {
     setMode(nextMode);
-    trackEvent("hotel_experience_toggle", {
-      hotel_experience: experienceSlug,
-      mode: nextMode,
-    });
+    setFocus("all");
+    setSelectedVibe("");
+    trackEvent("hotel_experience_toggle", { hotel_experience: experienceSlug, mode: nextMode });
+  }
+
+  function chooseFocus(nextFocus: FocusMode) {
+    setFocus(nextFocus);
+    if (nextFocus !== "vibe") setSelectedVibe("");
+    trackEvent("hotel_experience_quick_action", { hotel_experience: experienceSlug, focus: nextFocus, mode });
   }
 
   return (
-    <main
-      className="min-h-screen"
-      style={{
-        backgroundColor: pageBackground,
-        color: textColor,
-        fontFamily: bodyFontFamily,
-      }}
-    >
-      <div className="relative isolate mx-auto min-h-screen max-w-3xl overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,.12)]">
+    <main className="min-h-screen" style={{ backgroundColor: pageBackground, color: textColor, fontFamily: bodyFontFamily }}>
+      <div className="relative isolate mx-auto min-h-screen max-w-4xl overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,.12)]">
         <KaraokeMicBackdrop color={primaryColor} />
-        <header className="relative z-10 flex items-center justify-between gap-4 bg-white/[0.95] px-5 py-4 backdrop-blur-[1px] sm:px-8">
-          <a
-            href={hotelSiteUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="flex min-h-14 items-center"
-            aria-label={`Visit ${hotelName} website`}
-          >
+
+        <header className="relative z-10 flex items-center justify-between gap-4 bg-white/[0.96] px-5 py-4 backdrop-blur-sm sm:px-8">
+          <a href={hotelSiteUrl} target="_blank" rel="noreferrer" className="flex min-h-14 items-center" aria-label={`Visit ${hotelName} website`}>
             {logoVisible ? (
-              <img
-                src={brandLogoUrl}
-                alt={hotelName}
-                className="max-h-14 max-w-[220px] object-contain"
-                onError={() => setLogoVisible(false)}
-              />
+              <img src={brandLogoUrl} alt={hotelName} className="max-h-14 max-w-[220px] object-contain" onError={() => setLogoVisible(false)} />
             ) : (
-              <span className="text-lg font-black" style={{ color: primaryColor }}>
-                {hotelShortName}
-              </span>
+              <span className="text-lg font-black" style={{ color: primaryColor }}>{hotelShortName}</span>
             )}
           </a>
-          <span
-            className="rounded-full px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em]"
-            style={{ backgroundColor: `${accentColor}1A`, color: accentColor }}
-          >
-            Local guest guide
+          <span className="rounded-full border px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.14em]" style={{ borderColor: `${accentColor}44`, backgroundColor: `${accentColor}10`, color: accentColor }}>
+            Local nightlife guide
           </span>
         </header>
 
         {heroImageUrl && heroVisible ? (
-          <div className="relative z-10 h-48 overflow-hidden sm:h-60">
-            <img
-              src={heroImageUrl}
-              alt=""
-              className="h-full w-full object-cover"
-              onError={() => setHeroVisible(false)}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-            <div
-              className="pointer-events-none absolute -bottom-[58px] left-1/2 h-[86px] w-[132%] -translate-x-1/2 bg-white"
-              style={{ borderRadius: "50%" }}
-            />
+          <div className="relative z-10 mx-3 h-52 overflow-hidden rounded-b-[2.5rem] sm:mx-5 sm:h-72">
+            <img src={heroImageUrl} alt="" className="h-full w-full object-cover" onError={() => setHeroVisible(false)} />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
           </div>
         ) : null}
 
-        <section className="relative z-10 bg-white/[0.68] px-5 pb-3 pt-7 sm:px-8 sm:pt-9">
-          <p
-            className="text-xs font-black uppercase tracking-[0.24em]"
-            style={{ color: primaryColor }}
-          >
-            {eyebrow}
-          </p>
-          <h1
-            className="mt-2 max-w-2xl text-4xl font-black leading-[0.98] tracking-[-0.035em] sm:text-5xl"
-            style={{ color: textColor, fontFamily: headingFontFamily }}
-          >
+        <section className="relative z-10 bg-white/[0.84] px-5 pb-4 pt-7 sm:px-8 sm:pt-9">
+          <p className="text-xs font-black uppercase tracking-[0.24em]" style={{ color: primaryColor }}>{eyebrow}</p>
+          <h1 className="mt-2 max-w-2xl text-4xl font-black leading-[0.98] tracking-[-0.035em] sm:text-5xl" style={{ color: textColor, fontFamily: headingFontFamily }}>
             {headline}
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7" style={{ color: mutedTextColor }}>
-            {intro}
-          </p>
+          <p className="mt-3 max-w-2xl text-base leading-7" style={{ color: mutedTextColor }}>{intro}</p>
 
-          <div className="mt-6 grid grid-cols-2 rounded-2xl border border-slate-200 bg-slate-100 p-1">
-            <button
-              type="button"
-              onClick={() => setExperienceMode("tonight")}
-              className="rounded-xl px-4 py-3 text-sm font-black transition"
-              style={
-                mode === "tonight"
-                  ? { backgroundColor: primaryColor, color: "#FFFFFF" }
-                  : { color: mutedTextColor }
-              }
-            >
-              Tonight
-            </button>
-            <button
-              type="button"
-              onClick={() => setExperienceMode("week")}
-              className="rounded-xl px-4 py-3 text-sm font-black transition"
-              style={
-                mode === "week"
-                  ? { backgroundColor: primaryColor, color: "#FFFFFF" }
-                  : { color: mutedTextColor }
-              }
-            >
-              This Week
-            </button>
+          <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <QuickAction active={focus === "all" && mode === "tonight"} title="Sing Tonight" helper="What is on right now" icon="mic" onClick={() => { setExperienceMode("tonight"); chooseFocus("all"); }} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+            <QuickAction active={focus === "food"} title="Karaoke + Food" helper="Dinner and a mic" icon="food" onClick={() => chooseFocus("food")} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+            <QuickAction active={focus === "vibe"} title="Match My Vibe" helper="Find your kind of room" icon="spark" onClick={() => chooseFocus("vibe")} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+            <QuickAction active={focus === "near"} title="Near Me" helper="Walkable or quick ride" icon="pin" onClick={() => chooseFocus("near")} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+          </div>
+
+          {focus === "vibe" ? (
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/90 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.16em]" style={{ color: primaryColor }}>Pick your vibe</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {vibeChoices.length > 0 ? vibeChoices.map((vibe) => (
+                  <button key={vibe} type="button" onClick={() => { setSelectedVibe(vibe); trackEvent("hotel_experience_vibe_select", { hotel_experience: experienceSlug, vibe }); }} className="rounded-full border px-3 py-2 text-xs font-black transition hover:-translate-y-0.5" style={{ borderColor: selectedVibe === vibe ? `${primaryColor}77` : "#CBD5E1", backgroundColor: selectedVibe === vibe ? `${primaryColor}12` : "#FFFFFF", color: selectedVibe === vibe ? primaryColor : mutedTextColor }}>
+                    {vibe}
+                  </button>
+                )) : <p className="text-sm" style={{ color: mutedTextColor }}>Vibe notes are being added for nearby venues.</p>}
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mt-5 grid grid-cols-2 rounded-2xl border border-slate-200 bg-slate-100 p-1">
+            <button type="button" onClick={() => setExperienceMode("tonight")} className="rounded-xl px-4 py-3 text-sm font-black transition" style={mode === "tonight" ? { backgroundColor: primaryColor, color: "#FFFFFF" } : { color: mutedTextColor }}>Tonight</button>
+            <button type="button" onClick={() => setExperienceMode("week")} className="rounded-xl px-4 py-3 text-sm font-black transition" style={mode === "week" ? { backgroundColor: primaryColor, color: "#FFFFFF" } : { color: mutedTextColor }}>This Week</button>
           </div>
         </section>
 
+        {mode === "tonight" && focus === "all" && shortlist.length > 0 ? (
+          <section className="relative z-10 border-y border-slate-100 bg-[linear-gradient(180deg,#fff,#f8fafc)] px-5 py-7 sm:px-8">
+            <div className="mb-4 flex items-end justify-between gap-4">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: accentColor }}>Tonight's Shortlist</p>
+                <h2 className="mt-1 text-2xl font-black" style={{ color: textColor }}>Three easy places to start</h2>
+              </div>
+              <p className="hidden max-w-xs text-right text-xs sm:block" style={{ color: mutedTextColor }}>A quick local read before you head out.</p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {shortlist.map((venue) => <EditorialCard key={venue.slug} venue={venue} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />)}
+            </div>
+          </section>
+        ) : null}
+
         <div className="relative z-10 px-5 sm:px-8">
           {activeVenues.length === 0 ? (
-            <div className="my-8 rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center">
+            <div className="my-8 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-6 text-center">
               <p className="text-lg font-black" style={{ color: textColor }}>
-                No verified karaoke is listed {mode === "tonight" ? "tonight" : "this week"} close enough to recommend right now.
+                {focus === "food" ? "No nearby karaoke + food matches are verified for this view yet." : focus === "vibe" && selectedVibe ? `No nearby venues are tagged ${selectedVibe} yet.` : `No verified karaoke is listed ${mode === "tonight" ? "tonight" : "this week"} close enough to recommend right now.`}
               </p>
-              <p className="mt-2 text-sm leading-6" style={{ color: mutedTextColor }}>
-                SingHUB only shows current listings we can stand behind.
-              </p>
-              {mode === "tonight" && weekVenues.length > 0 ? (
-                <button
-                  type="button"
-                  onClick={() => setExperienceMode("week")}
-                  className="mt-5 rounded-full px-5 py-2.5 text-sm font-black text-white"
-                  style={{ backgroundColor: primaryColor }}
-                >
-                  See this week
-                </button>
-              ) : null}
+              <button type="button" onClick={() => { setFocus("all"); setSelectedVibe(""); }} className="mt-5 rounded-full px-5 py-2.5 text-sm font-black text-white" style={{ backgroundColor: primaryColor }}>Show all options</button>
             </div>
           ) : (
             <>
-              <TierSection
-                tier="walkable"
-                venues={grouped.walkable}
-                mode={mode}
-                experienceSlug={experienceSlug}
-                primaryColor={primaryColor}
-                accentColor={accentColor}
-                surfaceColor={surfaceColor}
-                textColor={textColor}
-                mutedTextColor={mutedTextColor}
-              />
-              <TierSection
-                tier="quick"
-                venues={grouped.quick}
-                mode={mode}
-                experienceSlug={experienceSlug}
-                primaryColor={primaryColor}
-                accentColor={accentColor}
-                surfaceColor={surfaceColor}
-                textColor={textColor}
-                mutedTextColor={mutedTextColor}
-              />
-              <TierSection
-                tier="standout"
-                venues={grouped.standout}
-                mode={mode}
-                experienceSlug={experienceSlug}
-                primaryColor={primaryColor}
-                accentColor={accentColor}
-                surfaceColor={surfaceColor}
-                textColor={textColor}
-                mutedTextColor={mutedTextColor}
-              />
+              <TierSection tier="walkable" venues={grouped.walkable} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+              <TierSection tier="quick" venues={grouped.quick} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+              <TierSection tier="standout" venues={grouped.standout} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
             </>
           )}
         </div>
 
-        <footer className="relative z-10 mt-5 border-t border-slate-200 bg-white/[0.76] px-5 py-7 sm:px-8">
+        <footer className="relative z-10 mt-5 border-t border-slate-200 bg-white/[0.9] px-5 py-7 sm:px-8">
           <Link
             href={`/find-karaoke?source=${encodeURIComponent(experienceSlug)}`}
-            onClick={() =>
-              trackEvent("hotel_experience_full_singhub_click", {
-                hotel_experience: experienceSlug,
-                mode,
-              })
-            }
-            className="flex w-full items-center justify-center rounded-2xl border border-white/20 px-5 py-3.5 text-center text-sm font-black transition hover:brightness-105"
-            style={{
-              background: "linear-gradient(135deg, #003B70 0%, #0067B9 100%)",
-              color: "#FFFFFF",
-              boxShadow: "0 12px 28px rgba(0, 59, 112, 0.24)",
-            }}
+            onClick={() => trackEvent("hotel_experience_full_singhub_click", { hotel_experience: experienceSlug, mode })}
+            className="flex w-full items-center justify-center rounded-2xl border border-white/20 px-5 py-3.5 text-center text-sm font-black text-white transition hover:brightness-105"
+            style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${accentColor} 100%)`, boxShadow: `0 12px 28px ${primaryColor}24` }}
           >
             Explore more local karaoke on SingHUB
           </Link>
 
           <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="max-w-md text-center text-[11px] leading-5 sm:text-left" style={{ color: mutedTextColor }}>
-              Karaoke listings are maintained by SingHUB. Schedules can change, especially on holidays and private-event nights.
+              SingHUB maintains the local karaoke information. Schedules can change, especially on holidays and private-event nights.
             </p>
             <div className="flex shrink-0 items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: mutedTextColor }}>
               <span>Powered by</span>
