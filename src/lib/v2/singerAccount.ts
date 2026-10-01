@@ -20,6 +20,14 @@ export async function loadSingerAccount(userId:string){
  return {alias:results[0].data?.karaoke_alias as string||'',performances:(results[1].data||[]) as Performance[],performanceCount:results[2].count||0,venues:(results[3].data||[]) as SavedVenue[],achievements:(results[4].data||[]) as Achievement[],hotels:(results[5].data||[]) as SavedHotel[],plans:(results[6].data||[]) as HotelPlan[]};
 }
 export async function sendAccountLink(email:string,next:string){const {error}=await accountClient().auth.signInWithOtp({email:email.trim(),options:{emailRedirectTo:location.origin+'/auth/callback?next='+encodeURIComponent(next),shouldCreateUser:true}});if(error)throw error;}
+export async function sendSavedPlanLink(){
+ const {data,error}=await accountClient().auth.getUser();
+ if(error)throw error;
+ if(!data.user?.email)throw new Error('Sign in again to email your saved plan.');
+ // A saved plan belongs to this account. Do not send its access link to an
+ // editable form address that could belong to a different account.
+ await sendAccountLink(data.user.email,'/account');
+}
 export async function saveHotelPlan(hotel:{slug:string;name:string},venue:{slug:string;name:string},saveHotel:boolean){const client=accountClient();const {data,error}=await client.auth.getUser();if(error&&error.name!=='AuthSessionMissingError')throw error;if(!data.user)return false;
  const result=await client.from('hotel_guest_plans').upsert({user_id:data.user.id,hotel_slug:hotel.slug,hotel_name:hotel.name,venue_slug:venue.slug,venue_name:venue.name});if(result.error)throw result.error;
  if(saveHotel){const result=await client.from('singer_saved_hotels').upsert({user_id:data.user.id,hotel_slug:hotel.slug,hotel_name:hotel.name});if(result.error)throw new Error('Your venue was saved, but the hotel could not be saved. '+result.error.message);}return true;
