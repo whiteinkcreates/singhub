@@ -38,6 +38,7 @@ function Group({
 
 export default function HotelGuideIndexPage() {
   const downtown = getHotelGuidesByArea("downtown");
+  const beach = getHotelGuidesByArea("beach");
   const laJolla = getHotelGuidesByArea("la-jolla");
   const laMesa = getHotelGuidesByArea("la-mesa");
 
@@ -55,6 +56,7 @@ export default function HotelGuideIndexPage() {
         </p>
 
         <Group title="Downtown / Gaslamp" hotels={downtown} />
+        <Group title="Pacific Beach / Mission Beach" hotels={beach} />
         <Group title="La Jolla" hotels={laJolla} />
         <Group title="La Mesa / East County" hotels={laMesa} />
       </div>
