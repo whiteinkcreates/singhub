@@ -441,3 +441,4 @@
 .v2-hotel dialog.plan-modal:not([open]) { display:none; }
 .v2-hotel dialog.plan-modal { margin:0; width:100%; height:100dvh; max-width:none; max-height:none; overflow-y:auto; color:inherit; }
 .v2-hotel dialog.plan-modal .plan-dialog { max-height:calc(100dvh - 36px); overflow-y:auto; }
+.singhere-dialog { margin:auto; }
