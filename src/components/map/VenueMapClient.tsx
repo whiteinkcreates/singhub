@@ -106,6 +106,7 @@ function getShapeStyle(venue: VenueListing) {
 }
 
 function getVenueIcon(venue: VenueListing) {
+  const accessibleName = venue.venueName.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]!));
   const statusStyle = markerStyles[venue.listingStatus];
   const shape = getShapeStyle(venue);
 
@@ -113,7 +114,6 @@ function getVenueIcon(venue: VenueListing) {
     className: shape.className,
     html: `
       <span
-        aria-hidden="true"
         style="
           align-items: center;
           background: radial-gradient(circle at 32% 24%, rgba(255,255,255,0.42), transparent 17px), linear-gradient(135deg, #111827, #334155 52%, #0f172a);
@@ -132,6 +132,7 @@ function getVenueIcon(venue: VenueListing) {
         title="${shape.title} • ${statusStyle.label}"
       >
         <span style="position:absolute;left:7px;right:7px;bottom:5px;height:4px;border-radius:999px;background:${statusStyle.stripe};box-shadow:0 0 10px ${statusStyle.glow};"></span>
+        <span class="sr-only">${accessibleName}</span>
         ${handheldMicSvg(30)}
       </span>
     `,
@@ -145,7 +146,6 @@ function getUserIcon() {
     className: "singhub-user-location-marker",
     html: `
       <span
-        aria-hidden="true"
         style="
           align-items: center;
           background: radial-gradient(circle at center, #6ee7b7, #059669);
@@ -162,7 +162,7 @@ function getUserIcon() {
           width: 34px;
         "
         title="Your location"
-      >●</span>
+      ><span class="sr-only">Your location</span><span aria-hidden="true">●</span></span>
     `,
     iconAnchor: [17, 17],
     popupAnchor: [0, -18],

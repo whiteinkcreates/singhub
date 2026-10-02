@@ -145,7 +145,7 @@ export function PwaInstallManager() {
   if (pathname.startsWith("/hotelexperience/") || (!showPrompt && !showIosHelp && !showBrowserHelp)) return null;
 
   return (
-    <div className="fixed inset-x-4 bottom-[calc(74px+env(safe-area-inset-bottom))] md:bottom-4 z-[80] mx-auto max-w-md rounded-2xl border border-white/15 bg-slate-950/95 p-4 shadow-2xl shadow-black/60 backdrop-blur">
+    <div className="fixed inset-x-4 bottom-[calc(74px+env(safe-area-inset-bottom))] min-[861px]:bottom-4 z-[80] mx-auto max-w-md rounded-2xl border border-white/15 bg-slate-950/95 p-4 shadow-2xl shadow-black/60 backdrop-blur">
       {showBrowserHelp ? (
         <>
           <p className="text-base font-black text-white">Keep SingHUB handy</p>
