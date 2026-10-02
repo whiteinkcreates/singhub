@@ -7,5 +7,5 @@
   "venues": 100,
   "authoritativeEvents": 199,
   "generatedCandidates": 0,
-  "reconciliation": "Targeted Google Sheets canonical corrections; newer verified production schedules retained. Full sheet sync remains blocked pending source conflicts."
+  "reconciliation": "Targeted Google Sheets canonical corrections; newer verified production schedules retained. Full sheet sync remains blocked pending the stale 710 source schedule."
 }

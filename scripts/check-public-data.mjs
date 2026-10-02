@@ -45,7 +45,7 @@ function validHttpUrl(value) {
   return !text || /^https?:\/\/\S+$/i.test(text);
 }
 
-function validBannerImageUrl(value) {
+export function validBannerImageUrl(value) {
   const text = clean(value);
   if (validHttpUrl(text)) return true;
   // Canonical snapshots already use local images, e.g. The North Bar. Keep

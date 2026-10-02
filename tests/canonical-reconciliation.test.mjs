@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 import {test} from 'node:test';
 import vm from 'node:vm';
 import ts from 'typescript';
+import {validBannerImageUrl} from '../scripts/check-public-data.mjs';
 
 function rows(name) {
   const [header,...lines]=readFileSync(`public/data/${name}.tsv`,'utf8').trimEnd().split('\n');
@@ -11,6 +12,12 @@ function rows(name) {
 }
 const venues=rows('venues');
 const events=rows('events_by_night');
+test('canonical media accepts existing local venue images and rejects missing or escaping paths',()=>{
+  assert.equal(validBannerImageUrl('/images/venues/north-bar-taps.jpg'),true);
+  assert.equal(validBannerImageUrl('/images/venues/missing-venue.jpg'),false);
+  assert.equal(validBannerImageUrl('/images/../../package.json'),false);
+  assert.equal(validBannerImageUrl('/images/venues/north-bar-taps.jpg?pretend=1'),false);
+});
 test('Pour House, Kimball and Brass Rail retain distinct canonical identities and schedules',()=>{
   for(const [slug,id,days] of [['the-pour-house-oceanside','venue-0136',['Monday','Tuesday']],['kimball-coastal-eatery','venue-0137',['Thursday']],['the-brass-rail','venue-0138',['Thursday']]]) {
     assert.equal(venues.find(v=>v.slug===slug)?.id,id);

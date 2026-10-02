@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { validatePublicData, formatValidationResult } from "./check-public-data.mjs";
+import { validatePublicData, formatValidationResult, validBannerImageUrl } from "./check-public-data.mjs";
 import { fetchGoogleSheetRows } from "./google-sheets-api.mjs";
 
 const ROOT = process.cwd();
@@ -126,11 +126,6 @@ function validIsoDate(value) {
   );
 }
 
-function validHttpUrl(value) {
-  const text = clean(value);
-  return !text || /^https?:\/\/\S+$/i.test(text);
-}
-
 function reportCanonicalSchemaProblems(venueRows, eventRows, report) {
   for (const row of venueRows) {
     if (!clean(row.venue_id) && !clean(row.venue_name)) continue;
@@ -141,8 +136,8 @@ function reportCanonicalSchemaProblems(venueRows, eventRows, report) {
     if (!validIsoDate(row.last_verified)) {
       report.canonicalSchemaProblems.push(`${label} has invalid last_verified; expected YYYY-MM-DD`);
     }
-    if (!validHttpUrl(row.banner_image_url)) {
-      report.canonicalSchemaProblems.push(`${label} has non-URL banner_image_url`);
+    if (!validBannerImageUrl(row.banner_image_url)) {
+      report.canonicalSchemaProblems.push(`${label} has invalid banner_image_url; expected an HTTP URL or existing public image`);
     }
     if (clean(row.is_featured) && !isBooleanCell(row.is_featured)) {
       report.canonicalSchemaProblems.push(`${label} has non-boolean is_featured`);
