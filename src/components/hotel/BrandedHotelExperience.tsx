@@ -1,5 +1,6 @@
 "use client";
 
+import { useHotelGuestPlan } from "./HotelGuestPlan";
 import { useListReturn } from "@/components/v2/listReturn";
 import { selectHotelStandouts } from "@/lib/v2/presentation";
 import { HotelPhotoCredit } from "./HotelPhotoCredit";
@@ -11,6 +12,7 @@ import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
 import type { HotelGuideVenue } from "@/components/hotel/HotelGuideExperience";
 
 type Props = {
+  hotelSlug: string;
   experienceSlug: string;
   hotelName: string;
   hotelShortName: string;
@@ -221,6 +223,8 @@ function EditorialCard({
 
 function VenueCard({
   venue,
+  onPlan,
+  added,
   mode,
   experienceSlug,
   primaryColor,
@@ -230,6 +234,8 @@ function VenueCard({
   mutedTextColor,
 }: {
   venue: HotelGuideVenue;
+  onPlan: () => void;
+  added: boolean;
   mode: "tonight" | "week";
   experienceSlug: string;
   primaryColor: string;
@@ -243,6 +249,7 @@ function VenueCard({
   const href = `/venues/${venue.slug}?source=${encodeURIComponent(experienceSlug)}`;
 
   return (
+    <article className="overflow-hidden rounded-[1.45rem] border border-slate-200/90 shadow-sm" style={{backgroundColor:surfaceColor}}>
     <Link
       href={href}
       onClick={() =>
@@ -295,6 +302,8 @@ function VenueCard({
         </div>
       ) : null}
     </Link>
+    <div className="px-3 pb-3"><button type="button" onClick={onPlan} className="w-full rounded-xl border px-4 py-2.5 text-sm font-bold" style={{color:primaryColor,borderColor:primaryColor}}>{added ? "Saved to my plan" : "Add to plan"}</button></div>
+    </article>
   );
 }
 
@@ -307,6 +316,8 @@ function TierIcon({ tier, color }: { tier: keyof typeof tierMeta; color: string 
 function TierSection({
   tier,
   venues,
+  openPlan,
+  savedPlans,
   mode,
   experienceSlug,
   primaryColor,
@@ -317,6 +328,8 @@ function TierSection({
 }: {
   tier: keyof typeof tierMeta;
   venues: HotelGuideVenue[];
+  openPlan: (venue: HotelGuideVenue) => void;
+  savedPlans: string[];
   mode: "tonight" | "week";
   experienceSlug: string;
   primaryColor: string;
@@ -345,6 +358,8 @@ function TierSection({
           <VenueCard
             key={venue.slug}
             venue={venue}
+            onPlan={()=>openPlan(venue)}
+            added={savedPlans.includes(venue.slug)}
             mode={mode}
             experienceSlug={experienceSlug}
             primaryColor={primaryColor}
@@ -360,6 +375,7 @@ function TierSection({
 }
 
 export function BrandedHotelExperience({
+  hotelSlug,
   experienceSlug,
   hotelName,
   hotelShortName,
@@ -384,6 +400,7 @@ export function BrandedHotelExperience({
   tonightVenues,
   weekVenues,
 }: Props) {
+  const {openPlan,savedPlans,overlay:planOverlay}=useHotelGuestPlan({hotelSlug,hotelName,hotelShortName,returnPath:"/hotelexperience/"+experienceSlug,tonightVenues,weekVenues});
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
   const [focus, setFocus] = useState<FocusMode>("all");
   const [selectedVibe, setSelectedVibe] = useState("");
@@ -538,13 +555,14 @@ export function BrandedHotelExperience({
             </div>
           ) : (
             <>
-              <TierSection tier="walkable" venues={grouped.walkable} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
-              <TierSection tier="quick" venues={grouped.quick} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
-              <TierSection tier="standout" venues={grouped.standout} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+              <TierSection openPlan={openPlan} savedPlans={savedPlans} tier="walkable" venues={grouped.walkable} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+              <TierSection openPlan={openPlan} savedPlans={savedPlans} tier="quick" venues={grouped.quick} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+              <TierSection openPlan={openPlan} savedPlans={savedPlans} tier="standout" venues={grouped.standout} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
             </>
           )}
         </div>
 
+        <div className="relative z-10 px-5 py-3 text-sm font-bold sm:px-8"><Link href="/account">My SingHUB · {savedPlans.length} saved karaoke picks</Link></div>
         <footer className="relative z-10 mt-5 border-t border-slate-200 bg-white/[0.9] px-5 py-7 sm:px-8">
           <Link
             href={`/find-karaoke?source=${encodeURIComponent(experienceSlug)}`}
@@ -566,6 +584,7 @@ export function BrandedHotelExperience({
           </div>
         </footer>
       </div>
+      {planOverlay}
     </main>
   );
 }

@@ -248,6 +248,7 @@ export async function HotelExperiencePageContent({ slug, demo = false }: { slug:
 
   return (
     <BrandedHotelExperience
+      hotelSlug={hotel.slug}
       experienceSlug={experience.slug}
       hotelName={hotel.name}
       hotelShortName={hotel.shortName}

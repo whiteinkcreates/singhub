@@ -4,42 +4,22 @@
 import type { HotelPhotoCredit as Credit } from "@/lib/hotelPhotoCredit";
 import { HotelHero } from "./HotelHero";
 import Link from "next/link";
-import { useCallback,useEffect,useRef,useState,type FormEvent } from 'react';
+import { useEffect,useRef,useState } from 'react';
 import { useV2Actions,useViewerInitials } from './actions';
 import { useListReturn } from './listReturn';
 import { HotelVenueCard } from './VenueRows';
 import { selectHotelStandouts,type HotelRowData } from '@/lib/v2/presentation';
 
-import {accountClient,saveHotelPlan,sendAccountLink} from '@/lib/v2/singerAccount';
+import {trackEvent} from "@/lib/analytics";
+import {useHotelGuestPlan} from '@/components/hotel/HotelGuestPlan';
 import "./styles/hotel.css";
 export function HotelGuideTemplate({hotelName,hotelShortName,hotelSlug,hotelArea,heroImageUrl,heroAlt,heroPosition,heroCredit,tonightVenues,weekVenues,weeklyCount,tonightCount}:{hotelName:string;hotelShortName:string;hotelSlug:string;hotelArea:string;heroImageUrl?:string;heroAlt?:string;heroPosition?:string;heroCredit?:Credit;tonightVenues:HotelRowData[];weekVenues:HotelRowData[];weeklyCount:number;tonightCount:number}) {
-const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();const [mode,setMode]=useState<'tonight'|'week'>('tonight');const [planVenue,setPlanVenue]=useState<HotelRowData|null>(null);
+const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();const [mode,setMode]=useState<'tonight'|'week'>('tonight');
 useListReturn({mode},saved=>{if(saved?.mode==='tonight'||saved?.mode==='week')setMode(saved.mode);});
 const active=mode==='tonight'?tonightVenues:weekVenues;const groups={walkable:active.filter(item=>item.tier==='walkable'),quick:active.filter(item=>item.tier==='quick'),standout:selectHotelStandouts(active)};
-const actions=useV2Actions(root,{venues:active.map(row=>row.venue),mapTitle:mode==='tonight'?'Tonight’s karaoke near '+hotelShortName:'This week’s karaoke near '+hotelShortName});const {toast}=actions;
-const planDialog=useRef<HTMLDialogElement>(null);
-const [savedPlans,setSavedPlans]=useState<string[]>([]);const [email,setEmail]=useState('');const [saving,setSaving]=useState(false);const [planMessage,setPlanMessage]=useState('');const [planError,setPlanError]=useState(false);
-const markSaved=useCallback((slug:string)=>setSavedPlans(current=>current.includes(slug)?current:[...current,slug]),[]);
-const openPlan=(item:HotelRowData)=>{setPlanMessage('');setPlanError(false);try{accountClient();}catch(error){setPlanError(true);setPlanMessage(error instanceof Error?error.message:'Sign-in is unavailable.');}setPlanVenue(item);};
-useEffect(()=>{let active=true;try{const client=accountClient();void client.auth.getUser().then(async({data,error})=>{if(error||!data.user||!active)return;setEmail(data.user.email||'');const result=await client.from('hotel_guest_plans').select('venue_slug').eq('user_id',data.user.id).eq('hotel_slug',hotelSlug);if(result.error){toast(result.error.message);return;}if(active)setSavedPlans((result.data||[]).map(row=>row.venue_slug));const params=new URLSearchParams(location.search);const slug=params.get('plan');const venue=[...tonightVenues,...weekVenues].find(venue=>venue.slug===slug);if(venue){try{await saveHotelPlan({slug:hotelSlug,name:hotelName},venue,params.get('saveHotel')!=='0');if(active){markSaved(venue.slug);toast('Added to your plan.');history.replaceState({},'',location.pathname);}}catch(error){toast(error instanceof Error?error.message:'Your plan could not be saved.');}}}).catch(()=>{});}catch{}return()=>{active=false;};},[hotelSlug,hotelName,tonightVenues,weekVenues,markSaved,toast]);
-async function submitPlan(event:FormEvent<HTMLFormElement>){
- event.preventDefault();if(!planVenue)return;
- const form=new FormData(event.currentTarget);const saveHotel=form.get('saveHotel')==='on';setPlanMessage('');setPlanError(false);setSaving(true);
- try{
-  const saved=await saveHotelPlan({slug:hotelSlug,name:hotelName},planVenue,saveHotel);
-  if(saved){
-   markSaved(planVenue.slug);setPlanVenue(null);
-   toast('Added to your plan'+(saveHotel?' with your hotel.':'.')+' Find it in My SingHUB.');
-  }else{
-   const next='/hotel/'+hotelSlug+'?plan='+encodeURIComponent(planVenue.slug)+'&saveHotel='+(saveHotel?'1':'0');
-   await sendAccountLink(email,next);setPlanMessage('Check your email for a sign-in link. Open it to finish saving your plan.');
-  }
- }catch(error){setPlanError(true);setPlanMessage(error instanceof Error?error.message:'Your plan was not saved. Please try again.');}finally{setSaving(false);}
-}
-
-useEffect(()=>{if(planVenue)planDialog.current?.showModal();else planDialog.current?.close();},[planVenue]);
-useEffect(()=>{const params=new URLSearchParams(location.search);if(!params.has('authError'))return;const venue=[...tonightVenues,...weekVenues].find(item=>item.slug===params.get('plan'));if(!venue)return;queueMicrotask(()=>{setPlanVenue(venue);setPlanError(true);setPlanMessage('Your sign-in link expired or could not be completed. Request a new link and open it in this browser to finish saving.');});},[tonightVenues,weekVenues]);
-useEffect(()=>{const listener=(event:KeyboardEvent)=>{if(event.key==='Escape')setPlanVenue(null);};document.addEventListener('keydown',listener);return ()=>document.removeEventListener('keydown',listener);},[]);
+const actions=useV2Actions(root,{venues:active.map(row=>row.venue),mapTitle:mode==='tonight'?'Tonight’s karaoke near '+hotelShortName:'This week’s karaoke near '+hotelShortName});
+useEffect(()=>{trackEvent("hotel_guide_view",{hotel_slug:hotelSlug});},[hotelSlug]);
+const {openPlan,savedPlans,overlay:planOverlay}=useHotelGuestPlan({hotelSlug,hotelName,hotelShortName,returnPath:'/hotel/'+hotelSlug,tonightVenues,weekVenues});
 
 return <div className={"v2-hotel"+(mode === "week" ? " week-mode" : "")} ref={root}>
 
@@ -49,7 +29,7 @@ return <div className={"v2-hotel"+(mode === "week" ? " week-mode" : "")} ref={ro
 <div className="experience-shell">
 <section className="concierge" aria-labelledby="welcome-title"><div className="concierge-inner"><div><p className="eyebrow">{'CURATED FOR GUESTS OF '+hotelShortName.toUpperCase()}</p><h2 id="welcome-title">{"New in town? Looking for a mic? Let me show you where San Diego really sings."}</h2></div><div className="concierge-copy"><p>{'San Diego has '+weeklyCount+' karaoke schedule listings. Tonight, SingHUB has '+tonightCount+' scheduled karaoke listings to choose from.'}</p><p>{"Take a look at a few nearby options and plan your own local gig tour."}</p></div></div></section>
 <section className="guide" aria-labelledby="guide-title">
-<header className="guide-head"><div><p className="eyebrow">{"KARAOKE NEAR YOU"}</p><h2 id="guide-title">{"Find your room."}</h2></div><div className="guide-controls"><div className="plan-status" aria-live="polite">{"My plan "}<strong id="plan-count">{savedPlans.length}</strong></div><div className="mode-switch" role="group" aria-label="Schedule range"><button data-mode="tonight" aria-pressed={mode === 'tonight'} className={mode === 'tonight' ? 'active' : ''} onClick={()=>setMode('tonight')}>{"Tonight"}</button><button data-mode="week" aria-pressed={mode === 'week'} className={mode === 'week' ? 'active' : ''} onClick={()=>setMode('week')}>{"This week"}</button></div><button className="map-button" data-toast="Map view opened">{"Map view"}</button></div></header>
+<header className="guide-head"><div><p className="eyebrow">{"KARAOKE NEAR YOU"}</p><h2 id="guide-title">{"Find your room."}</h2></div><div className="guide-controls"><div className="plan-status" aria-live="polite">{"My plan "}<strong id="plan-count">{savedPlans.length}</strong></div><div className="mode-switch" role="group" aria-label="Schedule range"><button data-mode="tonight" aria-pressed={mode === 'tonight'} className={mode === 'tonight' ? 'active' : ''} onClick={()=>{setMode('tonight');trackEvent('hotel_guide_toggle',{hotel_slug:hotelSlug,mode:'tonight'});}}>{"Tonight"}</button><button data-mode="week" aria-pressed={mode === 'week'} className={mode === 'week' ? 'active' : ''} onClick={()=>{setMode('week');trackEvent('hotel_guide_toggle',{hotel_slug:hotelSlug,mode:'week'});}}>{"This week"}</button></div><button className="map-button" data-toast="Map view opened">{"Map view"}</button></div></header>
 <div className="guide-notes" aria-label="Using the hotel guide"><div className="guide-note"><strong>{"Start with the night."}</strong><p>{"Use Tonight for what’s happening now. Switch to This Week if you’re planning around the rest of your stay."}</p></div><details className="guide-note"><summary>{"What is SingHUB?"}</summary><p>{"SingHUB is San Diego’s karaoke discovery guide. We bring venue schedules, room details, and recent verification dates into one place so you can spend less time searching and more time singing."}</p></details></div>
 <section className="category" data-category={"walkable"}><header className="category-head"><span className="category-icon" aria-hidden="true"><span className="material-symbols-rounded">{"directions_walk"}</span></span><div><h3>{"Walkable"}</h3><p>{"If you want something you can reach in about 5–10 minutes, start here. Step outside, pick a room, and go."}</p></div><div className="slider-buttons"><button data-slide="prev" aria-label="Previous walkable venues" onClick={event=>{const slider=event.currentTarget.closest('.category')?.querySelector('.venue-slider');if(slider)slider.scrollBy({left:-1*Math.min(slider.clientWidth*.8,360),behavior:'smooth'});}}>{"‹"}</button><button data-slide="next" aria-label="Next walkable venues" onClick={event=>{const slider=event.currentTarget.closest('.category')?.querySelector('.venue-slider');if(slider)slider.scrollBy({left:1*Math.min(slider.clientWidth*.8,360),behavior:'smooth'});}}>{"›"}</button></div></header><div className="venue-slider">{groups.walkable.map(item=><HotelVenueCard key={item.slug} item={item} hotelName={hotelShortName} onPlan={()=>openPlan(item)} added={savedPlans.includes(item.slug)} />)}</div></section>
 <section className="category" data-category={"quick"}><header className="category-head"><span className="category-icon" aria-hidden="true"><span className="material-symbols-rounded">{"directions_car"}</span></span><div><h3>{"Quick Ride"}</h3><p>{"If you don’t mind a short drive or rideshare, you have a few more neighborhood options."}</p></div><div className="slider-buttons"><button data-slide="prev" aria-label="Previous quick ride venues" onClick={event=>{const slider=event.currentTarget.closest('.category')?.querySelector('.venue-slider');if(slider)slider.scrollBy({left:-1*Math.min(slider.clientWidth*.8,360),behavior:'smooth'});}}>{"‹"}</button><button data-slide="next" aria-label="Next quick ride venues" onClick={event=>{const slider=event.currentTarget.closest('.category')?.querySelector('.venue-slider');if(slider)slider.scrollBy({left:1*Math.min(slider.clientWidth*.8,360),behavior:'smooth'});}}>{"›"}</button></div></header><div className="venue-slider">{groups.quick.map(item=><HotelVenueCard key={item.slug} item={item} hotelName={hotelShortName} onPlan={()=>openPlan(item)} added={savedPlans.includes(item.slug)} />)}</div></section>
@@ -61,7 +41,7 @@ return <div className={"v2-hotel"+(mode === "week" ? " week-mode" : "")} ref={ro
 </div>
 </main>
 <nav className="mobile-nav" aria-label="Mobile navigation"><Link href="/"><b>{"⌕"}</b>{"Discover"}</Link><a className="active" href={"/hotel/"+hotelSlug}><b>{"@"}</b>{"Hotel"}</a><a href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><Link href="/hosts"><b>{"♪"}</b>{"Hosts"}</Link><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
-<dialog ref={planDialog} className="plan-modal" id="plan-modal" aria-labelledby="plan-title" onCancel={()=>setPlanVenue(null)} onClick={event=>{if(event.target===event.currentTarget)setPlanVenue(null);}}><section className="plan-dialog" aria-labelledby="plan-title"><button className="plan-close" type="button" aria-label="Close" onClick={()=>setPlanVenue(null)}>{"×"}</button><p className="eyebrow">{"YOUR LOCAL GIG TOUR"}</p><h2 id="plan-title">{"Add "}<span id="plan-venue">{planVenue?.name || 'this venue'}</span>{" to your plan."}</h2><p>{"Enter your email and we’ll keep your karaoke picks together for this trip."}</p><form className="plan-form" onSubmit={submitPlan}><label htmlFor="plan-email">{"Email address"}</label><input id="plan-email" type="email" value={email} onChange={event=>setEmail(event.target.value)} autoComplete="email" placeholder="you@example.com" required /><label className="plan-check"><input id="save-hotel" name="saveHotel" type="checkbox" defaultChecked /><span>{'Save '+hotelShortName+' with this trip so your hotel guide is waiting in My SingHUB.'}</span></label><button className="plan-submit" type="submit" disabled={saving}>{saving?'Saving…':'Save my plan'}</button><p className="plan-privacy">{"First visit? We’ll email a sign-in link to finish saving your plan. Already signed in? Your picks save instantly to My SingHUB."}</p>{planMessage&&<p className="plan-feedback" role={planError?'alert':'status'} aria-live="polite">{planMessage}</p>}</form></section></dialog>
+{planOverlay}
 <div className="toast" role="status" aria-live="polite"></div>
 
 
