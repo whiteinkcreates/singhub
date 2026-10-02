@@ -10,10 +10,12 @@ import { filterRows,type VenueRowData } from '@/lib/v2/presentation';
 
 import "./styles/directory.css";
 export function VenueDirectoryExperience({rows,initialQuery="",initialType="",initialDay=""}:{rows:VenueRowData[];initialQuery?:string;initialType?:string;initialDay?:string}) {
-const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();const actions=useV2Actions(root,{venues:rows.map(row=>row.venue)});
+const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();
 const [query,setQuery]=useState(initialQuery);const [quick,setQuick]=useState(initialType==='private_room'?'private rooms':'');const [selected,setSelected]=useState<string[]>([]);
 useListReturn({query,quick,selected},saved=>{if(typeof saved?.query==='string')setQuery(saved.query);if(typeof saved?.quick==='string')setQuick(saved.quick);if(Array.isArray(saved?.selected))setSelected(saved.selected.filter(term=>typeof term==='string'));});
-const visible=filterRows(rows,query,quick,'directory').filter(item=>selected.every(term=>item.search.includes(term)) && (!initialDay || item.events.some(event=>event.karaokeDay.toLowerCase().includes(initialDay.toLowerCase()))));
+const tonightOnly=initialDay.toLowerCase()==='tonight';
+const visible=filterRows(rows,query,quick,tonightOnly?'tonight':'directory').filter(item=>selected.every(term=>item.search.includes(term)) && (!initialDay || tonightOnly || item.venue.venueType==='private_room' || item.events.some(event=>event.karaokeDay.toLowerCase().includes(initialDay.toLowerCase()))));
+const actions=useV2Actions(root,{venues:visible.map(row=>row.venue),mapTitle:'Your filtered karaoke venues'});
 
 return <div className="v2-directory" ref={root}>
 
@@ -23,7 +25,7 @@ return <div className="v2-directory" ref={root}>
 <section className="directory" aria-label="Venue directory">
 <div className="search-deck"><label className="search-field"><b aria-hidden="true">{"⌕"}</b><input id="venue-search" type="search" placeholder="Venue, neighborhood or room type" autoComplete="off" aria-label="Search karaoke venues" value={query} onChange={event=>setQuery(event.target.value)} /></label><button className="map-button" data-toast="Map view opens from this venue list">{"Map view"}</button></div>
 <div className="filters" aria-label="Venue filters"><button data-quick-filter="" aria-pressed={quick === ""} className={'filter-chip'+(quick === "" ? ' active' : '')} onClick={()=>setQuick("")}>{"All venues"}</button><button data-quick-filter="seven nights" aria-pressed={quick === "seven nights"} className={'filter-chip'+(quick === "seven nights" ? ' active' : '')} onClick={()=>setQuick("seven nights")}>{"Seven nights"}</button><button data-quick-filter="private rooms" aria-pressed={quick === "private rooms"} className={'filter-chip'+(quick === "private rooms" ? ' active' : '')} onClick={()=>setQuick("private rooms")}>{"Private rooms"}</button><button className="filter-chip more" id="open-filters" aria-haspopup="dialog" onClick={()=>root.current?.querySelector<HTMLDialogElement>('#filter-sheet')?.showModal()}>{selected.length ? 'Filters ('+selected.length+')' : 'Filters'}</button></div>
-<header className="directory-head"><div><p className="eyebrow">{"VERIFIED ROOMS"}</p><h2>{"Venue directory"}</h2></div><span className="result-count"><b id="result-count">{visible.length}</b>{" venues"}</span></header>
+<header className="directory-head"><div><p className="eyebrow">{"KARAOKE VENUES"}</p><h2>{tonightOnly?'Tonight’s venues':initialDay?initialDay+' karaoke':'Venue directory'}</h2></div><span className="result-count"><b id="result-count">{visible.length}</b>{visible.length===1?' venue':' venues'}</span></header>
 <div className="venue-list" id="venue-list">{visible.map(item=><DirectoryRow key={item.venue.slug} item={item} />)}</div>
 <div id="empty-state" className={'empty'+(visible.length ? '' : ' show')}><strong>{"No matching venues yet."}</strong><p>{"Try another venue, neighborhood, or room type."}</p></div>
 </section>

@@ -14,7 +14,7 @@ export function DirectoryRow({item}:{item:VenueRowData}){
   const {venue}=item;return <a className={'venue-card'+(item.photo?' has-full-profile':'')} href={'/venues/'+venue.slug} data-search={item.search}>
     {item.photo?<div className="venue-preview"><img src={item.photo} alt={item.photoAlt} /></div>:null}
     <div className="venue-info"><div className="title-line"><strong className="venue-name">{venue.venueName}</strong><span className="venue-kind">{item.kind}</span></div><p className="venue-place">{venue.neighborhood} · {venue.venueType==='private_room'?'Reservations':'Public karaoke'}</p><Tags tags={item.tags} /></div>
-    <div className="venue-rhythm"><span className="rhythm-label">{venue.venueType==='private_room'?'Room type':'Weekly rhythm'}</span><strong className="rhythm-value">{item.rhythm}</strong></div><Trust item={item} />
+    <div className="venue-rhythm"><span className="rhythm-label">{venue.venueType==='private_room'?'Room type':'Karaoke rhythm'}</span><strong className="rhythm-value">{item.rhythm}</strong></div><Trust item={item} />
   </a>;
 }
 export function HotelVenueCard({item,hotelName,onPlan,added=false}:{item:HotelRowData;hotelName:string;onPlan:()=>void;added?:boolean}){

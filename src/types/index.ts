@@ -63,6 +63,7 @@ export type KaraokeEventListing = {
   hostId?: string;
   hostName?: string;
   recurring: boolean;
+  recurrencePattern?: string;
   activeStatus: string;
   eventNotes?: string;
   eventConfidenceScore: number | null;

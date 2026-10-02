@@ -1,5 +1,7 @@
 "use client";
 
+import { useListReturn } from "@/components/v2/listReturn";
+import { selectHotelStandouts } from "@/lib/v2/presentation";
 import { HotelPhotoCredit } from "./HotelPhotoCredit";
 import type { HotelPhotoCredit as Credit } from "@/lib/hotelPhotoCredit";
 import Link from "next/link";
@@ -63,7 +65,7 @@ function splitByTier(venues: HotelGuideVenue[]) {
   return {
     walkable: venues.filter((venue) => venue.tier === "walkable"),
     quick: venues.filter((venue) => venue.tier === "quick"),
-    standout: venues.filter((venue) => venue.tier === "standout"),
+    standout: selectHotelStandouts(venues.filter((venue) => venue.tier === "standout")),
   };
 }
 
@@ -132,6 +134,7 @@ function QuickAction({
   return (
     <button
       type="button"
+      aria-pressed={active}
       onClick={onClick}
       className="group relative overflow-hidden rounded-[1.35rem] border p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:shadow-lg"
       style={{
@@ -384,6 +387,11 @@ export function BrandedHotelExperience({
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
   const [focus, setFocus] = useState<FocusMode>("all");
   const [selectedVibe, setSelectedVibe] = useState("");
+  useListReturn({mode,focus,selectedVibe}, saved => {
+    if (saved?.mode === "tonight" || saved?.mode === "week") setMode(saved.mode);
+    if (["all","food","vibe","near"].includes(saved?.focus)) setFocus(saved.focus);
+    if (typeof saved?.selectedVibe === "string") setSelectedVibe(saved.selectedVibe);
+  });
   const [heroSource, setHeroSource] = useState(heroImageUrl || fallbackHeroImageUrl || "");
   const [heroVisible, setHeroVisible] = useState(Boolean(heroImageUrl || fallbackHeroImageUrl));
   const [logoVisible, setLogoVisible] = useState(Boolean(brandLogoUrl));
@@ -491,7 +499,7 @@ export function BrandedHotelExperience({
               <p className="text-[10px] font-black uppercase tracking-[0.16em]" style={{ color: primaryColor }}>Pick your vibe</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {vibeChoices.length > 0 ? vibeChoices.map((vibe) => (
-                  <button key={vibe} type="button" onClick={() => { setSelectedVibe(vibe); trackEvent("hotel_experience_vibe_select", { hotel_experience: experienceSlug, vibe }); }} className="rounded-full border px-3 py-2 text-xs font-black transition hover:-translate-y-0.5" style={{ borderColor: selectedVibe === vibe ? `${primaryColor}77` : "#CBD5E1", backgroundColor: selectedVibe === vibe ? `${primaryColor}12` : "#FFFFFF", color: selectedVibe === vibe ? primaryColor : mutedTextColor }}>
+                  <button key={vibe} type="button" aria-pressed={selectedVibe === vibe} onClick={() => { setSelectedVibe(vibe); trackEvent("hotel_experience_vibe_select", { hotel_experience: experienceSlug, vibe }); }} className="rounded-full border px-3 py-2 text-xs font-black transition hover:-translate-y-0.5" style={{ borderColor: selectedVibe === vibe ? `${primaryColor}77` : "#CBD5E1", backgroundColor: selectedVibe === vibe ? `${primaryColor}12` : "#FFFFFF", color: selectedVibe === vibe ? primaryColor : mutedTextColor }}>
                     {vibe}
                   </button>
                 )) : <p className="text-sm" style={{ color: mutedTextColor }}>Vibe notes are being added for nearby venues.</p>}
@@ -500,8 +508,8 @@ export function BrandedHotelExperience({
           ) : null}
 
           <div className="mt-5 grid grid-cols-2 rounded-2xl border border-slate-200 bg-slate-100 p-1">
-            <button type="button" onClick={() => setExperienceMode("tonight")} className="rounded-xl px-4 py-3 text-sm font-black transition" style={mode === "tonight" ? { backgroundColor: primaryColor, color: "#FFFFFF" } : { color: mutedTextColor }}>Tonight</button>
-            <button type="button" onClick={() => setExperienceMode("week")} className="rounded-xl px-4 py-3 text-sm font-black transition" style={mode === "week" ? { backgroundColor: primaryColor, color: "#FFFFFF" } : { color: mutedTextColor }}>This Week</button>
+            <button type="button" aria-pressed={mode === "tonight"} onClick={() => setExperienceMode("tonight")} className="rounded-xl px-4 py-3 text-sm font-black transition" style={mode === "tonight" ? { backgroundColor: primaryColor, color: "#FFFFFF" } : { color: mutedTextColor }}>Tonight</button>
+            <button type="button" aria-pressed={mode === "week"} onClick={() => setExperienceMode("week")} className="rounded-xl px-4 py-3 text-sm font-black transition" style={mode === "week" ? { backgroundColor: primaryColor, color: "#FFFFFF" } : { color: mutedTextColor }}>This Week</button>
           </div>
         </section>
 

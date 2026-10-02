@@ -1,3 +1,4 @@
+import { eventRunsOnNight, scheduleQualification } from "@/lib/eventOccurrence";
 import { notFound } from "next/navigation";
 import { getHotelGuideWithMedia } from "@/lib/hotelProfiles.server";
 import { HotelGuideTemplate } from "@/components/v2/HotelGuideTemplate";
@@ -25,11 +26,11 @@ function formatSchedule(event: KaraokeEventListing) {
   const start = usable(event.startTime);
   const end = usable(event.endTime);
   const time = start && end ? `${start}–${end}` : start || end;
-  return [day, time].filter(Boolean).join(" · ");
+  return [day, time, scheduleQualification(event)].filter(Boolean).join(" · ");
 }
 
 function eventMatchesDay(event: KaraokeEventListing, day: string) {
-  return event.karaokeDay.toLowerCase().includes(day.toLowerCase());
+  return eventRunsOnNight(event, day);
 }
 
 function proximityTier(

@@ -21,7 +21,8 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
   ]);
   const source=typeof params.source==='string'?params.source:'';
   const hotel=getHotelGuide(source.replace(/^hotel-/,''));
-  const forecast=buildKaraokeForecast(todaysEvents,rows.map(row=>row.venue));
+  const publicSlugs=new Set(rows.filter(row=>row.venue.venueType!=='private_room').map(row=>row.venue.slug));
+  const forecast=buildKaraokeForecast(todaysEvents.filter(event=>publicSlugs.has(event.venueSlug)),rows.map(row=>row.venue));
 
   return <>
     <DiscoveryExperience rows={rows} hotelName={source.startsWith('hotel-')?hotel?.shortName:undefined} />

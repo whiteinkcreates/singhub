@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: VenuePageProps): Promise<Meta
   if (!venue || !isPublicVenue(venue)) return { title: "Venue Not Found | SingHUB", robots: { index: false, follow: false } };
   const shouldNoindex = isPlaceholderVenue(venue.venueName);
   return {
-    title: `${venue.venueName} Karaoke | SingHUB`,
+    title: `${venue.venueName}${/\bkaraoke\b/i.test(venue.venueName) ? "" : " Karaoke"} | SingHUB`,
     description: `${venue.venueName} karaoke listing in ${venue.neighborhood}, San Diego.`,
     alternates: { canonical: `/venues/${venue.slug}` },
     robots: shouldNoindex ? { index: false, follow: false } : undefined,

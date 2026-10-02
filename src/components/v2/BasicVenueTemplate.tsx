@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import Link from "next/link";
+import { eventRunsOnNight, scheduleQualification } from '@/lib/eventOccurrence';
 import { useRef } from 'react';
 import { useV2Actions,useViewerInitials } from './actions';
 import { goBackToList } from './listReturn';
@@ -24,7 +25,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 </header>
 <nav className="basic-browse-nav" aria-label="Primary"><Link href="/">Discover</Link><Link href="/find-karaoke">Venues</Link><Link href="/hosts">Hosts</Link><Link href="/hotel">Hotels</Link><Link href="/account">My SingHUB</Link></nav><div className="content">
 <section className="section">
-<div className="venue-hero"><img src={enhancement?.heroImageUrl||venue.bannerImageUrl||'/images/og/singhub-og.png'} alt={enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName+' venue'} className="venue-hero-photo" style={{objectPosition:enhancement?.heroPosition||venue.bannerImagePosition||'center'}} /></div>
+<div className="venue-hero"><img src={enhancement?.heroImageUrl||venue.bannerImageUrl||'/images/og/singhub-og.png'} alt={enhancement?.heroImageAlt||venue.bannerImageAlt||(enhancement?.heroImageUrl||venue.bannerImageUrl?venue.venueName+' venue':'SingHUB karaoke guide')} className="venue-hero-photo" style={{objectPosition:enhancement?.heroPosition||venue.bannerImagePosition||'center'}} /></div>
 <h1>{venue.venueName}</h1>
 <div className="verified" title={row.verification}><span className="verified-dot">{venue.listingStatus==='verified'?'✓':'·'}</span>{' '+row.trust.replace(/^✓\s*/, '')}</div>
 <p className="subline" style={{"marginTop": "10px"}}>{venue.neighborhood+' · '+venue.address}</p>
@@ -32,15 +33,15 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 </section>
 <section className="section">
 <div className="card tonight-card">
-<div className="tonight-label"><span className="live-dot"></span>{" TONIGHT"}</div>
-<div className="event-row"><div><strong>{"Karaoke"}</strong><div className="host">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Host details pending' : 'No confirmed karaoke tonight'}</div></div><time className="event-time">{row.tonight ? [compactTime(row.tonight.startTime),compactTime(row.tonight.endTime)].filter(Boolean).join(" - ") || "Time pending" : row.tonightTime}</time></div>
-<button className="primary-action" data-toast="SingHERE flow would open here">{"SingHERE tonight"}</button>
+<div className="tonight-label"><span className="live-dot"></span>{venue.venueType==='private_room'?' PRIVATE ROOMS':row.tonight?' TONIGHT':' KARAOKE SCHEDULE'}</div>
+<div className="event-row"><div><strong>{venue.venueType==='private_room'?'Reserve a room':'Karaoke'}</strong><div className="host">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Host details pending' : venue.venueType==='private_room'?'Contact the venue for room availability.':'No confirmed karaoke tonight'}</div></div><time className="event-time">{row.tonight ? [compactTime(row.tonight.startTime),compactTime(row.tonight.endTime)].filter(Boolean).join(" - ") || "Time pending" : row.tonightTime}</time></div>
+<button className="primary-action" data-toast="SingHERE flow would open here">{venue.venueType==='private_room'?'SingHERE · Private rooms':row.tonight?'SingHERE tonight':'SingHERE · Signup info'}</button>
 </div>
 <div className="secondary-actions"><button data-toast="Directions opened">{"Directions"}</button><button data-toast="Venue saved">{"Save"}</button><button data-toast="Share sheet opened">{"Share"}</button></div>
 </section>
 <section className="section">
-<div className="section-heading"><h2>{"Weekly schedule"}</h2></div>
-<div className="schedule-list">{events.map(event=><div className={"schedule-row"+(event.karaokeDay.toLowerCase().includes(weekday.toLowerCase())?" tonight-row":"")} key={event.eventId}><strong>{event.karaokeDay}</strong><span>{usable(event.hostName)||"Host pending"}</span><time title={[usable(event.startTime),usable(event.endTime)].filter(Boolean).join(" to ")}>{compactTime(event.startTime)||"Time pending"}</time></div>)}</div>
+<div className="section-heading"><h2>{"Regular schedule"}</h2></div>
+<div className="schedule-list">{!events.length&&<p className="subline">{venue.venueType==='private_room'?'Private-room sessions are booked directly with the venue.':'Regular karaoke nights are being confirmed. Contact the venue before heading out.'}</p>}{events.map(event=><div className={"schedule-row"+(eventRunsOnNight(event,weekday)?" tonight-row":"")} key={event.eventId}><strong>{event.karaokeDay}</strong><span>{[usable(event.hostName)||"Host pending",scheduleQualification(event)].filter(Boolean).join(" · ")}</span><time title={[usable(event.startTime),usable(event.endTime)].filter(Boolean).join(" to ")}>{compactTime(event.startTime)||"Time pending"}</time></div>)}</div>
 </section>
 <section className="section"><div className="section-heading"><h2>{"Good to know"}</h2></div><div className="detail-list">{details.map(([label,value])=><div className="detail" key={label}><span>⌖</span><div><strong>{label}</strong><p>{value}</p></div></div>)}</div></section>
 <section className="section"><div className="section-heading"><h2>Singers Say</h2></div><VenueFeedback venue={venue} events={events} summary={singersSay} /></section></div>
