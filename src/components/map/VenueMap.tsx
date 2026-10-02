@@ -7,6 +7,7 @@ import { hasValidCoordinates, type Coordinates } from "@/utils/distance";
 export type VenueMapProps = {
   venues: VenueListing[];
   userLocation?: Coordinates | null;
+  title?: string;
 };
 
 const VenueMapClient = dynamic(() => import("./VenueMapClient"), {
@@ -48,7 +49,7 @@ function LegendMicShape({ shape }: { shape: "circle" | "square" | "triangle" }) 
   );
 }
 
-export function VenueMap({ venues, userLocation = null }: VenueMapProps) {
+export function VenueMap({ venues, userLocation = null, title }: VenueMapProps) {
   const mappableVenues = venues.filter(hasValidCoordinates);
 
   return (
@@ -59,13 +60,11 @@ export function VenueMap({ venues, userLocation = null }: VenueMapProps) {
             Karaoke map
           </p>
           <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">
-            {userLocation
-              ? "Karaoke spots around you"
-              : "See tonight's spots across San Diego"}
+            {title || (userLocation ? "Karaoke spots around you" : "Karaoke spots across San Diego")}
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
             Showing {mappableVenues.length} mapped karaoke spot
-            {mappableVenues.length === 1 ? "" : "s"}. Shape shows venue type. The small color line shows listing status.
+            {mappableVenues.length === 1 ? "" : "s"}{venues.length > mappableVenues.length ? ` of ${venues.length} results. The others do not yet have map coordinates` : ""}. Shape shows venue type. The small color line shows listing status.
           </p>
         </div>
 

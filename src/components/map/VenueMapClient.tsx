@@ -254,6 +254,8 @@ export default function VenueMapClient({
           <Marker
             position={[userLocation.latitude, userLocation.longitude]}
             icon={getUserIcon()}
+            title="Your location"
+            alt="Your location"
           >
             <Popup>
               <div className="space-y-1 text-slate-900">
@@ -273,6 +275,8 @@ export default function VenueMapClient({
             key={venue.id}
             position={[venue.latitude, venue.longitude]}
             icon={getVenueIcon(venue)}
+            title={venue.venueName}
+            alt={venue.venueName}
           >
             <Popup>
               <div className="space-y-2 text-slate-900">

@@ -1,3 +1,4 @@
+import { eventRunsOnNight, scheduleQualification } from "@/lib/eventOccurrence";
 import type { VenueListing,KaraokeEventListing } from '@/types';
 import type { VenueEnhancement } from '@/lib/venueEnhancements';
 import { getDistanceInMiles } from '@/utils/distance';
@@ -16,19 +17,21 @@ export function verificationDate(events:KaraokeEventListing[], venue?:VenueListi
   return dates.sort().at(-1);
 }
 export function makeVenueRow(venue:VenueListing,events:KaraokeEventListing[],weekday:string,enhancement?:VenueEnhancement){
-  const today=events.filter(event=>event.karaokeDay.toLowerCase().includes(weekday.toLowerCase()));
+  const today=events.filter(event=>eventRunsOnNight(event,weekday));
   const days=[...new Set(events.map(event=>event.karaokeDay))];
   const nightCount=days.length;
   const date=verificationDate(events,venue);
   const verified=venue.listingStatus==='verified';
   const kind=venue.venueType==='private_room'?'Private rooms':venue.venueType==='event_producer'?'Karaoke events':'Karaoke bar';
-  const rhythm=venue.venueType==='private_room'?'Private rooms':nightCount===7?'Every night':nightCount?nightCount+' nights':'Schedule pending';
+  const nights=nightCount+' '+(nightCount===1?'night':'nights');
+  const qualifications=[...new Set(events.map(scheduleQualification).filter(Boolean))];
+  const rhythm=venue.venueType==='private_room'?'Private rooms':nightCount===7?'Every night':events.length&&events.every(event=>Boolean(scheduleQualification(event)))?qualifications.join(' / '):nightCount?nights:'Schedule pending';
   const liveBandEvents=events.filter(event=>/live[- ]?band/i.test([event.eventNotes,event.hostName].join(' ')));
   const liveBandDays=[...new Set(liveBandEvents.map(event=>event.karaokeDay.slice(0,3)))];
   const everydayTags=venue.vibeTags.filter(tag=>!/^live[- ]?band/i.test(tag)&&!/(monday|tuesday|wednesday|thursday|friday|saturday|sunday) karaoke/i.test(tag)&&tag.toLowerCase()!==venue.neighborhood.toLowerCase());
-  const tags=[nightCount===7?'Seven nights':nightCount?nightCount+' nights':'',liveBandDays.length?'Live band '+liveBandDays.join(' / '):'',...everydayTags,usable(venue.agePolicy)].filter(Boolean);
+  const tags=[nightCount===7?'Seven nights':nightCount?nights:'',...qualifications,liveBandDays.length?'Live band '+liveBandDays.join(' / '):'',...everydayTags,usable(venue.agePolicy)].filter(Boolean);
   const liveBandTonight=liveBandEvents.some(event=>today.includes(event));
-  const tonightTags=[nightCount===7?'Seven nights':nightCount?nightCount+' nights':'',liveBandTonight?'Live band tonight':'',...everydayTags,usable(venue.agePolicy)].filter(Boolean).slice(0,4);
+  const tonightTags=[nightCount===7?'Seven nights':nightCount?nights:'',liveBandTonight?'Live band tonight':'',...everydayTags,usable(venue.agePolicy)].filter(Boolean).slice(0,4);
   const photo=venue.bannerImageUrl || enhancement?.heroImageUrl;
   const liveBand=liveBandEvents[0];
   const search=[venue.venueName,venue.neighborhood,venue.city,venue.description,kind,...tags,photo?'photos':'',venue.venueType==='private_room'?'private rooms':'public stage',...events.map(event=>event.hostName||''),liveBand?'live band':''].join(' ').toLowerCase().replaceAll('lgbtq+','lgbtq');
@@ -48,7 +51,7 @@ export function filterRows(rows:VenueRowData[],query:string,filter:string,mode:'
   if(f==='near me'&&position)visible=visible.filter(row=>row.venue.latitude!==null&&row.venue.longitude!==null).sort((a,b)=>getDistanceInMiles(position,{latitude:a.venue.latitude!,longitude:a.venue.longitude!})-getDistanceInMiles(position,{latitude:b.venue.latitude!,longitude:b.venue.longitude!}));
   return visible;
 }
-export function selectHotelStandouts(rows:HotelRowData[]){
+export function selectHotelStandouts<T extends Pick<HotelRowData,'standoutReason'|'venueType'>>(rows:T[]){
   let privateRooms=0;
-  return rows.filter(row=>row.standoutReason).filter(row=>row.venueType!=='private_room'||++privateRooms<=1).slice(0,3);
+  return rows.filter(row=>row.standoutReason&&!/^Karaoke (tonight|this week)$/i.test(row.standoutReason)).filter(row=>row.venueType!=='private_room'||++privateRooms<=1).slice(0,3);
 }

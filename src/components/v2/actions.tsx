@@ -23,7 +23,8 @@ function useViewer(){
 export function useViewerName(){return useViewer().name;}
 export function useViewerInitials(){return useViewer().initials;}
 
-export function useV2Actions(root:RefObject<HTMLDivElement|null>,options:{venue?:VenueListing;events?:KaraokeEventListing[];venues?:VenueListing[];singerSignupUrl?:string;singHere?:SingHereConfig}={}){
+export function useV2Actions(root:RefObject<HTMLDivElement|null>,options:{venue?:VenueListing;events?:KaraokeEventListing[];venues?:VenueListing[];singerSignupUrl?:string;singHere?:SingHereConfig;mapTitle?:string;userLocation?:{latitude:number;longitude:number}|null}={}){
+ const mapDialog=useRef<HTMLDialogElement>(null);
  const timer=useRef<ReturnType<typeof setTimeout>|null>(null);const [mapOpen,setMapOpen]=useState(false);const [singHereOpen,setSingHereOpen]=useState(false);
  // This callback reads the ref at click time, preserving the source toast behavior.
  // eslint-disable-next-line react-hooks/preserve-manual-memoization
@@ -57,8 +58,8 @@ export function useV2Actions(root:RefObject<HTMLDivElement|null>,options:{venue?
   };
   node.addEventListener('click',listener);return()=>{node.removeEventListener('click',listener);if(timer.current)clearTimeout(timer.current);};
  },[root,toast,options.venue,options.events,options.venues]);
- const overlay=mapOpen&&typeof document!=='undefined'?createPortal(<div className="fixed inset-0 z-[100] overflow-y-auto bg-slate-950/95 p-4" role="dialog" aria-modal="true" aria-label="Karaoke map"><button className="mb-4 rounded border border-white/30 px-5 py-3" autoFocus onClick={()=>setMapOpen(false)}>Close map</button><VenueMap venues={options.venues|| (options.venue?[options.venue]:[])} /></div>,document.body):null;
- useEffect(()=>{if(!mapOpen)return;const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')setMapOpen(false);};document.addEventListener('keydown',escape);return()=>document.removeEventListener('keydown',escape);},[mapOpen]);
+ const overlay=mapOpen&&typeof document!=='undefined'?createPortal(<dialog ref={mapDialog} className="fixed inset-0 z-[100] m-0 h-[100dvh] max-h-none w-full max-w-none overflow-y-auto bg-slate-950/95 p-4 text-white" aria-label="Karaoke map" onCancel={()=>setMapOpen(false)}><button className="mb-4 rounded border border-white/30 px-5 py-3" autoFocus onClick={()=>setMapOpen(false)}>Close map</button><VenueMap venues={options.venues|| (options.venue?[options.venue]:[])} title={options.mapTitle||(options.venue?options.venue.venueName+' on the map':undefined)} userLocation={options.userLocation} /></dialog>,document.body):null;
+ useEffect(()=>{if(!mapOpen)return;mapDialog.current?.showModal();const escape=(event:KeyboardEvent)=>{if(event.key==='Escape')setMapOpen(false);};document.addEventListener('keydown',escape);return()=>document.removeEventListener('keydown',escape);},[mapOpen]);
  return {toast,overlay:<>{overlay}{singHereOpen&&options.venue?<SingHereDialog venue={options.venue} signupUrl={options.singerSignupUrl} config={options.singHere} onClose={()=>setSingHereOpen(false)} />:null}</>};
 }
 function download(blob:Blob,name:string){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}

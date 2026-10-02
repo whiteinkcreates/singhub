@@ -1,3 +1,4 @@
+import { eventRunsOnNight } from "@/lib/eventOccurrence";
 import fs from "node:fs";
 import path from "node:path";
 import { connection } from "next/server";
@@ -54,6 +55,7 @@ function rowToKaraokeEventListing(row: EventSourceRow): KaraokeEventListing {
     hostId: getOptionalValue(row.host_id),
     hostName: getOptionalValue(row.host_display_name || row.host_name),
     recurring: parseBoolean(row.recurring),
+    recurrencePattern: getOptionalValue(row.recurring),
     activeStatus: row.active_status || "active",
     eventNotes: getOptionalValue(row.public_notes || row.event_notes),
     eventConfidenceScore: parseNumber(row.event_confidence_score),
@@ -88,8 +90,7 @@ function getFallbackRows() {
 }
 
 function eventRunsToday(event: KaraokeEventListing, today: string) {
-  const eventDay = event.karaokeDay.toLowerCase();
-  return eventDay === today.toLowerCase() || eventDay.includes(today.toLowerCase());
+  return eventRunsOnNight(event, today);
 }
 
 export async function getKaraokeEventData(): Promise<{

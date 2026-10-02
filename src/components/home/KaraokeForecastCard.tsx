@@ -46,7 +46,7 @@ export function KaraokeForecastCard({ forecast }: { forecast: KaraokeForecast })
               <div className="rounded-2xl border border-cyan-300/15 bg-cyan-300/[0.04] p-4">
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-200">Tonight</p>
                 <p className="mt-2 text-2xl font-black text-white">{forecast.eventCount}</p>
-                <p className="mt-1 text-sm text-slate-400">verified karaoke events</p>
+                <p className="mt-1 text-sm text-slate-400">scheduled karaoke events</p>
               </div>
               <div className="rounded-2xl border border-violet-300/15 bg-violet-300/[0.04] p-4">
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-violet-200">Hot zone</p>
