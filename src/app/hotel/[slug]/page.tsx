@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { getHotelGuide, hotelGuides } from "@/lib/hotelGuides";
+import { connection } from "next/server";
+import { getHotelGuide } from "@/lib/hotelGuides";
 import { HotelGuidePageContent } from "@/components/hotel/HotelGuidePageContent";
 type Props = { params: Promise<{ slug: string }> };
-export function generateStaticParams() {
-  return hotelGuides.map((hotel) => ({ slug: hotel.slug }));
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -22,6 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function HotelGuidePage({ params }: Props) {
- const { slug } = await params;
- return <HotelGuidePageContent slug={slug} />;
+  // Tonight must be calculated for this request, never frozen at build time.
+  await connection();
+  const { slug } = await params;
+  return <HotelGuidePageContent slug={slug} />;
 }

@@ -1,14 +1,9 @@
 import type { Metadata } from "next";
-import { getHotelExperienceConfig, hotelExperienceConfigs } from "@/lib/hotelExperiences";
+import { connection } from "next/server";
+import { getHotelExperienceConfig } from "@/lib/hotelExperiences";
 import { getHotelGuide } from "@/lib/hotelGuides";
 import { HotelExperiencePageContent } from "@/components/hotel/HotelExperiencePageContent";
 type Props = { params: Promise<{ slug: string }> };
-export function generateStaticParams() {
-  return [
-    ...hotelExperienceConfigs.map((experience) => ({ slug: experience.slug })),
-    { slug: "holidayinnexpresslamesa" },
-  ];
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -28,4 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function HotelExperiencePage({ params }: Props) { const { slug } = await params; return <HotelExperiencePageContent slug={slug} />; }
+export default async function HotelExperiencePage({ params }: Props) {
+  // Tonight must be calculated for this request, never frozen at build time.
+  await connection();
+  const { slug } = await params;
+  return <HotelExperiencePageContent slug={slug} />;
+}
