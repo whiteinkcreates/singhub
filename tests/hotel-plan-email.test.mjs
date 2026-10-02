@@ -56,3 +56,12 @@ test('failed plan and partial hotel saves expose the actual failure',async()=>{
  const partial=planService({hotelError:new Error('Hotel denied')});await assert.rejects(partial.save(),/Your venue was saved, but the hotel could not be saved.*Hotel denied/);
  const expired=planService({authError:new Error('Session expired')});await assert.rejects(expired.save(),/Session expired/);assert.equal(expired.writes.length,0);
 });
+
+test('account summary counts every saved row shown in Saved Picks',()=>{
+ const exports={};
+ vm.runInNewContext(ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{exports,require:()=>({}),process:{env:{}},Error});
+ const account={venues:[{venue_slug:'710-beach-club'}],hotels:[{hotel_slug:'holiday-inn-express-la-mesa'}],plans:[{hotel_slug:'holiday-inn-express-la-mesa',venue_slug:'jts-tavern'}]};
+ assert.equal(exports.countSavedPicks(account),3);
+ assert.equal(exports.countSavedPicks({venues:[],hotels:[],plans:[]}),0);
+ assert.equal(exports.countSavedPicks(null),0);
+});

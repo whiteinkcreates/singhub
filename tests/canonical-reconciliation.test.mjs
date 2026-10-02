@@ -42,3 +42,14 @@ test('Ramona and Valley Center are included in the San Diego County public marke
   for(const city of ['Ramona','Valley Center','La Mesa']) assert.equal(exports.isSanDiegoRegionVenue({city}),true);
   assert.equal(exports.isSanDiegoRegionVenue({city:'Boston'}),false);
 });
+
+test('JT Friday uses Corey-confirmed Will without changing the other nights',()=>{
+ const schedule=events.filter(e=>e.venue_slug==='jts-tavern');
+ assert.equal(schedule.length,7);
+ const friday=schedule.find(e=>e.karaoke_day==='Friday');
+ assert.equal(friday.host_name,'Will');
+ assert.equal(friday.host_display_name,'Will');
+ assert.equal(friday.last_verified,'2026-10-02');
+ assert.equal(schedule.find(e=>e.karaoke_day==='Monday').host_name,'Brian The Lion');
+ assert.equal(schedule.find(e=>e.karaoke_day==='Saturday').host_name,'');
+});
