@@ -6,6 +6,7 @@ export type SavedVenue={venue_slug:string;venue_name:string;neighborhood:string|
 export type Achievement={id:string;badge_key:string;badge_name:string;awarded_at:string;award_note:string|null};
 export type SavedHotel={hotel_slug:string;hotel_name:string};
 export type HotelPlan={hotel_slug:string;hotel_name:string;venue_slug:string;venue_name:string};
+export function countSavedPicks(account:{venues:SavedVenue[];hotels:SavedHotel[];plans:HotelPlan[]}|null){return account?account.venues.length+account.hotels.length+account.plans.length:0;}
 export function accountClient(){if(!process.env.NEXT_PUBLIC_SUPABASE_URL||!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)throw new Error('Sign-in is unavailable in this environment.');return createClient();}
 export async function loadSingerAccount(userId:string){
  const client=accountClient();const results=await Promise.all([
