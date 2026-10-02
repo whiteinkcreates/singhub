@@ -27,7 +27,7 @@ function Group({
       </header>
       <div className="hotel-index-list">
         {hotels.map((hotel) => (
-          <Link key={hotel.slug} href={`/hotelexperience/${hotel.slug}`} className="hotel-index-row">
+          <Link key={hotel.slug} href={`/hotelexperience/${hotel.slug}`} target="_blank" rel="noopener noreferrer" className="hotel-index-row">
             <span>
               <strong>{hotel.name}</strong>
               <small>{hotel.address}</small>
