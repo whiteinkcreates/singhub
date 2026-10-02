@@ -3,32 +3,36 @@ import { getHotelGuidesByArea } from "@/lib/hotelGuides";
 
 export const metadata = {
   title: "Hotel Guest Guides | SingHUB",
-  description: "Preview SingHUB hotel-aware karaoke guest guides.",
+  description: "SingHUB hotel-aware karaoke guest guides.",
   robots: { index: false, follow: true },
 };
 
 function Group({
+  eyebrow,
   title,
   hotels,
 }: {
+  eyebrow: string;
   title: string;
   hotels: ReturnType<typeof getHotelGuidesByArea>;
 }) {
   return (
-    <section className="mt-10">
-      <h2 className="text-2xl font-black text-white">{title}</h2>
-      <div className="mt-4 divide-y divide-white/10 border-y border-white/10">
+    <section className="hotel-index-group">
+      <header className="hotel-index-group-head">
+        <div>
+          <p>{eyebrow}</p>
+          <h2>{title}</h2>
+        </div>
+        <span>{hotels.length} {hotels.length === 1 ? "hotel" : "hotels"}</span>
+      </header>
+      <div className="hotel-index-list">
         {hotels.map((hotel) => (
-          <Link
-            key={hotel.slug}
-            href={`/hotelexperience/${hotel.slug}`}
-            className="flex items-center justify-between gap-4 py-4 text-slate-200 transition hover:text-fuchsia-200"
-          >
+          <Link key={hotel.slug} href={`/hotelexperience/${hotel.slug}`} className="hotel-index-row">
             <span>
-              <strong className="block text-base">{hotel.name}</strong>
-              <span className="mt-1 block text-xs text-slate-500">{hotel.address}</span>
+              <strong>{hotel.name}</strong>
+              <small>{hotel.address}</small>
             </span>
-            <span className="text-xl text-cyan-300">›</span>
+            <b aria-hidden="true">↗</b>
           </Link>
         ))}
       </div>
@@ -43,23 +47,66 @@ export default function HotelGuideIndexPage() {
   const laMesa = getHotelGuidesByArea("la-mesa");
 
   return (
-    <main className="min-h-screen bg-[#06101e] px-5 py-12 text-white">
-      <div className="mx-auto max-w-3xl">
-        <p className="mt-5 text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">
-          Hotel Experience v1.2 previews
-        </p>
-        <h1 className="mt-2 text-4xl font-black tracking-tight">
-          Karaoke around your stay.
-        </h1>
-        <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
-          Preview Hotel Experience v1.2 using current venue and event data. Every hotel guide now inherits the same nightlife-concierge system. These pages are outreach demos and do not imply a hotel partnership.
-        </p>
+    <div className="hotel-index-v2">
+      <header className="hotel-index-appbar">
+        <Link href="/" aria-label="SingHUB home">
+          <img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" />
+        </Link>
+        <nav aria-label="Primary">
+          <Link href="/">Discover</Link>
+          <Link href="/find-karaoke">Venues</Link>
+          <Link href="/hosts">Hosts</Link>
+          <Link className="active" href="/hotel">Hotels</Link>
+          <Link href="/singboard">SingBOARD</Link>
+        </nav>
+        <Link className="hotel-index-account" href="/account">My SingHUB <i>◎</i></Link>
+      </header>
 
-        <Group title="Downtown / Gaslamp" hotels={downtown} />
-        <Group title="Pacific Beach / Mission Beach" hotels={beach} />
-        <Group title="La Jolla" hotels={laJolla} />
-        <Group title="La Mesa / East County" hotels={laMesa} />
-      </div>
-    </main>
+      <main>
+        <section className="hotel-index-hero" aria-labelledby="hotel-index-title">
+          <img src="/images/singhub-v2/hotels-index-band-luggage-cart.jpg" alt="" aria-hidden="true" />
+          <div className="hotel-index-hero-inner">
+            <div className="hotel-index-hero-copy">
+              <p className="hotel-index-eyebrow">SINGHUB HOTELS</p>
+              <h1 id="hotel-index-title">Check in. Find your mic.</h1>
+              <p className="hotel-index-deck">
+                Hotel-aware karaoke guides built around where you are staying, so the city feels local before you leave the lobby.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="hotel-index-shell">
+          <div className="hotel-index-intro">
+            <div>
+              <p className="hotel-index-eyebrow">LOCAL NIGHTLIFE, FROM YOUR LOBBY</p>
+              <h2>Your stay is the starting point.</h2>
+            </div>
+            <p>
+              Explore current SingHUB hotel experiences by neighborhood. Each guide organizes verified karaoke around the property with tonight, this week, walkable options, quick rides, and local standouts.
+            </p>
+          </div>
+
+          <div className="hotel-index-groups">
+            <Group eyebrow="CITY CENTER" title="Downtown / Gaslamp" hotels={downtown} />
+            <Group eyebrow="COAST" title="Pacific Beach / Mission Beach" hotels={beach} />
+            <Group eyebrow="COASTAL VILLAGE" title="La Jolla" hotels={laJolla} />
+            <Group eyebrow="EAST COUNTY" title="La Mesa" hotels={laMesa} />
+          </div>
+
+          <p className="hotel-index-note">
+            These hotel experiences are product previews unless a property is identified as a SingHUB partner.
+          </p>
+        </section>
+      </main>
+
+      <nav className="hotel-index-mobile-nav" aria-label="Mobile navigation">
+        <Link href="/"><b>⌕</b>Discover</Link>
+        <Link href="/find-karaoke"><b>●</b>Venues</Link>
+        <Link href="/hosts"><b>♪</b>Hosts</Link>
+        <Link className="active" href="/hotel"><b>▣</b>Hotels</Link>
+        <Link href="/account"><b>◎</b>My SingHUB</Link>
+      </nav>
+    </div>
   );
 }
