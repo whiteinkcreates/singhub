@@ -30,7 +30,7 @@ const sanDiegoCities = new Set([
   "Imperial Beach", "Santee", "El Cajon", "Lakeside", "Poway",
   "Oceanside", "Vista", "Escondido", "Carlsbad", "Encinitas",
   "San Marcos", "Spring Valley", "Lemon Grove", "Coronado",
-  "Solana Beach", "Del Mar", "Alpine",
+  "Solana Beach", "Del Mar", "Alpine", "Ramona", "Valley Center",
 ]);
 
 function clean(value) {

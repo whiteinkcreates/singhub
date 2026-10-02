@@ -1,10 +1,11 @@
 {
-  "generatedAt": "2026-09-21T04:50:13.057Z",
-  "source": "google_sheets_api",
+  "generatedAt": "2026-10-02T19:14:47.806932+00:00",
+  "source": "canonical_reconciliation",
   "sourceWorkbook": "canonical",
   "venueTab": "Venues_Canonical",
   "eventTab": "Events_Canonical",
-  "venues": 97,
-  "authoritativeEvents": 189,
-  "generatedCandidates": 0
+  "venues": 100,
+  "authoritativeEvents": 199,
+  "generatedCandidates": 0,
+  "reconciliation": "Targeted Google Sheets canonical corrections; newer verified production schedules retained. Full sheet sync remains blocked pending the stale 710 source schedule."
 }
