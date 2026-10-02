@@ -185,7 +185,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
     </div>
 
     <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
-      <div className="rounded-[2rem] border border-[#6f422d] bg-[repeating-linear-gradient(90deg,#2b160f_0_10px,#3b2118_10px_20px,#24110c_20px_28px)] p-2 shadow-[0_24px_70px_rgba(0,0,0,.55),0_0_36px_rgba(236,72,153,.12)] sm:p-4">
+      <div className="rounded-[1.5rem] border border-white/10 bg-[#05060a] p-2 shadow-[0_24px_70px_rgba(0,0,0,.55),0_0_36px_rgba(236,72,153,.10)] sm:p-4">
         <div
           ref={boardRef}
           className="relative min-h-[900px] overflow-hidden rounded-[1.15rem] border border-white/10 bg-[#080910] shadow-[inset_0_0_90px_rgba(0,0,0,.75),inset_0_0_35px_rgba(139,92,246,.08)]"
