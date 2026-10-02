@@ -6,9 +6,9 @@ import postcss from 'postcss';
 const fixtures='tests/fixtures/singhub-v2/';
 const styles='src/components/v2/styles/';
 const pages={discovery:'index',directory:'venues',hotel:'hotel',enhanced:'redwing',account:'singer',basic:'design-board'};
-test('all fifteen approved assets remain byte-identical',async()=>{
+test('all approved assets remain byte-identical',async()=>{
  const hashes=JSON.parse(await readFile(fixtures+'assets.sha256.json','utf8'));
- assert.equal(Object.keys(hashes).length,15);
+ assert.equal(Object.keys(hashes).length,16);
  for(const [name,hash] of Object.entries(hashes))assert.equal(createHash('sha256').update(await readFile('public/images/singhub-v2/'+name)).digest('hex'),hash,name);
 });
 for(const [template,page] of Object.entries(pages))test(template+' preserves recovered CSS declarations and breakpoints',async()=>{

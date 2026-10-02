@@ -134,5 +134,6 @@ export function getHotelGuidesByArea(area: HotelGuide["area"]) {
 }
 
 export function isHotelGuideVenueCandidate(venue: VenueListing) {
-  return venue.latitude !== null && venue.longitude !== null && venue.venueType !== "event_producer";
+  // Keep Winston's out of guest recommendations during its ownership transition.
+  return venue.slug !== "winstons-beach-club" && venue.latitude !== null && venue.longitude !== null && venue.venueType !== "event_producer";
 }

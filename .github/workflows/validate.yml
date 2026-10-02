@@ -31,6 +31,9 @@ jobs:
       - name: Run listing guardrail regression tests
         run: npm run test:data
 
+      - name: Verify canonical reconciliation and nightlife behavior
+        run: node --test tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs
+
       - name: Keep heavy media out of deployments
         run: npm run check:assets
 

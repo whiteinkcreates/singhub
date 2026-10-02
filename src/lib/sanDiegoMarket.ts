@@ -24,6 +24,8 @@ const SAN_DIEGO_REGION_CITIES = new Set([
   "solana beach",
   "del mar",
   "alpine",
+  "ramona",
+  "valley center",
 ]);
 
 function normalize(value: string | undefined) {

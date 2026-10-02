@@ -442,3 +442,9 @@
 .v2-hotel dialog.plan-modal { margin:0; border:0; width:100%; height:100dvh; max-width:none; max-height:none; overflow-y:auto; color:inherit; }
 .v2-hotel dialog.plan-modal .plan-dialog { max-height:calc(100dvh - 36px); overflow-y:auto; }
 .singhere-dialog { margin:auto; }
+
+/* Keep full verified schedule ranges readable on narrow venue profiles. */
+@media (max-width: 480px) {
+  .v2-basic .schedule-row { grid-template-columns: 86px minmax(0, 1fr); }
+  .v2-basic .schedule-row time { grid-column: 2; white-space: normal; }
+}
