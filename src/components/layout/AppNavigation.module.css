@@ -14,10 +14,11 @@
 :global(body:has([data-app-navigation]) :is(.v2-discovery,.v2-directory,.v2-enhanced,.v2-account,.v2-hotel) > .appbar),
 :global(body:has([data-app-navigation]) .host-appbar),
 :global(body:has([data-app-navigation]) .hotel-index-appbar),
-:global(body:has([data-app-navigation]) .v2-basic .app-header),
+:global(body:has([data-app-navigation]) .v2-basic .app-header img),
 :global(body:has([data-app-navigation]) .v2-basic .basic-browse-nav),
 :global(body:has([data-app-navigation]) :is(.v2-discovery,.v2-directory,.v2-enhanced,.v2-account,.v2-hotel) > nav.mobile-nav),
 :global(body:has([data-app-navigation]) .hotel-index-mobile-nav) { display:none; }
+:global(body:has([data-app-navigation]) .v2-basic .app-header) { position:static; display:flex; justify-content:space-between; align-items:center; height:48px; min-height:48px; padding:4px 16px; }
 @media (max-width:860px) {
  .header { grid-template-columns:112px 1fr; height:62px; padding:4px 14px; }
  .brand { width:112px; height:48px; }
