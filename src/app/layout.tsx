@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
+import { OutboundLinks } from "@/components/layout/OutboundLinks";
 import { ProductionChrome } from "@/components/layout/ProductionChrome";
 
 import { PwaInstallManager } from "@/components/pwa/PwaInstallManager";
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Suspense fallback={null}>
           <AnalyticsProvider />
         </Suspense>
+        <OutboundLinks />
         <PwaRegister />
         <PwaInstallManager />
         <ProductionChrome position="header" />

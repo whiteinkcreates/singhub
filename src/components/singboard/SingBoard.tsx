@@ -1,4 +1,5 @@
 "use client";
+import { isExternalWebUrl } from "@/lib/navigation";
 
 import { toJpeg } from "html-to-image";
 import { useMemo, useRef, useState } from "react";
@@ -228,7 +229,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
           {visible.map(post=><button
             key={post.id}
             type="button"
-            onClick={post.pinned?()=>window.location.assign(post.postType==="wanted"&&post.linkUrl?post.linkUrl:`/events/${post.id}`):undefined}
+            onClick={post.pinned?()=>{const href=post.postType==="wanted"&&post.linkUrl?post.linkUrl:`/events/${post.id}`;if(isExternalWebUrl(href,window.location.origin))window.open(href,"_blank","noopener,noreferrer");else window.location.assign(href);}:undefined}
             title={post.pinned?`View ${post.title}`:"Flyer placement preview"}
             className={`absolute ${post.postType==="wanted"?"w-[28%]":"w-[22%]"} select-none text-left shadow-[0_18px_28px_rgba(0,0,0,.5)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
             style={{left:`${post.x}%`,top:`${post.y}%`,transform:`rotate(${post.rotation}deg)`,zIndex:post.pinned?10:35}}

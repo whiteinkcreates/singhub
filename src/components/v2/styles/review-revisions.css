@@ -426,3 +426,14 @@
   .hotel-index-mobile-nav a.active { color:var(--cyan); }
   .hotel-index-mobile-nav b { font-size:1rem; }
 }
+
+/* Account actions are compact forms, separate from the jacket viewer. */
+.v2-account dialog.account-service-dialog { width:min(480px,calc(100% - 28px)); height:auto; max-height:calc(100svh - 28px); overflow:auto; margin:auto; }
+.v2-account .account-service-dialog .modal-shell { display:block; height:auto; }
+.v2-account .account-service-dialog .modal-head { justify-content:space-between; }
+.v2-account .account-service-dialog .account-service-form { display:grid; align-content:start; gap:20px; padding:24px; border:0; }
+.v2-account .account-service-dialog label { display:grid; gap:8px; font-size:.9rem; font-weight:600; }
+.v2-account .account-service-dialog .account-service-input { display:block; width:100%; min-width:0; height:48px; padding:10px 12px; border:1px solid #46515e; border-radius:8px; background:#090d13; color:white; font:400 16px "Barlow",sans-serif; box-sizing:border-box; }
+.v2-account .account-service-dialog .button { width:100%; min-height:48px; padding:12px 18px; }
+.v2-account .account-service-dialog .free-rule { margin:0; padding:12px; font-size:.8rem; line-height:1.5; }
+.v2-account .account-service-dialog :focus-visible { outline:2px solid #00c8ff; outline-offset:3px; }
