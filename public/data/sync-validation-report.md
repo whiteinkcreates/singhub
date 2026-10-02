@@ -145,9 +145,9 @@ Exported events: 197.
 - row 47: venue-0038 Peter D's
 - row 50: venue-0023 Rock Out Karaoke
 - row 51: venue-0050 Saddle Bar
-- row 54: venue-0064 Spot KTV & Restaurant
-- row 64: venue-0024 Tremont St. Bar & Grill
-- row 78: venue-0093 Rosie O'Grady's
+- row 53: venue-0064 Spot KTV & Restaurant
+- row 63: venue-0024 Tremont St. Bar & Grill
+- row 77: venue-0093 Rosie O'Grady's
 ## Venues With Invalid App Visibility
 - None
 ## Venues Skipped As Not Public-Usable
@@ -163,19 +163,19 @@ Exported events: 197.
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
 - event row 76: event-double-deuce-2026-07-17-navy-nick-cover
-- event row 121: event-mcguffies-karaoke-2026-09-02
-- event row 122: event-mcguffies-karaoke-2026-09-23
-- event row 123: event-mcguffies-karaoke-2026-09-30
-- event row 147: weekly-redwing-bar-grill-sunday
-- event row 152: weekly-richs-san-diego-thursday
-- event row 153: event-n-city-sports-lounge-thursday-karaoke-party
-- event row 154: weekly-docks-cocktail-lounge-friday
-- event row 155: weekly-docks-cocktail-lounge-saturday
-- event row 162: event-n-city-sports-lounge-karaoke-2026-09-03
-- event row 168: event-kaminskis-sports-lounge-karaoke-2026-09-04
-- event row 178: event-richs-san-diego-karaoke-2026-09-17
-- event row 179: event-kaminskis-sports-lounge-karaoke-2026-09-18
-- event row 186: weekly-alpine-vfw-post-9578-thursday
+- event row 120: event-mcguffies-karaoke-2026-09-02
+- event row 121: event-mcguffies-karaoke-2026-09-23
+- event row 122: event-mcguffies-karaoke-2026-09-30
+- event row 146: weekly-redwing-bar-grill-sunday
+- event row 151: weekly-richs-san-diego-thursday
+- event row 152: event-n-city-sports-lounge-thursday-karaoke-party
+- event row 153: weekly-docks-cocktail-lounge-friday
+- event row 154: weekly-docks-cocktail-lounge-saturday
+- event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
+- event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
+- event row 176: event-richs-san-diego-karaoke-2026-09-17
+- event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
+- event row 184: weekly-alpine-vfw-post-9578-thursday
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -200,36 +200,36 @@ Exported events: 197.
 - event row 54: weekly-710-beach-club-thursday 710 Beach Club
 - event row 64: weekly-clark-cabaret-friday Clark Cabaret
 - event row 70: event-winstons-friday Winstons Beach Club
-- event row 95: weekly-mine-oyster-wednesday Mine Oyster
-- event row 96: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
-- event row 99: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
-- event row 99: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
-- event row 99: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
-- event row 103: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
-- event row 105: event-0021 Tony’s Martini Bar
-- event row 119: weekly-de-oro-mine-co-monday De Oro Mine Co.
-- event row 124: weekly-grand-comedy-club-monday Grand Comedy Club and Pizzeria
-- event row 125: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
-- event row 133: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
-- event row 140: event-0046 Market on 8th
-- event row 148: weekly-redwing-bar-grill-monday Redwing Bar & Grill
-- event row 149: weekly-redwing-bar-grill-tuesday Redwing Bar & Grill
-- event row 150: weekly-redwing-bar-grill-wednesday Redwing Bar & Grill
-- event row 158: weekly-the-luau-thursday The Luau
-- event row 159: weekly-the-luau-saturday The Luau
-- event row 160: weekly-the-luau-sunday The Luau
-- event row 161: weekly-the-luau-friday The Luau
-- event row 169: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
-- event row 180: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
-- event row 181: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
-- event row 182: weekly-barlando-friday Barlando
-- event row 190: weekly-jts-tavern-saturday JT's Tavern
-- event row 191: weekly-jts-tavern-sunday JT's Tavern
-- event row 193: weekly-casa-reveles-valley-center-monday Casa Reveles
-- event row 194: weekly-redwing-bar-grill-thursday Redwing Bar & Grill
-- event row 202: weekly-710-beach-club-tuesday 710 Beach Club
-- event row 203: weekly-710-beach-club-friday 710 Beach Club
-- event row 204: weekly-710-beach-club-sunday 710 Beach Club
+- event row 94: weekly-mine-oyster-wednesday Mine Oyster
+- event row 95: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
+- event row 98: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
+- event row 98: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
+- event row 98: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
+- event row 102: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
+- event row 104: event-0021 Tony’s Martini Bar
+- event row 118: weekly-de-oro-mine-co-monday De Oro Mine Co.
+- event row 123: weekly-grand-comedy-club-monday Grand Comedy Club and Pizzeria
+- event row 124: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
+- event row 132: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
+- event row 139: event-0046 Market on 8th
+- event row 147: weekly-redwing-bar-grill-monday Redwing Bar & Grill
+- event row 148: weekly-redwing-bar-grill-tuesday Redwing Bar & Grill
+- event row 149: weekly-redwing-bar-grill-wednesday Redwing Bar & Grill
+- event row 156: weekly-the-luau-thursday The Luau
+- event row 157: weekly-the-luau-saturday The Luau
+- event row 158: weekly-the-luau-sunday The Luau
+- event row 159: weekly-the-luau-friday The Luau
+- event row 167: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
+- event row 178: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
+- event row 179: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
+- event row 180: weekly-barlando-friday Barlando
+- event row 188: weekly-jts-tavern-saturday JT's Tavern
+- event row 189: weekly-jts-tavern-sunday JT's Tavern
+- event row 191: weekly-casa-reveles-valley-center-monday Casa Reveles
+- event row 192: weekly-redwing-bar-grill-thursday Redwing Bar & Grill
+- event row 200: weekly-710-beach-club-tuesday 710 Beach Club
+- event row 201: weekly-710-beach-club-friday 710 Beach Club
+- event row 202: weekly-710-beach-club-sunday 710 Beach Club
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
@@ -288,7 +288,7 @@ Exported events: 197.
 ```text
 SingHUB public data guardrails
 
-Data directory: /workspace/scratch/2bb189aba297/candidate
+Data directory: /home/runner/work/singhub/singhub/.data-sync-output
 Public venues: 100
 Authoritative events: 197
 Legacy venue slug aliases: 0

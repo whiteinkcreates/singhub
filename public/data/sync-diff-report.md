@@ -39,7 +39,7 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 ```text
 id	venue_name	slug	profile_tier	listing_status	venue_type	city	neighborhood	market	address	latitude	longitude	website	instagram	banner_image_url	banner_image_alt	ticker_text	karaoke_day	start_time	end_time	host_name	vibe_tags	description	specials	happy_hour	food_highlights	drink_highlights	parking_info	age_policy	accessibility_notes	cover_charge	reservation_link	booking_contact	is_featured	confidence_score	confidence_notes	source_1	source_2	source_3	last_verified
 venue-0051	#1 Fifth Avenue	1-fifth-avenue	basic	verified	live_bar	San Diego	Hillcrest	Central San Diego	3845 Fifth Ave, San Diego, CA 92103	32.7482	-117.1603		@numberonefifth				Thursday, Tuesday	10:00 PM / 8:00 PM	12:30 AM / 12:00 AM	Navy Nick / DJ JP rotation, Bobbi and Danny	Hillcrest, Thursday karaoke, Tuesday karaoke, live karaoke	Hillcrest karaoke venue with verified Tuesday karaoke from 8 PM to midnight hosted by Bobbi and Danny, plus Thursday late-night karaoke from 10 PM to 12:30 AM with a Navy Nick / DJ JP rotation.											FALSE	100	Diego directly confirmed Tuesday karaoke 8 PM-midnight hosted by Bobbi and Danny and clarified that the 10 PM-12:30 AM late-night Navy Nick / DJ JP rotation is on Thursdays.	Direct venue response from Diego / #1 Fifth	Corey verification outreach 2026-08-19; Navy Nick response 2026-07-15		2026-08-19
-venue-0062	710 Beach Club	710-beach-club	basic	verified	live_bar	San Diego	Pacific Beach	Coastal San Diego	710 Garnet Ave, San Diego (Pacific Beach)	32.7971	-117.2562	https://www.710bc.com/	@710beachclub				Tuesday, Thursday, Friday, Sunday	8:00 PM			Pacific Beach, Tuesday karaoke, Thursday karaoke, Friday karaoke, Sunday karaoke, live karaoke	Pacific Beach bar and live-entertainment venue with karaoke every Tuesday, Thursday, Friday, and Sunday at 8 PM. The venue also serves a full food menu, with a late menu until 11 PM on karaoke nights.			Full kitchen; late menu until 11 PM on karaoke nights								FALSE	100	Official 710 Beach Club events and specials pages currently list recurring karaoke every Tuesday, Thursday, Friday, and Sunday at 8 PM.	https://www.710bc.com/events	https://www.710bc.com/menus/food-drink-specials	https://www.710bc.com/events/karaoke-every-friday-at-8pm	2026-10-01
+venue-0062	710 Beach Club	710-beach-club	basic	verified	live_bar	San Diego	Pacific Beach	Coastal San Diego	710 Garnet Ave, San Diego (Pacific Beach)	32.7971	-117.2562	https://www.710bc.com/	@710beachclub				Thursday, Tuesday, Friday, Sunday	8:00 PM	11:59 PM		Pacific Beach, Tuesday karaoke, Thursday karaoke, Friday karaoke, Sunday karaoke, live karaoke	Pacific Beach bar and live-entertainment venue with karaoke every Tuesday, Thursday, Friday, and Sunday at 8 PM. The venue also serves a full food menu, with a late menu until 11 PM on karaoke nights.			Full kitchen; late menu until 11 PM on karaoke nights								FALSE	100	Official recurring schedule reconfirmed October 2, 2026: Tuesday, Thursday, Friday, Sunday at 8 PM. Friday and Sunday calendar endpoints show 11:59 PM while event copy says until close; confirm exact end times.	https://www.710bc.com/events	https://www.710bc.com/menus/food-drink-specials		2026-10-02
 venue-0018	BLVD	blvd	basic	verified	live_bar	San Diego	College Area	Central San Diego	6949 El Cajon Blvd, San Diego, CA 92115	32.7803	-117.0951	https://theblvdbarsd.com/	@theblvdbarsd				Saturday	9:00 PM	12:30 AM	KJ Glyph	College Area, Saturday Karaoke, KJ Glyph	College Area bar with Saturday karaoke from 9 PM to 12:30 AM with KJ Glyph.											FALSE	100	Corey confirmed Saturday karaoke runs from 9 PM to 12:30 AM with KJ Glyph, Jesse Glyphin.	Corey direct confirmation 2026-09-14	KJ Glyph canonical host profile		2026-09-14
 venue-0013	Camels Bar & Grill	camels-bar-grill	basic	verified	live_bar	San Diego	Mission Valley	Central San Diego	10330 Friars Rd, San Diego, CA 92120	32.7938	-117.1082	https://camelsbarandgrill.com/	@camelsbarandgrill				Thursday, Saturday	9:00 PM / 8:30 PM	1:00 AM / close	DJ Mike, KJ Meth	Mission Valley, Thursday karaoke, Saturday karaoke, live karaoke	Mission Valley karaoke venue with Thursday karaoke hosted by DJ Mike and Saturday karaoke from 8:30 PM to close with KJ Meth of A.I. Entertainment.											FALSE	100	A.I. Entertainment directly confirms the Saturday schedule and KJ Meth affiliation.	A.I. Entertainment weekly schedule supplied directly to Corey 2026-09-04	Corey direct Camels Thursday confirmation		2026-09-04
 venue-0015	Carriage House Cocktails & Karaoke	carriage-house-cocktails-karaoke	basic	verified	live_bar	San Diego	Kearny Mesa / Convoy	Central San Diego	4690 Convoy St, San Diego, CA 92111	32.8311	-117.1539		@carriagehousekaraokesd				Monday, Tuesday, Wednesday, Sunday, Thursday, Friday, Saturday	9:00 PM	1:30 AM	Amy "Miss Pond", Brian "MP", Amy "Miss Pond" / Lindsey, Lindsey	Kearny Mesa / Convoy, Monday karaoke, Tuesday karaoke, Wednesday karaoke, Sunday karaoke, Thursday karaoke	Kearny Mesa / Convoy dedicated karaoke bar with karaoke seven nights a week from 9 PM to 1:30 AM. Wednesday programming also includes Bingo on the 1st Wednesday and trivia on the 3rd Wednesday before karaoke.											FALSE	100	Venue directly confirmed karaoke 7 nights/week, 9 PM-1:30 AM. Hosts: Amy "Miss Pond" Monday, Thursday, Friday, Saturday, plus 1st/3rd Wednesdays; Brian "MP" Tuesday; Lindsey Sunday plus 2nd/4th/5th Wednesdays. Bingo 1st Wednesday 5:30-8:30 PM; trivia 3rd Wednesday 5:30-8:30 PM.	Direct venue response via Instagram	Corey verification outreach 2026-08-16		2026-08-16
@@ -61,48 +61,12 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 200
+- Previous non-empty lines: 198
 - Candidate non-empty lines: 198
-- Added/changed lines: 13
-- Removed/changed lines: 15
+- Added/changed lines: 0
+- Removed/changed lines: 0
 
-### Added or changed sample
-
-```text
-weekly-710-beach-club-thursday	venue-0062	710 Beach Club	710-beach-club	Thursday	8:00 PM	11:59 PM				TRUE	active	Thursday karaoke starts at 8 PM.	100	https://www.710bc.com/events/karaoke-every-thursday-at-8pm	https://www.710bc.com/menus/food-drink-specials	2026-10-02	verified_official_current_schedule	FALSE
-weekly-the-north-bar-escondido-tuesday	venue-0108	The North Bar	the-north-bar-escondido	Tuesday	9:00 PM	close		KJ Nyx	KJ Nyx	TRUE	active	Tuesday karaoke from 9 PM to close with KJ Nyx.	100	The North Bar direct message to Corey 2026-09-30	https://www.thenorthbar.com/	2026-09-30	verified_direct_schedule	FALSE
-weekly-redwing-bar-grill-monday	venue-0039	Redwing Bar & Grill	redwing-bar-grill	Monday	7:00 PM	12:40 AM		TBD	TBD	TRUE	active	Monday karaoke starts at 7 PM.	98	Official Redwing Bar & Grill website	Corey direct Redwing schedule 2026-08-24	2026-09-23	verified_official_current_schedule	FALSE
-weekly-redwing-bar-grill-tuesday	venue-0039	Redwing Bar & Grill	redwing-bar-grill	Tuesday	7:00 PM	12:40 AM		TBD	TBD	TRUE	active	Tuesday karaoke starts at 7 PM.	98	Official Redwing Bar & Grill website	Corey direct Redwing schedule 2026-08-24	2026-09-23	verified_official_current_schedule	FALSE
-weekly-redwing-bar-grill-wednesday	venue-0039	Redwing Bar & Grill	redwing-bar-grill	Wednesday	7:00 PM	12:40 AM		TBD	TBD	TRUE	active	Wednesday karaoke starts at 7 PM.	98	Official Redwing Bar & Grill website	Corey direct Redwing schedule 2026-08-24	2026-09-23	verified_official_current_schedule	FALSE
-weekly-redwing-bar-grill-thursday	venue-0039	Redwing Bar & Grill	redwing-bar-grill	Thursday	9:00 PM					TRUE	active	Thursday karaoke starts at 9 PM after trivia.	100	Corey direct confirmation 2026-09-30	https://redwingbar.com/	2026-09-30	verified_direct_user_confirmation_needs_end_time_host	FALSE
-weekly-the-brass-rail-thursday	venue-0138	The Brass Rail	the-brass-rail	Thursday	6:00 PM	9:00 PM	Spencer	Spencer	Spencer	TRUE	active	Thursday karaoke from 6 PM to 9 PM with Spencer. No cover.	100	https://thebrassrailsd.com/	Corey direct venue confirmation	2026-09-24	verified_official_current_schedule	FALSE
-weekly-the-north-bar-escondido-monday	venue-0108	The North Bar	the-north-bar-escondido	Monday	9:00 PM	close		KJ Nyx	KJ Nyx	TRUE	active	Monday karaoke from 9 PM to close with KJ Nyx.	100	The North Bar direct message to Corey 2026-09-30	https://www.thenorthbar.com/	2026-09-30	verified_direct_schedule	FALSE
-weekly-the-north-bar-escondido-thursday	venue-0108	The North Bar	the-north-bar-escondido	Thursday	9:00 PM	close		KJ Sassy	KJ Sassy	TRUE	active	Thursday karaoke from 9 PM to close with KJ Sassy.	100	The North Bar direct message to Corey 2026-09-30	https://www.thenorthbar.com/	2026-09-30	verified_direct_schedule	FALSE
-weekly-the-north-bar-escondido-sunday	venue-0108	The North Bar	the-north-bar-escondido	Sunday	9:00 PM	close		KJ Nyx	KJ Nyx	TRUE	active	Sunday karaoke from 9 PM to close with KJ Nyx.	100	The North Bar direct message to Corey 2026-09-30	https://www.thenorthbar.com/	2026-09-30	verified_direct_schedule	FALSE
-weekly-710-beach-club-tuesday	venue-0062	710 Beach Club	710-beach-club	Tuesday	8:00 PM					TRUE	active	Tuesday karaoke starts at 8 PM.	100	https://www.710bc.com/events	https://www.710bc.com/menus/food-drink-specials	2026-10-02	verified_official_current_schedule	FALSE
-weekly-710-beach-club-friday	venue-0062	710 Beach Club	710-beach-club	Friday	8:00 PM	11:59 PM				TRUE	active	Friday karaoke starts at 8 PM.	100	https://www.710bc.com/events/karaoke-every-friday-at-8pm	https://www.710bc.com/menus/food-drink-specials	2026-10-02	verified_official_current_schedule	FALSE
-weekly-710-beach-club-sunday	venue-0062	710 Beach Club	710-beach-club	Sunday	8:00 PM	11:59 PM				TRUE	active	Sunday karaoke starts at 8 PM.	100	https://www.710bc.com/events/karaoke-every-sunday-at-8pm	https://www.710bc.com/menus/food-drink-specials	2026-10-02	verified_official_current_schedule	FALSE
-```
-
-### Removed or changed sample
-
-```text
-weekly-710-beach-club-tuesday	venue-0062	710 Beach Club	710-beach-club	Tuesday	8:00 PM					TRUE	active	Tuesday karaoke starts at 8 PM after trivia. The venue also runs industry-night drink specials and a late menu until 11 PM.	100	https://www.710bc.com/events	https://www.710bc.com/menus/food-drink-specials	2026-10-01	verified_official_current_schedule	FALSE
-weekly-710-beach-club-thursday	venue-0062	710 Beach Club	710-beach-club	Thursday	8:00 PM	11:59 PM				TRUE	active	Thursday karaoke starts at 8 PM with the venue's stage, sound system, and lighting.	100	https://www.710bc.com/events/karaoke-every-thursday-at-8pm	https://www.710bc.com/menus/food-drink-specials	2026-10-01	verified_official_current_schedule	FALSE
-weekly-710-beach-club-friday	venue-0062	710 Beach Club	710-beach-club	Friday	8:00 PM	11:59 PM				TRUE	active	Friday karaoke starts at 8 PM following happy hour, with the venue's late menu available until 11 PM.	100	https://www.710bc.com/events/karaoke-every-friday-at-8pm	https://www.710bc.com/menus/food-drink-specials	2026-10-01	verified_official_current_schedule	FALSE
-weekly-710-beach-club-sunday	venue-0062	710 Beach Club	710-beach-club	Sunday	8:00 PM	11:59 PM				TRUE	active	Sunday karaoke starts at 8 PM to close out the weekend.	100	https://www.710bc.com/events/karaoke-every-sunday-at-8pm	https://www.710bc.com/events	2026-10-01	verified_official_current_schedule	FALSE
-event-mcguffies-karaoke-2026-09-23	venue-0025	McGuffie's Live	mcguffies-live	Wednesday	8:00 PM	2:00 AM		T-DOG	T-DOG	One-time / event series	active	Karaoke night at McGuffie's Live on Wednesday Sept. 23 at 8 PM, hosted by T-DOG.	93	Official McGuffie's Live shows calendar	SingHUB event watch 2026-08-18	2026-08-18	web_verified_event	FALSE
-event-mcguffies-karaoke-2026-09-30	venue-0025	McGuffie's Live	mcguffies-live	Wednesday	8:00 PM	2:00 AM		T-DOG	T-DOG	One-time / event series	active	Karaoke night at McGuffie's Live on Wednesday Sept. 30 at 8 PM, hosted by T-DOG.	93	Official McGuffie's Live shows calendar	SingHUB event watch 2026-08-18	2026-08-18	web_verified_event	FALSE
-weekly-redwing-bar-grill-monday	venue-0039	Redwing Bar & Grill	redwing-bar-grill	Monday	7:00 PM	12:40 AM		TBD	TBD	TRUE	active	Monday karaoke from 7 PM to 12:40 AM.	98	Official Redwing Bar & Grill website	Corey direct Redwing schedule 2026-08-24	2026-09-23	verified_official_current_schedule	FALSE
-weekly-redwing-bar-grill-tuesday	venue-0039	Redwing Bar & Grill	redwing-bar-grill	Tuesday	7:00 PM	12:40 AM		TBD	TBD	TRUE	active	Tuesday karaoke from 7 PM to 12:40 AM.	98	Official Redwing Bar & Grill website	Corey direct Redwing schedule 2026-08-24	2026-09-23	verified_official_current_schedule	FALSE
-weekly-redwing-bar-grill-wednesday	venue-0039	Redwing Bar & Grill	redwing-bar-grill	Wednesday	7:00 PM	12:40 AM		TBD	TBD	TRUE	active	Wednesday karaoke from 7 PM to 12:40 AM.	98	Official Redwing Bar & Grill website	Corey direct Redwing schedule 2026-08-24	2026-09-23	verified_official_current_schedule	FALSE
-weekly-redwing-bar-grill-thursday	venue-0039	Redwing Bar & Grill	redwing-bar-grill	Thursday	9:00 PM			TBD	TBD	TRUE	active	Thursday karaoke starts at 9 PM after free trivia. End time and host are not published on the official site.	95	Official Redwing Bar & Grill website	https://redwingbar.com/San-Diego-North-Park-Redwing-Bar-and-Grill-karaoke	2026-10-01	verified_official_current_schedule_needs_detail	FALSE
-weekly-the-brass-rail-thursday	venue-0138	The Brass Rail	the-brass-rail	Thursday	6:00 PM	9:00 PM	spencer	Spencer	Spencer	TRUE	active	Weekly Thursday karaoke with Spencer from 6-9 PM. No cover.	100	https://thebrassrailsd.com/	Corey direct venue confirmation	2026-09-24	verified_official_current_schedule	FALSE
-weekly-the-north-bar-escondido-monday	venue-0108	The North Bar	the-north-bar-escondido	Monday	9:00 PM	last call		KJ Nyx	KJ Nyx	TRUE	active	Monday karaoke at The North Bar from 9 PM to close with KJ Nyx.	100	The North Bar direct Instagram confirmation to Corey 2026-09-27	https://www.thenorthbar.com/	2026-09-27	verified_direct_schedule	FALSE
-weekly-the-north-bar-escondido-tuesday	venue-0108	The North Bar	the-north-bar-escondido	Tuesday	9:00 PM	last call		KJ Nyx	KJ Nyx	TRUE	active	Tuesday karaoke at The North Bar from 9 PM to close with KJ Nyx.	100	The North Bar direct Instagram confirmation to Corey 2026-09-27	https://www.thenorthbar.com/	2026-09-27	verified_direct_schedule	FALSE
-weekly-the-north-bar-escondido-thursday	venue-0108	The North Bar	the-north-bar-escondido	Thursday	9:00 PM	last call		KJ Sassy	KJ Sassy	TRUE	active	Thursday karaoke at The North Bar from 9 PM to close with KJ Sassy. KJ Arin occasionally substitutes.	100	The North Bar direct Instagram confirmation to Corey 2026-09-27	https://www.thenorthbar.com/	2026-09-27	verified_direct_schedule	FALSE
-weekly-the-north-bar-escondido-sunday	venue-0108	The North Bar	the-north-bar-escondido	Sunday	9:00 PM	last call		KJ Nyx	KJ Nyx	TRUE	active	Sunday karaoke at The North Bar from 9 PM to close with KJ Nyx.	100	The North Bar direct Instagram confirmation to Corey 2026-09-27	https://www.thenorthbar.com/	2026-09-27	verified_direct_schedule	FALSE
-```
+- No content changes.
 
 ## generated_events_review.tsv
 
@@ -124,26 +88,19 @@ weekly-the-north-bar-escondido-sunday	venue-0108	The North Bar	the-north-bar-esc
 
 ## sync-metadata.json
 
-- Previous non-empty lines: 11
+- Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 4
-- Removed/changed lines: 5
+- Added/changed lines: 1
+- Removed/changed lines: 1
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-10-02T23:35:13.873Z",
-  "source": "google_sheets_api",
-  "authoritativeEvents": 197,
-  "generatedCandidates": 0
+  "generatedAt": "2026-10-02T23:39:30.059Z",
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-10-02T19:14:47.806932+00:00",
-  "source": "canonical_reconciliation",
-  "authoritativeEvents": 199,
-  "generatedCandidates": 0,
-  "reconciliation": "Targeted canonical corrections, including Corey-confirmed JT's Friday KJ Will on October 2. Canonical 710 schedule reconciliation now passes dry-run guardrails; the complete candidate export remains pending semantic review."
+  "generatedAt": "2026-10-02T23:35:13.873Z",
 ```
