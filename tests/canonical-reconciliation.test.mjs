@@ -29,7 +29,7 @@ test('Pour House, Kimball and Brass Rail retain distinct canonical identities an
 test('newer 710 verification survives canonical reconciliation and stale Winston host credit does not',()=>{
   const schedule=events.filter(e=>e.venue_slug==='710-beach-club');
   assert.deepEqual(schedule.map(e=>e.karaoke_day).sort(),['Friday','Sunday','Thursday','Tuesday']);
-  assert.ok(schedule.every(e=>e.last_verified==='2026-10-01'));
+  assert.ok(schedule.every(e=>e.last_verified==='2026-10-02'));
   assert.equal(venues.find(v=>v.slug==='regal')?.city,'La Mesa');
   const friday=events.find(e=>e.event_id==='event-winstons-friday');
   assert.equal(friday.host_name,'TBD');
@@ -52,4 +52,13 @@ test('JT Friday uses Corey-confirmed Will without changing the other nights',()=
  assert.equal(friday.last_verified,'2026-10-02');
  assert.equal(schedule.find(e=>e.karaoke_day==='Monday').host_name,'Brian The Lion');
  assert.equal(schedule.find(e=>e.karaoke_day==='Saturday').host_name,'');
+});
+
+test('expired September one-time events are archived and JT copy matches Friday host',()=>{
+ assert.ok(!events.some(e=>['event-mcguffies-karaoke-2026-09-23','event-mcguffies-karaoke-2026-09-30'].includes(e.event_id)));
+ const jt=venues.find(v=>v.slug==='jts-tavern');
+ assert.match(jt.description,/Will hosts Friday/);
+ assert.doesNotMatch(jt.description,/Friday through Sunday hosts are not yet confirmed/);
+ assert.match(venues.find(v=>v.slug==='710-beach-club').food_highlights,/late menu/);
+ assert.equal(venues.find(v=>v.slug==='the-north-bar-escondido').age_policy,'21+');
 });

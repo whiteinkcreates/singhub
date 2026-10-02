@@ -1,11 +1,10 @@
 {
-  "generatedAt": "2026-10-02T19:14:47.806932+00:00",
-  "source": "canonical_reconciliation",
+  "generatedAt": "2026-10-02T23:35:13.873Z",
+  "source": "google_sheets_api",
   "sourceWorkbook": "canonical",
   "venueTab": "Venues_Canonical",
   "eventTab": "Events_Canonical",
   "venues": 100,
-  "authoritativeEvents": 199,
-  "generatedCandidates": 0,
-  "reconciliation": "Targeted canonical corrections, including Corey-confirmed JT's Friday KJ Will on October 2. Canonical 710 schedule reconciliation now passes dry-run guardrails; the complete candidate export remains pending semantic review."
+  "authoritativeEvents": 197,
+  "generatedCandidates": 0
 }

@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 97.
-Exported events: 189.
+Exported venues: 100.
+Exported events: 197.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -18,6 +18,7 @@ Exported events: 189.
 - venue-0073 Dock's Cocktail Lounge
 - venue-0048 Hive Karaoke
 - venue-0065 Jin Music Studios
+- venue-0025 McGuffie's Live
 - venue-0066 North County - Larrys Beach Club
 - venue-0109 N City Sports Lounge
 - venue-0119 Rich's San Diego
@@ -108,6 +109,8 @@ Exported events: 189.
 - venue-0072 The Search Bar
 - venue-0134 Steele 94 Restaurant Bar
 - venue-0135 Casa Reveles
+- venue-0136 The Pour House
+- venue-0138 The Brass Rail
 - venue-0125 Poway's Irish Pub
 - venue-0126 Way Point Saloon
 - venue-0120 Eastbound Bar & Grill
@@ -122,6 +125,7 @@ Exported events: 189.
 - venue-0131 Mike's Cocktails
 - venue-0132 Alpine VFW Post 9578
 - venue-0133 VFW Santee Post 9327
+- venue-0137 Kimball Coastal Eatery
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -141,9 +145,9 @@ Exported events: 189.
 - row 47: venue-0038 Peter D's
 - row 50: venue-0023 Rock Out Karaoke
 - row 51: venue-0050 Saddle Bar
-- row 53: venue-0064 Spot KTV & Restaurant
-- row 63: venue-0024 Tremont St. Bar & Grill
-- row 77: venue-0093 Rosie O'Grady's
+- row 54: venue-0064 Spot KTV & Restaurant
+- row 64: venue-0024 Tremont St. Bar & Grill
+- row 78: venue-0093 Rosie O'Grady's
 ## Venues With Invalid App Visibility
 - None
 ## Venues Skipped As Not Public-Usable
@@ -159,16 +163,19 @@ Exported events: 189.
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
 - event row 76: event-double-deuce-2026-07-17-navy-nick-cover
-- event row 120: event-mcguffies-karaoke-2026-09-02
-- event row 151: weekly-richs-san-diego-thursday
-- event row 152: event-n-city-sports-lounge-thursday-karaoke-party
-- event row 153: weekly-docks-cocktail-lounge-friday
-- event row 154: weekly-docks-cocktail-lounge-saturday
-- event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
-- event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
-- event row 176: event-richs-san-diego-karaoke-2026-09-17
-- event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
-- event row 184: weekly-alpine-vfw-post-9578-thursday
+- event row 121: event-mcguffies-karaoke-2026-09-02
+- event row 122: event-mcguffies-karaoke-2026-09-23
+- event row 123: event-mcguffies-karaoke-2026-09-30
+- event row 147: weekly-redwing-bar-grill-sunday
+- event row 152: weekly-richs-san-diego-thursday
+- event row 153: event-n-city-sports-lounge-thursday-karaoke-party
+- event row 154: weekly-docks-cocktail-lounge-friday
+- event row 155: weekly-docks-cocktail-lounge-saturday
+- event row 162: event-n-city-sports-lounge-karaoke-2026-09-03
+- event row 168: event-kaminskis-sports-lounge-karaoke-2026-09-04
+- event row 178: event-richs-san-diego-karaoke-2026-09-17
+- event row 179: event-kaminskis-sports-lounge-karaoke-2026-09-18
+- event row 186: weekly-alpine-vfw-post-9578-thursday
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -190,39 +197,43 @@ Exported events: 189.
 - event row 47: weekly-gaslamplighter-friday Gaslamplighter Karaoke Cocktail Bar
 - event row 48: weekly-gaslamplighter-sunday Gaslamplighter Karaoke Cocktail Bar
 - event row 50: weekly-star-bar-tuesday Star Bar
+- event row 54: weekly-710-beach-club-thursday 710 Beach Club
 - event row 64: weekly-clark-cabaret-friday Clark Cabaret
 - event row 70: event-winstons-friday Winstons Beach Club
-- event row 94: weekly-mine-oyster-wednesday Mine Oyster
-- event row 95: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
-- event row 98: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
-- event row 98: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
-- event row 98: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
-- event row 102: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
-- event row 104: event-0021 Tony’s Martini Bar
-- event row 118: weekly-de-oro-mine-co-monday De Oro Mine Co.
-- event row 123: weekly-grand-comedy-club-monday Grand Comedy Club and Pizzeria
-- event row 124: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
-- event row 132: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
-- event row 139: event-0046 Market on 8th
-- event row 146: weekly-redwing-bar-grill-sunday Redwing Bar & Grill
-- event row 147: weekly-redwing-bar-grill-monday Redwing Bar & Grill
-- event row 148: weekly-redwing-bar-grill-tuesday Redwing Bar & Grill
-- event row 149: weekly-redwing-bar-grill-wednesday Redwing Bar & Grill
-- event row 156: weekly-the-luau-thursday The Luau
-- event row 157: weekly-the-luau-saturday The Luau
-- event row 158: weekly-the-luau-sunday The Luau
-- event row 159: weekly-the-luau-friday The Luau
-- event row 167: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
-- event row 178: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
-- event row 179: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
-- event row 180: weekly-barlando-friday Barlando
-- event row 187: weekly-jts-tavern-friday JT's Tavern
-- event row 188: weekly-jts-tavern-saturday JT's Tavern
-- event row 189: weekly-jts-tavern-sunday JT's Tavern
-- event row 191: weekly-casa-reveles-valley-center-monday Casa Reveles
+- event row 95: weekly-mine-oyster-wednesday Mine Oyster
+- event row 96: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
+- event row 99: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
+- event row 99: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
+- event row 99: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
+- event row 103: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
+- event row 105: event-0021 Tony’s Martini Bar
+- event row 119: weekly-de-oro-mine-co-monday De Oro Mine Co.
+- event row 124: weekly-grand-comedy-club-monday Grand Comedy Club and Pizzeria
+- event row 125: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
+- event row 133: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
+- event row 140: event-0046 Market on 8th
+- event row 148: weekly-redwing-bar-grill-monday Redwing Bar & Grill
+- event row 149: weekly-redwing-bar-grill-tuesday Redwing Bar & Grill
+- event row 150: weekly-redwing-bar-grill-wednesday Redwing Bar & Grill
+- event row 158: weekly-the-luau-thursday The Luau
+- event row 159: weekly-the-luau-saturday The Luau
+- event row 160: weekly-the-luau-sunday The Luau
+- event row 161: weekly-the-luau-friday The Luau
+- event row 169: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
+- event row 180: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
+- event row 181: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
+- event row 182: weekly-barlando-friday Barlando
+- event row 190: weekly-jts-tavern-saturday JT's Tavern
+- event row 191: weekly-jts-tavern-sunday JT's Tavern
+- event row 193: weekly-casa-reveles-valley-center-monday Casa Reveles
+- event row 194: weekly-redwing-bar-grill-thursday Redwing Bar & Grill
+- event row 202: weekly-710-beach-club-tuesday 710 Beach Club
+- event row 203: weekly-710-beach-club-friday 710 Beach Club
+- event row 204: weekly-710-beach-club-sunday 710 Beach Club
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
+- venue: venue-0025 McGuffie's Live
 - venue: venue-0066 North County - Larrys Beach Club
 - venue: venue-0109 N City Sports Lounge
 - venue: venue-0119 Rich's San Diego
@@ -248,7 +259,6 @@ Exported events: 189.
 - venue-0108 The North Bar
 - venue-0109 N City Sports Lounge
 - venue-0112 Cow Shed Bar & Grill
-- venue-0113 Full Circle Saloon
 - venue-0114 Casino Inn Bar & Grill
 - venue-0115 Market on 8th
 - venue-0116 Filippi's Pizza Grotto - Santee
@@ -258,11 +268,14 @@ Exported events: 189.
 - venue-0072 The Search Bar
 - venue-0134 Steele 94 Restaurant Bar
 - venue-0135 Casa Reveles
+- venue-0136 The Pour House
+- venue-0138 The Brass Rail
 - venue-0126 Way Point Saloon
 - venue-0130 Spring Valley Inn
 - venue-0131 Mike's Cocktails
 - venue-0132 Alpine VFW Post 9578
 - venue-0133 VFW Santee Post 9327
+- venue-0137 Kimball Coastal Eatery
 ## Closed/Hidden/Archived Rows Excluded
 - None
 ## Stable Venue Identity Changes
@@ -275,18 +288,18 @@ Exported events: 189.
 ```text
 SingHUB public data guardrails
 
-Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 97
-Authoritative events: 189
+Data directory: /workspace/scratch/2bb189aba297/candidate
+Public venues: 100
+Authoritative events: 197
 Legacy venue slug aliases: 0
 
-PASS Monday: 18 authoritative / 8 expected minimum
-PASS Tuesday: 30 authoritative / 8 expected minimum
-PASS Wednesday: 31 authoritative / 9 expected minimum
-PASS Thursday: 36 authoritative / 14 expected minimum
-PASS Friday: 29 authoritative / 10 expected minimum
+PASS Monday: 20 authoritative / 8 expected minimum
+PASS Tuesday: 32 authoritative / 8 expected minimum
+PASS Wednesday: 29 authoritative / 9 expected minimum
+PASS Thursday: 40 authoritative / 14 expected minimum
+PASS Friday: 30 authoritative / 10 expected minimum
 PASS Saturday: 22 authoritative / 10 expected minimum
-PASS Sunday: 23 authoritative / 7 expected minimum
+PASS Sunday: 24 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
