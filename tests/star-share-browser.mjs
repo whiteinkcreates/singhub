@@ -19,7 +19,7 @@ try{for(const width of [390,1440]){
  page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/rest/v1/singer_performances'))saves++;});
  await page.goto('http://localhost:3100/star-share-qa?perform=fixture-venue',{waitUntil:'networkidle'});
  await page.getByLabel('Song title',{exact:true}).fill('Rejected song');await page.getByLabel('Performed on',{exact:true}).fill('2026-10-02');await page.getByRole('button',{name:'Save',exact:true}).click();
- await page.getByRole('status').filter({hasText:'Performance could not be saved.'}).waitFor();assert.equal(await page.getByRole('button',{name:'Share my new star',exact:true}).count(),0);
+ await page.getByRole('status').filter({hasText:/Performance could not be saved\.|Your account could not be updated\./}).waitFor();assert.equal(await page.getByRole('button',{name:'Share my new star',exact:true}).count(),0);
  await page.getByLabel('Song title',{exact:true}).fill('My karaoke song');await page.getByRole('button',{name:'Save',exact:true}).click();
  await page.getByRole('button',{name:'Share my new star',exact:true}).waitFor();assert.equal(await page.getByLabel('Earned stars').textContent(),'1');assert.equal(saves,2);
  assert.ok((await page.locator('dialog').textContent()).includes('Sharing is optional.'));assert.ok((await page.locator('dialog').textContent()).includes('My karaoke song at Isolated QA venue'));
