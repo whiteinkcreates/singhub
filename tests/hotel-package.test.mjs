@@ -23,3 +23,12 @@ test('unreviewed media, stale approval and incomplete branding cannot unlock pro
 test('email callback preserves edition and merges plan parameters without a second question mark',()=>{
  const path=hotelPlanReturnPath('/hotelexperience/holiday-inn-express-la-mesa?edition=guest','jts-tavern',false);const url=new URL(path,'https://singhub.app');assert.equal(url.searchParams.get('edition'),'guest');assert.equal(url.searchParams.get('plan'),'jts-tavern');assert.equal(url.searchParams.get('saveHotel'),'0');assert.equal(path.split('?').length,2);assert.throws(()=>hotelPlanReturnPath('https://evil.example/path','jts-tavern',true));
 });
+
+test('sales sheet accepts its own placement and real screenshots match the selected property photo',()=>{
+ const {packageFormat}=load('src/lib/hotelPackage.ts');assert.equal(packageFormat('sales-sheet'),'sales-sheet');
+ const {hotelPackageScreenshot}=load('src/lib/hotelPackageScreenshots.ts');
+ const hero='https://digital.ihg.com/is/image/ihg/holiday-inn-express-la-mesa-8924019411-4x3';
+ assert.ok(hotelPackageScreenshot('holiday-inn-express-la-mesa',hero));
+ assert.equal(hotelPackageScreenshot('holiday-inn-express-la-mesa','https://example.com/replacement.jpg'),null);
+ assert.equal(hotelPackageScreenshot('unknown-hotel',hero),null);
+});

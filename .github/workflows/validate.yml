@@ -189,3 +189,11 @@ jobs:
           name: hotel-package-concierge-desk-tent
           path: .hotel-package-qa/*-concierge-desk-tent-INTERNAL.pdf
           include-hidden-files: true
+
+      - name: Save hotel sales sheet PDF
+        if: always() && startsWith(github.head_ref, 'feat/hotel-package-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-package-sales-sheet
+          path: .hotel-package-qa/*-sales-sheet-INTERNAL.pdf
+          include-hidden-files: true

@@ -19,7 +19,7 @@ export function hotelAnalyticsContext(): AnalyticsParams {
   if (typeof document === "undefined") return {};
   const hotel = document.querySelector<HTMLElement>("[data-hotel-slug]");
   const placement=new URLSearchParams(window.location.search).get("placement");
-  return hotel ? {hotel_edition:hotel.dataset.hotelEdition,hotel_placement:placement==="elevator"||placement==="desk-tent"?placement:undefined,hotel_slug: hotel.dataset.hotelSlug, hotel_experience: hotel.dataset.hotelExperience, hotel_route: window.location.pathname} : {};
+  return hotel ? {hotel_edition:hotel.dataset.hotelEdition,hotel_placement:placement==="elevator"||placement==="desk-tent"||placement==="sales-sheet"?placement:undefined,hotel_slug: hotel.dataset.hotelSlug, hotel_experience: hotel.dataset.hotelExperience, hotel_route: window.location.pathname} : {};
 }
 
 export type AnalyticsValue = string | number | boolean;

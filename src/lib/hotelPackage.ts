@@ -1,9 +1,9 @@
 import type {HotelMediaProfile} from './hotelProfiles';
 export type HotelPackageEdition='guest'|'concierge';
-export type HotelPackageFormat='elevator'|'desk-tent';
+export type HotelPackageFormat='elevator'|'desk-tent'|'sales-sheet';
 export const HOTEL_PACKAGE_VERSION='1.1';
 export function packageEdition(value?:string):HotelPackageEdition{return value==='guest'?'guest':'concierge';}
-export function packageFormat(value?:string):HotelPackageFormat{return value==='desk-tent'?'desk-tent':'elevator';}
+export function packageFormat(value?:string):HotelPackageFormat{return value==='sales-sheet'?'sales-sheet':value==='desk-tent'?'desk-tent':'elevator';}
 export function hotelPackageDestination(slug:string,edition:HotelPackageEdition,format:HotelPackageFormat){
  const url=new URL('/hotelexperience/'+encodeURIComponent(slug),'https://singhub.app');
  url.searchParams.set('edition',edition);url.searchParams.set('placement',format);
