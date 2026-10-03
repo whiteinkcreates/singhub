@@ -4,10 +4,10 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 101
+- Previous non-empty lines: 102
 - Candidate non-empty lines: 102
 - Added/changed lines: 102
-- Removed/changed lines: 101
+- Removed/changed lines: 102
 
 ### Added or changed sample
 
@@ -61,16 +61,12 @@ venue-0065	Jin Music Studios	jin-music-studios	basic	ai_scouted	private_room	San
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 198
+- Previous non-empty lines: 199
 - Candidate non-empty lines: 199
-- Added/changed lines: 1
+- Added/changed lines: 0
 - Removed/changed lines: 0
 
-### Added or changed sample
-
-```text
-biweekly-el-viejon-seafood-mira-mesa-wednesday	venue-0139	El Viejon Seafood - Mira Mesa	el-viejon-seafood-mira-mesa	Wednesday	9:00 PM	11:00 PM		Jason G.	Jason G.	Every other Wednesday beginning 2026-10-07	active	Every other Wednesday beginning Oct. 7: trivia 7-9 PM, karaoke 9-11 PM with Jason G.	100	Savor Entertainment Instagram post supplied by Corey 2026-10-02	Corey direct recurrence confirmation 2026-10-02	2026-10-02	verified_direct_event_and_recurrence	FALSE
-```
+- No content changes.
 
 ## generated_events_review.tsv
 
@@ -94,21 +90,17 @@ biweekly-el-viejon-seafood-mira-mesa-wednesday	venue-0139	El Viejon Seafood - Mi
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 3
-- Removed/changed lines: 3
+- Added/changed lines: 1
+- Removed/changed lines: 1
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-10-03T01:26:35.670Z",
-  "venues": 101,
-  "authoritativeEvents": 198,
+  "generatedAt": "2026-10-03T20:38:33.605Z",
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-10-02T23:39:30.059Z",
-  "venues": 100,
-  "authoritativeEvents": 197,
+  "generatedAt": "2026-10-03T01:26:35.670Z",
 ```
