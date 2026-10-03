@@ -7,6 +7,9 @@ import {
   GA_MEASUREMENT_ID,
   INTERNAL_ANALYTICS_KEY,
   trackEvent,
+  initializeAnalytics,
+  analyticsLocation,
+  hotelAnalyticsContext,
 } from "@/lib/analytics";
 
 const PUBLIC_HOSTS = new Set(["singhub.app", "www.singhub.app"]);
@@ -37,31 +40,33 @@ export function AnalyticsProvider() {
   const lastTrackedPath = useRef<string | undefined>(undefined);
 
   useEffect(() => {
+    if (!mounted) return;
     if (isAdminPath) {
       window.localStorage.setItem(INTERNAL_ANALYTICS_KEY, "1");
     }
     window[`ga-disable-${GA_MEASUREMENT_ID}`] = !enabled;
-  }, [enabled, isAdminPath]);
+  }, [enabled, isAdminPath, mounted]);
 
   useEffect(() => {
     if (!enabled) return;
 
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = window.gtag || ((...args: unknown[]) => {
-      window.dataLayer?.push(args);
-    });
-    window.gtag("js", new Date());
-    window.gtag("config", GA_MEASUREMENT_ID, { send_page_view: false });
+    initializeAnalytics();
 
     const pagePath = cleanPath(pathname);
     if (lastTrackedPath.current === pagePath) return;
     lastTrackedPath.current = pagePath;
 
     trackEvent("page_view", {
-      page_location: `${window.location.origin}${pagePath}`,
+      page_location: analyticsLocation(window.location.href),
       page_path: pagePath,
       page_title: document.title,
     });
+
+    const hotel = hotelAnalyticsContext();
+    const query = new URLSearchParams(window.location.search);
+    if (hotel.hotel_slug && (query.get("utm_medium")?.toLowerCase() === "qr" || query.get("source") === "qr")) {
+      trackEvent("hotel_qr_visit", hotel);
+    }
 
     if (pagePath === "/find-karaoke") {
       trackEvent("find_karaoke_view", { source_path: pagePath });

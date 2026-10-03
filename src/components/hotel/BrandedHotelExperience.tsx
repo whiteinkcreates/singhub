@@ -450,7 +450,7 @@ export function BrandedHotelExperience({
   }
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: pageBackground, color: textColor, fontFamily: bodyFontFamily }}>
+    <main className="min-h-screen" data-hotel-slug={hotelSlug} data-hotel-experience={experienceSlug} style={{ backgroundColor: pageBackground, color: textColor, fontFamily: bodyFontFamily }}>
       <div className="relative isolate mx-auto min-h-screen max-w-4xl overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,.12)]">
         <KaraokeMicBackdrop color={primaryColor} />
 
@@ -481,7 +481,7 @@ export function BrandedHotelExperience({
           <div className="relative z-10 mx-3 h-52 overflow-hidden rounded-b-[2.5rem] sm:mx-5 sm:h-72">
             <img
               src={heroSource}
-              alt={heroAlt || `${hotelName} property photograph`}
+              alt={heroSource === heroImageUrl ? heroAlt || `${hotelName} property photograph` : "San Diego illustration"}
               style={{ objectPosition: heroPosition }}
               className="h-full w-full object-cover"
               onError={() => {
