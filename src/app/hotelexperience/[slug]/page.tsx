@@ -3,7 +3,7 @@ import { connection } from "next/server";
 import { getHotelExperienceConfig } from "@/lib/hotelExperiences";
 import { getHotelGuide } from "@/lib/hotelGuides";
 import { HotelExperiencePageContent } from "@/components/hotel/HotelExperiencePageContent";
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams:Promise<{edition?:string}> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -23,9 +23,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function HotelExperiencePage({ params }: Props) {
+export default async function HotelExperiencePage({ params,searchParams }: Props) {
   // Tonight must be calculated for this request, never frozen at build time.
   await connection();
   const { slug } = await params;
-  return <HotelExperiencePageContent slug={slug} />;
+  const query=await searchParams;
+  return <HotelExperiencePageContent slug={slug} edition={query.edition==="guest"?"guest":"concierge"} />;
 }

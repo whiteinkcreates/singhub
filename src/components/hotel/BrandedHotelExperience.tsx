@@ -14,6 +14,7 @@ import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
 import type { HotelGuideVenue } from "@/components/hotel/HotelGuideExperience";
 
 type Props = {
+  edition?:"guest"|"concierge";
   hotelSlug: string;
   experienceSlug: string;
   hotelName: string;
@@ -378,6 +379,7 @@ function TierSection({
 }
 
 export function BrandedHotelExperience({
+  edition="concierge",
   hotelSlug,
   experienceSlug,
   hotelName,
@@ -403,7 +405,7 @@ export function BrandedHotelExperience({
   tonightVenues,
   weekVenues,
 }: Props) {
-  const {openPlan,savedPlans,overlay:planOverlay}=useHotelGuestPlan({hotelSlug,hotelName,hotelShortName,returnPath:"/hotelexperience/"+experienceSlug,tonightVenues,weekVenues});
+  const {openPlan,savedPlans,overlay:planOverlay}=useHotelGuestPlan({hotelSlug,hotelName,hotelShortName,returnPath:"/hotelexperience/"+experienceSlug+(edition==="guest"?"?edition=guest":""),tonightVenues,weekVenues});
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
   const [focus, setFocus] = useState<FocusMode>("all");
   const [selectedVibe, setSelectedVibe] = useState("");
@@ -436,8 +438,8 @@ export function BrandedHotelExperience({
   );
 
   useEffect(() => {
-    trackEvent("hotel_experience_view", { hotel_experience: experienceSlug, hotel_name: hotelName, version: "1.2" });
-  }, [experienceSlug, hotelName]);
+    trackEvent("hotel_experience_view", { hotel_experience: experienceSlug, hotel_name: hotelName, version: "1.2",edition });
+  }, [experienceSlug, hotelName,edition]);
 
   function setExperienceMode(nextMode: "tonight" | "week") {
     setMode(nextMode);
@@ -453,12 +455,12 @@ export function BrandedHotelExperience({
   }
 
   return (
-    <main className="min-h-screen" data-hotel-slug={hotelSlug} data-hotel-experience={experienceSlug} style={{ backgroundColor: pageBackground, color: textColor, fontFamily: bodyFontFamily }}>
+    <main className="min-h-screen" data-hotel-edition={edition} data-hotel-slug={hotelSlug} data-hotel-experience={experienceSlug} style={{ backgroundColor: pageBackground, color: textColor, fontFamily: bodyFontFamily }}>
       <div className="relative isolate mx-auto min-h-screen max-w-4xl overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,.12)]">
         <KaraokeMicBackdrop color={primaryColor} />
 
         <header className="relative z-10 flex items-center justify-between gap-4 bg-white/[0.96] px-5 py-4 backdrop-blur-sm sm:px-8">
-          {hotelSiteUrl ? (
+          {edition==="guest"?<Link href="/" aria-label="SingHUB home"><img src={SITE_WORDMARK_SRC} alt="SingHUB" className="h-12 w-auto max-w-[220px] object-contain" /></Link>:hotelSiteUrl ? (
             <a href={hotelSiteUrl} target="_blank" rel="noreferrer" className="flex min-h-14 items-center" aria-label={`Visit ${hotelName} website`}>
               {logoVisible && brandLogoUrl ? (
                 <img src={brandLogoUrl} alt={hotelName} className="max-h-14 max-w-[220px] object-contain" onError={() => setLogoVisible(false)} />

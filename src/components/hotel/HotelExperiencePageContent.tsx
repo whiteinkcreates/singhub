@@ -155,8 +155,9 @@ function makeVenue(
   };
 }
 
-export async function HotelExperiencePageContent({ slug, demo = false }: { slug: string; demo?: boolean }) {
-  const experience = getHotelExperienceConfig(slug);
+export async function HotelExperiencePageContent({ slug, demo = false, edition="concierge" }: { slug: string; demo?: boolean; edition?:"guest"|"concierge" }) {
+  const registered = getHotelExperienceConfig(slug);
+  const experience=registered && (edition==="guest"?{...registered,primaryColor:"#121826",accentColor:"#007b92",pageBackground:"#f5f8fc",textColor:"#121826",mutedTextColor:"#546275",eyebrow:"SingHUB Guest Guide"}:registered);
   if (!experience) notFound();
 
   const hotel = await getHotelGuideWithMedia(experience.hotelGuideSlug, demo);
@@ -250,6 +251,7 @@ export async function HotelExperiencePageContent({ slug, demo = false }: { slug:
 
   return (
     <BrandedHotelExperience
+      edition={edition}
       hotelSlug={hotel.slug}
       experienceSlug={experience.slug}
       hotelName={hotel.name}

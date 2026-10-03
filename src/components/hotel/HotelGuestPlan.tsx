@@ -2,6 +2,7 @@
 
 import {useCallback, useEffect, useRef, useState, type FormEvent} from "react";
 import {accountClient, saveHotelPlan, sendAccountLink} from "@/lib/v2/singerAccount";
+import {hotelPlanReturnPath} from "@/lib/hotelPlanReturn";
 import {createPortal} from "react-dom";
 import {trackEvent} from "@/lib/analytics";
 
@@ -83,8 +84,7 @@ export function useHotelGuestPlan({hotelSlug,hotelName,hotelShortName,returnPath
       const saved=await saveHotelPlan({slug:hotelSlug,name:hotelName},planVenue,saveHotel);
       if(saved){markSaved(planVenue.slug);report("hotel_plan_saved",planVenue);setPlanVenue(null);setMessage("Added to your plan. Find it in My SingHUB.");}
       else {
-        const query=new URLSearchParams({plan:planVenue.slug,saveHotel:saveHotel?"1":"0"});
-        await sendAccountLink(email,returnPath+"?"+query.toString());
+        await sendAccountLink(email,hotelPlanReturnPath(returnPath,planVenue.slug,saveHotel));
         report("hotel_plan_email_requested",planVenue);
         setMessage("Check your email for a sign-in link. Open it to finish saving your plan.");
       }
