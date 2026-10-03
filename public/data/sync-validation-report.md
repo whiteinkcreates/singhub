@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 100.
-Exported events: 197.
+Exported venues: 101.
+Exported events: 198.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -126,6 +126,7 @@ Exported events: 197.
 - venue-0132 Alpine VFW Post 9578
 - venue-0133 VFW Santee Post 9327
 - venue-0137 Kimball Coastal Eatery
+- venue-0139 El Viejon Seafood - Mira Mesa
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -276,6 +277,7 @@ Exported events: 197.
 - venue-0132 Alpine VFW Post 9578
 - venue-0133 VFW Santee Post 9327
 - venue-0137 Kimball Coastal Eatery
+- venue-0139 El Viejon Seafood - Mira Mesa
 ## Closed/Hidden/Archived Rows Excluded
 - None
 ## Stable Venue Identity Changes
@@ -289,13 +291,13 @@ Exported events: 197.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 100
-Authoritative events: 197
+Public venues: 101
+Authoritative events: 198
 Legacy venue slug aliases: 0
 
 PASS Monday: 20 authoritative / 8 expected minimum
 PASS Tuesday: 32 authoritative / 8 expected minimum
-PASS Wednesday: 29 authoritative / 9 expected minimum
+PASS Wednesday: 30 authoritative / 9 expected minimum
 PASS Thursday: 40 authoritative / 14 expected minimum
 PASS Friday: 30 authoritative / 10 expected minimum
 PASS Saturday: 22 authoritative / 10 expected minimum
