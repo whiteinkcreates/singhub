@@ -14,6 +14,7 @@ try{
  for(const edition of ['guest','concierge'])for(const format of ['elevator','desk-tent']){
   const url=packagePath+'/print?edition='+edition+'&format='+format+'&mode=draft&embed=1';assert.equal((await page.goto(url,{waitUntil:'networkidle'})).status(),200);await page.emulateMedia({media:'print'});
   const sheet=page.locator('[data-print-sheet]');const bounds=await sheet.boundingBox();assert.equal(Math.round(bounds.width),816);assert.equal(Math.round(bounds.height),1056);
+  const brandBounds=await sheet.locator('.collateral-brand img').first().boundingBox();assert.ok(brandBounds&&brandBounds.width>50&&brandBounds.height>20,'brand logo must occupy visible space');
   const images=await sheet.locator('img').evaluateAll(images=>images.map(image=>({src:image.src,loaded:image.complete&&image.naturalWidth>0})));assert.ok(images.every(image=>image.loaded),'all real images must load: '+JSON.stringify(images));
   await page.addScriptTag({path:'node_modules/jsqr/dist/jsQR.js'});
   const decoded=await page.locator('.collateral-scan img').first().evaluate(image=>{const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);return window.jsQR(pixels.data,pixels.width,pixels.height)?.data;});
