@@ -32,8 +32,8 @@ test('standouts require a distinctive reason and include at most one private-roo
  assert.deepEqual(Array.from(selectHotelStandouts(rows),r=>r.slug),['rooms1','band','stage']);
 });
 
-const {eventRunsOnNight,monthlyOrdinal}=module('../src/lib/eventOccurrence.ts');
-test('monthly dates honor San Diego nightlife rollover without inventing biweekly anchors',()=>{
+const {eventRunsOnNight,monthlyOrdinal,biweeklyAnchor}=module('../src/lib/eventOccurrence.ts');
+test('monthly and anchored biweekly dates honor San Diego nightlife rollover',()=>{
  const monthly={...event('Friday'),recurring:false,recurrencePattern:'Monthly',eventNotes:'First-Friday monthly karaoke'};
  assert.equal(monthlyOrdinal(monthly),1);
  assert.equal(eventRunsOnNight(monthly,'Friday',new Date('2026-10-02T19:00:00Z')),true);
@@ -41,17 +41,24 @@ test('monthly dates honor San Diego nightlife rollover without inventing biweekl
  assert.equal(eventRunsOnNight(monthly,'Friday',new Date('2026-10-03T08:00:00Z')),true);
  const twice={...event('Thursday'),recurring:false,recurrencePattern:'Twice monthly'};
  assert.equal(eventRunsOnNight(twice,'Thursday',new Date('2026-10-01T19:00:00Z')),false);
+ const biweekly={...event('Wednesday'),recurring:false,recurrencePattern:'Every other Wednesday beginning 2026-10-07',eventNotes:'Biweekly series anchored to 2026-10-07'};
+ assert.equal(biweeklyAnchor(biweekly)?.toISOString().slice(0,10),'2026-10-07');
+ assert.equal(eventRunsOnNight(biweekly,'Wednesday',new Date('2026-10-07T19:00:00Z')),true);
+ assert.equal(eventRunsOnNight(biweekly,'Wednesday',new Date('2026-10-14T19:00:00Z')),false);
+ assert.equal(eventRunsOnNight(biweekly,'Wednesday',new Date('2026-10-21T19:00:00Z')),true);
+ assert.equal(eventRunsOnNight(biweekly,'Wednesday',new Date('2026-10-22T08:00:00Z')),true);
  const weekly={...event('Wednesday'),recurring:true,recurrencePattern:'TRUE',eventNotes:'Amy hosts 1st/3rd Wednesdays; Lindsey hosts 2nd/4th/5th.'};
  assert.equal(eventRunsOnNight(weekly,'Wednesday',new Date('2026-10-14T19:00:00Z')),true);
 });
-test('calendar exports monthly recurrence and overnight end times, omitting unanchored dates',async()=>{
- const events=[{...event('Tuesday'),eventId:'monthly',endTime:'1:00 AM',recurring:false,recurrencePattern:'3rd Tuesday monthly',eventNotes:'Every third Tuesday'}, {...event('Wednesday'),eventId:'unanchored',endTime:'12:00 AM',recurring:false,recurrencePattern:'Every other Wednesday'}];
+test('calendar exports monthly and anchored biweekly recurrence, omitting unanchored dates',async()=>{
+ const events=[{...event('Tuesday'),eventId:'monthly',endTime:'1:00 AM',recurring:false,recurrencePattern:'3rd Tuesday monthly',eventNotes:'Every third Tuesday'}, {...event('Wednesday'),eventId:'biweekly',endTime:'11:00 PM',recurring:false,recurrencePattern:'Every other Wednesday beginning 2026-10-07',eventNotes:'Biweekly series anchored to 2026-10-07'}, {...event('Wednesday'),eventId:'unanchored',endTime:'12:00 AM',recurring:false,recurrencePattern:'Every other Wednesday'}];
  const api=module('../src/app/api/v2/calendar/route.ts',name=>name.includes('eventOccurrence')?module('../src/lib/eventOccurrence.ts'):name.includes('eventData')?{getKaraokeEventsByVenueSlug:async()=>events}:name.includes('venueData')?{getVenueListingBySlug:async()=>({...venue,slug:'example',address:'Address'})}:name.includes('publicVenueFilters')?{isPublicVenue:()=>true}:{});
  const response=await api.GET({nextUrl:new URL('https://singhub.app/api/v2/calendar?venue=example')});
  assert.equal(response.status,200);
  const calendar=await response.text();
  assert.match(calendar,/RRULE:FREQ=MONTHLY;BYDAY=3TU/);
+ assert.match(calendar,/RRULE:FREQ=WEEKLY;INTERVAL=2;BYDAY=WE/);
  assert.match(calendar,/DTEND;TZID=America\/Los_Angeles:\d{8}T010000/);
  assert.doesNotMatch(calendar,/unanchored/);
- assert.equal((calendar.match(/BEGIN:VEVENT/g)||[]).length,1);
+ assert.equal((calendar.match(/BEGIN:VEVENT/g)||[]).length,2);
 });
