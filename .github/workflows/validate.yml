@@ -153,5 +153,39 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: hotel-package-qa
-          path: .hotel-package-qa
+          path: |
+            .hotel-package-qa
+            !.hotel-package-qa/*.pdf
+          include-hidden-files: true
+
+      - name: Save guest elevator PDF
+        if: always() && startsWith(github.head_ref, 'feat/hotel-package-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-package-guest-elevator
+          path: .hotel-package-qa/*-guest-elevator-INTERNAL.pdf
+          include-hidden-files: true
+
+      - name: Save guest desk-tent PDF
+        if: always() && startsWith(github.head_ref, 'feat/hotel-package-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-package-guest-desk-tent
+          path: .hotel-package-qa/*-guest-desk-tent-INTERNAL.pdf
+          include-hidden-files: true
+
+      - name: Save concierge elevator PDF
+        if: always() && startsWith(github.head_ref, 'feat/hotel-package-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-package-concierge-elevator
+          path: .hotel-package-qa/*-concierge-elevator-INTERNAL.pdf
+          include-hidden-files: true
+
+      - name: Save concierge desk-tent PDF
+        if: always() && startsWith(github.head_ref, 'feat/hotel-package-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-package-concierge-desk-tent
+          path: .hotel-package-qa/*-concierge-desk-tent-INTERNAL.pdf
           include-hidden-files: true
