@@ -26,7 +26,7 @@ export default async function SingBoardPage() {
         @media (max-width: 640px) {
           .singboard-sticker-hero {
             background-position: center top;
-            background-size: auto 190%;
+            background-size: cover;
           }
         }
       `}</style>
