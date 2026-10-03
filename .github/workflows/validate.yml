@@ -102,9 +102,11 @@ jobs:
       - name: Verify main-page hero scrolling and layering
         if: startsWith(github.head_ref, 'feat/main-page-')
         run: |
-          npm run start -- --port 3100 > /tmp/main-hero-server.log 2>&1 &
+          node tests/main-page-hero-fixture.mjs > /tmp/main-hero-fixture.log 2>&1 &
+          fixture_pid=$!
+          NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:3101 SUPABASE_SERVICE_ROLE_KEY=isolated-layout-fixture npm run start -- --port 3100 > /tmp/main-hero-server.log 2>&1 &
           server_pid=$!
-          trap 'kill "$server_pid"' EXIT
+          trap 'kill "$server_pid" "$fixture_pid"; cp /tmp/main-hero-server.log .main-hero-qa/server.log' EXIT
           for attempt in $(seq 1 30); do
             if curl --silent --fail http://localhost:3100 > /dev/null; then break; fi
             sleep 1
