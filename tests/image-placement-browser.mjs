@@ -16,7 +16,7 @@ try{for(const width of [1440,390]){
  const context=await browser.newContext({viewport:{width,height:1000}});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const response=await page.goto('http://localhost:3100/media-placement-qa',{waitUntil:'networkidle'});assert.equal(response.status(),200);
  await page.getByRole('button',{name:'Move hero image left',exact:true}).click();await page.getByRole('button',{name:'Mobile',exact:true}).click();
- await page.getByRole('button',{name:'Move hero image down',exact:true}).click();await page.getByLabel('Hero mobile zoom',{exact:true}).fill('1.50');
+ await page.getByRole('button',{name:'Move hero image down',exact:true}).click();const zoom=page.getByLabel('Hero mobile zoom',{exact:true});await zoom.press('Home');for(let step=0;step<10;step++)await zoom.press('ArrowRight');
  const crop=JSON.parse(await page.getByTestId('crop-json').textContent());assert.equal(crop.desktop.x,55);assert.equal(crop.desktop.zoom,1);assert.equal(crop.mobile.y,45);assert.equal(crop.mobile.zoom,1.5);
  const publicImage=page.getByAltText('Public crop');const computed=await publicImage.evaluate(img=>({position:getComputedStyle(img).objectPosition,transform:getComputedStyle(img).transform}));
  assert.equal(computed.position,width===390?'50% 45%':'55% 50%');assert.equal(computed.transform,width===390?'matrix(1.5, 0, 0, 1.5, 0, 0)':'matrix(1, 0, 0, 1, 0, 0)');
