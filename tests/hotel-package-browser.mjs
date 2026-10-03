@@ -18,7 +18,7 @@ try{
   await page.addScriptTag({path:'node_modules/jsqr/dist/jsQR.js'});
   const decoded=await page.locator('.collateral-scan img').first().evaluate(image=>{const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height);return window.jsQR(pixels.data,pixels.width,pixels.height)?.data;});
   const target=new URL(decoded);assert.equal(target.origin,'https://singhub.app');assert.equal(target.pathname,'/hotelexperience/'+slug);assert.equal(target.searchParams.get('edition'),edition);assert.equal(target.searchParams.get('placement'),format);assert.equal(target.searchParams.get('utm_medium'),'qr');
-  await page.screenshot({path:out+'/'+edition+'-'+format+'.png',fullPage:true});await page.pdf({path:out+'/'+slug+'-'+edition+'-'+format+'-INTERNAL.pdf',preferCSSPageSize:true,printBackground:true});results.push({edition,format,decoded,imagesLoaded:true});
+  await page.screenshot({path:out+'/'+edition+'-'+format+'.png',fullPage:true});const pdf=await page.pdf({path:out+'/'+slug+'-'+edition+'-'+format+'-INTERNAL.pdf',preferCSSPageSize:true,printBackground:true});assert.equal((pdf.toString('latin1').match(/\/Type\s*\/Page\b/g)||[]).length,1,'one Letter page per asset');results.push({edition,format,decoded,imagesLoaded:true});
  }
  await page.emulateMedia({media:'screen'});await page.goto(packagePath,{waitUntil:'networkidle'});
  // Simulated review is stored only in this local fixture, never production.
