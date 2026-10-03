@@ -16,7 +16,7 @@ export default async function SingBoardPage() {
   const stickerBackground = { backgroundImage: `url("${SINGBOARD_STICKER_ART}")` };
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[#05060a]">
+    <main data-scroll-page="singboard" className="min-h-screen bg-[#05060a]">
       <style>{`
         .singboard-sticker-hero {
           background-position: center 8%;
@@ -32,14 +32,13 @@ export default async function SingBoardPage() {
       `}</style>
 
       <section
-        className="singboard-sticker-hero relative isolate min-h-[320px] overflow-hidden border-b border-white/10 sm:min-h-[390px] lg:min-h-[460px]"
+        data-page-hero="" className="singboard-sticker-hero relative isolate min-h-[320px] overflow-hidden border-b border-white/10 sm:min-h-[390px] lg:min-h-[460px]"
         style={stickerBackground}
         aria-labelledby="singboard-page-title"
       >
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,3,7,.94)_0%,rgba(2,3,7,.68)_35%,rgba(2,3,7,.2)_72%,rgba(2,3,7,.34)_100%)]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#05060a] via-transparent to-black/25" />
-        <div className="relative mx-auto flex min-h-[320px] max-w-7xl items-end px-5 pb-9 pt-12 sm:min-h-[390px] sm:px-7 sm:pb-11 lg:min-h-[460px] lg:px-8 lg:pb-14">
-          <div className="max-w-3xl">
+
+        <div data-hero-frame="" className="relative mx-auto flex min-h-[320px] max-w-7xl items-end px-5 pb-9 pt-12 sm:min-h-[390px] sm:px-7 sm:pb-11 lg:min-h-[460px] lg:px-8 lg:pb-14">
+          <div data-hero-copy="" className="max-w-3xl">
             <img
               src="/images/singhub-v2/singhub-wordmark.png"
               alt="SingHUB"
@@ -55,18 +54,7 @@ export default async function SingBoardPage() {
         </div>
       </section>
 
-      <section className="relative bg-[#05060a] py-7 sm:py-10">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 w-5 border-r border-white/10 bg-repeat-y sm:w-10 lg:w-20 xl:w-24"
-          style={{ ...stickerBackground, backgroundPosition: "left top", backgroundSize: "1100px auto" }}
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 w-5 border-l border-white/10 bg-repeat-y sm:w-10 lg:w-20 xl:w-24"
-          style={{ ...stickerBackground, backgroundPosition: "right 280px", backgroundSize: "1100px auto" }}
-        />
-
+      <section data-page-surface="" className="relative bg-[#05060a] py-7 sm:py-10">
         <div className="relative z-10 mx-auto max-w-7xl bg-[#05060a] px-4 py-3 shadow-[0_0_80px_rgba(0,0,0,.92)] sm:px-6 sm:py-5 lg:px-8">
           <SingBoard initialFlyers={flyers} />
         </div>

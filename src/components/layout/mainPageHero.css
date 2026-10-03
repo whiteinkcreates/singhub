@@ -1,0 +1,87 @@
+/* Main navigation pages share one scroll composition. No background-attachment:
+   fixed, which is unreliable on mobile Safari. The content sheet covers a sticky
+   hero using normal document scrolling and independent stacking layers. */
+[data-scroll-page] {
+  --main-header-height:70px;
+  --main-hero-height:min(680px,calc(100svh - var(--main-header-height)));
+  isolation:isolate;
+  overflow-x:clip;
+  overflow-y:visible;
+}
+[data-scroll-page] [data-page-hero][data-page-hero] {
+  position:sticky;
+  top:var(--main-header-height);
+  z-index:0;
+  display:flex;
+  align-items:flex-end;
+  justify-content:flex-start;
+  width:100%;
+  height:var(--main-hero-height);
+  min-height:var(--main-hero-height);
+  margin:0;
+  padding:24px clamp(14px,3vw,40px) 56px;
+  overflow:hidden;
+  border:0;
+  box-shadow:none;
+}
+[data-scroll-page] [data-page-hero][data-page-hero]::before,
+[data-scroll-page] [data-page-hero][data-page-hero]::after {
+  content:none;
+}
+[data-scroll-page] [data-page-hero] :is(.world-photo,.host-hero-photo,.hotel-index-hero>img,.venue-world>img) {
+  width:100%;
+  height:100%;
+  top:0;
+  bottom:0;
+  filter:none;
+}
+[data-scroll-page] [data-page-hero] :is(.world-inner,.venue-world-inner,.hotel-index-hero-inner,[data-hero-frame]) {
+  display:block;
+  width:100%;
+  height:auto;
+  min-height:0;
+  margin:0;
+  padding:0;
+}
+/* Localized contrast keeps text readable without washing out the artwork. */
+[data-scroll-page] [data-page-hero] [data-hero-copy] {
+  position:relative;
+  z-index:2;
+  width:min(760px,100%);
+  max-width:760px;
+  min-height:0;
+  margin:0;
+  padding:22px;
+  border:1px solid #ffffff24;
+  background:rgba(3,5,9,.76);
+  color:white;
+  text-shadow:none;
+}
+[data-scroll-page] [data-page-hero] [data-hero-copy] :is(h1,p) {
+  color:#fff;
+  text-shadow:none;
+}
+[data-scroll-page] [data-page-hero] [data-hero-copy] .eyebrow,
+[data-scroll-page] [data-page-hero] [data-hero-copy] .hotel-index-eyebrow {
+  background:none;
+}
+[data-scroll-page] [data-page-surface][data-page-surface] {
+  position:relative;
+  z-index:3;
+  width:100%;
+  max-width:none;
+  margin:-28px 0 0;
+  padding:24px max(14px,calc((100% - 1240px)/2)) 96px;
+  border-top:1px solid #ffffff24;
+  background:#050609;
+  box-shadow:none;
+}
+[data-scroll-page] [data-page-hero] .scroll-note { display:none; }
+@media(max-width:860px) {
+  [data-scroll-page] {
+    --main-header-height:62px;
+    --main-hero-height:calc(100svh - var(--main-header-height) - 64px);
+  }
+  [data-scroll-page] [data-page-hero] [data-hero-copy] { padding:18px; }
+  [data-scroll-page] [data-page-surface][data-page-surface] { padding:18px 10px 104px; }
+}
