@@ -1,4 +1,5 @@
 "use client";
+import './hotelStage.css';
 import {PositionedImage} from '@/components/media/PositionedImage';
 import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 
@@ -569,7 +570,7 @@ export function BrandedHotelExperience({
 
         <div className="relative z-10 px-5 py-3 text-sm font-bold sm:px-8"><Link href="/account">My SingHUB · {savedPlans.length} saved karaoke picks</Link></div>
         <footer className="relative z-10 mt-5 overflow-hidden border-t border-slate-200 bg-[#071528] px-5 py-7 sm:px-8">
-          <img src="/images/hotel-package/karaoke-stage.webp" alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full object-cover" style={{objectPosition:"right 20%"}}/>
+          <img src="/images/hotel-package/karaoke-stage.webp" alt="" aria-hidden="true" className="hotel-stage-watermark pointer-events-none absolute inset-0 h-full w-full object-cover" style={{objectPosition:"right 20%"}}/>
           <div className="pointer-events-none absolute inset-0 bg-[#071528]/85" aria-hidden="true"/>
           <div className="relative z-10">
           <p className="mb-4 text-xl font-black" style={{color:'#fff'}}>Your next mic is out there.</p>
