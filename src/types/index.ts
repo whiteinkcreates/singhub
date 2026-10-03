@@ -1,3 +1,4 @@
+import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 export type ListingStatus = "verified" | "ai_scouted" | "claimed";
 
 export type ProfileTier = "basic" | "premium";
@@ -21,6 +22,7 @@ export type VenueListing = {
   instagram?: string;
   bannerImageUrl?: string;
   bannerImageAlt?: string;
+  bannerImagePlacement?: ResponsiveImagePlacement;
   bannerImagePosition?: "center" | "top" | "bottom" | "left" | "right";
   tickerText?: string;
   lastVerified?: string;
@@ -94,6 +96,9 @@ export type HostGig = {
 export type HostProfileCompletionLevel = "basic" | "enhanced" | "incomplete";
 
 export type HostProfile = {
+  heroPlacement?: ResponsiveImagePlacement;
+  portraitPlacement?: ResponsiveImagePlacement;
+  directoryHeroPlacement?: ResponsiveImagePlacement;
   heroImageUrl?: string;
   heroImageAlt?: string;
   heroPosition?: "center" | "top" | "bottom" | "left" | "right";

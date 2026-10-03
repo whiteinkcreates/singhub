@@ -1,3 +1,4 @@
+import {PositionedImage} from '@/components/media/PositionedImage';
 /* eslint-disable @next/next/no-img-element */
 import type { VenueRowData,HotelRowData } from '@/lib/v2/presentation';
 function Tags({tags}:{tags:string[]}){return <div className="tags">{tags.map(tag=><span key={tag}>{tag}</span>)}</div>;}
@@ -6,13 +7,13 @@ export function DiscoveryRow({item,mode}:{item:VenueRowData;mode:'tonight'|'week
   const {venue}=item;const featured=Boolean(item.photo&&venue.isFeatured);const href='/venues/'+venue.slug;
   return <article className={'venue-result'+(featured?' featured':'')} data-search={item.search}>
     <a className="venue-link" href={href}><div className="venue-title-line"><strong className="venue-title">{venue.venueName}</strong><span className="venue-kind">{item.kind}</span></div><p className="venue-place">{venue.neighborhood} · {venue.venueType==='private_room'?'Private rooms':'Public karaoke'}</p><Tags tags={mode==='tonight'?item.tonightTags:item.tags} /></a>
-    {featured?<a className="feature-media" href={href} aria-label={'Open '+venue.venueName}><img loading="lazy" src={item.photo} alt={item.photoAlt} /><span className="feature-status"><span className="tonight-copy">{item.tonight?'Tonight at '+item.tonightTime:item.tonightTime}</span><span className="week-copy">{item.rhythm}</span></span></a>:<div className="venue-status"><span className="time-label"><span className="tonight-copy">Tonight</span><span className="week-copy">This week</span></span><strong className="venue-time"><span className="tonight-copy">{item.tonightTime}</span><span className="week-copy">{item.rhythm}</span></strong></div>}
+    {featured?<a className="feature-media" href={href} aria-label={'Open '+venue.venueName}><PositionedImage placement={venue.bannerImagePlacement} position={venue.bannerImagePosition} loading="lazy" src={item.photo} alt={item.photoAlt} /><span className="feature-status"><span className="tonight-copy">{item.tonight?'Tonight at '+item.tonightTime:item.tonightTime}</span><span className="week-copy">{item.rhythm}</span></span></a>:<div className="venue-status"><span className="time-label"><span className="tonight-copy">Tonight</span><span className="week-copy">This week</span></span><strong className="venue-time"><span className="tonight-copy">{item.tonightTime}</span><span className="week-copy">{item.rhythm}</span></strong></div>}
     <Trust item={item} />
   </article>;
 }
 export function DirectoryRow({item}:{item:VenueRowData}){
   const {venue}=item;return <a className={'venue-card'+(item.photo?' has-full-profile':'')} href={'/venues/'+venue.slug} data-search={item.search}>
-    {item.photo?<div className="venue-preview"><img src={item.photo} alt={item.photoAlt} /></div>:null}
+    {item.photo?<div className="venue-preview"><PositionedImage placement={venue.bannerImagePlacement} position={venue.bannerImagePosition} src={item.photo} alt={item.photoAlt} /></div>:null}
     <div className="venue-info"><div className="title-line"><strong className="venue-name">{venue.venueName}</strong><span className="venue-kind">{item.kind}</span></div><p className="venue-place">{venue.neighborhood} · {venue.venueType==='private_room'?'Reservations':'Public karaoke'}</p><Tags tags={item.tags} /></div>
     <div className="venue-rhythm"><span className="rhythm-label">{venue.venueType==='private_room'?'Room type':'Karaoke rhythm'}</span><strong className="rhythm-value">{item.rhythm}</strong></div><Trust item={item} />
   </a>;

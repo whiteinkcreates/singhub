@@ -1,3 +1,5 @@
+import {parseImagePlacement} from '@/lib/imagePlacement';
+import {revalidatePath} from 'next/cache';
 import { NextRequest, NextResponse } from "next/server";
 import {
   getPersistedVenueEnhancement,
@@ -72,7 +74,15 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Singers Say must be 600 characters or fewer." }, { status: 400 });
     }
 
+    try {
+      profile.heroPlacement=parseImagePlacement(profile.heroPlacement);
+      profile.logoPlacement=parseImagePlacement(profile.logoPlacement);
+      profile.gallery=profile.gallery.map(item=>({...item,placement:parseImagePlacement(item.placement)}));
+    } catch(error) {return NextResponse.json({error:error instanceof Error?error.message:'Invalid image placement.'},{status:400});}
     await saveVenueEnhancement(slug, profile);
+    revalidatePath(`/venues/${slug}`);
+    revalidatePath('/find-karaoke');
+    revalidatePath('/');
     return NextResponse.json({ saved: true, slug, profile });
   } catch (error) {
     console.error("Venue enhancement save failed", error);

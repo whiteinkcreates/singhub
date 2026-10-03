@@ -194,6 +194,7 @@ export async function HotelGuidePageContent({ slug, demo = false }: { slug: stri
       hotelSlug={hotel.slug}
       hotelArea={hotel.area==='downtown'?'San Diego · Gaslamp Quarter':hotel.area==='la-jolla'?'San Diego · La Jolla':'San Diego · La Mesa'}
       heroImageUrl={hotel.heroImageUrl}
+      heroPlacement={hotel.heroPlacement}
       heroAlt={hotel.heroAlt}
       heroPosition={hotel.heroPosition}
       heroCredit={hotel.heroCredit}

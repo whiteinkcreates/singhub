@@ -1,3 +1,4 @@
+import {PositionedImage} from '@/components/media/PositionedImage';
 /* eslint-disable @next/next/no-img-element */
 import type { HostProfile } from "@/types";
 
@@ -13,19 +14,15 @@ function getInitials(name: string) {
   return initials || "SH";
 }
 
-export function HostAvatar({ host, large = false }: { host: Pick<HostProfile, "publicDisplayName" | "profileImageUrl" | "logoUrl" | "profileImagePosition">; large?: boolean }) {
+export function HostAvatar({ host, large = false }: { host: Pick<HostProfile, "publicDisplayName" | "profileImageUrl" | "logoUrl" | "profileImagePosition" | "portraitPlacement">; large?: boolean }) {
   const imageUrl = host.profileImageUrl || host.logoUrl;
   const sizeClasses = large ? "h-32 w-32 text-4xl" : "h-16 w-16 text-lg";
 
   if (imageUrl) {
     return (
-      <img
-        src={imageUrl}
-        alt={`${host.publicDisplayName} profile image`}
-        className={`${sizeClasses} aspect-square shrink-0 rounded-full border border-cyan-300/40 object-cover shadow-lg shadow-cyan-950/40`}
-        style={{ objectPosition: host.profileImagePosition || "center" }}
-        loading="lazy"
-      />
+      <span className={`${sizeClasses} block aspect-square shrink-0 overflow-hidden rounded-full border border-cyan-300/40 shadow-lg shadow-cyan-950/40`}>
+        <PositionedImage src={imageUrl} alt={`${host.publicDisplayName} profile image`} className="h-full w-full object-cover" placement={host.portraitPlacement} position={host.profileImagePosition || "center"} loading="lazy" />
+      </span>
     );
   }
 

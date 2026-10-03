@@ -1,4 +1,6 @@
 "use client";
+import {PositionedImage} from '@/components/media/PositionedImage';
+import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 
 import { useHotelGuestPlan } from "./HotelGuestPlan";
 import { useListReturn } from "@/components/v2/listReturn";
@@ -19,6 +21,7 @@ type Props = {
   hotelSiteUrl?: string;
   brandLogoUrl?: string;
   heroImageUrl?: string;
+  heroPlacement?: ResponsiveImagePlacement;
   heroCredit?: Credit;
   heroAlt?: string;
   heroPosition?: string;
@@ -203,7 +206,7 @@ function EditorialCard({
     >
       {venue.imageUrl && imageVisible ? (
         <div className="relative h-36 overflow-hidden">
-          <img src={venue.imageUrl} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.025]" onError={() => setImageVisible(false)} />
+          <PositionedImage placement={venue.imagePlacement} position={venue.imagePosition} src={venue.imageUrl} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.025]" onError={() => setImageVisible(false)} />
           <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
           <div className="absolute bottom-3 left-3"><SmallBadge color="#FFFFFF">{venue.distanceLabel}</SmallBadge></div>
         </div>
@@ -265,7 +268,7 @@ function VenueCard({
     >
       <div className="flex gap-3 p-3">
         {venue.imageUrl && imageVisible ? (
-          <img src={venue.imageUrl} alt="" className="h-[96px] w-[112px] shrink-0 rounded-xl object-cover" loading="lazy" onError={() => setImageVisible(false)} />
+          <span className="block h-[96px] w-[112px] shrink-0 overflow-hidden rounded-xl"><PositionedImage placement={venue.imagePlacement} position={venue.imagePosition} src={venue.imageUrl} alt="" className="h-full w-full object-cover" loading="lazy" onError={() => setImageVisible(false)} /></span>
         ) : (
           <div className="flex h-[96px] w-[112px] shrink-0 items-center justify-center rounded-xl text-xs font-black uppercase tracking-[0.12em]" style={{ backgroundColor: `${primaryColor}0D`, color: primaryColor }}>
             Karaoke
@@ -384,7 +387,7 @@ export function BrandedHotelExperience({
   heroImageUrl,
   heroCredit,
   heroAlt,
-  heroPosition,
+  heroPosition,heroPlacement,
   fallbackHeroImageUrl,
   primaryColor,
   accentColor,
@@ -479,7 +482,7 @@ export function BrandedHotelExperience({
 
         {heroSource && heroVisible ? (
           <div className="relative z-10 mx-3 h-52 overflow-hidden rounded-b-[2.5rem] sm:mx-5 sm:h-72">
-            <img
+            <PositionedImage placement={heroSource===heroImageUrl?heroPlacement:undefined} position={heroPosition}
               src={heroSource}
               alt={heroSource === heroImageUrl ? heroAlt || `${hotelName} property photograph` : "San Diego illustration"}
               style={{ objectPosition: heroPosition }}

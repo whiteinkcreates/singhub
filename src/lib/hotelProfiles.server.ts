@@ -13,7 +13,7 @@ export async function getHotelGuideWithMedia(slug: string, demo = false) {
   if (!hotel) return null;
   try {
     const media = await getHotelMediaProfile(slug);
-    return applyHotelPhoto(media ? { ...hotel, heroImageUrl: media.heroImageUrl, heroAlt: media.heroAlt, heroPosition: media.heroPosition } : hotel, demo);
+    return applyHotelPhoto(media ? { ...hotel, heroImageUrl: media.heroImageUrl, heroAlt: media.heroAlt, heroPosition: media.heroPosition, heroPlacement: media.heroPlacement } : hotel, demo);
   } catch (error) {
     console.error("Hotel media read failed; using registered guide", error);
     return applyHotelPhoto(hotel, demo);

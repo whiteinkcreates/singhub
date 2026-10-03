@@ -1,3 +1,4 @@
+import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 import fs from "node:fs";
 import path from "node:path";
 import type { ListingStatus, ProfileTier, VenueListing, VenueType } from "@/types";
@@ -27,6 +28,7 @@ type EnhancementMediaRow = {
     whyHere?: string;
     heroImageUrl?: string;
     heroImageAlt?: string;
+    heroPlacement?: ResponsiveImagePlacement;
     heroPosition?: "center" | "top" | "bottom" | "left" | "right";
   } | null;
 };
@@ -210,6 +212,10 @@ export async function getVenueListings(): Promise<VenueListing[]> {
         singersSaySource: getOptionalValue(enhancement.singersSaySource),
         singersSayUpdatedAt: getOptionalValue(enhancement.singersSayUpdatedAt),
         hotelWhyHere: getOptionalValue(enhancement.whyHere),
+        bannerImageUrl: getOptionalValue(enhancement.heroImageUrl) || venue.bannerImageUrl,
+        bannerImageAlt: getOptionalValue(enhancement.heroImageAlt) || venue.bannerImageAlt,
+        bannerImagePosition: enhancement.heroPosition || venue.bannerImagePosition,
+        bannerImagePlacement: enhancement.heroPlacement,
         enhancementAmenities: enhancement.amenities?.filter(Boolean) || [],
       };
 

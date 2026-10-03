@@ -1,8 +1,9 @@
+import type {ResponsiveImagePlacement} from './imagePlacement';
 import enhancementData from "../../public/data/venue-enhancements.json";
 
 export type HeroPosition = "center" | "top" | "bottom" | "left" | "right";
 
-export type VenueGalleryItem = { url: string; alt: string; caption?: string; };
+export type VenueGalleryItem = { url: string; alt: string; caption?: string; placement?: ResponsiveImagePlacement; };
 export type VenueSpecial = { day: string; title: string; price?: string; detail?: string; };
 export type VenueDailyDeal = { title: string; price?: string; detail?: string; };
 export type SingHereConfig = {
@@ -39,6 +40,8 @@ export type VenueEnhancement = {
   heroImageUrl?: string;
   heroImageAlt?: string;
   heroPosition?: HeroPosition;
+  heroPlacement?: ResponsiveImagePlacement;
+  logoPlacement?: ResponsiveImagePlacement;
   logoImageUrl?: string;
   logoImageAlt?: string;
   gallery: VenueGalleryItem[];

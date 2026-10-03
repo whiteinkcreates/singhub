@@ -32,13 +32,17 @@ jobs:
         run: npm run test:data
 
       - name: Verify canonical reconciliation and nightlife behavior
-        run: node --test tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs
+        run: node --test tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs
 
       - name: Keep heavy media out of deployments
         run: npm run check:assets
 
       - name: Lint
         run: npm run lint
+
+      - name: Prepare isolated media browser fixture
+        if: startsWith(github.head_ref, 'feat/media-')
+        run: node tests/image-placement-browser.mjs --prepare
 
       - name: Build
         run: npm run build
@@ -65,4 +69,28 @@ jobs:
         with:
           name: hotel-journey-qa
           path: .hotel-qa
+          include-hidden-files: true
+
+      - name: Install browser for media placement QA
+        if: startsWith(github.head_ref, 'feat/media-')
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify media placement on desktop and mobile
+        if: startsWith(github.head_ref, 'feat/media-')
+        run: |
+          npm run start -- --port 3100 > /tmp/media-qa-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://localhost:3100/media-placement-qa > /dev/null; then break; fi
+            sleep 1
+          done
+          node tests/image-placement-browser.mjs
+
+      - name: Save media placement QA evidence
+        if: always() && startsWith(github.head_ref, 'feat/media-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: media-placement-qa
+          path: .media-qa
           include-hidden-files: true

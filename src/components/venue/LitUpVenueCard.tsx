@@ -1,3 +1,4 @@
+import {PositionedImage} from '@/components/media/PositionedImage';
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import type { KaraokeEventListing, VenueListing } from "@/types";
@@ -48,7 +49,7 @@ export function LitUpVenueCard({ venue, events = [], distanceLabel }: LitUpVenue
     <article className="group overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#0b1118] shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:border-fuchsia-400/50 hover:shadow-fuchsia-950/20">
       <Link href={`/venues/${venue.slug}`} className="block focus:outline-none focus:ring-2 focus:ring-fuchsia-400">
         <div className="relative h-44 overflow-hidden sm:h-52">
-          <img src={imageUrl} alt={imageAlt} className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-300 group-hover:scale-[1.015] group-hover:opacity-68" style={{ objectPosition: imagePosition }} loading="lazy" />
+          <PositionedImage placement={venue.bannerImagePlacement||fallbackEnhancement?.heroPlacement} position={imagePosition} src={imageUrl} alt={imageAlt} className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-300 group-hover:scale-[1.015] group-hover:opacity-68" style={{ objectPosition: imagePosition }} loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b1118] via-[#0b1118]/28 to-black/5" />
           <div className="absolute right-4 top-4 flex flex-wrap justify-end gap-2">{venue.isFeatured ? <span className="rounded-full border border-violet-300/40 bg-black/55 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-violet-100 backdrop-blur">Featured</span> : null}{distanceLabel ? <span className="rounded-full border border-white/15 bg-black/55 px-3 py-1 text-xs font-bold text-white backdrop-blur">{distanceLabel}</span> : null}</div>
           <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">

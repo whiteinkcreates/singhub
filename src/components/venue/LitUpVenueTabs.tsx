@@ -1,4 +1,5 @@
 "use client";
+import {PositionedImage} from '@/components/media/PositionedImage';
 
 /* eslint-disable @next/next/no-img-element */
 import { useState } from "react";
@@ -47,7 +48,7 @@ export function LitUpVenueTabs({ venueName, enhancement, events, singersSay, act
           </div>
         )}
 
-        {tab === "photos" && <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{enhancement.gallery.map((photo) => <figure key={photo.url} className="overflow-hidden rounded-2xl border border-white/10 bg-black/20"><img src={photo.url} alt={photo.alt} className="aspect-[4/3] h-full w-full object-cover" loading="lazy" />{photo.caption && <figcaption className="p-3 text-xs text-slate-400">{photo.caption}</figcaption>}</figure>)}</div>}
+        {tab === "photos" && <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{enhancement.gallery.map((photo) => <figure key={photo.url} className="overflow-hidden rounded-2xl border border-white/10 bg-black/20"><PositionedImage placement={photo.placement} src={photo.url} alt={photo.alt} className="aspect-[4/3] h-full w-full object-cover" loading="lazy" />{photo.caption && <figcaption className="p-3 text-xs text-slate-400">{photo.caption}</figcaption>}</figure>)}</div>}
 
         {tab === "events" && <EventSchedule events={events} />}
 
