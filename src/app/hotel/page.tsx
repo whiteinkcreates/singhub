@@ -47,7 +47,7 @@ export default function HotelGuideIndexPage() {
   const laMesa = getHotelGuidesByArea("la-mesa");
 
   return (
-    <div className="hotel-index-v2">
+    <div data-scroll-page="hotels" className="hotel-index-v2">
       <header className="hotel-index-appbar">
         <Link href="/" aria-label="SingHUB home">
           <img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" />
@@ -63,10 +63,10 @@ export default function HotelGuideIndexPage() {
       </header>
 
       <main>
-        <section className="hotel-index-hero" aria-labelledby="hotel-index-title">
+        <section data-page-hero="" className="hotel-index-hero" aria-labelledby="hotel-index-title">
           <img src="/images/singhub-v2/hotels-index-band-luggage-cart.jpg" alt="" aria-hidden="true" />
           <div className="hotel-index-hero-inner">
-            <div className="hotel-index-hero-copy">
+            <div data-hero-copy="" className="hotel-index-hero-copy">
               <p className="hotel-index-eyebrow">SINGHUB HOTELS</p>
               <h1 id="hotel-index-title">Check in. Find your mic.</h1>
               <p className="hotel-index-deck">
@@ -76,7 +76,7 @@ export default function HotelGuideIndexPage() {
           </div>
         </section>
 
-        <section className="hotel-index-shell">
+        <section data-page-surface="" className="hotel-index-shell">
           <div className="hotel-index-intro">
             <div>
               <p className="hotel-index-eyebrow">LOCAL NIGHTLIFE, FROM YOUR LOBBY</p>
