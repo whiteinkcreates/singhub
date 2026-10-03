@@ -568,24 +568,30 @@ export function BrandedHotelExperience({
         </div>
 
         <div className="relative z-10 px-5 py-3 text-sm font-bold sm:px-8"><Link href="/account">My SingHUB · {savedPlans.length} saved karaoke picks</Link></div>
-        <footer className="relative z-10 mt-5 border-t border-slate-200 bg-white/[0.9] px-5 py-7 sm:px-8">
+        <footer className="relative z-10 mt-5 overflow-hidden border-t border-slate-200 bg-[#071528] px-5 py-7 sm:px-8">
+          <img src="/images/hotel-package/karaoke-stage.webp" alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 h-full w-full object-cover" style={{objectPosition:"right 20%"}}/>
+          <div className="pointer-events-none absolute inset-0 bg-[#071528]/85" aria-hidden="true"/>
+          <div className="relative z-10">
+          <p className="mb-4 text-xl font-black" style={{color:'#fff'}}>Your next mic is out there.</p>
           <Link
             href={`/find-karaoke?source=${encodeURIComponent(experienceSlug)}`}
             onClick={() => trackEvent("hotel_experience_full_singhub_click", { hotel_experience: experienceSlug, mode })}
             className="flex w-full items-center justify-center rounded-2xl border border-white/20 px-5 py-3.5 text-center text-sm font-black text-white transition hover:brightness-105"
-            style={{ background: `linear-gradient(135deg, ${primaryColor} 0%, ${accentColor} 100%)`, boxShadow: `0 12px 28px ${primaryColor}24` }}
+            data-hotel-explore-cta=""
+            style={{ color: "#fff", backgroundColor: "#123b61", boxShadow: "0 12px 28px #0004" }}
           >
             Explore more local karaoke on SingHUB
           </Link>
 
           <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="max-w-md text-center text-[11px] leading-5 sm:text-left" style={{ color: mutedTextColor }}>
+            <p className="max-w-md text-center text-[11px] leading-5 sm:text-left" style={{ color: "#e2e8f0" }}>
               SingHUB maintains the local karaoke information. Schedules can change, especially on holidays and private-event nights.
             </p>
-            <div className="flex shrink-0 items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: mutedTextColor }}>
+            <div className="flex shrink-0 items-center gap-2 text-[10px] font-bold uppercase tracking-[0.12em]" style={{ color: "#e2e8f0" }}>
               <span>Powered by</span>
               <img src={SITE_WORDMARK_SRC} alt="SingHUB" className="h-auto w-[92px]" />
             </div>
+          </div>
           </div>
         </footer>
       </div>
