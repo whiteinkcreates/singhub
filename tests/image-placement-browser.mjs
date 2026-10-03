@@ -8,7 +8,7 @@ import {useState} from 'react';
 import {ImagePlacementEditor} from '@/components/admin/ImagePlacementEditor';
 import {PositionedImage} from '@/components/media/PositionedImage';
 import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
-export default function MediaQa(){const [crop,setCrop]=useState<ResponsiveImagePlacement>();return <main className="mx-auto max-w-4xl p-5"><h1>Shared media placement browser QA</h1><ImagePlacementEditor label="Hero" src="/images/venues/north-bar-taps.jpg" alt="North Bar taps" value={crop} onChange={setCrop}/><h2>Public renderer</h2><div className="h-48 overflow-hidden" data-testid="public-frame"><PositionedImage src="/images/venues/north-bar-taps.jpg" alt="Public crop" placement={crop} className="h-full w-full object-cover"/></div><output data-testid="crop-json">{JSON.stringify(crop)}</output></main>}`);
+export default function MediaQa(){const [crop,setCrop]=useState<ResponsiveImagePlacement>();return <main className="mx-auto max-w-4xl p-5"><h1>Shared media placement browser QA</h1><ImagePlacementEditor label="Hero" src="/images/venues/north-bar-taps.jpg" alt="North Bar taps" value={crop} onChange={setCrop}/><h2>Public renderer</h2><div className="h-48 overflow-hidden" data-testid="public-frame"><PositionedImage src="/images/venues/north-bar-taps.jpg" alt="Public crop" placement={crop} className="h-full w-full object-cover"/></div><output className="hidden" data-testid="crop-json">{JSON.stringify(crop)}</output></main>}`);
  process.exit(0);
 }
 const {chromium}=await import('playwright');await mkdir('.media-qa',{recursive:true});const browser=await chromium.launch({args:['--no-sandbox']});
