@@ -1,7 +1,7 @@
 /* Main navigation pages share one scroll composition. No background-attachment:
    fixed, which is unreliable on mobile Safari. The content sheet covers a sticky
    hero using normal document scrolling and independent stacking layers. */
-[data-scroll-page] {
+[data-scroll-page][data-scroll-page] {
   --main-header-height:70px;
   --main-hero-height:min(680px,calc(100svh - var(--main-header-height)));
   isolation:isolate;
@@ -78,7 +78,7 @@
 }
 [data-scroll-page] [data-page-hero] .scroll-note { display:none; }
 @media(max-width:860px) {
-  [data-scroll-page] {
+  [data-scroll-page][data-scroll-page] {
     --main-header-height:62px;
     --main-hero-height:calc(100svh - var(--main-header-height) - 64px);
   }
