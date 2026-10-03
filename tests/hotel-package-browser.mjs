@@ -13,7 +13,7 @@ try{
  await page.screenshot({path:out+'/package-review-desktop.png',fullPage:true});
  for(const edition of ['guest','concierge'])for(const format of ['elevator','desk-tent']){
   const url=packagePath+'/print?edition='+edition+'&format='+format+'&mode=draft&embed=1';assert.equal((await page.goto(url,{waitUntil:'networkidle'})).status(),200);await page.emulateMedia({media:'print'});
-  const sheet=page.locator('[data-print-sheet]');const bounds=await sheet.boundingBox();assert.equal(Math.round(bounds.width),816);assert.equal(Math.round(bounds.height),1056);
+  const sheet=page.locator('[data-print-sheet]');const bounds=await sheet.boundingBox();assert.equal(Math.round(bounds.width),format==='desk-tent'?1056:816);assert.equal(Math.round(bounds.height),format==='desk-tent'?816:1056);if(format==='desk-tent'){for(const face of await sheet.locator('[data-desk-face]').all()){const b=await face.boundingBox();assert.equal(Math.round(b.width),384);assert.equal(Math.round(b.height),576);}}
   const brandBounds=await sheet.locator('.collateral-brand img').first().boundingBox();assert.ok(brandBounds&&brandBounds.width>50&&brandBounds.height>20,'brand logo must occupy visible space');
   if(edition==='concierge'){const ink=await sheet.locator('.collateral-brand img').first().evaluate(image=>{const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;let ink=0;for(let i=0;i<pixels.length;i+=4)if(pixels[i+3]>50&&Math.min(pixels[i],pixels[i+1],pixels[i+2])<180)ink++;return ink;});assert.ok(ink>100,'hotel logo contains visible artwork');}
   const images=await sheet.locator('img').evaluateAll(images=>images.map(image=>({src:image.src,loaded:image.complete&&image.naturalWidth>0})));assert.ok(images.every(image=>image.loaded),'all real images must load: '+JSON.stringify(images));
@@ -28,6 +28,7 @@ try{
  const manifest=await (await context.request.get(packagePath+'/manifest')).json();assert.equal(manifest.productionReady.guest,true);assert.equal(manifest.outputs.length,4);
  for(const edition of ['guest','concierge'])for(const width of [390,1440]){
   await page.setViewportSize({width,height:844});const response=await page.goto(base+'/hotelexperience/'+slug+'?edition='+edition,{waitUntil:'networkidle'});assert.equal(response.status(),200);assert.equal(await page.locator('[data-hotel-edition]').getAttribute('data-hotel-edition'),edition);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+  const cta=await page.locator('[data-hotel-explore-cta]').evaluate(e=>({color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor}));assert.equal(cta.color,'rgb(255, 255, 255)');assert.equal(cta.bg,'rgb(18, 59, 97)');
   await page.getByRole('button',{name:/^This week$/i}).click();await page.locator('a[href*="/venues/jts-tavern"]').first().waitFor();await page.screenshot({path:out+'/guest-flow-'+edition+'-'+width+'.png'});
  }
  assert.deepEqual(errors,[]);await writeFile(out+'/results.json',JSON.stringify(results,null,2));console.log('Hotel package passed: protected admin, approval/save/reload, four decodable QRs, four print PDFs and both mobile/desktop guest editions');await context.close();
