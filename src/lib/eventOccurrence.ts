@@ -13,15 +13,32 @@ export function monthlyOrdinal(event: ScheduledEvent) {
  if(!match || !event.karaokeDay.toLowerCase().includes(match[2].toLowerCase())) return null;
  return ({first:1,second:2,third:3,fourth:4,fifth:5,"1st":1,"2nd":2,"3rd":3,"4th":4,"5th":5} as Record<string,number>)[match[1].toLowerCase()];
 }
-export function eventRunsOnNight(event: ScheduledEvent, weekday: string, date=new Date()) {
- if(!event.karaokeDay.toLowerCase().includes(weekday.toLowerCase())) return false;
- const pattern=event.recurrencePattern?.trim() || "";
- if(!pattern || event.recurring || /^(daily|daily availability|weekly \(seasonal\))$/i.test(pattern)) return true;
- const ordinal=monthlyOrdinal(event);
- if(!ordinal) return false;
+export function biweeklyAnchor(event: ScheduledEvent) {
+ const evidence=(event.recurrencePattern||"")+" "+(event.eventNotes||"");
+ if(!/\b(every other|biweekly|every 2 weeks?)\b/i.test(evidence)) return null;
+ const match=evidence.match(/\b(20\d{2}-\d{2}-\d{2})\b/);
+ if(!match) return null;
+ const anchor=new Date(match[1]+"T12:00:00Z");
+ return Number.isNaN(anchor.getTime()) ? null : anchor;
+}
+function nightlifeDate(date: Date) {
  const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit",hour:"numeric",hourCycle:"h23"}).formatToParts(date);
  const part=(name:string)=>Number(parts.find(value=>value.type===name)?.value);
  const night=new Date(Date.UTC(part("year"),part("month")-1,part("day"),12));
  if(part("hour")<4) night.setUTCDate(night.getUTCDate()-1);
+ return night;
+}
+export function eventRunsOnNight(event: ScheduledEvent, weekday: string, date=new Date()) {
+ if(!event.karaokeDay.toLowerCase().includes(weekday.toLowerCase())) return false;
+ const pattern=event.recurrencePattern?.trim() || "";
+ if(!pattern || event.recurring || /^(daily|daily availability|weekly \(seasonal\))$/i.test(pattern)) return true;
+ const night=nightlifeDate(date);
+ const biweekly=biweeklyAnchor(event);
+ if(biweekly){
+  const days=Math.round((night.getTime()-biweekly.getTime())/(24*60*60*1000));
+  return days>=0 && days%14===0;
+ }
+ const ordinal=monthlyOrdinal(event);
+ if(!ordinal) return false;
  return Math.ceil(night.getUTCDate()/7)===ordinal;
 }
