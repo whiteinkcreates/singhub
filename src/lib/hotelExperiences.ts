@@ -88,7 +88,7 @@ const AREA_THEME: Record<HotelGuide["area"], Pick<HotelExperienceConfig, "primar
 const EXPERIENCE_OVERRIDES: Record<string, ExperienceOverride> = {
   "holiday-inn-express-la-mesa": {
     brandLogoUrl:
-      "/images/hotel-branding/holiday-inn-express-ihg.png",
+      "/images/hotel-branding/holiday-inn-express.svg",
     primaryColor: "#003B70",
     accentColor: "#68B231",
     pageBackground: "#F7F9FC",
