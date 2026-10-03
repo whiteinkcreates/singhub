@@ -1,3 +1,4 @@
+import {PositionedImage} from '@/components/media/PositionedImage';
 /* eslint-disable @next/next/no-img-element */
 import { Button } from "@/components/ui/Button";
 import { LitUpVenueTabs } from "@/components/venue/LitUpVenueTabs";
@@ -96,7 +97,7 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
   return (
     <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#071019] shadow-2xl shadow-black/30">
       <section className="relative min-h-[20rem] overflow-hidden md:min-h-[28rem]">
-        <img src={heroUrl} alt={heroAlt} className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: heroPosition }} loading="eager" />
+        <PositionedImage placement={enhancement.heroPlacement} position={heroPosition} src={heroUrl} alt={heroAlt} className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: heroPosition }} loading="eager" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#071019] via-[#071019]/30 to-black/15" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-transparent" />
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#22d3ee] via-[#ff2aa3] to-[#8b5cf6]" />
@@ -111,7 +112,7 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
       </section>
 
       <div className="relative p-4 sm:p-6 md:p-8">
-        {logoUrl ? <div className="absolute right-5 top-0 flex h-24 w-24 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-300/60 bg-[#071019] p-3 shadow-xl shadow-black/30 md:right-8 md:h-28 md:w-28"><img src={logoUrl} alt={logoAlt} className="h-full w-full object-contain" /></div> : null}
+        {logoUrl ? <div className="absolute right-5 top-0 flex h-24 w-24 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-300/60 bg-[#071019] p-3 shadow-xl shadow-black/30 md:right-8 md:h-28 md:w-28"><PositionedImage placement={enhancement.logoPlacement} src={logoUrl} alt={logoAlt} className="h-full w-full object-contain" /></div> : null}
         <div className={`flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between ${logoUrl ? "pr-28 md:pr-32" : ""}`}>
           <div className="max-w-3xl">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-black/25 px-3 py-1.5">

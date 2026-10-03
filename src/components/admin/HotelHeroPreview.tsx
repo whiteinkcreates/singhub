@@ -16,5 +16,5 @@ export function HotelHeroPreview({ hotel }: { hotel: HotelGuide }) {
     return () => window.removeEventListener("message", receive);
   }, [hotel.slug]);
   const area=hotel.area==='downtown'?'San Diego · Gaslamp Quarter':hotel.area==='la-jolla'?'San Diego · La Jolla':'San Diego · La Mesa';
-  return <div className="v2-hotel"><div style={{height:70,background:"#050609"}} /><HotelHero hotelName={hotel.name} hotelShortName={hotel.shortName} hotelArea={area} heroImageUrl={media.heroImageUrl} heroAlt={media.heroAlt} heroPosition={media.heroPosition} /></div>;
+  return <div className="v2-hotel"><div style={{height:70,background:"#050609"}} /><HotelHero hotelName={hotel.name} hotelShortName={hotel.shortName} hotelArea={area} heroImageUrl={media.heroImageUrl} heroAlt={media.heroAlt} heroPosition={media.heroPosition} heroPlacement={media.heroPlacement} /></div>;
 }

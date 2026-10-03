@@ -136,6 +136,8 @@ function makeVenue(
     neighborhood: venue.neighborhood,
     address: venue.address,
     imageUrl: imageUrl || undefined,
+    imagePlacement: venue.bannerImagePlacement || enhancement?.heroPlacement,
+    imagePosition: venue.bannerImagePosition || enhancement?.heroPosition,
     distanceMiles,
     distanceLabel: `${distanceMiles.toFixed(1)} mi from hotel`,
     tier,
@@ -255,6 +257,7 @@ export async function HotelExperiencePageContent({ slug, demo = false }: { slug:
       hotelSiteUrl={experience.hotelSiteUrl}
       brandLogoUrl={experience.brandLogoUrl}
       heroImageUrl={hotel.heroImageUrl}
+      heroPlacement={hotel.heroPlacement}
       heroCredit={hotel.heroCredit}
       heroAlt={hotel.heroAlt}
       heroPosition={hotel.heroPosition}

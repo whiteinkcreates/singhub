@@ -1,6 +1,7 @@
 /* Literal port of authoritative Site v37. Preserve markup and CSS relationships. */
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import {PositionedImage} from '@/components/media/PositionedImage';
 import Link from "next/link";
 import { eventRunsOnNight, scheduleQualification } from '@/lib/eventOccurrence';
 import { useRef } from 'react';
@@ -25,7 +26,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 </header>
 <nav className="basic-browse-nav" aria-label="Primary"><Link href="/">Discover</Link><Link href="/find-karaoke">Venues</Link><Link href="/hosts">Hosts</Link><Link href="/hotel">Hotels</Link><Link href="/account">My SingHUB</Link></nav><div className="content">
 <section className="section">
-<div className="venue-hero"><img src={enhancement?.heroImageUrl||venue.bannerImageUrl||'/images/og/singhub-og.png'} alt={enhancement?.heroImageAlt||venue.bannerImageAlt||(enhancement?.heroImageUrl||venue.bannerImageUrl?venue.venueName+' venue':'SingHUB karaoke guide')} className="venue-hero-photo" style={{objectPosition:enhancement?.heroPosition||venue.bannerImagePosition||'center'}} /></div>
+<div className="venue-hero"><PositionedImage placement={enhancement?.heroPlacement||venue.bannerImagePlacement} position={enhancement?.heroPosition||venue.bannerImagePosition||'center'} src={enhancement?.heroImageUrl||venue.bannerImageUrl||'/images/og/singhub-og.png'} alt={enhancement?.heroImageAlt||venue.bannerImageAlt||(enhancement?.heroImageUrl||venue.bannerImageUrl?venue.venueName+' venue':'SingHUB karaoke guide')} className="venue-hero-photo" style={{objectPosition:enhancement?.heroPosition||venue.bannerImagePosition||'center'}} /></div>
 <h1>{venue.venueName}</h1>
 <div className="verified" title={row.verification}><span className="verified-dot">{venue.listingStatus==='verified'?'✓':'·'}</span>{' '+row.trust.replace(/^✓\s*/, '')}</div>
 <p className="subline" style={{"marginTop": "10px"}}>{venue.neighborhood+' · '+venue.address}</p>

@@ -1,0 +1,12 @@
+img[data-image-placement] {
+  object-position:var(--image-desktop-position) !important;
+  transform:scale(var(--image-desktop-zoom));
+  transform-origin:var(--image-desktop-position);
+}
+@media (max-width:640px) {
+  img[data-image-placement] {
+    object-position:var(--image-mobile-position) !important;
+    transform:scale(var(--image-mobile-zoom));
+    transform-origin:var(--image-mobile-position);
+  }
+}

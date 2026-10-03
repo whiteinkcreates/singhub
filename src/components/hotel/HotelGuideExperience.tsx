@@ -1,4 +1,6 @@
 "use client";
+import {PositionedImage} from "@/components/media/PositionedImage";
+import type {ResponsiveImagePlacement} from "@/lib/imagePlacement";
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -11,6 +13,8 @@ export type HotelGuideVenue = {
   neighborhood: string;
   address: string;
   imageUrl?: string;
+  imagePlacement?: ResponsiveImagePlacement;
+  imagePosition?: string;
   distanceMiles: number;
   distanceLabel: string;
   tier: "walkable" | "quick" | "standout";
@@ -131,7 +135,7 @@ function VenueCard({
     <article className="group overflow-hidden rounded-2xl border border-white/10 bg-[#0a131f] shadow-[0_18px_50px_rgba(0,0,0,0.2)] transition hover:-translate-y-0.5 hover:border-fuchsia-300/35">
       {venue.imageUrl && imageVisible ? (
         <div className="relative h-36 overflow-hidden bg-[#0d1724]">
-          <img
+          <PositionedImage placement={venue.imagePlacement} position={venue.imagePosition}
             src={venue.imageUrl}
             alt=""
             className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]"

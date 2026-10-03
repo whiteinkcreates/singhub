@@ -1,6 +1,7 @@
 /* Literal port of authoritative Site v37. Preserve markup and CSS relationships. */
 /* eslint-disable @next/next/no-img-element */
 "use client";
+import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 import type { HotelPhotoCredit as Credit } from "@/lib/hotelPhotoCredit";
 import { HotelHero } from "./HotelHero";
 import Link from "next/link";
@@ -13,7 +14,7 @@ import { selectHotelStandouts,type HotelRowData } from '@/lib/v2/presentation';
 import {trackEvent} from "@/lib/analytics";
 import {useHotelGuestPlan} from '@/components/hotel/HotelGuestPlan';
 import "./styles/hotel.css";
-export function HotelGuideTemplate({hotelName,hotelShortName,hotelSlug,hotelArea,heroImageUrl,heroAlt,heroPosition,heroCredit,tonightVenues,weekVenues,weeklyCount,tonightCount}:{hotelName:string;hotelShortName:string;hotelSlug:string;hotelArea:string;heroImageUrl?:string;heroAlt?:string;heroPosition?:string;heroCredit?:Credit;tonightVenues:HotelRowData[];weekVenues:HotelRowData[];weeklyCount:number;tonightCount:number}) {
+export function HotelGuideTemplate({hotelName,hotelShortName,hotelSlug,hotelArea,heroImageUrl,heroAlt,heroPosition,heroCredit,heroPlacement,tonightVenues,weekVenues,weeklyCount,tonightCount}:{hotelName:string;hotelShortName:string;hotelSlug:string;hotelArea:string;heroImageUrl?:string;heroAlt?:string;heroPosition?:string;heroCredit?:Credit;heroPlacement?:ResponsiveImagePlacement;tonightVenues:HotelRowData[];weekVenues:HotelRowData[];weeklyCount:number;tonightCount:number}) {
 const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();const [mode,setMode]=useState<'tonight'|'week'>('tonight');
 useListReturn({mode},saved=>{if(saved?.mode==='tonight'||saved?.mode==='week')setMode(saved.mode);});
 const active=mode==='tonight'?tonightVenues:weekVenues;const groups={walkable:active.filter(item=>item.tier==='walkable'),quick:active.filter(item=>item.tier==='quick'),standout:selectHotelStandouts(active)};
@@ -25,7 +26,7 @@ return <div className={"v2-hotel"+(mode === "week" ? " week-mode" : "")} ref={ro
 
 <header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link href="/">{"Discover"}</Link><a className="active" href={"/hotel/"+hotelSlug}>{"Hotel guide"}</a><a href="/find-karaoke">{"Venues"}</a><Link href="/hosts">{"Hosts"}</Link><Link href="/hotel">{"Hotels"}</Link><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
 <main>
-<HotelHero hotelName={hotelName} hotelShortName={hotelShortName} hotelArea={hotelArea} heroImageUrl={heroImageUrl} heroAlt={heroAlt} heroPosition={heroPosition} heroCredit={heroCredit} />
+<HotelHero hotelName={hotelName} hotelShortName={hotelShortName} hotelArea={hotelArea} heroImageUrl={heroImageUrl} heroAlt={heroAlt} heroPosition={heroPosition} heroCredit={heroCredit} heroPlacement={heroPlacement} />
 <div className="experience-shell">
 <section className="concierge" aria-labelledby="welcome-title"><div className="concierge-inner"><div><p className="eyebrow">{'CURATED FOR GUESTS OF '+hotelShortName.toUpperCase()}</p><h2 id="welcome-title">{"New in town? Looking for a mic? Let me show you where San Diego really sings."}</h2></div><div className="concierge-copy"><p>{'San Diego has '+weeklyCount+' karaoke schedule listings. Tonight, SingHUB has '+tonightCount+' scheduled karaoke listings to choose from.'}</p><p>{"Take a look at a few nearby options and plan your own local gig tour."}</p></div></div></section>
 <section className="guide" aria-labelledby="guide-title">

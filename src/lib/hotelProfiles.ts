@@ -1,8 +1,10 @@
+import {parseImagePlacement,type ResponsiveImagePlacement} from './imagePlacement';
 import type { HeroPosition } from "@/lib/venueEnhancements";
 export type HotelMediaProfile = {
   heroImageUrl: string;
   heroAlt: string;
   heroPosition?: HeroPosition;
+  heroPlacement?: ResponsiveImagePlacement;
   imageSource: string;
   usageRights: string;
 };
@@ -20,7 +22,7 @@ export function parseHotelMediaProfile(input: unknown): HotelMediaProfile {
   }
   const heroPosition = value.heroPosition;
   if (heroPosition !== undefined && !["center", "top", "bottom", "left", "right"].includes(String(heroPosition))) throw new Error("Invalid hero focal point.");
-  const profile = { heroImageUrl, ...(heroPosition === undefined ? {} : { heroPosition: heroPosition as HeroPosition }), heroAlt: text("heroAlt", 300), imageSource: text("imageSource", 2048), usageRights: text("usageRights", 2000) };
+  const profile = { heroImageUrl, heroPlacement:parseImagePlacement(value.heroPlacement), ...(heroPosition === undefined ? {} : { heroPosition: heroPosition as HeroPosition }), heroAlt: text("heroAlt", 300), imageSource: text("imageSource", 2048), usageRights: text("usageRights", 2000) };
   if (heroImageUrl && !profile.heroAlt) throw new Error("Describe the selected image for accessibility.");
   return profile;
 }

@@ -1,4 +1,6 @@
 "use client";
+import {ImagePlacementEditor} from './ImagePlacementEditor';
+import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { HeroPosition, VenueGalleryItem } from "@/lib/venueEnhancements";
@@ -7,14 +9,6 @@ import type { VenueMediaAsset } from "@/lib/venueMediaCloudinary";
 import { MediaImagePreview } from "./MediaImagePreview";
 
 const MAX_GALLERY_PHOTOS = 15;
-const HERO_POSITIONS: Array<{ value: HeroPosition; label: string }> = [
-  { value: "center", label: "Center" },
-  { value: "top", label: "Top" },
-  { value: "bottom", label: "Bottom" },
-  { value: "left", label: "Left" },
-  { value: "right", label: "Right" },
-];
-
 type VenueMediaLibraryProps = {
   slug: string;
   kind?: "venue" | "hotel" | "host";
@@ -22,6 +16,11 @@ type VenueMediaLibraryProps = {
   heroUrl: string;
   heroAlt: string;
   heroPosition: HeroPosition;
+  heroPlacement?: ResponsiveImagePlacement;
+  logoPlacement?: ResponsiveImagePlacement;
+  logoPosition?: string;
+  onHeroPlacementChange: (value:ResponsiveImagePlacement)=>void;
+  onLogoPlacementChange: (value:ResponsiveImagePlacement)=>void;
   logoUrl: string;
   logoAlt: string;
   gallery: VenueGalleryItem[];
@@ -57,7 +56,7 @@ export function VenueMediaLibrary({
   logoAlt,
   gallery,
   onHeroChange,
-  onHeroPositionChange,
+  heroPlacement,logoPlacement,logoPosition,onHeroPlacementChange,onLogoPlacementChange,
   onLogoChange,
   onGalleryChange,
 }: VenueMediaLibraryProps) {
@@ -190,13 +189,13 @@ export function VenueMediaLibrary({
       <div className={kind !== "venue" ? "mt-4 grid gap-3" : "mt-4 grid gap-3 lg:grid-cols-[1fr_15rem]"}>
         {heroUrl ? (
           <div className="overflow-hidden rounded-2xl border border-fuchsia-300/25 bg-black/30">
-            <div className="relative aspect-[16/7] overflow-hidden"><MediaImagePreview src={heroUrl} alt={heroAlt || `Selected ${kind} hero`} className="h-full w-full object-cover" style={{ objectPosition: heroPosition }} /><span className="absolute left-3 top-3 rounded-full bg-[#ff2aa3] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white">Hero</span></div>
-            <div className="grid gap-3 p-3 sm:grid-cols-[1fr_auto] sm:items-end"><label className="text-xs font-black normal-case tracking-normal text-slate-400">Hero focal point<select value={heroPosition} onChange={(event) => onHeroPositionChange(event.target.value as HeroPosition)} className="mt-1 block w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs text-white">{HERO_POSITIONS.map((position) => <option key={position.value} value={position.value}>{position.label}</option>)}</select></label><button type="button" onClick={() => onHeroChange("")} className="rounded-xl border border-rose-300/20 px-3 py-2 text-xs font-black normal-case tracking-normal text-rose-200">Clear hero</button></div>
+            <ImagePlacementEditor src={heroUrl} alt={heroAlt || `Selected ${kind} hero`} label="Hero" value={heroPlacement} position={heroPosition} onChange={onHeroPlacementChange} />
+            <button type="button" onClick={() => onHeroChange("")} className="m-3 rounded-xl border border-rose-300/20 px-3 py-2 text-xs font-black text-rose-200">Clear hero</button>
           </div>
         ) : <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/15 text-sm text-slate-600">No hero selected</div>}
 
         {(kind === "venue" || (kind === "host" && allowPortrait)) && (logoUrl ? (
-          <div className="rounded-2xl border border-cyan-300/20 bg-black/30 p-3"><div className="mx-auto flex aspect-square max-w-36 items-center justify-center overflow-hidden rounded-full border border-cyan-300/30 bg-white/[0.04]"><MediaImagePreview src={logoUrl} alt={logoAlt || (kind === "host" ? "Host portrait" : "Selected venue mark")} className={kind === "host" ? "h-full w-full object-cover" : "h-full w-full object-contain p-3"} /></div><div className="mt-3 flex items-center justify-between gap-2"><span className="text-xs font-black text-cyan-200">{kind === "host" ? "Portrait" : "Logo / mark"}</span><button type="button" onClick={() => onLogoChange("")} className="text-xs font-black text-rose-200">Clear</button></div></div>
+          <div className="rounded-2xl border border-cyan-300/20 bg-black/30 p-3"><div className="mx-auto flex aspect-square max-w-36 items-center justify-center overflow-hidden rounded-full border border-cyan-300/30 bg-white/[0.04]"><MediaImagePreview src={logoUrl} alt={logoAlt || (kind === "host" ? "Host portrait" : "Selected venue mark")} className={kind === "host" ? "h-full w-full object-cover" : "h-full w-full object-contain p-3"} placement={logoPlacement} style={{objectPosition:logoPosition}} /></div><div className="mt-3 flex items-center justify-between gap-2"><span className="text-xs font-black text-cyan-200">{kind === "host" ? "Portrait" : "Logo / mark"}</span><button type="button" onClick={() => onLogoChange("")} className="text-xs font-black text-rose-200">Clear</button></div><div className="mt-3"><ImagePlacementEditor src={logoUrl} alt={logoAlt || "Selected image"} label={kind === "host" ? "Portrait" : "Logo"} shape="square" fit={kind === "host" ? "cover" : "contain"} value={logoPlacement} position={logoPosition} onChange={onLogoPlacementChange} /></div></div>
         ) : <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/15 px-4 text-center text-sm text-slate-600">{kind === "host" ? "No portrait selected. Hosts without a photo use initials." : "Optional logo / venue mark"}</div>)}
       </div>
 
@@ -211,7 +210,7 @@ export function VenueMediaLibrary({
         </div>;
       })}</div>}
 
-      {kind === "venue" && gallery.length > 0 && <div className="mt-6"><div className="flex items-center justify-between gap-3"><div><p className="text-sm font-black normal-case tracking-normal text-white">Gallery order and labels</p><p className="mt-1 text-xs font-medium normal-case tracking-normal text-slate-500">These are the photos that will appear on the open venue profile.</p></div><span className="rounded-full border border-white/10 px-3 py-1 text-xs font-black normal-case tracking-normal text-slate-300">{gallery.length}/{MAX_GALLERY_PHOTOS}</span></div><div className="mt-3 grid gap-3">{gallery.map((item, index) => <div key={`${item.url}-${index}`} className="grid gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 sm:grid-cols-[92px_1fr_auto] sm:items-center"><div className="h-20 w-20"><MediaImagePreview src={item.url} alt={item.alt} className="aspect-square h-20 w-20 rounded-xl object-cover" /></div><div className="grid gap-2"><input value={item.alt} onChange={(event) => updateGalleryItem(index, { alt: event.target.value })} placeholder="Alt text" className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs font-semibold normal-case tracking-normal text-white outline-none focus:border-cyan-300/50" /><input value={item.caption || ""} onChange={(event) => updateGalleryItem(index, { caption: event.target.value || undefined })} placeholder="Optional caption" className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs font-semibold normal-case tracking-normal text-white outline-none focus:border-cyan-300/50" /></div><div className="flex gap-1 sm:flex-col"><button type="button" onClick={() => moveGalleryItem(index, -1)} disabled={index === 0} className="rounded-lg border border-white/10 px-2 py-1 text-xs font-black normal-case tracking-normal text-slate-300 disabled:opacity-25">↑</button><button type="button" onClick={() => moveGalleryItem(index, 1)} disabled={index === gallery.length - 1} className="rounded-lg border border-white/10 px-2 py-1 text-xs font-black normal-case tracking-normal text-slate-300 disabled:opacity-25">↓</button><button type="button" onClick={() => onGalleryChange(gallery.filter((_, itemIndex) => itemIndex !== index))} className="rounded-lg border border-rose-300/20 px-2 py-1 text-xs font-black normal-case tracking-normal text-rose-200">×</button></div></div>)}</div></div>}
+      {kind === "venue" && gallery.length > 0 && <div className="mt-6"><div className="flex items-center justify-between gap-3"><div><p className="text-sm font-black normal-case tracking-normal text-white">Gallery order and labels</p><p className="mt-1 text-xs font-medium normal-case tracking-normal text-slate-500">These are the photos that will appear on the open venue profile.</p></div><span className="rounded-full border border-white/10 px-3 py-1 text-xs font-black normal-case tracking-normal text-slate-300">{gallery.length}/{MAX_GALLERY_PHOTOS}</span></div><div className="mt-3 grid gap-3">{gallery.map((item, index) => <div key={`${item.url}-${index}`} className="grid gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 sm:grid-cols-[92px_1fr_auto] sm:items-center"><div className="h-20 w-20 overflow-hidden rounded-xl"><MediaImagePreview src={item.url} alt={item.alt} placement={item.placement} className="aspect-square h-20 w-20 rounded-xl object-cover" /></div><div className="grid gap-2"><input value={item.alt} onChange={(event) => updateGalleryItem(index, { alt: event.target.value })} placeholder="Alt text" className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs font-semibold normal-case tracking-normal text-white outline-none focus:border-cyan-300/50" /><input value={item.caption || ""} onChange={(event) => updateGalleryItem(index, { caption: event.target.value || undefined })} placeholder="Optional caption" className="w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs font-semibold normal-case tracking-normal text-white outline-none focus:border-cyan-300/50" /></div><div className="flex gap-1 sm:flex-col"><button type="button" onClick={() => moveGalleryItem(index, -1)} disabled={index === 0} className="rounded-lg border border-white/10 px-2 py-1 text-xs font-black normal-case tracking-normal text-slate-300 disabled:opacity-25">↑</button><button type="button" onClick={() => moveGalleryItem(index, 1)} disabled={index === gallery.length - 1} className="rounded-lg border border-white/10 px-2 py-1 text-xs font-black normal-case tracking-normal text-slate-300 disabled:opacity-25">↓</button><button type="button" onClick={() => onGalleryChange(gallery.filter((_, itemIndex) => itemIndex !== index))} className="rounded-lg border border-rose-300/20 px-2 py-1 text-xs font-black normal-case tracking-normal text-rose-200">×</button></div><div className="sm:col-span-3"><ImagePlacementEditor src={item.url} alt={item.alt} label={`Gallery photo ${index+1}`} shape="gallery" value={item.placement} onChange={placement=>updateGalleryItem(index,{placement})} /></div></div>)}</div></div>}
     </section>
   );
 }

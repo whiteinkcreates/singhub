@@ -1,3 +1,4 @@
+import type {ResponsiveImagePlacement} from './imagePlacement';
 import type { VenueListing } from "@/types";
 
 export type HotelGuide = {
@@ -9,6 +10,7 @@ export type HotelGuide = {
   latitude: number;
   longitude: number;
   heroImageUrl?: string;
+  heroPlacement?: ResponsiveImagePlacement;
   heroAlt?: string;
   heroPosition?: import("@/lib/venueEnhancements").HeroPosition;
   wordmarkImageUrl?: string;

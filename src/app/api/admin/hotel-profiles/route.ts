@@ -23,6 +23,7 @@ export async function PUT(request: Request) {
   try {
     await saveHotelMediaProfile(slug, profile);
     revalidatePath(`/hotel/${slug}`);
+    revalidatePath("/hotelexperience/[slug]", "page");
     return NextResponse.json({ ok: true, profile });
   } catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Hotel media was not saved." }, { status: 503 }); }
 }

@@ -1,4 +1,6 @@
 "use client";
+import {PositionedImage} from '@/components/media/PositionedImage';
+import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 
 /* eslint-disable @next/next/no-img-element */
 import { useMemo, useState } from "react";
@@ -132,7 +134,7 @@ function AdminPreview({ venue, profile, mode }: { venue?: VenueOption; profile: 
     return (
       <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0b1118] shadow-xl shadow-black/20">
         <div className="relative h-40 overflow-hidden bg-slate-950">
-          {hero ? <img src={hero} alt={profile.heroImageAlt || "Preview hero"} className="h-full w-full object-cover opacity-55" style={{ objectPosition: heroPosition }} /> : null}
+          {hero ? <PositionedImage placement={profile.heroPlacement} position={heroPosition} src={hero} alt={profile.heroImageAlt || "Preview hero"} className="h-full w-full object-cover opacity-55" style={{ objectPosition: heroPosition }} /> : null}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b1118] via-[#0b1118]/35 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 flex flex-wrap gap-2 p-4"><span className="rounded-full bg-[#ff2aa3] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white">Karaoke</span>{profile.featured ? <span className="rounded-full border border-violet-300/50 bg-violet-300/15 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-violet-100">Featured</span> : null}</div>
         </div>
@@ -144,12 +146,12 @@ function AdminPreview({ venue, profile, mode }: { venue?: VenueOption; profile: 
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#071019]">
       <div className="relative h-56 overflow-hidden bg-slate-950">
-        {hero ? <img src={hero} alt={profile.heroImageAlt || "Preview hero"} className="h-full w-full object-cover" style={{ objectPosition: heroPosition }} /> : null}
+        {hero ? <PositionedImage placement={profile.heroPlacement} position={heroPosition} src={hero} alt={profile.heroImageAlt || "Preview hero"} className="h-full w-full object-cover" style={{ objectPosition: heroPosition }} /> : null}
         <div className="absolute inset-0 bg-gradient-to-t from-[#071019] via-transparent to-black/15" />
         <div className="absolute bottom-4 left-4 flex gap-2"><span className="rounded-full bg-[#ff2aa3] px-3 py-1 text-[10px] font-black uppercase text-white">Karaoke</span>{profile.featured ? <span className="rounded-full border border-violet-300/50 bg-black/45 px-3 py-1 text-[10px] font-black uppercase text-violet-100">Featured</span> : null}</div>
       </div>
       <div className="relative p-4">
-        {profile.logoImageUrl ? <div className="absolute -top-10 right-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-300/60 bg-[#071019] p-2"><img src={profile.logoImageUrl} alt={profile.logoImageAlt || "Venue logo preview"} className="h-full w-full object-contain" /></div> : null}
+        {profile.logoImageUrl ? <div className="absolute -top-10 right-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-300/60 bg-[#071019] p-2"><PositionedImage placement={profile.logoPlacement} src={profile.logoImageUrl} alt={profile.logoImageAlt || "Venue logo preview"} className="h-full w-full object-contain" /></div> : null}
         <h3 className="pr-24 text-2xl font-black text-white">{venue.name}</h3><p className="mt-1 text-xs text-slate-400">{venue.neighborhood || venue.city}</p>{profile.tagline ? <p className="mt-3 text-sm leading-6 text-slate-200">{profile.tagline}</p> : null}
         <div className="mt-4 grid grid-cols-3 gap-2"><div className="rounded-xl border border-fuchsia-300/25 p-2 text-center text-[10px] font-black text-fuchsia-100">Directions</div>{profile.phone ? <div className="rounded-xl border border-white/10 p-2 text-center text-[10px] font-black text-slate-200">Call</div> : null}{profile.menuUrl ? <div className="rounded-xl border border-white/10 p-2 text-center text-[10px] font-black text-slate-200">Menu</div> : null}</div>
         <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.035] p-3"><p className="text-[10px] font-black uppercase tracking-[0.16em] text-fuchsia-300">Tonight at {venue.name}</p><p className="mt-2 text-xs text-slate-400">Live profile uses the canonical karaoke schedule plus today&apos;s saved specials.</p></div>
@@ -172,6 +174,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [heroImageUrl, setHeroImageUrl] = useState(initialProfile.heroImageUrl || "");
   const [heroImageAlt, setHeroImageAlt] = useState(initialProfile.heroImageAlt || "");
   const [heroPosition, setHeroPosition] = useState<HeroPosition>(initialProfile.heroPosition || "center");
+  const [heroPlacement,setHeroPlacement]=useState<ResponsiveImagePlacement|undefined>(initialProfile.heroPlacement);
+  const [logoPlacement,setLogoPlacement]=useState<ResponsiveImagePlacement|undefined>(initialProfile.logoPlacement);
   const [logoImageUrl, setLogoImageUrl] = useState(initialProfile.logoImageUrl || "");
   const [logoImageAlt, setLogoImageAlt] = useState(initialProfile.logoImageAlt || "");
   const [gallery, setGallery] = useState<VenueGalleryItem[]>(initialProfile.gallery || []);
@@ -210,6 +214,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setHeroImageUrl(profile.heroImageUrl || "");
     setHeroImageAlt(profile.heroImageAlt || "");
     setHeroPosition(profile.heroPosition || "center");
+    setHeroPlacement(profile.heroPlacement);
+    setLogoPlacement(profile.logoPlacement);
     setLogoImageUrl(profile.logoImageUrl || "");
     setLogoImageAlt(profile.logoImageAlt || "");
     setGallery(profile.gallery || []);
@@ -262,7 +268,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     singerSignupUrl: singerSignupUrl.trim() || undefined,
     heroImageUrl: heroImageUrl.trim() || undefined,
     heroImageAlt: heroImageAlt.trim() || undefined,
-    heroPosition,
+    heroPosition,heroPlacement,logoPlacement,
     logoImageUrl: logoImageUrl.trim() || undefined,
     logoImageAlt: logoImageAlt.trim() || undefined,
     amenities,
@@ -282,7 +288,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       instructions: singHereInstructions.trim() || undefined,
       linkLabel: singHereLinkLabel.trim() || undefined,
     },
-  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, tagline, vibeTags, weeklySpecials, whyHere]);
+  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const completionChecks = useMemo(() => [
     { label: "Hero + alt text", done: Boolean(heroImageUrl.trim() && heroImageAlt.trim()) },
@@ -408,7 +414,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
               </div>
             </section>
 
-            <VenueMediaLibrary slug={slug} heroUrl={heroImageUrl} heroAlt={heroImageAlt} heroPosition={heroPosition} logoUrl={logoImageUrl} logoAlt={logoImageAlt} gallery={gallery} onHeroChange={setHeroImageUrl} onHeroPositionChange={setHeroPosition} onLogoChange={setLogoImageUrl} onGalleryChange={setGallery} />
+            <VenueMediaLibrary slug={slug} heroUrl={heroImageUrl} heroAlt={heroImageAlt} heroPosition={heroPosition} heroPlacement={heroPlacement} logoPlacement={logoPlacement} onHeroPlacementChange={setHeroPlacement} onLogoPlacementChange={setLogoPlacement} logoUrl={logoImageUrl} logoAlt={logoImageAlt} gallery={gallery} onHeroChange={setHeroImageUrl} onHeroPositionChange={setHeroPosition} onLogoChange={setLogoImageUrl} onGalleryChange={setGallery} />
             <label className={labelClass}>Hero image alt text<input className={fieldClass} value={heroImageAlt} onChange={(event) => setHeroImageAlt(event.target.value)} placeholder="Describe the hero photo" /></label>
             <label className={labelClass}>Logo / mark alt text<input className={fieldClass} value={logoImageAlt} onChange={(event) => setLogoImageAlt(event.target.value)} placeholder="Venue logo or mark" /></label>
 
