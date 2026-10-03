@@ -32,3 +32,13 @@ test('sales sheet accepts its own placement and real screenshots match the selec
  assert.equal(hotelPackageScreenshot('holiday-inn-express-la-mesa','https://example.com/replacement.jpg'),null);
  assert.equal(hotelPackageScreenshot('unknown-hotel',hero),null);
 });
+
+test('URL intake resolves one registered property and stops ambiguous or unsafe inputs',()=>{
+ const {resolveHotelPackageUrl}=load('src/lib/hotelPackageIntake.ts');const sources=[{slug:'hie',hotelSiteUrl:'https://www.ihg.com/holidayinnexpress/hotels/us/en/la-mesa/sanpd/hoteldetail'}];
+ assert.equal(resolveHotelPackageUrl(sources[0].hotelSiteUrl+'/?utm_source=test',sources).slug,'hie');
+ assert.equal(resolveHotelPackageUrl('https://www.ihg.com/',sources).status,'unmatched');
+ assert.equal(resolveHotelPackageUrl('https://unknown.example/hotel',sources).status,'unmatched');
+ assert.equal(resolveHotelPackageUrl('javascript:alert(1)',sources).status,'invalid');
+ assert.equal(resolveHotelPackageUrl('https://user:pass@ihg.com/hotel',sources).status,'invalid');
+ assert.equal(resolveHotelPackageUrl(sources[0].hotelSiteUrl,[...sources,...sources]).status,'unmatched');
+});
