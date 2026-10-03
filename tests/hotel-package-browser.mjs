@@ -5,8 +5,11 @@ const out='.hotel-package-qa',base='http://localhost:3100',slug='holiday-inn-exp
 await mkdir(out,{recursive:true});const browser=await chromium.launch({args:['--no-sandbox']});
 const results=[];
 try{
- const publicContext=await browser.newContext();assert.equal((await publicContext.request.get(base+'/admin/hotels/'+slug+'/package')).status(),401);assert.equal((await publicContext.request.get(base+'/api/hotels/not-a-hotel/qr')).status(),404);await publicContext.close();
+ const publicContext=await browser.newContext();assert.equal((await publicContext.request.get(base+'/admin/hotels/'+slug+'/package')).status(),401);assert.equal((await publicContext.request.get(base+'/admin/hotels/package-intake')).status(),401);assert.equal((await publicContext.request.get(base+'/api/hotels/not-a-hotel/qr')).status(),404);await publicContext.close();
  const context=await browser.newContext({viewport:{width:1440,height:1100},httpCredentials:{username:'admin',password:'package-qa-only'}});const page=await context.newPage();const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ await page.goto(base+'/admin/hotels/package-intake',{waitUntil:'networkidle'});
+ await page.getByLabel('Official hotel property URL').fill('https://www.ihg.com/holidayinnexpress/hotels/us/en/la-mesa/sanpd/hoteldetail/?utm_source=qa');await page.getByRole('button',{name:'Find hotel package',exact:true}).click();await page.getByRole('link',{name:'Review assets and build package',exact:true}).waitFor();assert.equal(await page.getByRole('link',{name:'Review assets and build package',exact:true}).getAttribute('href'),'/admin/hotels/'+slug+'/package');await page.screenshot({path:out+'/hotel-url-intake.png',fullPage:true});
+ await page.getByLabel('Official hotel property URL').fill('https://unknown.example/hotel');await page.getByRole('button',{name:'Find hotel package',exact:true}).click();await page.getByRole('heading',{name:'Property review required',exact:true}).waitFor();assert.equal(await page.getByRole('link',{name:'Review assets and build package',exact:true}).count(),0);
  const packagePath=base+'/admin/hotels/'+slug+'/package';assert.equal((await page.goto(packagePath,{waitUntil:'networkidle'})).status(),200);
  await page.getByRole('heading',{name:'Asset review',exact:true}).waitFor();assert.equal(await page.getByRole('link',{name:'Print production / PDF',exact:true}).count(),0);
  assert.equal((await context.request.get(packagePath+'/print?edition=guest&mode=production')).status(),404);
@@ -31,5 +34,5 @@ try{
   const cta=await page.locator('[data-hotel-explore-cta]').evaluate(e=>({color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor}));assert.equal(cta.color,'rgb(255, 255, 255)');assert.equal(cta.bg,'rgb(18, 59, 97)');await page.locator('[data-hotel-explore-cta]').scrollIntoViewIfNeeded();await page.screenshot({path:out+'/guest-cta-'+edition+'-'+width+'.png'});
   await page.getByRole('button',{name:/^This week$/i}).click();await page.locator('a[href*="/venues/jts-tavern"]').first().waitFor();await page.screenshot({path:out+'/guest-flow-'+edition+'-'+width+'.png'});
  }
- assert.deepEqual(errors,[]);await writeFile(out+'/results.json',JSON.stringify(results,null,2));console.log('Hotel package passed: protected admin, approval/save/reload, four decodable QRs, four print PDFs and both mobile/desktop guest editions');await context.close();
+ assert.deepEqual(errors,[]);await writeFile(out+'/results.json',JSON.stringify(results,null,2));console.log('Hotel package passed: protected admin, approval/save/reload, URL intake, five decodable QRs, five print PDFs and both mobile/desktop guest editions');await context.close();
 }finally{await browser.close();}
