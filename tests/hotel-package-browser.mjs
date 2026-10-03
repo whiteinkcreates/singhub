@@ -28,7 +28,7 @@ try{
  const manifest=await (await context.request.get(packagePath+'/manifest')).json();assert.equal(manifest.productionReady.guest,true);assert.equal(manifest.outputs.length,4);
  for(const edition of ['guest','concierge'])for(const width of [390,1440]){
   await page.setViewportSize({width,height:844});const response=await page.goto(base+'/hotelexperience/'+slug+'?edition='+edition,{waitUntil:'networkidle'});assert.equal(response.status(),200);assert.equal(await page.locator('[data-hotel-edition]').getAttribute('data-hotel-edition'),edition);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-  const cta=await page.locator('[data-hotel-explore-cta]').evaluate(e=>({color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor}));assert.equal(cta.color,'rgb(255, 255, 255)');assert.equal(cta.bg,'rgb(18, 59, 97)');
+  const cta=await page.locator('[data-hotel-explore-cta]').evaluate(e=>({color:getComputedStyle(e).color,bg:getComputedStyle(e).backgroundColor}));assert.equal(cta.color,'rgb(255, 255, 255)');assert.equal(cta.bg,'rgb(18, 59, 97)');await page.locator('[data-hotel-explore-cta]').scrollIntoViewIfNeeded();await page.screenshot({path:out+'/guest-cta-'+edition+'-'+width+'.png'});
   await page.getByRole('button',{name:/^This week$/i}).click();await page.locator('a[href*="/venues/jts-tavern"]').first().waitFor();await page.screenshot({path:out+'/guest-flow-'+edition+'-'+width+'.png'});
  }
  assert.deepEqual(errors,[]);await writeFile(out+'/results.json',JSON.stringify(results,null,2));console.log('Hotel package passed: protected admin, approval/save/reload, four decodable QRs, four print PDFs and both mobile/desktop guest editions');await context.close();
