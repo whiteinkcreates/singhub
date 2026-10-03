@@ -28,7 +28,11 @@ try{
   await page.screenshot({path:out+'/'+variant+'-'+width+'-week.png',fullPage:true});
   await page.locator('a[href*="/venues/jts-tavern"]').first().click();await page.waitForURL('**/venues/jts-tavern?source=*');
   await page.waitForFunction(()=>document.readyState==='complete');const events=captured.filter(c=>c[0]==='event');assert.ok(events.some(c=>c[1]===(variant==='guide'?'hotel_guide_venue_click':'hotel_experience_venue_click')&&c[2].hotel_slug==='holiday-inn-express-la-mesa'));
-  assert.deepEqual(errors,[]);results.push({variant,width,events:events.map(c=>c[1]),overflow:false,planDialog:true,planError:true});await context.close();
+  await page.goto('https://singhub.app'+path,{waitUntil:'networkidle'});
+  await page.getByRole('link',{name:variant==='guide'?'View all karaoke':'Explore more local karaoke on SingHUB',exact:true}).click();
+  await page.waitForURL(variant==='guide'?'**/?source=*':'**/find-karaoke?source=*');
+  assert.ok(captured.some(c=>c[1]===(variant==='guide'?'hotel_guide_full_singhub_click':'hotel_experience_full_singhub_click')&&c[2].hotel_slug==='holiday-inn-express-la-mesa'));
+  assert.deepEqual(errors,[]);results.push({variant,width,events:captured.filter(c=>c[0]==='event').map(c=>c[1]),overflow:false,planDialog:true,planError:true});await context.unrouteAll({behavior:'wait'});await context.close();
  }
  await writeFile(out+'/results.json',JSON.stringify(results,null,2));console.log('Hotel desktop/mobile journeys and analytics passed: '+JSON.stringify(results));
 }finally{await browser.close();}
