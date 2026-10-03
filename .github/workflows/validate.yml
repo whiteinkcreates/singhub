@@ -44,6 +44,10 @@ jobs:
         if: startsWith(github.head_ref, 'feat/media-')
         run: node tests/image-placement-browser.mjs --prepare
 
+      - name: Prepare isolated star-share browser fixture
+        if: startsWith(github.head_ref, 'feat/main-page-')
+        run: node tests/star-share-browser.mjs --prepare
+
       - name: Build
         run: npm run build
 
@@ -112,6 +116,7 @@ jobs:
             sleep 1
           done
           node tests/main-page-hero-browser.mjs
+          node tests/star-share-browser.mjs
 
       - name: Save main-page hero QA evidence
         if: always() && startsWith(github.head_ref, 'feat/main-page-')
