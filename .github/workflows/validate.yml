@@ -32,7 +32,7 @@ jobs:
         run: npm run test:data
 
       - name: Verify canonical reconciliation and nightlife behavior
-        run: node --test tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs
+        run: node --test tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs
 
       - name: Keep heavy media out of deployments
         run: npm run check:assets
@@ -42,3 +42,27 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Install browser for hotel journey QA
+        if: startsWith(github.head_ref, 'fix/hotel-')
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify hotel desktop and mobile journeys
+        if: startsWith(github.head_ref, 'fix/hotel-')
+        run: |
+          npm run start -- --port 3100 > /tmp/hotel-qa-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://localhost:3100 > /dev/null; then break; fi
+            sleep 1
+          done
+          node tests/hotel-journey-browser.mjs
+
+      - name: Save hotel journey QA evidence
+        if: always() && startsWith(github.head_ref, 'fix/hotel-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-journey-qa
+          path: .hotel-qa
+          include-hidden-files: true

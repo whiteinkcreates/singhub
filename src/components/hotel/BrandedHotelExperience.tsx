@@ -450,7 +450,7 @@ export function BrandedHotelExperience({
   }
 
   return (
-    <main className="min-h-screen" style={{ backgroundColor: pageBackground, color: textColor, fontFamily: bodyFontFamily }}>
+    <main className="min-h-screen" data-hotel-slug={hotelSlug} data-hotel-experience={experienceSlug} style={{ backgroundColor: pageBackground, color: textColor, fontFamily: bodyFontFamily }}>
       <div className="relative isolate mx-auto min-h-screen max-w-4xl overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,.12)]">
         <KaraokeMicBackdrop color={primaryColor} />
 
