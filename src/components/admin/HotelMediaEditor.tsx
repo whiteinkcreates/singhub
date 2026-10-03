@@ -62,7 +62,7 @@ export function HotelMediaEditor({ hotels }: { hotels: HotelGuide[] }) {
       const next = hotels.find(item => item.slug === event.target.value)!;
       setLoading(true); setLoadFailed(false); setDirty(false); setProfile(defaults(next)); setMessage(""); setSlug(next.slug);
     }}>{hotels.map(item => <option key={item.slug} value={item.slug}>{item.name}</option>)}</select></label>
-    <p className="mt-4"><Link href={`/admin/hotels/${slug}/demo`} target="_blank" className="text-cyan-200 underline">Open internal hotel demo ↗</Link><span className="ml-3 text-sm text-slate-400">Research photos are examples with permission pending; this does not publish them.</span></p>
+    <p className="mt-4"><Link href={`/admin/hotels/${slug}/package`} className="mr-4 text-cyan-200 underline">Build hotel package ↗</Link><Link href={`/admin/hotels/${slug}/demo`} target="_blank" className="text-cyan-200 underline">Open internal hotel demo ↗</Link><span className="ml-3 text-sm text-slate-400">Research photos are examples with permission pending; this does not publish them.</span></p>
     <fieldset disabled={loading || saving || loadFailed} className="mt-6 space-y-5 disabled:opacity-60">
       <VenueMediaLibrary key={slug} kind="hotel" slug={slug} heroUrl={profile.heroImageUrl} heroAlt={profile.heroAlt} heroPosition={profile.heroPosition || "center"} heroPlacement={profile.heroPlacement} onHeroPlacementChange={value=>edit({heroPlacement:value})} onLogoPlacementChange={()=>{}} logoUrl="" logoAlt="" gallery={[]} onHeroChange={url => edit({ heroImageUrl: url })} onHeroPositionChange={position => edit({ heroPosition: position })} onLogoChange={() => {}} onGalleryChange={() => {}} />
       <div className="grid gap-5 md:grid-cols-2">

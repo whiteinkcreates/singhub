@@ -32,7 +32,7 @@ jobs:
         run: npm run test:data
 
       - name: Verify canonical reconciliation and nightlife behavior
-        run: node --test tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs
+        run: node --test tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs tests/hotel-package.test.mjs tests/hotel-photo-rights.test.mjs
 
       - name: Keep heavy media out of deployments
         run: npm run check:assets
@@ -124,4 +124,68 @@ jobs:
         with:
           name: main-page-hero-qa
           path: .main-hero-qa
+          include-hidden-files: true
+
+      - name: Install browser for hotel package QA
+        if: startsWith(github.head_ref, 'feat/hotel-package-')
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify hotel package prints and review flow
+        if: startsWith(github.head_ref, 'feat/hotel-package-')
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:3101
+          SUPABASE_SERVICE_ROLE_KEY: package-qa-only
+          SINGHUB_ADMIN_PASSWORD: package-qa-only
+        run: |
+          node tests/hotel-package-fixture.mjs > /tmp/hotel-package-fixture.log 2>&1 &
+          fixture_pid=$!
+          npm run start -- --port 3100 > /tmp/hotel-package-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" "$fixture_pid"; cp /tmp/hotel-package-server.log .hotel-package-qa/server.log' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://localhost:3100 > /dev/null; then break; fi
+            sleep 1
+          done
+          node tests/hotel-package-browser.mjs
+
+      - name: Save hotel package print evidence
+        if: always() && startsWith(github.head_ref, 'feat/hotel-package-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-package-qa
+          path: |
+            .hotel-package-qa
+            !.hotel-package-qa/*.pdf
+          include-hidden-files: true
+
+      - name: Save guest elevator PDF
+        if: always() && startsWith(github.head_ref, 'feat/hotel-package-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-package-guest-elevator
+          path: .hotel-package-qa/*-guest-elevator-INTERNAL.pdf
+          include-hidden-files: true
+
+      - name: Save guest desk-tent PDF
+        if: always() && startsWith(github.head_ref, 'feat/hotel-package-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-package-guest-desk-tent
+          path: .hotel-package-qa/*-guest-desk-tent-INTERNAL.pdf
+          include-hidden-files: true
+
+      - name: Save concierge elevator PDF
+        if: always() && startsWith(github.head_ref, 'feat/hotel-package-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-package-concierge-elevator
+          path: .hotel-package-qa/*-concierge-elevator-INTERNAL.pdf
+          include-hidden-files: true
+
+      - name: Save concierge desk-tent PDF
+        if: always() && startsWith(github.head_ref, 'feat/hotel-package-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-package-concierge-desk-tent
+          path: .hotel-package-qa/*-concierge-desk-tent-INTERNAL.pdf
           include-hidden-files: true
