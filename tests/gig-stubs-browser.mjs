@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import {mkdir} from 'node:fs/promises';
+import {chromium} from 'playwright';
+const base=process.env.QA_BASE_URL||'http://localhost:3100';
+await mkdir('.gig-qa',{recursive:true});const browser=await chromium.launch({args:['--no-sandbox']});
+try{for(const width of [390,1440]){
+ const context=await browser.newContext({viewport:{width,height:900}});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ // Isolated authenticated browser fixture. No production account or visit is created.
+ await page.route('**/auth/v1/**',route=>route.fulfill({contentType:'application/json',body:JSON.stringify({id:'test-user',email:'test@example.invalid',email_confirmed_at:'2026-01-01'})}));
+ let posts=0;await page.route('**/api/gig-stubs',async route=>{if(route.request().method()==='POST'){const body=route.request().postDataJSON();assert.equal(body.venueSlug,'the-lamplighter');assert.equal(body.method,'self_reported');posts++;await route.fulfill({contentType:'application/json',body:JSON.stringify({collected:posts===1,alreadyCheckedIn:posts>1,venueName:'The Lamplighter'})});}else await route.fulfill({contentType:'application/json',body:JSON.stringify({stubs:[{venue_id:'venue-0002',venue_slug:'the-lamplighter',venue_name:'The Lamplighter',neighborhood:'Mission Hills',nightlife_date:'2026-10-03',created_at:'2026-10-04T03:00:00Z',method:'self_reported',visits:2}]})});});
+ // Supabase SSR browser reads the local test session from cookies.
+ const payload={access_token:'test-token',refresh_token:'test-refresh',expires_at:Math.floor(Date.now()/1000)+3600,expires_in:3600,token_type:'bearer',user:{id:'test-user',email:'test@example.invalid',email_confirmed_at:'2026-01-01'}};
+ await context.addCookies([{name:'sb-127-auth-token',value:'base64-'+Buffer.from(JSON.stringify(payload)).toString('base64url'),domain:'localhost',path:'/'}]);
+ await page.goto(base+'/venues/the-lamplighter',{waitUntil:'networkidle'});await page.getByRole('button',{name:'I’m here · Collect a Gig Stub',exact:true}).click();
+ await page.getByRole('button',{name:'Record a self-reported visit',exact:true}).click();await page.getByRole('status').filter({hasText:'New room. New Gig Stub.'}).waitFor();assert.equal(await page.locator('.gig-dialog').evaluate(e=>getComputedStyle(e).borderRadius),'15px');assert.ok(await page.locator('.gig-check-in-button').evaluate(e=>e.offsetHeight>=48));await page.screenshot({path:'.gig-qa/check-in-'+width+'.png'});
+ await page.getByRole('button',{name:'Close check-in',exact:true}).click();assert.equal(await page.locator('.singhere-dialog[open]').count(),0,'Gig Stub actions must not open SingHERE');await page.getByRole('button',{name:'I’m here · Collect a Gig Stub',exact:true}).click();await page.getByRole('button',{name:'Record a self-reported visit',exact:true}).click();await page.getByRole('status').filter({hasText:'already checked in'}).waitFor();assert.equal(posts,2);await page.getByRole('button',{name:'Close check-in',exact:true}).click();
+ await page.getByRole('button',{name:'New around here? Read the band notes ↗',exact:true}).click();
+ for(const role of ['Singers','Venues','KJs','Hotels']){await page.getByRole('button',{name:role,exact:true}).click();for(let i=0;i<4;i++)await page.getByRole('button',{name:'Next track →',exact:true}).click();await page.getByRole('button',{name:'Got it. Let’s go.',exact:true}).waitFor();}
+ await page.screenshot({path:'.gig-qa/band-notes-'+width+'.png'});await page.getByRole('button',{name:'Close band notes',exact:true}).click();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+ await page.goto(base+'/account#gig-stubs',{waitUntil:'networkidle'});await page.getByText('First visit: self-reported',{exact:true}).waitFor();assert.equal(await page.locator('.gig-stub-grid').evaluate(e=>getComputedStyle(e).display),'grid');assert.equal(await page.locator('.gig-stub').evaluate(e=>getComputedStyle(e).borderLeftWidth),'7px');assert.equal(await page.getByText('2 visits',{exact:true}).count(),1);await page.locator('#gig-stubs').screenshot({path:'.gig-qa/collection-'+width+'.png'});
+ assert.equal(await page.getByText('Liquid Courage Hero',{exact:true}).count(),0);assert.deepEqual(errors,[]);await context.close();console.log('Gig Stub and four band-note tours passed at '+width+'px');
+}
+ const signedOut=await browser.newContext();const page=await signedOut.newPage();await page.goto(base+'/venues/the-lamplighter?checkin=1',{waitUntil:'networkidle'});await page.getByRole('button',{name:'Record a self-reported visit',exact:true}).click();await page.getByRole('button',{name:'Email me a sign-in link',exact:true}).waitFor();assert.equal((await signedOut.request.post(base+'/api/gig-stubs',{data:{venueSlug:'the-lamplighter',method:'self_reported'}})).status(),401);await signedOut.close();
+}finally{await browser.close();}

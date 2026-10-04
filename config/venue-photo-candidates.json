@@ -1,0 +1,15 @@
+{
+  "reviewedOn": "2026-10-03",
+  "purpose": "Internal photo sourcing; never automatically published",
+  "candidates": [
+    {
+      "venueId": "venue-0002",
+      "venueSlug": "the-lamplighter",
+      "sourceUrl": "https://www.thelamplightersd.com/",
+      "imageUrl": "https://images.squarespace-cdn.com/content/v1/6848f00c7ace21015596e166/9211ff19-8c4c-4e16-902a-00827e547ef9/niftyfiftymedia-EMOnight-2.jpg",
+      "rightsStatus": "permission-pending",
+      "credit": "Photographer credit not verified. Filename references niftyfiftymedia.",
+      "note": "Real photo candidate from venue's official site. Review composition and confirm usage permission before adding to a public hero or gallery. No public asset was replaced."
+    }
+  ]
+}

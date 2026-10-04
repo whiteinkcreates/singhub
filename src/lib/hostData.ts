@@ -483,7 +483,7 @@ export async function getHosts({includeMedia=true}: {includeMedia?:boolean} = {}
   const rows = usingSheet ? sheetRows || [] : getFallbackRows();
 
   const hosts = rows
-    .filter((row) => !usingSheet || isVisible(row))
+    .filter((row) => isVisible(row))
     .map(rowToHost)
     .filter((host) => host.slug && host.publicDisplayName);
 
