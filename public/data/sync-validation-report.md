@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 101.
-Exported events: 198.
+Exported venues: 100.
+Exported events: 197.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -60,7 +60,6 @@ Exported events: 198.
 - venue-0039 Redwing Bar & Grill
 - venue-0026 Shooters Cocktails
 - venue-0047 Star Bar
-- venue-0016 The Cordova Bar
 - venue-0002 The Lamplighter
 - venue-0035 The Luau
 - venue-0080 The Mesa
@@ -147,6 +146,7 @@ Exported events: 198.
 - row 50: venue-0023 Rock Out Karaoke
 - row 51: venue-0050 Saddle Bar
 - row 53: venue-0064 Spot KTV & Restaurant
+- row 55: venue-0016 The Cordova Bar
 - row 63: venue-0024 Tremont St. Bar & Grill
 - row 77: venue-0093 Rosie O'Grady's
 ## Venues With Invalid App Visibility
@@ -154,6 +154,7 @@ Exported events: 198.
 ## Venues Skipped As Not Public-Usable
 - None
 ## Events Skipped Because App Hidden
+- event row 10: weekly-cordova-bar-tuesday
 - event row 39: weekly-wongs-golden-palace-sunday
 - event row 41: weekly-peter-ds-thursday
 - event row 42: weekly-peter-ds-friday
@@ -291,12 +292,12 @@ Exported events: 198.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 101
-Authoritative events: 198
+Public venues: 100
+Authoritative events: 197
 Legacy venue slug aliases: 0
 
 PASS Monday: 20 authoritative / 8 expected minimum
-PASS Tuesday: 32 authoritative / 8 expected minimum
+PASS Tuesday: 31 authoritative / 8 expected minimum
 PASS Wednesday: 30 authoritative / 9 expected minimum
 PASS Thursday: 40 authoritative / 14 expected minimum
 PASS Friday: 30 authoritative / 10 expected minimum
