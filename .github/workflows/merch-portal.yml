@@ -1,0 +1,31 @@
+name: Verify Shopify Merch Portal
+on:
+  pull_request:
+    paths:
+      - 'integrations/shopify/**'
+      - 'tests/shopify-merch-browser.mjs'
+      - '.github/workflows/merch-portal.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  merch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install isolated review tools
+        run: npm install --prefix /tmp/singhub-merch-qa --no-save liquidjs@10.30.0 playwright@1.62.1
+      - name: Install browser
+        run: /tmp/singhub-merch-qa/node_modules/.bin/playwright install --with-deps chromium
+      - name: Render and verify the production Liquid source
+        run: node tests/shopify-merch-browser.mjs
+      - name: Save review images and catalog sources
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: singhub-shopify-merch-review
+          path: .merch-qa
+          include-hidden-files: true

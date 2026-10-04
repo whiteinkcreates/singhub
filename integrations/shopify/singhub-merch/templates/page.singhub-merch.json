@@ -1,0 +1,14 @@
+{
+  "layout": "singhub",
+  "sections": {
+    "main": {
+      "type": "singhub-merch-table",
+      "settings": {
+        "collection": "singhub",
+        "heading": "TAKE THE NIGHT WITH YOU.",
+        "intro": "For the rooms you love. The songs you live for. And the next time you grab the mic."
+      }
+    }
+  },
+  "order": ["main"]
+}

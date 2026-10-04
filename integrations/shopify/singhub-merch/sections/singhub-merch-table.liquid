@@ -1,0 +1,68 @@
+{% liquid
+  assign merch_collection = section.settings.collection
+  if merch_collection == blank
+    assign merch_collection = collections['singhub']
+  endif
+%}
+<div class="sh-merch" data-singhub-merch data-root="{{ routes.root_url }}" data-currency="{{ cart.currency.iso_code | default: shop.currency }}">
+  <header class="sh-header">
+    <a class="sh-logo" href="https://singhub.app" aria-label="SingHUB home"><img src="{{ 'singhub-wordmark.png' | asset_url }}" alt="SingHUB" width="400" height="168"></a>
+    <nav class="sh-desktop-nav" aria-label="Primary"><a href="https://singhub.app">Discover</a><a href="https://singhub.app/find-karaoke">Venues</a><a href="https://singhub.app/hosts">Hosts</a><a href="https://singhub.app/hotel">Hotels</a><a href="https://singhub.app/singboard">SingBOARD</a></nav><div class="sh-header-actions"><a class="sh-return" data-return href="https://singhub.app/account#merch">My SingHUB <i class="material-symbols-rounded" aria-hidden="true">account_circle</i></a><button class="sh-bag-button" data-open-bag aria-haspopup="dialog" aria-controls="sh-bag">Bag <span data-cart-count>{{ cart.item_count }}</span></button><noscript><a href="{{ routes.cart_url }}">View cart</a></noscript></div>
+  </header>
+  <main id="merch-main">
+    <section class="sh-hero" aria-labelledby="sh-merch-title">
+      <a class="sh-entry-return" data-entry-return href="https://singhub.app/account#merch">← Back to SingHUB</a>
+      <p class="sh-eyebrow">SINGHUB · MERCH TABLE</p>
+      <h1 id="sh-merch-title">{{ section.settings.heading | escape }}</h1>
+      <p class="sh-intro">{{ section.settings.intro | escape }}</p>
+      <a class="sh-hero-link" href="#sh-products">Find your gear <span aria-hidden="true">↓</span></a>
+      <div class="sh-hero-mark" aria-hidden="true"><span>MIC ON.</span><span>WORLD OFF.</span></div>
+    </section>
+    <section class="sh-products" id="sh-products" aria-labelledby="sh-products-title">
+      <div class="sh-section-heading"><div><p class="sh-eyebrow">OFF THE STAGE. STILL YOU.</p><h2 id="sh-products-title">On the table.</h2></div><p>Pick your gear. Choose your fit.</p></div>
+      {% if merch_collection != blank and merch_collection.products_count > 0 %}
+        {% paginate merch_collection.products by 24 %}
+          <div class="sh-product-grid">
+            {% for product in merch_collection.products %}
+              {% unless product.requires_selling_plan %}
+                {% assign chosen = product.selected_or_first_available_variant %}
+                <article class="sh-product" data-product>
+                  <div class="sh-product-image">{% if product.featured_image %}{{ product.featured_image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '400,600,800,1000', sizes: '(max-width: 600px) 100vw, (max-width: 960px) 50vw, 33vw', alt: product.featured_image.alt, class: 'sh-product-photo' }}{% else %}<span class="sh-image-pending">Product photo coming soon</span>{% endif %}</div>
+                  <div class="sh-product-copy"><p class="sh-product-type">{{ product.type | escape }}</p><h3>{{ product.title | escape }}</h3><p class="sh-price"><span data-price>{{ chosen.price | money_with_currency }}</span><s data-compare {% unless chosen.compare_at_price > chosen.price %}hidden{% endunless %}>{{ chosen.compare_at_price | money_with_currency }}</s></p>
+                  {% form 'product', product, class: 'sh-product-form' %}
+                    {% if product.has_only_default_variant %}<input type="hidden" name="id" value="{{ chosen.id }}">{% else %}
+                      <label for="sh-variant-{{ section.id }}-{{ product.id }}">Choose {{ product.options | join: ' / ' | escape }}</label>
+                      <select id="sh-variant-{{ section.id }}-{{ product.id }}" name="id" data-variant required>
+                        {% for variant in product.variants %}<option value="{{ variant.id }}" data-price="{{ variant.price | money_with_currency | escape }}" data-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money_with_currency | escape }}{% endif %}" data-image="{% if variant.featured_image %}{{ variant.featured_image | image_url: width: 1000 }}{% endif %}" {% if variant.id == chosen.id %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>{{ variant.title | escape }}{% unless variant.available %} · Sold out{% endunless %}</option>{% endfor %}
+                      </select>
+                    {% endif %}
+                    <input type="hidden" name="quantity" value="1"><button class="sh-add" type="submit" data-available="{{ product.available }}" {% unless product.available %}disabled{% endunless %}>{% if product.available %}Add to bag{% else %}Sold out{% endif %}<span aria-hidden="true">↗</span></button>
+                    <p class="sh-form-status" role="status" aria-live="polite"></p>
+                  {% endform %}
+                  {% if product.description != blank %}<details class="sh-details"><summary>Details &amp; fit</summary><div>{{ product.description }}</div></details>{% endif %}
+                  </div>
+                </article>
+              {% endunless %}
+            {% endfor %}
+          </div>
+          {% if paginate.pages > 1 %}<nav class="sh-pagination" aria-label="More merch">{% if paginate.previous %}<a href="{{ paginate.previous.url }}#sh-products">← Previous</a>{% endif %}<span>Page {{ paginate.current_page }} of {{ paginate.pages }}</span>{% if paginate.next %}<a href="{{ paginate.next.url }}#sh-products">Next →</a>{% endif %}</nav>{% endif %}
+        {% endpaginate %}
+      {% else %}<div class="sh-empty"><h3>The next drop is on its way.</h3><p>Check back for SingHUB gear. Your next karaoke night is already waiting.</p><a href="https://singhub.app/find-karaoke">Find somewhere to sing ↗</a></div>{% endif %}
+    </section>
+    <section class="sh-encore"><p class="sh-eyebrow">ONE MORE SONG?</p><h2>You’ve got places to sing.</h2><a href="https://singhub.app/find-karaoke">Find tonight’s lineup ↗</a></section>
+  </main>
+  <footer class="sh-footer"><img src="{{ 'singhub-wordmark.png' | asset_url }}" alt="SingHUB" width="400" height="168"><p>SingHUB gear. Checkout and order support by {{ shop.name | escape }}.</p><nav aria-label="Store policies">{% if shop.shipping_policy != blank %}<a href="{{ shop.shipping_policy.url }}">Shipping</a>{% endif %}{% if shop.refund_policy != blank %}<a href="{{ shop.refund_policy.url }}">Returns</a>{% endif %}{% if shop.privacy_policy != blank %}<a href="{{ shop.privacy_policy.url }}">Privacy</a>{% endif %}<a href="https://singhub.app">Back to SingHUB</a></nav></footer>
+  <nav class="sh-app-nav" aria-label="SingHUB navigation"><a href="https://singhub.app"><i class="material-symbols-rounded" aria-hidden="true">search</i>Discover</a><a href="https://singhub.app/find-karaoke"><i class="material-symbols-rounded" aria-hidden="true">location_on</i>Venues</a><a href="https://singhub.app/hosts"><i class="material-symbols-rounded" aria-hidden="true">mic</i>Hosts</a><a href="https://singhub.app/hotel"><i class="material-symbols-rounded" aria-hidden="true">hotel</i>Hotels</a><a href="https://singhub.app/singboard"><i class="material-symbols-rounded" aria-hidden="true">dashboard</i>SingBOARD</a><a href="https://singhub.app/account"><i class="material-symbols-rounded" aria-hidden="true">account_circle</i>My SingHUB</a></nav>
+  <dialog class="sh-bag" id="sh-bag" aria-labelledby="sh-bag-title"><div class="sh-bag-head"><div><p class="sh-eyebrow">MERCH TABLE</p><h2 id="sh-bag-title">Your bag.</h2></div><button data-close-bag class="sh-close" aria-label="Close bag">×</button></div><p data-bag-status role="status" aria-live="polite"></p><form action="{{ routes.cart_url }}" method="post" class="sh-checkout-form"><div data-cart-lines></div><input type="hidden" name="attributes[SingHUB entry]" value="Merch Table"><div class="sh-subtotal"><span>Subtotal</span><strong data-subtotal>{{ cart.total_price | money_with_currency }}</strong></div><p>Review shipping, taxes and delivery options at checkout. Your bag is shared with your {{ shop.name | escape }} cart.</p><button type="submit" name="checkout" value="Checkout" data-checkout {% if cart.item_count == 0 %}disabled{% endif %}>Secure checkout ↗</button><a class="sh-cart-fallback" href="{{ routes.cart_url }}">Open full cart</a></form></dialog>
+</div>
+{% schema %}
+{
+  "name": "SingHUB Merch Table",
+  "settings": [
+    {"type":"collection","id":"collection","label":"SingHUB collection"},
+    {"type":"text","id":"heading","label":"Headline","default":"TAKE THE NIGHT WITH YOU."},
+    {"type":"textarea","id":"intro","label":"Introduction","default":"For the rooms you love. The songs you live for. And the next time you grab the mic."}
+  ],
+  "presets": [{"name":"SingHUB Merch Table"}]
+}
+{% endschema %}
