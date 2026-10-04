@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { OutboundLinks } from "@/components/layout/OutboundLinks";
 import { ProductionChrome } from "@/components/layout/ProductionChrome";
+import { BandNotes } from "@/components/layout/BandNotes";
 
 import { PwaInstallManager } from "@/components/pwa/PwaInstallManager";
 import { PwaRegister } from "@/components/pwa/PwaRegister";
@@ -56,7 +57,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <head><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" /><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0&display=swap" /></head>
+      <head><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" /><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&family=Permanent+Marker&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,500,0,0&display=swap" /></head>
       <body>
         <Suspense fallback={null}>
           <AnalyticsProvider />
@@ -66,6 +67,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <PwaInstallManager />
         <ProductionChrome position="header" />
         {children}
+        <BandNotes />
         <ProductionChrome position="footer" />
       </body>
     </html>
