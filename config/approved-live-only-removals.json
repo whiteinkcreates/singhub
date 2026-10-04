@@ -1,6 +1,6 @@
 {
   "archivedOn": "2026-08-14",
-  "lastUpdated": "2026-10-02",
+  "lastUpdated": "2026-10-03",
   "archiveTab": "Live_Only_Event_Review / Events_Canonical",
   "reason": "Explicitly approved public snapshot removals after archival, expiry, or source verification. Date-specific rows must be re-promoted as separate recurring canonical events only after recurrence is verified.",
   "eventIds": [
@@ -26,6 +26,7 @@
     "weekly-alpine-vfw-post-9578-thursday",
     "event-richs-san-diego-karaoke-2026-09-17",
     "event-mcguffies-karaoke-2026-09-23",
-    "event-mcguffies-karaoke-2026-09-30"
+    "event-mcguffies-karaoke-2026-09-30",
+    "weekly-cordova-bar-tuesday"
   ]
 }
