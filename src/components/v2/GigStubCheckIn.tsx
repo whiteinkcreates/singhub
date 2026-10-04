@@ -3,7 +3,6 @@ import {useEffect,useRef,useState,type FormEvent} from 'react';
 import Link from 'next/link';
 import {accountClient,sendAccountLink} from '@/lib/v2/singerAccount';
 import {trackEvent} from '@/lib/analytics';
-import './gigStubs.css';
 export function GigStubCheckIn({venueSlug,venueName}:{venueSlug:string;venueName:string}){
  const dialog=useRef<HTMLDialogElement>(null);const [pending,setPending]=useState(false);const [needsSignIn,setNeedsSignIn]=useState(false);const [sent,setSent]=useState(false);const [saved,setSaved]=useState(false);const [message,setMessage]=useState('');
  useEffect(()=>{if(new URLSearchParams(location.search).get('checkin')==='1')dialog.current?.showModal();},[]);

@@ -3,7 +3,6 @@ import {useCallback,useEffect,useState} from 'react';
 import Link from 'next/link';
 import {accountClient} from '@/lib/v2/singerAccount';
 import type {GigStubVisit} from '@/lib/gigStubs';
-import './gigStubs.css';
 export function GigStubCollection(){
  const [stubs,setStubs]=useState<(GigStubVisit&{visits:number})[]>([]);const [message,setMessage]=useState('Loading your collection…');
  const load=useCallback(async()=>{try{const {data,error}=await accountClient().auth.getSession();if(error)throw error;if(!data.session){setStubs([]);setMessage('Sign in above to keep your venue collection.');return;}const response=await fetch('/api/gig-stubs',{headers:{Authorization:'Bearer '+data.session.access_token}});const result=await response.json();if(!response.ok)throw new Error(result.error);setStubs(result.stubs);setMessage(result.stubs.length?'':'Your first room is waiting. Open a venue page and tap “I’m here” when you visit.');}catch(error){setMessage(error instanceof Error?error.message:'Gig Stubs could not load.');}},[]);
