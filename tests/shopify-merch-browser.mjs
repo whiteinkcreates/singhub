@@ -60,7 +60,7 @@ try{for(const width of [390,1440]){
  await page.screenshot({path:out+'/merch-table-'+width+'.png',fullPage:true});
  const card=page.locator('[data-product]').first();const variant=products[0].variants.filter(v=>v.available)[1]||products[0].selected_or_first_available_variant;
  await card.locator('[data-variant]').selectOption(String(variant.id));await card.getByRole('button',{name:'Add to bag'}).click();await page.locator('[data-open-bag]').getByText('1',{exact:true}).waitFor();await page.getByRole('dialog').waitFor();
- assert.ok(cartItems[0].id===variant.id);assert.equal(await page.locator('[data-checkout]').getAttribute('name'),'checkout');assert.equal(await page.locator('.sh-checkout-form').getAttribute('action'),'/cart');
+ assert.ok(cartItems[0].id===variant.id);assert.equal(await page.locator('[data-checkout]').getAttribute('name'),'checkout');assert.equal(await page.locator('[data-checkout]').getAttribute('value'),'Checkout');assert.equal(await page.locator('.sh-checkout-form').getAttribute('action'),'/cart');
  await page.screenshot({path:out+'/bag-'+width+'.png'});const name=products[0].title;
  await page.getByRole('button',{name:'Increase quantity of '+name,exact:true}).click();await page.locator('[data-open-bag]').getByText('2',{exact:true}).waitFor();
  await page.getByRole('button',{name:'Increase quantity of '+name,exact:true}).click();await page.getByText('Only two are available in this test cart.',{exact:true}).waitFor();assert.equal(cartItems[0].quantity,2);
