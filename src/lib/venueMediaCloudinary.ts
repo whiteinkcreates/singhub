@@ -142,3 +142,26 @@ export async function listVenueMedia(slug: string, kind: "venues" | "hotels" | "
   const fallbackPayload = (await fallbackResponse.json()) as { resources?: CloudinaryResource[] };
   return mapResources(fallbackPayload.resources);
 }
+
+
+function destroySignature(publicId: string, timestamp: number, apiSecret: string) {
+  return createHash("sha1").update(`public_id=${publicId}&timestamp=${timestamp}${apiSecret}`).digest("hex");
+}
+
+export async function deleteVenueMedia(publicId: string, slug: string, kind: "venues" | "hotels" | "hosts" = "venues") {
+  const { cloudName, apiKey, apiSecret } = getCloudinaryConfig();
+  const folder = venueFolder(slug, kind);
+  if (!publicId.startsWith(`${folder}/`)) throw new Error("Image does not belong to this media library.");
+
+  const timestamp = Math.floor(Date.now() / 1000);
+  const form = new URLSearchParams({
+    public_id: publicId,
+    api_key: apiKey,
+    timestamp: String(timestamp),
+    signature: destroySignature(publicId, timestamp, apiSecret),
+  });
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`, { method: "POST", body: form });
+  const payload = (await response.json()) as { result?: string };
+  if (!response.ok || !["ok", "not found"].includes(payload.result || "")) throw new Error(`Cloudinary delete failed: ${payload.result || response.status}`);
+  return payload.result;
+}
