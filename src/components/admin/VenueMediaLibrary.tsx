@@ -140,6 +140,25 @@ export function VenueMediaLibrary({
     }
   }
 
+  async function deleteAsset(asset: VenueMediaAsset) {
+    const requestedSlug = slug.trim();
+    if (!requestedSlug) return;
+    if (heroUrl === asset.url || logoUrl === asset.url || galleryUrls.has(asset.url)) {
+      setMessage("Remove this image from Hero, Logo, and Gallery before deleting it from the file.");
+      return;
+    }
+    if (!window.confirm("Permanently remove this image from this venue's media file?")) return;
+    try {
+      const response = await fetch(endpoint, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug: requestedSlug, publicId: asset.publicId }) });
+      const payload = (await response.json()) as MediaResponse;
+      if (!response.ok) throw new Error(payload.error || "Could not remove image.");
+      setAssets((current) => current.filter((item) => item.publicId !== asset.publicId));
+      setMessage("Image removed from this venue's media file.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not remove image.");
+    }
+  }
+
   function toggleGallery(asset: VenueMediaAsset) {
     if (galleryUrls.has(asset.url)) {
       onGalleryChange(gallery.filter((item) => item.url !== asset.url));
@@ -206,7 +225,7 @@ export function VenueMediaLibrary({
         const galleryFull = gallery.length >= MAX_GALLERY_PHOTOS && !inGallery;
         return <div key={asset.publicId} className={`overflow-hidden rounded-2xl border bg-black/25 ${isHero ? "border-fuchsia-300/70" : isLogo ? "border-cyan-300/70" : inGallery ? "border-cyan-300/50" : "border-white/10"}`}>
           <div className="relative aspect-square overflow-hidden bg-black/30"><MediaImagePreview src={asset.url} alt={`${kind} media option`} className="h-full w-full object-cover" /><div className="absolute left-2 top-2 flex flex-wrap gap-1">{isHero && <span className="rounded-full bg-[#ff2aa3] px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-white">Hero</span>}{isLogo && <span className="rounded-full bg-violet-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">{kind === "host" ? "Portrait" : "Logo"}</span>}{inGallery && <span className="rounded-full bg-cyan-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">Gallery</span>}</div></div>
-          <div className="grid gap-2 p-2"><button type="button" onClick={() => onHeroChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isHero ? "bg-fuchsia-300 text-slate-950" : "border border-white/15 text-white"}`}>{isHero ? "Selected hero" : "Set as hero"}</button>{(kind === "venue" || (kind === "host" && allowPortrait)) && <button type="button" onClick={() => onLogoChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isLogo ? "bg-violet-300 text-slate-950" : "border border-white/15 text-white"}`}>{kind === "host" ? (isLogo ? "Selected portrait" : "Set as portrait") : (isLogo ? "Selected logo" : "Set as logo")}</button>}{kind === "venue" && <button type="button" onClick={() => toggleGallery(asset)} disabled={galleryFull} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal disabled:cursor-not-allowed disabled:opacity-35 ${inGallery ? "bg-cyan-300 text-slate-950" : "border border-white/15 text-white"}`}>{inGallery ? "Remove from gallery" : galleryFull ? "Gallery full" : "Add to gallery"}</button>}</div>
+          <div className="grid gap-2 p-2"><button type="button" onClick={() => onHeroChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isHero ? "bg-fuchsia-300 text-slate-950" : "border border-white/15 text-white"}`}>{isHero ? "Selected hero" : "Set as hero"}</button>{(kind === "venue" || (kind === "host" && allowPortrait)) && <button type="button" onClick={() => onLogoChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isLogo ? "bg-violet-300 text-slate-950" : "border border-white/15 text-white"}`}>{kind === "host" ? (isLogo ? "Selected portrait" : "Set as portrait") : (isLogo ? "Selected logo" : "Set as logo")}</button>}{kind === "venue" && <button type="button" onClick={() => toggleGallery(asset)} disabled={galleryFull} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal disabled:cursor-not-allowed disabled:opacity-35 ${inGallery ? "bg-cyan-300 text-slate-950" : "border border-white/15 text-white"}`}>{inGallery ? "Remove from gallery" : galleryFull ? "Gallery full" : "Add to gallery"}</button>}<button type="button" onClick={() => void deleteAsset(asset)} className="rounded-lg border border-rose-300/20 px-2 py-2 text-[11px] font-black normal-case tracking-normal text-rose-200">Remove image from file</button></div>
         </div>;
       })}</div>}
 
