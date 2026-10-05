@@ -156,6 +156,7 @@ function rowToVenueListing(row: VenueSourceRow, fallback: VenueSourceRow | undef
     city: getAny(row, fallback, ["city"]) || "",
     neighborhood: getAny(row, fallback, ["neighborhood"]) || "",
     market: getAny(row, fallback, ["market"]) || "",
+    metro: getAny(row, fallback, ["metro"]) || "",
     address: getAny(row, fallback, ["address"]) || "",
     latitude: parseNumber(getAny(row, fallback, ["latitude"])) ?? parseNumber(coordinate.latitude),
     longitude: parseNumber(getAny(row, fallback, ["longitude"])) ?? parseNumber(coordinate.longitude),

@@ -15,6 +15,7 @@ export type VenueListing = {
   city: string;
   neighborhood: string;
   market: string;
+  metro: string;
   address: string;
   latitude: number | null;
   longitude: number | null;
