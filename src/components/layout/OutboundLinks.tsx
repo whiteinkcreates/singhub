@@ -10,7 +10,7 @@ export function OutboundLinks() {
       if (!(node instanceof Element)) return;
       const links = node.matches("a[href]") ? [node, ...node.querySelectorAll("a[href]")] : node.querySelectorAll("a[href]");
       for (const link of links) {
-        if (link.hasAttribute("download") || !isExternalWebUrl(link.getAttribute("href") || "", window.location.origin)) {
+        if (link.hasAttribute("download") || link.getAttribute("target") === "_self" || !isExternalWebUrl(link.getAttribute("href") || "", window.location.origin)) {
           const original = originalAttributes.get(link);
           if (original) {
             for (const attribute of ["target", "rel"] as const) {
