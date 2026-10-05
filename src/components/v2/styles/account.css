@@ -124,7 +124,7 @@
     .v2-account .merch-panel { display:grid; grid-template-columns:1fr auto; gap:20px; align-items:center; padding:22px; background:radial-gradient(circle at 92% 18%,rgba(0,200,255,.13),transparent 38%),linear-gradient(145deg,#151a22,#0b0e13); }
     .v2-account .merch-panel h2 { margin:3px 0 0; font-family:var(--display); font-size:2.25rem; line-height:.88; text-transform:uppercase; }
     .v2-account .merch-panel>div>p:not(.eyebrow) { max-width:38ch; margin:13px 0 0; color:var(--muted); font-size:.8rem; line-height:1.5; }
-    .v2-account .merch-panel .button { min-width:168px; border-color:rgba(0,200,255,.38); color:var(--cyan); cursor:not-allowed; }
+    .v2-account .merch-panel .button { min-width:168px; border-color:rgba(0,200,255,.38); color:var(--cyan); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; }
     .v2-account .coming-soon { display:block; margin-top:3px; color:var(--muted); font-size:.58rem; letter-spacing:.11em; text-transform:uppercase; }
     .v2-account .premium-panel { display:grid; grid-template-columns:.72fr 1.28fr; margin-top:18px; }
     .v2-account .premium-intro { padding:29px; border-right:1px solid var(--line); background:radial-gradient(circle at 10% 15%,rgba(0,200,255,.12),transparent 55%),#0b0f15; }
