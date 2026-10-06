@@ -43,14 +43,17 @@ function sanDiegoClockMinutes(now:Date){
  return hour*60+minute;
 }
 
-export function tourStopEligibility(events:KaraokeEventListing[],now=new Date()){
+export type TourStopEligibility={phase:'early'|'open'|'closed';open:boolean;weekday:string;startTime:string|null;reason:string};
+
+export function tourStopEligibility(events:KaraokeEventListing[],now=new Date()):TourStopEligibility{
  const weekday=getSanDiegoNightlifeWeekday(now);
  const tonight=events.filter(event=>eventRunsOnNight(event,weekday,now));
- if(!tonight.length)return {open:false,weekday,startTime:null,reason:'TourStops are available only on scheduled karaoke nights.'};
+ if(!tonight.length)return {phase:'closed',open:false,weekday,startTime:null,reason:'TourStops are available only on scheduled karaoke nights.'};
  const starts=tonight.map(event=>({label:event.startTime,minutes:parseClock(event.startTime)})).filter((item):item is {label:string;minutes:number}=>item.minutes!==null).map(item=>({...item,minutes:item.minutes<240?item.minutes+1440:item.minutes}));
- if(!starts.length)return {open:false,weekday,startTime:null,reason:'Karaoke is scheduled tonight, but the start time is still being confirmed.'};
+ if(!starts.length)return {phase:'closed',open:false,weekday,startTime:null,reason:'Karaoke is scheduled tonight, but the start time is still being confirmed.'};
  const earliest=starts.reduce((best,item)=>item.minutes<best.minutes?item:best);
  let current=sanDiegoClockMinutes(now);if(current<240)current+=1440;
- const open=current>=earliest.minutes&&current<1680;
- return {open,weekday,startTime:earliest.label,reason:open?'TourStop check-in is open until 4 AM.':`TourStops open when karaoke starts at ${earliest.label} and stay available until 4 AM.`};
+ if(current<earliest.minutes)return {phase:'early',open:false,weekday,startTime:earliest.label,reason:`You’re early. Karaoke starts at ${earliest.label}. We can hold this as a pending check-in, then you’ll confirm you’re still here after karaoke starts.`};
+ if(current<1680)return {phase:'open',open:true,weekday,startTime:earliest.label,reason:'TourStop check-in is open until 4 AM.'};
+ return {phase:'closed',open:false,weekday,startTime:earliest.label,reason:'This karaoke night has ended for TourStop check-in.'};
 }
