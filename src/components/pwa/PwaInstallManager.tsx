@@ -17,7 +17,7 @@ declare global {
 
 const DISMISS_KEY = "singhub-install-dismissed-at";
 const VENUES_KEY = "singhub-install-venues-viewed";
-const DISMISS_DAYS = 14;
+const DISMISS_DAYS = 30;
 
 function isStandalone() {
   return (
@@ -43,8 +43,8 @@ export function PwaInstallManager() {
   const pathname = usePathname();
   const deferredPrompt = useRef<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
-  const [showIosHelp, setShowIosHelp] = useState(false);
-  const [showBrowserHelp, setShowBrowserHelp] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
+  const [installAvailable, setInstallAvailable] = useState(false);
 
   useEffect(() => {
     if (isStandalone()) return;
@@ -52,14 +52,16 @@ export function PwaInstallManager() {
     const onBeforeInstallPrompt = (event: BeforeInstallPromptEvent) => {
       event.preventDefault();
       deferredPrompt.current = event;
+      setInstallAvailable(true);
       window.dispatchEvent(new Event("singhub:install-available"));
     };
 
     const onInstalled = () => {
       deferredPrompt.current = null;
+      setInstallAvailable(false);
       setShowPrompt(false);
-      setShowIosHelp(false);
-      setShowBrowserHelp(false);
+      setShowHelp(false);
+      try { localStorage.removeItem(DISMISS_KEY); } catch {}
       trackEvent("pwa_install_completed");
       window.dispatchEvent(new Event("singhub:install-state-changed"));
     };
@@ -72,16 +74,14 @@ export function PwaInstallManager() {
         await prompt.prompt();
         const choice = await prompt.userChoice;
         trackEvent("pwa_install_choice", { outcome: choice.outcome });
-        if (choice.outcome === "accepted") deferredPrompt.current = null;
+        if (choice.outcome === "accepted") {
+          deferredPrompt.current = null;
+          setInstallAvailable(false);
+        }
         return;
       }
 
-      if (isIos()) {
-        setShowIosHelp(true);
-        return;
-      }
-
-      setShowBrowserHelp(true);
+      setShowHelp(true);
     };
 
     window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt);
@@ -112,7 +112,11 @@ export function PwaInstallManager() {
     if (viewed.size >= 2) {
       const timer = window.setTimeout(() => {
         setShowPrompt(true);
-        trackEvent("pwa_install_prompt_shown", { source: "venue_view", venue_views: viewed.size });
+        trackEvent("pwa_install_prompt_shown", {
+          source: "venue_view",
+          venue_views: viewed.size,
+          install_available: Boolean(deferredPrompt.current),
+        });
       }, 3500);
       return () => window.clearTimeout(timer);
     }
@@ -121,74 +125,81 @@ export function PwaInstallManager() {
   const dismiss = () => {
     try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch {}
     setShowPrompt(false);
-    setShowIosHelp(false);
+    setShowHelp(false);
     trackEvent("pwa_install_prompt_dismissed");
   };
 
   const install = async () => {
-    trackEvent("pwa_install_clicked", { source: "venue_prompt" });
-    setShowPrompt(false);
-
-    if (deferredPrompt.current) {
-      const prompt = deferredPrompt.current;
-      await prompt.prompt();
-      const choice = await prompt.userChoice;
-      trackEvent("pwa_install_choice", { outcome: choice.outcome });
-      if (choice.outcome === "accepted") deferredPrompt.current = null;
+    if (!deferredPrompt.current) {
+      setShowPrompt(false);
+      setShowHelp(true);
+      trackEvent("pwa_save_help_opened", { source: "venue_prompt" });
       return;
     }
 
-    if (isIos()) setShowIosHelp(true);
-    else setShowBrowserHelp(true);
+    trackEvent("pwa_install_clicked", { source: "venue_prompt" });
+    setShowPrompt(false);
+
+    const prompt = deferredPrompt.current;
+    await prompt.prompt();
+    const choice = await prompt.userChoice;
+    trackEvent("pwa_install_choice", { outcome: choice.outcome });
+    if (choice.outcome === "accepted") {
+      deferredPrompt.current = null;
+      setInstallAvailable(false);
+    }
   };
 
-  if (pathname.startsWith("/hotelexperience/") || (!showPrompt && !showIosHelp && !showBrowserHelp)) return null;
+  if (pathname.startsWith("/hotelexperience/") || (!showPrompt && !showHelp)) return null;
 
   return (
-    <div className="fixed inset-x-4 bottom-[calc(74px+env(safe-area-inset-bottom))] min-[861px]:bottom-4 z-[80] mx-auto max-w-md rounded-2xl border border-white/15 bg-slate-950/95 p-4 shadow-2xl shadow-black/60 backdrop-blur">
-      {showBrowserHelp ? (
-        <>
-          <p className="text-base font-black text-white">Keep SingHUB handy</p>
-          <p className="mt-2 text-sm leading-6 text-slate-300">Open your browser menu and look for <strong className="text-white">Install SingHUB</strong> or <strong className="text-white">Add to Home Screen</strong>. If neither appears, bookmark this page for quick access.</p>
-          <button type="button" onClick={dismiss} className="mt-4 min-h-11 w-full rounded-xl border border-white/15 px-4 py-2 text-sm font-bold text-white">Got it</button>
-        </>
-      ) : showIosHelp ? (
-        <>
-          <p className="text-base font-black text-white">Add SingHUB to your Home Screen</p>
-          <p className="mt-2 text-sm leading-6 text-slate-300">
-            In Safari, tap the Share button, choose <strong className="text-white">Add to Home Screen</strong>, then tap Add.
+    <div className="fixed inset-x-3 bottom-[calc(74px+env(safe-area-inset-bottom))] z-[80] mx-auto max-w-sm rounded-2xl border border-white/15 bg-slate-950/95 px-4 py-3 shadow-xl shadow-black/50 backdrop-blur min-[861px]:bottom-4">
+      {showHelp ? (
+        <div className="pr-8">
+          <button
+            type="button"
+            onClick={dismiss}
+            aria-label="Dismiss save instructions"
+            className="absolute right-3 top-2 min-h-10 min-w-10 text-xl leading-none text-slate-400 transition hover:text-white"
+          >
+            ×
+          </button>
+          <p className="text-sm font-black text-white">Save SingHUB for later</p>
+          <p className="mt-1 text-xs leading-5 text-slate-300">
+            {isIos()
+              ? <>In Safari, tap <strong className="text-white">Share</strong>, then <strong className="text-white">Add to Home Screen</strong>.</>
+              : <>Open your browser menu and choose <strong className="text-white">Add to Home screen</strong>, <strong className="text-white">Install app</strong>, or <strong className="text-white">Bookmark</strong>, depending on your browser.</>}
           </p>
           <button
             type="button"
             onClick={dismiss}
-            className="mt-4 min-h-11 w-full rounded-xl border border-white/15 px-4 py-2 text-sm font-bold text-white transition hover:bg-white/10"
+            className="mt-2 min-h-10 rounded-lg border border-white/15 px-4 py-2 text-xs font-bold text-white transition hover:bg-white/10"
           >
             Got it
           </button>
-        </>
+        </div>
       ) : (
-        <>
-          <p className="text-base font-black text-white">Find karaoke faster next time.</p>
-          <p className="mt-1 text-sm leading-6 text-slate-300">
-            Install SingHUB on your phone for quick access to karaoke near you.
-          </p>
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={dismiss}
-              className="min-h-11 rounded-xl border border-white/15 px-4 py-2 text-sm font-bold text-slate-200 transition hover:bg-white/10"
-            >
-              Not now
-            </button>
-            <button
-              type="button"
-              onClick={install}
-              className="min-h-11 rounded-xl bg-fuchsia-400 px-4 py-2 text-sm font-black text-slate-950 transition hover:bg-fuchsia-300"
-            >
-              Install SingHUB
-            </button>
+        <div className="flex items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-black text-white">Keep SingHUB handy</p>
+            <p className="mt-0.5 text-xs leading-5 text-slate-300">Save it for quick access next time.</p>
           </div>
-        </>
+          <button
+            type="button"
+            onClick={install}
+            className="min-h-10 shrink-0 rounded-lg bg-fuchsia-400 px-3 py-2 text-xs font-black text-slate-950 transition hover:bg-fuchsia-300"
+          >
+            {installAvailable ? "Install" : "How to save"}
+          </button>
+          <button
+            type="button"
+            onClick={dismiss}
+            aria-label="Dismiss"
+            className="min-h-10 min-w-10 shrink-0 text-xl leading-none text-slate-400 transition hover:text-white"
+          >
+            ×
+          </button>
+        </div>
       )}
     </div>
   );
