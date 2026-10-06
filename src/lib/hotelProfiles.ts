@@ -9,14 +9,14 @@ export type HotelMediaProfile = {
   heroPlacement?: ResponsiveImagePlacement;
   imageSource: string;
   usageRights: string;
-  walkableImageUrl: string;
-  walkableImageAlt: string;
+  walkableImageUrl?: string;
+  walkableImageAlt?: string;
   walkableImagePlacement?: ResponsiveImagePlacement;
-  quickRideImageUrl: string;
-  quickRideImageAlt: string;
+  quickRideImageUrl?: string;
+  quickRideImageAlt?: string;
   quickRideImagePlacement?: ResponsiveImagePlacement;
-  standoutImageUrl: string;
-  standoutImageAlt: string;
+  standoutImageUrl?: string;
+  standoutImageAlt?: string;
   standoutImagePlacement?: ResponsiveImagePlacement;
 };
 export function parseHotelMediaProfile(input: unknown): HotelMediaProfile {
