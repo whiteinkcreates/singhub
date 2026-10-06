@@ -4,6 +4,7 @@ import {getVenueListings} from '@/lib/venueData';
 import {getPublicVenues} from '@/lib/publicVenueFilters';
 import {getKaraokeEventsByVenueSlug} from '@/lib/eventData';
 import {collectTourStops,locationMatch,nightlifeDate,tourStopEligibility,type TourStopVisit} from '@/lib/tourStops';
+import {getVenueOfferUnlock,unlockVenueOffer} from '@/lib/venueOffers.server';
 export const dynamic='force-dynamic';
 
 async function viewer(request:Request){
@@ -20,9 +21,11 @@ export async function GET(request:Request){
   const auth=await viewer(request);if(!auth)return NextResponse.json({error:'Sign in to see your TourStops.'},{status:401});
   const url=new URL(request.url);const venueSlug=url.searchParams.get('venueSlug');
   if(venueSlug){
-   const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('venue_slug',venueSlug).eq('nightlife_date',nightlifeDate()).maybeSingle();
+   const night=nightlifeDate();
+   const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('venue_slug',venueSlug).eq('nightlife_date',night).maybeSingle();
    if(error)throw error;
-   return NextResponse.json({visit:data||null},{headers:{'Cache-Control':'private, no-store'}});
+   const offerUnlock=data?.status==='confirmed'?await getVenueOfferUnlock(auth.user.id,data.venue_id,night):undefined;
+   return NextResponse.json({visit:data||null,offerUnlock},{headers:{'Cache-Control':'private, no-store'}});
   }
   const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('status','confirmed').order('created_at',{ascending:true});if(error)throw error;
   const stops=collectTourStops((data||[]) as TourStopVisit[]);return NextResponse.json({stops,stubs:stops},{headers:{'Cache-Control':'private, no-store'}});
@@ -45,26 +48,43 @@ export async function POST(request:Request){
   const {data:existing,error:existingError}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('venue_id',venue.id).eq('nightlife_date',night).maybeSingle();
   if(existingError)throw existingError;
 
+  const offerFor=async(visitId:string)=>unlockVenueOffer({userId:auth.user.id,visitId,venueId:venue.id,venueSlug:venue.slug,nightlifeDate:night,weekday:eligibility.weekday});
+
   if(eligibility.phase==='early'){
-   if(existing?.status==='confirmed')return NextResponse.json({collected:false,alreadyCheckedIn:true,venueName:venue.venueName,eligibility,status:'confirmed'},{headers:{'Cache-Control':'private, no-store'}});
+   if(existing?.status==='confirmed'){
+    const offerUnlock=await offerFor(existing.id);
+    return NextResponse.json({collected:false,alreadyCheckedIn:true,venueName:venue.venueName,eligibility,status:'confirmed',offerUnlock},{headers:{'Cache-Control':'private, no-store'}});
+   }
    if(existing?.status==='pending')return NextResponse.json({collected:false,pending:true,venueName:venue.venueName,eligibility,status:'pending'},{headers:{'Cache-Control':'private, no-store'}});
    const {error}=await auth.client.from('singer_venue_visits').insert({user_id:auth.user.id,venue_id:venue.id,venue_slug:venue.slug,venue_name:venue.venueName,neighborhood:venue.neighborhood,nightlife_date:night,method:body.method,status:'pending',confirmed_at:null});
    if(error&&error.code!=='23505')throw error;
    return NextResponse.json({collected:false,pending:true,venueName:venue.venueName,eligibility,status:'pending'},{headers:{'Cache-Control':'private, no-store'}});
   }
 
-  if(existing?.status==='confirmed')return NextResponse.json({collected:false,alreadyCheckedIn:true,venueName:venue.venueName,eligibility,status:'confirmed'},{headers:{'Cache-Control':'private, no-store'}});
+  if(existing?.status==='confirmed'){
+   const offerUnlock=await offerFor(existing.id);
+   return NextResponse.json({collected:false,alreadyCheckedIn:true,venueName:venue.venueName,eligibility,status:'confirmed',offerUnlock},{headers:{'Cache-Control':'private, no-store'}});
+  }
+
   if(existing?.status==='pending'){
    const {error}=await auth.client.from('singer_venue_visits').update({status:'confirmed',method:body.method,confirmed_at:new Date().toISOString()}).eq('id',existing.id);
    if(error)throw error;
    const previous=await auth.client.from('singer_venue_visits').select('id',{count:'exact',head:true}).eq('user_id',auth.user.id).eq('venue_id',venue.id).eq('status','confirmed');
    if(previous.error)throw previous.error;
-   return NextResponse.json({collected:(previous.count||0)<=1,confirmedFromPending:true,venueName:venue.venueName,eligibility,status:'confirmed'},{headers:{'Cache-Control':'private, no-store'}});
+   const offerUnlock=await offerFor(existing.id);
+   return NextResponse.json({collected:(previous.count||0)<=1,confirmedFromPending:true,venueName:venue.venueName,eligibility,status:'confirmed',offerUnlock},{headers:{'Cache-Control':'private, no-store'}});
   }
 
   const previous=await auth.client.from('singer_venue_visits').select('id',{count:'exact',head:true}).eq('user_id',auth.user.id).eq('venue_id',venue.id).eq('status','confirmed');if(previous.error)throw previous.error;
-  const {error}=await auth.client.from('singer_venue_visits').insert({user_id:auth.user.id,venue_id:venue.id,venue_slug:venue.slug,venue_name:venue.venueName,neighborhood:venue.neighborhood,nightlife_date:night,method:body.method,status:'confirmed',confirmed_at:new Date().toISOString()});
+  const {data:inserted,error}=await auth.client.from('singer_venue_visits').insert({user_id:auth.user.id,venue_id:venue.id,venue_slug:venue.slug,venue_name:venue.venueName,neighborhood:venue.neighborhood,nightlife_date:night,method:body.method,status:'confirmed',confirmed_at:new Date().toISOString()}).select('id').single();
   if(error&&error.code!=='23505')throw error;
-  return NextResponse.json({collected:!error&&previous.count===0,alreadyCheckedIn:Boolean(error),venueName:venue.venueName,eligibility,status:'confirmed'},{headers:{'Cache-Control':'private, no-store'}});
- }catch{return NextResponse.json({error:'Your visit was not saved. Please try again.'},{status:503});}
+
+  let visitId=inserted?.id as string|undefined;
+  if(!visitId&&error?.code==='23505'){
+   const {data:race,error:raceError}=await auth.client.from('singer_venue_visits').select('id').eq('user_id',auth.user.id).eq('venue_id',venue.id).eq('nightlife_date',night).maybeSingle();
+   if(raceError)throw raceError;visitId=race?.id;
+  }
+  const offerUnlock=visitId?await offerFor(visitId):undefined;
+  return NextResponse.json({collected:!error&&previous.count===0,alreadyCheckedIn:Boolean(error),venueName:venue.venueName,eligibility,status:'confirmed',offerUnlock},{headers:{'Cache-Control':'private, no-store'}});
+ }catch(error){console.error('TourStop save failed',error);return NextResponse.json({error:'Your visit was not saved. Please try again.'},{status:503});}
 }
