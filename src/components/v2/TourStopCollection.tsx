@@ -1,12 +1,13 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import {useCallback,useEffect,useState} from 'react';
 import Link from 'next/link';
 import {accountClient} from '@/lib/v2/singerAccount';
-import type {GigStubVisit} from '@/lib/gigStubs';
+import type {TourStopVisit} from '@/lib/tourStops';
 import type {VenueListing} from '@/types';
 import {TourMap} from './TourMap';
 
-type TourStop=GigStubVisit&{visits:number};
+type TourStop=TourStopVisit&{visits:number};
 function hasCoordinates(venue:VenueListing|undefined):venue is VenueListing&{latitude:number;longitude:number}{return Boolean(venue&&typeof venue.latitude==='number'&&Number.isFinite(venue.latitude)&&typeof venue.longitude==='number'&&Number.isFinite(venue.longitude));}
 
 export function TourStopCollection({venues}:{venues:VenueListing[]}){
