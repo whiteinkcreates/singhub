@@ -60,13 +60,17 @@ function apiFixture(){
      then(resolve){const matches=rows.filter(row=>Object.entries(filters).every(([k,v])=>row[k]===v));return Promise.resolve({data:matches,count:matches.length,error:null}).then(resolve);}
     };return q;
    },
-   async insert(row){
-    if(rows.some(r=>r.user_id===row.user_id&&r.venue_id===row.venue_id&&r.nightlife_date===row.nightlife_date))return {error:{code:'23505'}};
-    rows.push({id:'visit-'+(rows.length+1),...row,created_at:new Date().toISOString()});return {error:null};
+   insert(row){
+    const duplicate=rows.some(r=>r.user_id===row.user_id&&r.venue_id===row.venue_id&&r.nightlife_date===row.nightlife_date);
+    const inserted=duplicate?null:{id:'visit-'+(rows.length+1),...row,created_at:new Date().toISOString()};
+    if(inserted)rows.push(inserted);
+    const result={data:inserted,error:duplicate?{code:'23505'}:null};
+    const q={select(){return q;},single(){return Promise.resolve(result);},then(resolve){return Promise.resolve({error:result.error}).then(resolve);}};
+    return q;
    },
    update(patch){
     const filters={};
-    const q={eq(key,value){filters[key]=value;for(const row of rows)if(Object.entries(filters).every(([k,v])=>row[k]===v))Object.assign(row,patch);return q;},then(resolve){return Promise.resolve({error:null}).then(resolve);}};
+    const q={eq(key,value){filters[key]=value;return q;},select(){return q;},single(){const match=rows.find(row=>Object.entries(filters).every(([k,v])=>row[k]===v));if(match)Object.assign(match,patch);return Promise.resolve({data:match||null,error:null});},then(resolve){for(const row of rows)if(Object.entries(filters).every(([k,v])=>row[k]===v))Object.assign(row,patch);return Promise.resolve({error:null}).then(resolve);}};
     return q;
    }
   };
@@ -79,6 +83,7 @@ function apiFixture(){
   '@/lib/publicVenueFilters':{getPublicVenues:v=>v},
   '@/lib/eventData':{getKaraokeEventsByVenueSlug:async()=>[{karaokeDay:nightlifeWeekday(),startTime:'9:00 PM',recurring:true,recurrencePattern:'TRUE',eventNotes:''}]},
   '@/lib/tourStops':{...helpers,tourStopEligibility:()=>({phase,open:phase==='open',weekday:nightlifeWeekday(),startTime:'9:00 PM',reason:phase==='early'?'You’re early.':'TourStop check-in is open until 4 AM.'})},
+  '@/lib/venueOffers.server':{getVenueOfferUnlock:async()=>undefined,unlockVenueOffer:async()=>({title:'$1 off drinks',code:'123456'})},
  };
  vm.runInNewContext(ts.transpileModule(readFileSync('src/app/api/tour-stops/route.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports:api,require:id=>imports[id],URL,JSON,Response});
  return {api,rows,setPhase:value=>{phase=value;}};
@@ -91,7 +96,7 @@ test('API authenticates, validates canonical venue, prevents duplicates and reta
  assert.equal((await post({venueSlug:'invented',method:'self_reported'})).status,404);
  assert.equal((await post({venueSlug:'one',method:'self_reported'},'test-token','https://other.example')).status,403);
  assert.equal((await post({venueSlug:'one',method:'location_matched',location:{latitude:0,longitude:0,accuracy:10}})).status,422);
- const first=await (await post({venueSlug:'one',method:'self_reported',user_id:'someone-else',nightlife_date:'2099-01-01'})).json();assert.equal(first.collected,true);
+ const first=await (await post({venueSlug:'one',method:'self_reported',user_id:'someone-else',nightlife_date:'2099-01-01'})).json();assert.equal(first.collected,true);assert.equal(first.offerUnlock.code,'123456');
  const duplicate=await (await post({venueSlug:'one',method:'self_reported'})).json();assert.equal(duplicate.alreadyCheckedIn,true);assert.equal(rows.length,1);assert.equal(rows[0].user_id,'test-user');assert.notEqual(rows[0].nightlife_date,'2099-01-01');assert.equal('location' in rows[0],false);
  const response=await api.GET(new Request('https://singhub.app/api/tour-stops',{headers:{Authorization:'Bearer test-token'}}));assert.equal((await response.json()).stops.length,1);
  const missing=await api.GET(new Request('https://singhub.app/api/tour-stops'));assert.equal(missing.status,401);
