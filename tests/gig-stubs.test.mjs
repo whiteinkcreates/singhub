@@ -51,7 +51,7 @@ function apiFixture(){
  const rows=[];let phase='open';
  function from(){
   return {
-   select(_columns,_options){
+   select(){
     const filters={};
     const q={
      eq(key,value){filters[key]=value;return q;},
