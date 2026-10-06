@@ -1,6 +1,50 @@
 import {parseImagePlacement,type ResponsiveImagePlacement} from './imagePlacement';
 import type { HeroPosition } from "@/lib/venueEnhancements";
 export type HotelPackageReview = { heroImageUrl:string; heroApproved:boolean; brandLogoUrl:string; brandApproved:boolean; rightsNote:string; brandNote:string; reviewedAt:string };
+export const GUEST_GUIDE_DEFAULTS_SLUG = "guest-guide-defaults";
+export type GuestGuideLifestyleMedia = {
+  walkableImageUrl?: string;
+  walkableImageAlt?: string;
+  walkableImagePlacement?: ResponsiveImagePlacement;
+  quickRideImageUrl?: string;
+  quickRideImageAlt?: string;
+  quickRideImagePlacement?: ResponsiveImagePlacement;
+  standoutImageUrl?: string;
+  standoutImageAlt?: string;
+  standoutImagePlacement?: ResponsiveImagePlacement;
+};
+
+export function parseGuestGuideLifestyleMedia(input: unknown): GuestGuideLifestyleMedia {
+  const value = input && typeof input === "object" ? input as Record<string, unknown> : {};
+  const text = (key: string, limit: number) => {
+    const raw = value[key];
+    if (raw === undefined || raw === null || raw === "") return "";
+    if (typeof raw !== "string" || raw.length > limit) throw new Error(`Invalid ${key}.`);
+    return raw.trim();
+  };
+  const urlText = (key: string) => {
+    const result = text(key, 2048);
+    if (!result) return "";
+    const url = new URL(result);
+    if (url.protocol !== "https:" && url.protocol !== "http:") throw new Error("Image URL must use HTTP or HTTPS.");
+    return result;
+  };
+  const result: GuestGuideLifestyleMedia = {
+    walkableImageUrl: urlText("walkableImageUrl"),
+    walkableImageAlt: text("walkableImageAlt", 300),
+    walkableImagePlacement: parseImagePlacement(value.walkableImagePlacement),
+    quickRideImageUrl: urlText("quickRideImageUrl"),
+    quickRideImageAlt: text("quickRideImageAlt", 300),
+    quickRideImagePlacement: parseImagePlacement(value.quickRideImagePlacement),
+    standoutImageUrl: urlText("standoutImageUrl"),
+    standoutImageAlt: text("standoutImageAlt", 300),
+    standoutImagePlacement: parseImagePlacement(value.standoutImagePlacement),
+  };
+  if (result.walkableImageUrl && !result.walkableImageAlt) throw new Error("Describe the Walkable image for accessibility.");
+  if (result.quickRideImageUrl && !result.quickRideImageAlt) throw new Error("Describe the Quick Ride image for accessibility.");
+  if (result.standoutImageUrl && !result.standoutImageAlt) throw new Error("Describe the Local Standouts image for accessibility.");
+  return result;
+}
 export type HotelMediaProfile = {
   packageReview?: HotelPackageReview;
   heroImageUrl: string;
