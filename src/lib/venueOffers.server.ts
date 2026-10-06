@@ -3,6 +3,7 @@ import "server-only";
 import { createHash, randomBytes, randomInt } from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPersistedVenueEnhancement } from "@/lib/venueEnhancements.server";
+import { nightlifeDate } from "@/lib/tourStops";
 
 export type VenueOfferUnlock = {
   id: string;
@@ -138,6 +139,7 @@ export async function redeemVenueOffer(input: { venueSlug: string; registerKey: 
     .from("venue_offer_unlocks")
     .select("*")
     .eq("venue_slug", input.venueSlug)
+    .eq("nightlife_date", nightlifeDate())
     .eq("redemption_code", input.code.trim())
     .maybeSingle();
   if (unlockError) throw unlockError;
