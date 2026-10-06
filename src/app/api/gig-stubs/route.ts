@@ -12,14 +12,14 @@ async function viewer(request:Request){
 }
 const columns='venue_id,venue_slug,venue_name,neighborhood,nightlife_date,created_at,method';
 export async function GET(request:Request){
- try{const auth=await viewer(request);if(!auth)return NextResponse.json({error:'Sign in to see your Gig Stubs.'},{status:401});
+ try{const auth=await viewer(request);if(!auth)return NextResponse.json({error:'Sign in to see your TourStops.'},{status:401});
  const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).order('created_at',{ascending:true});if(error)throw error;
- return NextResponse.json({stubs:collectGigStubs((data||[]) as GigStubVisit[])},{headers:{'Cache-Control':'private, no-store'}});
- }catch{return NextResponse.json({error:'Gig Stubs could not load. Try again.'},{status:503});}
+ const stops=collectGigStubs((data||[]) as GigStubVisit[]);return NextResponse.json({stops,stubs:stops},{headers:{'Cache-Control':'private, no-store'}});
+ }catch{return NextResponse.json({error:'TourStops could not load. Try again.'},{status:503});}
 }
 export async function POST(request:Request){
  const origin=request.headers.get('origin');if(origin&&origin!==new URL(request.url).origin)return NextResponse.json({error:'Cross-site check-ins are not allowed.'},{status:403});
- try{const auth=await viewer(request);if(!auth)return NextResponse.json({error:'Sign in to collect your Gig Stub.'},{status:401});
+ try{const auth=await viewer(request);if(!auth)return NextResponse.json({error:'Sign in to collect your TourStop.'},{status:401});
  const text=await request.text();if(text.length>2048)return NextResponse.json({error:'Invalid check-in.'},{status:400});
  let body;try{body=JSON.parse(text);}catch{return NextResponse.json({error:'Invalid check-in.'},{status:400});}
  if(!body||typeof body.venueSlug!=='string'||!['self_reported','location_matched'].includes(body.method))return NextResponse.json({error:'Choose a venue and check-in method.'},{status:400});
