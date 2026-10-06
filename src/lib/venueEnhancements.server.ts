@@ -2,7 +2,7 @@ import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
-  getVenueEnhancement,
+  getVenueProfileData,
   type VenueEnhancement,
 } from "@/lib/venueEnhancements";
 
@@ -12,7 +12,7 @@ type EnhancementRow = {
 };
 
 export async function getPersistedVenueEnhancement(slug: string) {
-  const fallback = getVenueEnhancement(slug);
+  const fallback = getVenueProfileData(slug);
 
   try {
     const supabase = createAdminClient();
