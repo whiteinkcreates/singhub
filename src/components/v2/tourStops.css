@@ -55,3 +55,15 @@
  :is(.v2-account) .tour-stop{padding-left:78px}
  :is(.v2-account) .tour-stop-pin{left:14px;width:50px}
 }
+
+:is(.v2-basic,.v2-enhanced) .tour-offer-teaser{display:grid;gap:5px;margin:14px 0;padding:13px 14px;border:1px solid rgba(255,25,168,.32);background:linear-gradient(135deg,rgba(255,25,168,.09),rgba(0,200,255,.06));}
+:is(.v2-basic,.v2-enhanced) .tour-offer-teaser strong{color:#fff;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase}
+:is(.v2-basic,.v2-enhanced) .tour-offer-teaser span{color:#fff;font-size:1rem;font-weight:900}
+:is(.v2-basic,.v2-enhanced) .tour-offer-teaser small{color:#9fb5c4;font-size:.74rem}
+:is(.v2-basic,.v2-enhanced) .tour-offer-unlocked{display:grid;gap:9px;margin:18px 0;padding:18px;border:1px solid rgba(0,200,255,.46);background:radial-gradient(circle at 15% 0,rgba(255,25,168,.16),transparent 40%),#07131a;box-shadow:0 0 34px rgba(0,200,255,.08)}
+:is(.v2-basic,.v2-enhanced) .tour-offer-unlocked.redeemed{border-color:rgba(255,255,255,.18);opacity:.78}
+:is(.v2-basic,.v2-enhanced) .tour-offer-unlocked h3{margin:0;color:#fff;font-size:1.35rem;line-height:1.05}
+:is(.v2-basic,.v2-enhanced) .tour-offer-unlocked>p{margin:0}
+:is(.v2-basic,.v2-enhanced) .tour-offer-code{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:5px;padding:12px 14px;border:1px dashed rgba(255,255,255,.28);background:rgba(255,255,255,.04)}
+:is(.v2-basic,.v2-enhanced) .tour-offer-code span{color:#9fb5c4;font-size:.65rem;font-weight:900;letter-spacing:.14em}
+:is(.v2-basic,.v2-enhanced) .tour-offer-code strong{color:#00c8ff;font:900 1.65rem/1 'Barlow Condensed',sans-serif;letter-spacing:.13em}
