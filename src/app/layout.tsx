@@ -10,7 +10,7 @@ import { PwaRegister } from "@/components/pwa/PwaRegister";
 import "./globals.css";
 import "@/components/v2/styles/review-revisions.css";
 import "@/components/layout/mainPageHero.css";
-import "@/components/v2/gigStubs.css";
+import "@/components/v2/tourStops.css";
 
 const siteTitle = "SingHUB | Find Karaoke Near You";
 const siteDescription =
