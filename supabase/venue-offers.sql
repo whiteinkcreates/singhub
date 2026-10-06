@@ -14,6 +14,7 @@ create table if not exists public.venue_offer_unlocks (
  redeemed_at timestamptz,
  unique (user_id,venue_id,nightlife_date)
 );
+create index if not exists venue_offer_unlocks_visit_idx on public.venue_offer_unlocks(visit_id);
 alter table public.venue_offer_unlocks enable row level security;
 revoke all on public.venue_offer_unlocks from anon,authenticated;
 grant all on public.venue_offer_unlocks to service_role;
