@@ -97,13 +97,14 @@ function TierSection({
   const resolvedImage = imageUrl || fallbackImage?.imageUrl;
   const resolvedPlacement = imageUrl ? imagePlacement : fallbackImage?.imagePlacement;
   const resolvedPosition = imageUrl ? undefined : fallbackImage?.imagePosition;
-  const imageFirst = meta.imageSide === "left";
-  const arrow = imageFirst ? "←" : "→";
+  const imageOnLeft = meta.imageSide === "left";
+  const arrow = imageOnLeft ? "←" : "→";
+  const returnArrow = imageOnLeft ? "→" : "←";
   const extraVenues = venues.slice(2, 7);
 
-  function toggleReveal() {
-    setRevealed((value) => !value);
-    trackEvent("hotel_guest_guide_section_reveal", { hotel_experience: experienceSlug, tier, open: !revealed });
+  function setOpen(next: boolean) {
+    setRevealed(next);
+    trackEvent("hotel_guest_guide_section_reveal", { hotel_experience: experienceSlug, tier, open: next });
   }
 
   function onTouchStart(event: React.TouchEvent) {
@@ -112,50 +113,99 @@ function TierSection({
 
   function onTouchEnd(event: React.TouchEvent) {
     if (touchStart.current === null) return;
-    const end = event.changedTouches[0]?.clientX ?? touchStart.current;
-    const dx = end - touchStart.current;
+    const endX = event.changedTouches[0]?.clientX ?? touchStart.current;
+    const dx = endX - touchStart.current;
     touchStart.current = null;
-    const openGesture = imageFirst ? dx < -44 : dx > 44;
-    const closeGesture = imageFirst ? dx > 44 : dx < -44;
-    if (!revealed && openGesture) setRevealed(true);
-    if (revealed && closeGesture) setRevealed(false);
+    if (!revealed) {
+      if ((!imageOnLeft && dx > 44) || (imageOnLeft && dx < -44)) setOpen(true);
+    } else {
+      if ((!imageOnLeft && dx < -44) || (imageOnLeft && dx > 44)) setOpen(false);
+    }
   }
 
-  const content = (
-    <div className="relative z-10 min-w-0 bg-[#05090d] px-4 py-5 sm:px-5">
-      <div className="flex items-start justify-between gap-3">
-        <div><div className="flex items-center gap-2"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-cyan-300/45 bg-cyan-300/[0.06] text-cyan-300 shadow-[0_0_18px_rgba(34,211,238,.12)]"><TierIcon tier={tier} /></span><h2 className="font-serif text-[1.65rem] font-bold leading-none text-white">{meta.label}</h2></div><p className="mt-2 text-xs leading-5 text-slate-400">{meta.helper}</p></div>
-        <Link href={"/find-karaoke?source=" + encodeURIComponent(experienceSlug)} onClick={() => trackEvent("hotel_guest_guide_see_all", { hotel_experience: experienceSlug, tier, mode })} className="mt-1 shrink-0 text-xs font-black text-cyan-300">See all <span aria-hidden>›</span></Link>
-      </div>
-      <div className="mt-4 grid gap-2">{venues.slice(0, 2).map((venue) => <VenueRow key={venue.slug} venue={venue} mode={mode} experienceSlug={experienceSlug} />)}</div>
-    </div>
-  );
+  const panelSide = imageOnLeft ? "right-0" : "left-0";
+  const exposedSide = imageOnLeft ? "left-0 items-start text-left" : "right-0 items-end text-right";
+  const panelRounded = imageOnLeft ? "rounded-l-[1.4rem]" : "rounded-r-[1.4rem]";
 
-  const visual = (
-    <div className="relative min-h-[228px] overflow-hidden bg-[#09111a] sm:min-h-[250px]" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-      {resolvedImage ? <PositionedImage placement={resolvedPlacement} position={resolvedPosition} src={resolvedImage} alt={imageAlt || ""} className="absolute inset-0 h-full w-full object-cover" loading="lazy" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(34,211,238,.13),transparent_45%),linear-gradient(135deg,#08131d,#03070b)]" />}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/5" />
-      <span aria-hidden className={"absolute inset-y-0 w-px " + (imageFirst ? "right-0" : "left-0")} style={{ background: "linear-gradient(180deg,transparent,#21d4fd 20%,#ff2aa3 72%,transparent)", boxShadow: "0 0 14px rgba(34,211,238,.6),0 0 20px rgba(255,42,163,.24)" }} />
+  return (
+    <section className="relative border-t border-cyan-300/10 bg-[#020508] py-3 sm:py-4">
+      <div
+        className="relative min-h-[300px] overflow-hidden sm:min-h-[330px]"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        {resolvedImage ? (
+          <PositionedImage
+            placement={resolvedPlacement}
+            position={resolvedPosition}
+            src={resolvedImage}
+            alt={imageAlt || ""}
+            className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(34,211,238,.16),transparent_45%),linear-gradient(135deg,#08131d,#03070b)]" />
+        )}
 
-      <button type="button" onClick={toggleReveal} aria-expanded={revealed}
-        className={"absolute bottom-4 z-20 flex items-center gap-2 rounded-full border border-white/20 bg-black/55 px-3.5 py-2 text-left text-white shadow-lg backdrop-blur-md transition hover:border-cyan-300/50 " + (imageFirst ? "left-4" : "right-4")}>
-        <span><span className="block text-[9px] font-black uppercase tracking-[0.18em] text-cyan-300">{meta.label}</span><span className="block text-xs font-black">{revealed ? "Back to image" : "See more"} <span aria-hidden>{revealed ? (imageFirst ? "→" : "←") : arrow}</span></span></span>
-      </button>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-black/10" />
 
-      <div className={"absolute inset-0 z-10 bg-[#05090d]/96 p-3 backdrop-blur-sm transition-transform duration-300 ease-out " +
-        (revealed ? "translate-x-0 " : imageFirst ? "translate-x-full " : "-translate-x-full ")}>
-        <div className="flex h-full flex-col">
-          <div className="mb-2 flex items-center justify-between"><p className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-300">More {meta.label}</p><button type="button" onClick={() => setRevealed(false)} className="rounded-full border border-white/10 px-2 py-1 text-[10px] font-black text-slate-300">Close</button></div>
-          <div className="grid flex-1 content-start gap-2 overflow-y-auto pr-0.5">
-            {extraVenues.length ? extraVenues.map((venue) => <VenueRow key={venue.slug} venue={venue} mode={mode} experienceSlug={experienceSlug} compact />) : <p className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-xs leading-5 text-slate-400">Those are the closest verified picks in this category right now.</p>}
+        <div className={"absolute inset-y-0 z-[2] flex w-[48%] flex-col px-4 py-5 sm:w-[46%] sm:px-5 " + exposedSide}>
+          <button
+            type="button"
+            onClick={() => setOpen(!revealed)}
+            aria-expanded={revealed}
+            className="flex h-full w-full flex-col justify-end"
+          >
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-cyan-300/45 bg-black/45 text-cyan-300 shadow-[0_0_18px_rgba(34,211,238,.18)] backdrop-blur">
+              <TierIcon tier={tier} />
+            </span>
+            <span className="mt-2 font-serif text-[1.7rem] font-bold leading-none text-white drop-shadow-lg">{meta.label}</span>
+            <span className="mt-1 max-w-[10rem] text-[11px] leading-4 text-white/75">{meta.helper}</span>
+            <span className="mt-3 text-xs font-black uppercase tracking-[0.12em] text-cyan-200 drop-shadow-[0_0_10px_rgba(34,211,238,.35)]">
+              {revealed ? "Back " + returnArrow : "See more " + arrow}
+            </span>
+          </button>
+        </div>
+
+        <div
+          className={"absolute inset-y-0 z-10 " + panelSide + " " + panelRounded + " border border-white/10 border-y-0 bg-[#05090d]/97 shadow-[0_0_35px_rgba(0,0,0,.5)] backdrop-blur-sm transition-[width] duration-300 ease-out " + (revealed ? "w-[91%]" : "w-[58%]")}
+        >
+          <span
+            aria-hidden
+            className={"absolute inset-y-5 w-px " + (imageOnLeft ? "left-0" : "right-0")}
+            style={{ background: "linear-gradient(180deg,transparent,#21d4fd 18%,#ff2aa3 76%,transparent)", boxShadow: "0 0 14px rgba(34,211,238,.5),0 0 18px rgba(255,42,163,.2)" }}
+          />
+          <div className="flex h-full flex-col p-3 sm:p-4">
+            <div className="grid gap-2">
+              {venues.slice(0, 2).map((venue) => (
+                <VenueRow key={venue.slug} venue={venue} mode={mode} experienceSlug={experienceSlug} compact />
+              ))}
+            </div>
+
+            <div className={"grid flex-1 content-start gap-2 overflow-y-auto pt-2 transition-opacity duration-200 " + (revealed ? "opacity-100" : "pointer-events-none opacity-0")}>
+              {extraVenues.length ? extraVenues.map((venue) => (
+                <VenueRow key={venue.slug} venue={venue} mode={mode} experienceSlug={experienceSlug} compact />
+              )) : (
+                <p className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-xs leading-5 text-slate-400">
+                  Those are the closest verified picks in this category right now.
+                </p>
+              )}
+            </div>
+
+            <div className={"mt-2 transition-opacity duration-200 " + (revealed ? "opacity-100" : "opacity-0")}>
+              <Link
+                href={"/find-karaoke?source=" + encodeURIComponent(experienceSlug)}
+                onClick={() => trackEvent("hotel_guest_guide_see_all", { hotel_experience: experienceSlug, tier, mode })}
+                className="flex w-full items-center justify-center rounded-full border border-cyan-300/35 bg-cyan-300/[0.06] px-3 py-2 text-xs font-black text-cyan-200"
+              >
+                See all {meta.label.toLowerCase()} <span className="ml-1" aria-hidden>›</span>
+              </Link>
+            </div>
           </div>
-          <Link href={"/find-karaoke?source=" + encodeURIComponent(experienceSlug)} className="mt-2 rounded-full border border-cyan-300/35 bg-cyan-300/[0.06] px-3 py-2 text-center text-xs font-black text-cyan-200">View all nearby spots</Link>
         </div>
       </div>
-    </div>
+    </section>
   );
-
-  return <section className="border-t border-cyan-300/10"><div className="grid grid-cols-[minmax(0,62%)_minmax(0,38%)] sm:grid-cols-2">{imageFirst ? <>{visual}{content}</> : <>{content}{visual}</>}</div></section>;
 }
 
 export function SingHubHotelGuestGuide(props: Props) {
