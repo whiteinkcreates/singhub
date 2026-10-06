@@ -6,6 +6,7 @@ export type HeroPosition = "center" | "top" | "bottom" | "left" | "right";
 export type VenueGalleryItem = { url: string; alt: string; caption?: string; placement?: ResponsiveImagePlacement; };
 export type VenueSpecial = { day: string; title: string; price?: string; detail?: string; };
 export type VenueDailyDeal = { title: string; price?: string; detail?: string; };
+export type SingHubOffer = { enabled: boolean; title: string; detail?: string; terms?: string; days?: string[]; };
 export type SingHereConfig = {
   mode?: "instructions" | "external";
   url?: string;
@@ -50,6 +51,7 @@ export type VenueEnhancement = {
   weeklySpecials: VenueSpecial[];
   dailyDeals: VenueDailyDeal[];
   singHere?: SingHereConfig;
+  singhubOffer?: SingHubOffer;
 
   /** Admin-managed discovery intelligence used across hotel and venue surfaces. */
   vibeTags?: string[];
