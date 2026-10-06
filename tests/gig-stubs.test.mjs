@@ -21,11 +21,11 @@ test('one souvenir per stable venue ID preserves first visit and counts returns'
 function apiFixture(){
  const rows=[];const client={auth:{getUser:async(token)=>({data:{user:token==='test-token'?{id:'test-user',email_confirmed_at:'2026-01-01'}:null},error:null})},from:()=>({select(){const filters={};const q={eq(key,value){filters[key]=value;return q;},order(){return q;},then(resolve){const matches=rows.filter(row=>Object.entries(filters).every(([k,v])=>row[k]===v));return Promise.resolve({data:matches,count:matches.length,error:null}).then(resolve);}};return q;},async insert(row){if(rows.some(r=>r.user_id===row.user_id&&r.venue_id===row.venue_id&&r.nightlife_date===row.nightlife_date))return {error:{code:'23505'}};rows.push({...row,created_at:new Date().toISOString()});return {error:null};}})};
  const api={};const imports={'next/server':{NextResponse:Response},'@/lib/supabase/admin':{createAdminClient:()=>client},'@/lib/venueData':{getVenueListings:async()=>[{id:'venue-1',slug:'one',venueName:'One',neighborhood:'La Mesa',latitude:32.77,longitude:-117.02}]},'@/lib/publicVenueFilters':{getPublicVenues:v=>v},'@/lib/gigStubs':helpers};
- vm.runInNewContext(ts.transpileModule(readFileSync('src/app/api/gig-stubs/route.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports:api,require:id=>imports[id],URL,JSON,Response});return {api,rows};
+ vm.runInNewContext(ts.transpileModule(readFileSync('src/app/api/tour-stops/route.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports:api,require:id=>imports[id],URL,JSON,Response});return {api,rows};
 }
 test('API authenticates, validates canonical venue, prevents duplicates and retains no GPS',async()=>{
  const {api,rows}=apiFixture();
- const post=(body,token='test-token',origin='https://singhub.app')=>api.POST(new Request('https://singhub.app/api/gig-stubs',{method:'POST',headers:{Authorization:'Bearer '+token,Origin:origin},body:JSON.stringify(body)}));
+ const post=(body,token='test-token',origin='https://singhub.app')=>api.POST(new Request('https://singhub.app/api/tour-stops',{method:'POST',headers:{Authorization:'Bearer '+token,Origin:origin},body:JSON.stringify(body)}));
  assert.equal((await post({venueSlug:'one',method:'self_reported'},'bad-token')).status,401);
  assert.equal((await post({venueSlug:'invented',method:'self_reported'})).status,404);
  assert.equal((await post({venueSlug:'one',method:'self_reported'},'test-token','https://other.example')).status,403);
