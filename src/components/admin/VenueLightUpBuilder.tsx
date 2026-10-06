@@ -5,6 +5,7 @@ import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 /* eslint-disable @next/next/no-img-element */
 import { useMemo, useState } from "react";
 import { VenueMediaLibrary } from "@/components/admin/VenueMediaLibrary";
+import { VenueOfferEditor } from "@/components/admin/VenueOfferEditor";
 import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 import {
   HOTEL_VIBE_OPTIONS,
@@ -15,6 +16,7 @@ import {
   type VenueEnhancement,
   type VenueGalleryItem,
   type VenueSpecial,
+  type SingHubOffer,
 } from "@/lib/venueEnhancements";
 
 type VenueOption = {
@@ -69,6 +71,7 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
       instructions: "Head up to the KJ and ask to join the karaoke list.",
       linkLabel: "Join the list",
     },
+    singhubOffer: { enabled: false, title: "", detail: "", terms: "", days: [] },
   };
 }
 
@@ -193,6 +196,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [singHereUrl, setSingHereUrl] = useState(initialProfile.singHere?.url || "");
   const [singHereInstructions, setSingHereInstructions] = useState(initialProfile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");
   const [singHereLinkLabel, setSingHereLinkLabel] = useState(initialProfile.singHere?.linkLabel || "Join the list");
+  const [singhubOffer, setSinghubOffer] = useState<SingHubOffer>(initialProfile.singhubOffer || { enabled: false, title: "", detail: "", terms: "", days: [] });
   const [previewMode, setPreviewMode] = useState<PreviewMode>("open");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -233,6 +237,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setSingHereUrl(profile.singHere?.url || "");
     setSingHereInstructions(profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");
     setSingHereLinkLabel(profile.singHere?.linkLabel || "Join the list");
+    setSinghubOffer(profile.singhubOffer || { enabled: false, title: "", detail: "", terms: "", days: [] });
   }
 
   async function selectVenue(nextSlug: string) {
@@ -288,7 +293,14 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       instructions: singHereInstructions.trim() || undefined,
       linkLabel: singHereLinkLabel.trim() || undefined,
     },
-  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, tagline, vibeTags, weeklySpecials, whyHere]);
+    singhubOffer: {
+      enabled: singhubOffer.enabled,
+      title: singhubOffer.title.trim(),
+      detail: singhubOffer.detail?.trim() || undefined,
+      terms: singhubOffer.terms?.trim() || undefined,
+      days: singhubOffer.days?.length ? singhubOffer.days : undefined,
+    },
+  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const completionChecks = useMemo(() => [
     { label: "Hero + alt text", done: Boolean(heroImageUrl.trim() && heroImageAlt.trim()) },
@@ -445,6 +457,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
               <p className="mt-3 text-xs text-slate-500">Future SingHUB-hosted signup can plug into this same action without changing the public SingHERE experience.</p>
             </section>
 
+            <VenueOfferEditor slug={slug} partnerEnabled={enabled} offer={singhubOffer} onChange={setSinghubOffer} />
             <SpecialEditor specials={weeklySpecials} onChange={setWeeklySpecials} />
             <DailyDealEditor deals={dailyDeals} onChange={setDailyDeals} />
 
