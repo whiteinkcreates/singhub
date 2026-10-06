@@ -13,7 +13,7 @@ async function viewer(request:Request){
  return !error&&data.user?.email_confirmed_at?{client,user:data.user}:null;
 }
 
-const columns='venue_id,venue_slug,venue_name,neighborhood,nightlife_date,created_at,method,status,confirmed_at';
+const columns='id,venue_id,venue_slug,venue_name,neighborhood,nightlife_date,created_at,method,status,confirmed_at';
 
 export async function GET(request:Request){
  try{
