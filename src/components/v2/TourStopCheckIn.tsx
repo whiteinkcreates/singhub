@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useRef,useState,type FormEvent} from 'react';
+import {useCallback,useEffect,useRef,useState,type FormEvent} from 'react';
 import Link from 'next/link';
 import {accountClient,sendAccountLink} from '@/lib/v2/singerAccount';
 import {trackEvent} from '@/lib/analytics';
@@ -15,7 +15,7 @@ export function TourStopCheckIn({venueSlug,venueName}:{venueSlug:string;venueNam
  const [visitStatus,setVisitStatus]=useState<VisitStatus>('none');
  const [message,setMessage]=useState('');
 
- async function refreshVisitStatus(){
+ const refreshVisitStatus=useCallback(async()=>{
   try{
    const {data,error}=await accountClient().auth.getSession();if(error)throw error;
    if(!data.session)return;
@@ -27,9 +27,9 @@ export function TourStopCheckIn({venueSlug,venueName}:{venueSlug:string;venueNam
    if(status==='pending')setMessage('Early check-in saved. Once karaoke starts, confirm you’re still here to turn it into a TourStop.');
    if(status==='confirmed')setMessage('You already have tonight’s TourStop.');
   }catch{}
- }
+ },[venueSlug]);
 
- useEffect(()=>{if(new URLSearchParams(location.search).get('checkin')==='1'){dialog.current?.showModal();void refreshVisitStatus();}},[]);
+ useEffect(()=>{if(new URLSearchParams(location.search).get('checkin')!=='1')return;dialog.current?.showModal();const timer=window.setTimeout(()=>void refreshVisitStatus(),0);return()=>window.clearTimeout(timer);},[refreshVisitStatus]);
 
  async function checkIn(method:'self_reported'|'location_matched'){
   setPending(true);setMessage('');
