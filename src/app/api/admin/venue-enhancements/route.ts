@@ -74,6 +74,22 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Singers Say must be 600 characters or fewer." }, { status: 400 });
     }
 
+    if (profile.singhubOffer) {
+      const offer = profile.singhubOffer;
+      if (typeof offer.enabled !== "boolean") {
+        return NextResponse.json({ error: "SingHUB Offer state is invalid." }, { status: 400 });
+      }
+      if (offer.enabled && !offer.title?.trim()) {
+        return NextResponse.json({ error: "An enabled SingHUB Offer needs a headline." }, { status: 400 });
+      }
+      if ((offer.title?.length || 0) > 120 || (offer.detail?.length || 0) > 240 || (offer.terms?.length || 0) > 300) {
+        return NextResponse.json({ error: "SingHUB Offer copy is too long." }, { status: 400 });
+      }
+      if (offer.days !== undefined && (!Array.isArray(offer.days) || offer.days.some((day) => !["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].includes(day)))) {
+        return NextResponse.json({ error: "SingHUB Offer days are invalid." }, { status: 400 });
+      }
+    }
+
     try {
       profile.heroPlacement=parseImagePlacement(profile.heroPlacement);
       profile.logoPlacement=parseImagePlacement(profile.logoPlacement);
