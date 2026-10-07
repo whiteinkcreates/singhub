@@ -22,13 +22,13 @@ test('production and forced previews use independent positions and zoom, with le
 });
 function nodes(tree){return [tree,...(Array.isArray(tree?.props?.children)?tree.props.children:[tree?.props?.children]).flat(Infinity).filter(x=>x&&typeof x==='object').flatMap(nodes)];}
 test('chooser nudges, sliders, reset and copy only change the intended viewport',()=>{
- let mode='desktop',value;const react={useRef:()=>({current:1}),useId:()=>':test:',useState:()=>[mode,next=>{mode=next;}]};
+ let mode='desktop',value;const react={useId:()=>':test:',useState:()=>[mode,next=>{mode=next;}]};
  const {ImagePlacementEditor}=load('src/components/admin/ImagePlacementEditor.tsx',{'react':react,'@/lib/imagePlacement':placement,'@/components/media/PositionedImage':{PositionedImage:()=>null}});
  const render=()=>nodes(ImagePlacementEditor({src:'/image.jpg',alt:'Property',label:'Hero',position:'top',value,onChange:next=>{value=next;}}));
  const click=label=>{const node=render().find(n=>n.props?.['aria-label']===label||(Array.isArray(n.props?.children)?n.props.children.join(''):n.props?.children)===label);assert.ok(node,label);node.props.onClick();};
- click('Move hero image left');assert.equal(value.desktop.x,55);assert.equal(value.mobile.x,50);assert.equal(value.mobile.y,0);
- click('Mobile');click('Move hero image up');assert.equal(value.mobile.y,5);assert.equal(value.desktop.y,0);
+ click('Focus hero image left');assert.equal(value.desktop.x,45);assert.equal(value.mobile.x,50);assert.equal(value.mobile.y,0);
+ click('Mobile');click('Focus hero image lower');assert.equal(value.mobile.y,5);assert.equal(value.desktop.y,0);
  render().find(n=>n.props?.['aria-label']==='Hero mobile zoom').props.onChange({target:{value:'2.25'}});assert.equal(value.mobile.zoom,2.25);assert.equal(value.desktop.zoom,1);
  click('Copy to desktop');assert.equal(value.desktop.zoom,2.25);click('Reset mobile crop');assert.equal(value.mobile.zoom,1);assert.equal(value.mobile.y,0);assert.equal(value.desktop.zoom,2.25);
- for(let i=0;i<25;i++)click('Move hero image right');assert.equal(value.mobile.x,0);
+ for(let i=0;i<25;i++)click('Focus hero image right');assert.equal(value.mobile.x,100);
 });
