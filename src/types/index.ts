@@ -24,6 +24,7 @@ export type VenueListing = {
   bannerImageUrl?: string;
   bannerImageAlt?: string;
   bannerImagePlacement?: ResponsiveImagePlacement;
+  fallbackHeroEnabled?: boolean;
   bannerImagePosition?: "center" | "top" | "bottom" | "left" | "right";
   tickerText?: string;
   lastVerified?: string;
