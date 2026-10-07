@@ -79,7 +79,8 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
   const enhancement = savedEnhancement || getVenueEnhancement(venue.slug);
   if (!enhancement) return null;
 
-  const heroUrl = clean(enhancement.heroImageUrl) || clean(venue.bannerImageUrl) || DEFAULT_BANNER_IMAGE_URL;
+  const realHeroUrl = clean(enhancement.heroImageUrl) || clean(venue.bannerImageUrl);
+  const heroUrl = realHeroUrl || (enhancement.fallbackHeroEnabled === false ? undefined : DEFAULT_BANNER_IMAGE_URL);
   const heroAlt = clean(enhancement.heroImageAlt) || clean(venue.bannerImageAlt) || `${venue.venueName} venue`;
   const heroPosition = enhancement.heroPosition || venue.bannerImagePosition || "center";
   const logoUrl = clean(enhancement.logoImageUrl);
@@ -96,8 +97,8 @@ export function LitUpVenueProfile({ venue, events = [], enhancement: savedEnhanc
 
   return (
     <article className="overflow-hidden rounded-[2rem] border border-white/10 bg-[#071019] shadow-2xl shadow-black/30">
-      <section className="relative min-h-[20rem] overflow-hidden md:min-h-[28rem]">
-        <PositionedImage placement={enhancement.heroPlacement} position={heroPosition} src={heroUrl} alt={heroAlt} className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: heroPosition }} loading="eager" />
+      <section className={"relative min-h-[20rem] overflow-hidden md:min-h-[28rem]"+(heroUrl?"":" bg-[radial-gradient(circle_at_20%_20%,rgba(255,25,168,.2),transparent_36%),radial-gradient(circle_at_80%_80%,rgba(0,200,255,.18),transparent_38%),#071019]")}>
+        {heroUrl ? <PositionedImage placement={enhancement.heroPlacement} position={heroPosition} src={heroUrl} alt={heroAlt} className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: heroPosition }} loading="eager" /> : <div className="absolute inset-0 grid place-items-center"><div className="grid justify-items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-slate-500"><img src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" aria-hidden="true" className="h-20 w-auto opacity-60"/><span>Venue photo coming soon</span></div></div>}
         <div className="absolute inset-0 bg-gradient-to-t from-[#071019] via-[#071019]/30 to-black/15" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-transparent" />
         <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#22d3ee] via-[#ff2aa3] to-[#8b5cf6]" />
