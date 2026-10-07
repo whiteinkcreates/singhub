@@ -18,7 +18,8 @@ const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials()
 const row=makeVenueRow(venue,events,weekday,enhancement);const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:enhancement?.singHere});
 const details=[['Address',venue.address],['Room type',row.kind],['Age policy',venue.agePolicy],['Parking',venue.parkingInfo],['Accessibility',venue.accessibilityNotes],['Cover',venue.coverCharge],['About the room',venue.description]].filter((item):item is [string,string]=>Boolean(item[1]));
 const venueHero=enhancement?.heroImageUrl||venue.bannerImageUrl;
-const heroUrl=venueHero||(enhancement?.fallbackHeroEnabled===false?undefined:'/images/og/singhub-og.png');
+const fallbackHeroEnabled=enhancement?.fallbackHeroEnabled ?? venue.fallbackHeroEnabled ?? true;
+const heroUrl=venueHero||(fallbackHeroEnabled?'/images/og/singhub-og.png':undefined);
 const heroAlt=enhancement?.heroImageAlt||venue.bannerImageAlt||(venueHero?venue.venueName+' venue':'SingHUB karaoke guide');
 
 return <div className="v2-basic" data-responsive-basic="" ref={root}>
