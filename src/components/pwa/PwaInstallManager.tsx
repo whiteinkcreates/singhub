@@ -122,6 +122,7 @@ export function PwaInstallManager() {
     try { localStorage.setItem(DISMISS_KEY, String(Date.now())); } catch {}
     setShowPrompt(false);
     setShowIosHelp(false);
+    setShowBrowserHelp(false);
     trackEvent("pwa_install_prompt_dismissed");
   };
 
