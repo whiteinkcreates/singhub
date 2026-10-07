@@ -1,5 +1,5 @@
 import { eventRunsOnNight, scheduleQualification } from "@/lib/eventOccurrence";
-import { getHotelGuideMediaBundle } from "@/lib/hotelProfiles.server";
+import { getHotelGuideMediaBundle, getHotelMediaProfile } from "@/lib/hotelProfiles.server";
 import { notFound } from "next/navigation";
 import { BrandedHotelExperience } from "@/components/hotel/BrandedHotelExperience";
 import { SingHubHotelGuestGuide } from "@/components/hotel/SingHubHotelGuestGuide";
@@ -26,7 +26,8 @@ export async function HotelExperiencePageContent({slug,demo=false,edition="guest
   const experience=getHotelExperienceConfig(slug);if(!experience)notFound();
   const bundle=await getHotelGuideMediaBundle(experience.hotelGuideSlug,demo);if(!bundle)notFound();
   const {hotel,media}=bundle;
-  const effectiveEdition=edition==="concierge"&&media?.packageReview?.brandApproved?"concierge":"guest";
+  const profile=edition==="concierge"?await getHotelMediaProfile(experience.hotelGuideSlug).catch(()=>null):null;
+  const effectiveEdition=edition==="concierge"&&profile?.packageReview?.brandApproved?"concierge":"guest";
   const [allVenues,allEvents]=await Promise.all([getVenueListings(),getKaraokeEventListings()]);
   const venues=getSanDiegoPublicVenues(allVenues).filter(isHotelGuideVenueCandidate);const tonightDay=getSanDiegoNightlifeWeekday();
   const eventsByVenue=allEvents.reduce<Record<string,KaraokeEventListing[]>>((groups,event)=>{if(!groups[event.venueSlug])groups[event.venueSlug]=[];groups[event.venueSlug].push(event);return groups;},{});
