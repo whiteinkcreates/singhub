@@ -1,5 +1,5 @@
 import { eventRunsOnNight, scheduleQualification } from "@/lib/eventOccurrence";
-import { getHotelGuideWithMedia } from "@/lib/hotelProfiles.server";
+import { getHotelGuideWithMedia, getHotelMediaProfile } from "@/lib/hotelProfiles.server";
 import { notFound } from "next/navigation";
 import { BrandedHotelExperience } from "@/components/hotel/BrandedHotelExperience";
 import type { HotelGuideVenue } from "@/components/hotel/HotelGuideExperience";
@@ -155,10 +155,25 @@ function makeVenue(
   };
 }
 
-export async function HotelExperiencePageContent({ slug, demo = false, edition="concierge" }: { slug: string; demo?: boolean; edition?:"guest"|"concierge" }) {
+export async function HotelExperiencePageContent({ slug, demo = false, edition="guest" }: { slug: string; demo?: boolean; edition?:"guest"|"concierge" }) {
   const registered = getHotelExperienceConfig(slug);
-  const experience=registered && (edition==="guest"?{...registered,primaryColor:"#121826",accentColor:"#007b92",pageBackground:"#f5f8fc",textColor:"#121826",mutedTextColor:"#546275",eyebrow:"SingHUB Guest Guide"}:registered);
-  if (!experience) notFound();
+  if (!registered) notFound();
+
+  const profile = await getHotelMediaProfile(registered.hotelGuideSlug).catch(() => null);
+  const conciergeApproved = Boolean(profile?.packageReview?.brandApproved);
+  const effectiveEdition = edition === "concierge" && conciergeApproved ? "concierge" : "guest";
+  const experience = effectiveEdition === "guest"
+    ? {
+        ...registered,
+        primaryColor: "#20D7FF",
+        accentColor: "#FF2AA3",
+        pageBackground: "#05070B",
+        surfaceColor: "#0B1118",
+        textColor: "#F8FAFC",
+        mutedTextColor: "#9FB0C0",
+        eyebrow: "SingHUB Guest Experience",
+      }
+    : registered;
 
   const hotel = await getHotelGuideWithMedia(experience.hotelGuideSlug, demo);
   if (!hotel) notFound();
@@ -251,7 +266,7 @@ export async function HotelExperiencePageContent({ slug, demo = false, edition="
 
   return (
     <BrandedHotelExperience
-      edition={edition}
+      edition={effectiveEdition}
       hotelSlug={hotel.slug}
       experienceSlug={experience.slug}
       hotelName={hotel.name}
