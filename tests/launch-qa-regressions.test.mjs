@@ -62,3 +62,12 @@ test('calendar exports monthly and anchored biweekly recurrence, omitting unanch
  assert.doesNotMatch(calendar,/unanchored/);
  assert.equal((calendar.match(/BEGIN:VEVENT/g)||[]).length,2);
 });
+
+
+test('admin uses the same production app navigation as public SingHUB pages',()=>{
+ const chrome=readFileSync(new URL('../src/components/layout/ProductionChrome.tsx',import.meta.url),'utf8');
+ assert.match(chrome,/if\(position==='header'\)return <AppNavigation \/>/);
+ assert.doesNotMatch(chrome,/path\.startsWith\('\/admin'\).*SiteHeader/);
+ const nav=readFileSync(new URL('../src/components/layout/AppNavigation.tsx',import.meta.url),'utf8');
+ for(const label of ['Discover','Venues','Hosts','Hotels','SingBOARD','My SingHUB']) assert.match(nav,new RegExp(label.replace(/ /g,'\\\\s*')));
+});
