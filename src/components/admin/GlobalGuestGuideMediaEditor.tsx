@@ -13,6 +13,21 @@ const META: Record<Slot, { label: string; urlKey: keyof GuestGuideLifestyleMedia
   standout: { label: "Local Standouts", urlKey: "standoutImageUrl", altKey: "standoutImageAlt", placementKey: "standoutImagePlacement" },
 };
 
+async function fetchGlobalGuestGuideMedia() {
+  const [defaultsResponse, assetsResponse] = await Promise.all([
+    fetch("/api/admin/hotel-guest-guide-defaults", { cache: "no-store" }),
+    fetch("/api/admin/hotel-media?slug=" + encodeURIComponent(GUEST_GUIDE_DEFAULTS_SLUG), { cache: "no-store" }),
+  ]);
+  const defaultsPayload = await defaultsResponse.json();
+  const assetsPayload = await assetsResponse.json();
+  if (!defaultsResponse.ok) throw new Error(defaultsPayload.error || "Could not load Guest Guide defaults.");
+  if (!assetsResponse.ok) throw new Error(assetsPayload.error || "Could not load global Guest Guide media.");
+  return {
+    defaults: (defaultsPayload.defaults || {}) as GuestGuideLifestyleMedia,
+    assets: (assetsPayload.assets || []) as VenueMediaAsset[],
+  };
+}
+
 export function GlobalGuestGuideMediaEditor() {
   const [defaults, setDefaults] = useState<GuestGuideLifestyleMedia>({});
   const [assets, setAssets] = useState<VenueMediaAsset[]>([]);
@@ -44,7 +59,29 @@ export function GlobalGuestGuideMediaEditor() {
     }
   }
 
-  useEffect(() => { void load(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+
+    void fetchGlobalGuestGuideMedia()
+      .then(({ defaults: nextDefaults, assets: nextAssets }) => {
+        if (cancelled) return;
+        setDefaults(nextDefaults);
+        setAssets(nextAssets);
+        setDirty(false);
+        setMessage("These three images are inherited by every hotel unless that hotel has an override.");
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        setMessage(error instanceof Error ? error.message : "Could not load Guest Guide defaults.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   function edit(patch: Partial<GuestGuideLifestyleMedia>) {
     setDefaults((current) => ({ ...current, ...patch }));
