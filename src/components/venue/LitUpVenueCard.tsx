@@ -29,7 +29,9 @@ function scheduleLabel(venue: VenueListing, events: KaraokeEventListing[]) {
 
 export function LitUpVenueCard({ venue, events = [], distanceLabel }: LitUpVenueCardProps) {
   const fallbackEnhancement = getVenueEnhancement(venue.slug);
-  const imageUrl = clean(venue.bannerImageUrl) || clean(fallbackEnhancement?.heroImageUrl) || DEFAULT_BANNER_IMAGE_URL;
+  const realImageUrl = clean(venue.bannerImageUrl) || clean(fallbackEnhancement?.heroImageUrl);
+  const fallbackHeroEnabled = venue.fallbackHeroEnabled ?? fallbackEnhancement?.fallbackHeroEnabled ?? true;
+  const imageUrl = realImageUrl || (fallbackHeroEnabled ? DEFAULT_BANNER_IMAGE_URL : undefined);
   const imageAlt = clean(venue.bannerImageAlt) || clean(fallbackEnhancement?.heroImageAlt) || `${venue.venueName} venue`;
   const imagePosition = venue.bannerImagePosition || fallbackEnhancement?.heroPosition || "center";
   const schedule = scheduleLabel(venue, events);
@@ -48,8 +50,8 @@ export function LitUpVenueCard({ venue, events = [], distanceLabel }: LitUpVenue
   return (
     <article className="group overflow-hidden rounded-[1.6rem] border border-white/10 bg-[#0b1118] shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:border-fuchsia-400/50 hover:shadow-fuchsia-950/20">
       <Link href={`/venues/${venue.slug}`} className="block focus:outline-none focus:ring-2 focus:ring-fuchsia-400">
-        <div className="relative h-44 overflow-hidden sm:h-52">
-          <PositionedImage placement={venue.bannerImagePlacement||fallbackEnhancement?.heroPlacement} position={imagePosition} src={imageUrl} alt={imageAlt} className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-300 group-hover:scale-[1.015] group-hover:opacity-68" style={{ objectPosition: imagePosition }} loading="lazy" />
+        <div className={"relative h-44 overflow-hidden sm:h-52"+(imageUrl?"":" bg-[radial-gradient(circle_at_20%_20%,rgba(255,25,168,.18),transparent_35%),radial-gradient(circle_at_80%_80%,rgba(0,200,255,.16),transparent_35%),#0b1118]")}>
+          {imageUrl ? <PositionedImage placement={venue.bannerImagePlacement||fallbackEnhancement?.heroPlacement} position={imagePosition} src={imageUrl} alt={imageAlt} className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-300 group-hover:scale-[1.015] group-hover:opacity-68" style={{ objectPosition: imagePosition }} loading="lazy" /> : <div className="absolute inset-0 grid place-items-center"><div className="grid justify-items-center gap-2 text-[10px] font-black uppercase tracking-[0.14em] text-slate-500"><img src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" aria-hidden="true" className="h-14 w-auto opacity-60"/><span>Venue photo coming soon</span></div></div>}
           <div className="absolute inset-0 bg-gradient-to-t from-[#0b1118] via-[#0b1118]/28 to-black/5" />
           <div className="absolute right-4 top-4 flex flex-wrap justify-end gap-2">{venue.isFeatured ? <span className="rounded-full border border-violet-300/40 bg-black/55 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-violet-100 backdrop-blur">Featured</span> : null}{distanceLabel ? <span className="rounded-full border border-white/15 bg-black/55 px-3 py-1 text-xs font-bold text-white backdrop-blur">{distanceLabel}</span> : null}</div>
           <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
