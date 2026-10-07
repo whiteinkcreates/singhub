@@ -3,7 +3,9 @@ import { getHostMediaOverrides } from "@/lib/hostMedia.server";
 import { HOST_DIRECTORY_MEDIA_KEY, type HostMediaSettings } from "@/lib/hostMedia";
 import path from "node:path";
 import type {
+  HostEntityType,
   HostGig,
+  HostOrganizationType,
   HostProfile,
   HostProfileCompletionLevel,
   HostWeekday,
@@ -77,6 +79,34 @@ function getCellAny(row: HostSourceRow, columnNames: string[]) {
 
 function normalizeStatus(value: string | undefined) {
   return value?.trim().toLowerCase() || "draft";
+}
+
+function normalizeEntityType(value: string | undefined): HostEntityType {
+  return value?.trim().toLowerCase() === "organization"
+    ? "organization"
+    : "individual";
+}
+
+function normalizeOrganizationType(
+  value: string | undefined,
+): HostOrganizationType | undefined {
+  const normalized = value?.trim().toLowerCase().replace(/[\s/-]+/g, "_");
+  if (!normalized) return undefined;
+
+  const aliases: Record<string, HostOrganizationType> = {
+    kj_company: "kj_company",
+    karaoke_company: "kj_company",
+    entertainment_company: "entertainment_company",
+    karaoke_team: "karaoke_team",
+    entertainment_collective: "entertainment_collective",
+    collective: "entertainment_collective",
+    live_band_producer: "live_band_producer",
+    live_band: "live_band_producer",
+    producer: "live_band_producer",
+    other: "other",
+  };
+
+  return aliases[normalized] || "other";
 }
 
 function isActiveStatus(value: string | undefined) {
@@ -381,6 +411,17 @@ function rowToHost(row: HostSourceRow): HostProfile {
 
   const baseHost = {
     status: normalizeStatus(getCellAny(row, ["status", "Status"])),
+    entityType: normalizeEntityType(
+      getCellAny(row, ["entity_type", "Entity Type"]),
+    ),
+    organizationType: normalizeOrganizationType(
+      getCellAny(row, ["organization_type", "Organization Type"]),
+    ),
+    affiliationId: getCellAny(row, [
+      "affiliation_id",
+      "Affiliation ID",
+      "KJ Group / Affiliation",
+    ]),
     hostId: getCellAny(row, ["host_id", "Host ID"]) || slug,
     slug,
     hostName,
@@ -448,7 +489,7 @@ async function getSheetRows() {
   );
 
   try {
-    const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:AB");
+    const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:AE");
     return rows as GoogleSheetRow[] | null;
   } catch (error) {
     if (!(error instanceof GoogleSheetsConfigurationError)) {
@@ -482,17 +523,35 @@ export async function getHosts({includeMedia=true}: {includeMedia?:boolean} = {}
   const usingSheet = Boolean(sheetRows?.length);
   const rows = usingSheet ? sheetRows || [] : getFallbackRows();
 
-  const hosts = rows
-    .filter((row) => isVisible(row))
-    .map(rowToHost)
-    .filter((host) => host.slug && host.publicDisplayName);
+  const parsedHosts = rows
+    .map((row) => ({ row, host: rowToHost(row) }))
+    .filter(({ host }) => host.slug && host.publicDisplayName);
+  const allHostsById = new Map(
+    parsedHosts.map(({ host }) => [host.hostId, host]),
+  );
+  const visibleHostIds = new Set(
+    parsedHosts
+      .filter(({ row }) => isVisible(row))
+      .map(({ host }) => host.hostId),
+  );
+  const hosts = parsedHosts
+    .filter(({ row }) => isVisible(row))
+    .map(({ host }) => host);
 
   attachCanonicalSchedules(hosts, events, venues);
 
   const directory = media.get(HOST_DIRECTORY_MEDIA_KEY);
   return hosts.map((host) => {
     const settings = media.get(host.slug);
+    const organization = host.affiliationId
+      ? allHostsById.get(host.affiliationId)
+      : undefined;
     const rendered = { ...host,
+      affiliationName: organization?.publicDisplayName,
+      affiliationSlug:
+        organization && visibleHostIds.has(organization.hostId)
+          ? organization.slug
+          : undefined,
       ...(settings?.portraitUrl === undefined ? {} : { profileImageUrl: settings.portraitUrl || undefined, logoUrl: undefined }),
       profileImagePosition: settings?.portraitPosition,
       portraitPlacement: settings?.portraitPlacement,
