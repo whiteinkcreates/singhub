@@ -1,4 +1,4 @@
-import type { HostProfile, HostWeekday } from "@/types";
+import type { HostOrganizationType, HostProfile, HostWeekday } from "@/types";
 import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
 
 export const HOST_WEEKDAYS: HostWeekday[] = [
@@ -27,4 +27,23 @@ export function isHostConfirmed(
 
 export function getTodayInLosAngeles(): HostWeekday {
   return getSanDiegoNightlifeWeekday() as HostWeekday;
+}
+
+
+const ORGANIZATION_LABELS: Record<HostOrganizationType, string> = {
+  kj_company: "KJ COMPANY",
+  entertainment_company: "ENTERTAINMENT COMPANY",
+  karaoke_team: "KARAOKE TEAM",
+  entertainment_collective: "ENTERTAINMENT COLLECTIVE",
+  live_band_producer: "LIVE BAND / PRODUCER",
+  other: "ORGANIZATION",
+};
+
+export function getHostKindLabel(
+  host: Pick<HostProfile, "entityType" | "organizationType">,
+) {
+  if (host.entityType !== "organization") return "HOST";
+  return host.organizationType
+    ? ORGANIZATION_LABELS[host.organizationType]
+    : "ORGANIZATION";
 }

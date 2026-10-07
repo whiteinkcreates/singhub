@@ -96,6 +96,16 @@ export type HostGig = {
 
 export type HostProfileCompletionLevel = "basic" | "enhanced" | "incomplete";
 
+export type HostEntityType = "individual" | "organization";
+
+export type HostOrganizationType =
+  | "kj_company"
+  | "entertainment_company"
+  | "karaoke_team"
+  | "entertainment_collective"
+  | "live_band_producer"
+  | "other";
+
 export type HostProfile = {
   heroPlacement?: ResponsiveImagePlacement;
   portraitPlacement?: ResponsiveImagePlacement;
@@ -107,6 +117,11 @@ export type HostProfile = {
   directoryHeroImageUrl?: string;
   directoryHeroPosition?: "center" | "top" | "bottom" | "left" | "right";
   status: string;
+  entityType: HostEntityType;
+  organizationType?: HostOrganizationType;
+  affiliationId?: string;
+  affiliationName?: string;
+  affiliationSlug?: string;
   hostId: string;
   slug: string;
   hostName: string;
