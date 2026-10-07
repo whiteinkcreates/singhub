@@ -76,31 +76,17 @@ function splitByTier(venues: HotelGuideVenue[]) {
   };
 }
 
-function KaraokeMicBackdrop({ color }: { color: string }) {
-  return (
-    <svg
-      viewBox="0 0 620 1500"
-      aria-hidden
-      className="pointer-events-none absolute right-[-115px] top-[430px] z-[1] h-[1260px] w-[620px] opacity-[0.09] mix-blend-multiply sm:right-[-80px] sm:top-[470px] sm:h-[1380px] sm:w-[680px]"
-      style={{ color }}
-      fill="none"
-    >
-      <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-        <g transform="translate(345 120) rotate(-9 90 230)">
-          <rect x="52" y="34" width="138" height="168" rx="68" strokeWidth="14" />
-          <path d="M72 82h98M66 112h110M68 142h106" strokeWidth="7" opacity="0.7" />
-          <path d="M88 202h66l-12 310H100L88 202Z" strokeWidth="14" />
-          <path d="M104 265h34M102 320h38M100 375h40" strokeWidth="6" opacity="0.55" />
-          <path d="M121 512v88" strokeWidth="12" />
-        </g>
-        <path d="M405 555c38 2 64 27 64 64v54" strokeWidth="13" />
-        <path d="M469 672v430" strokeWidth="14" />
-        <path d="M394 1104h150" strokeWidth="15" />
-        <path d="M420 1104c8 45 27 74 49 74s42-29 50-74" strokeWidth="10" opacity="0.75" />
-        <path d="M465 565c76 66 105 154 90 258-18 126-8 246 33 331 42 88 18 164-79 189-126 32-262 11-393 39-69 15-106 44-124 76" strokeWidth="12" />
-      </g>
-    </svg>
-  );
+function KaraokeMicBackdrop() {
+  return <div className="hotel-mic-banner" aria-hidden="true">
+    <img src="/images/hotel-package/horizontal-microphone.png" alt="" />
+    <svg viewBox="0 0 900 100" preserveAspectRatio="none" fill="none"><path d="M610 49 C670 49 735 78 850 94" /></svg>
+  </div>;
+}
+function KaraokeCableBackdrop() {
+  return <svg className="hotel-mic-cable" viewBox="0 0 900 1600" preserveAspectRatio="none" fill="none" aria-hidden="true">
+    <path className="hotel-cable-desktop" d="M850 0 C900 120 866 220 875 360 S840 580 875 760 S890 980 862 1160 S896 1410 850 1600" />
+    <path className="hotel-cable-mobile" d="M888 0 C864 190 902 300 883 490 S900 800 880 990 S896 1350 883 1600" />
+  </svg>;
 }
 
 function QuickIcon({ kind }: { kind: "mic" | "food" | "spark" | "pin" }) {
@@ -458,7 +444,7 @@ export function BrandedHotelExperience({
   return (
     <main className="min-h-screen" data-hotel-edition={edition} data-hotel-slug={hotelSlug} data-hotel-experience={experienceSlug} style={{ backgroundColor: pageBackground, color: textColor, fontFamily: bodyFontFamily }}>
       <div className="relative isolate mx-auto min-h-screen max-w-4xl overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,.12)]">
-        <KaraokeMicBackdrop color={primaryColor} />
+
 
         <header className="relative z-10 flex items-center justify-between gap-4 bg-white/[0.96] px-5 py-4 backdrop-blur-sm sm:px-8">
           {edition==="guest"?<Link href="/" aria-label="SingHUB home"><img src={SITE_WORDMARK_SRC} alt="SingHUB" className="h-12 w-auto max-w-[220px] object-contain" /></Link>:hotelSiteUrl ? (
@@ -503,6 +489,9 @@ export function BrandedHotelExperience({
           </div>
         ) : null}
 
+        <KaraokeMicBackdrop />
+        <div className="hotel-cabled-content">
+        <KaraokeCableBackdrop />
         <section className="relative z-10 bg-white/[0.84] px-5 pb-4 pt-7 sm:px-8 sm:pt-9">
           <p className="text-xs font-black uppercase tracking-[0.24em]" style={{ color: primaryColor }}>{eyebrow}</p>
           <h1 className="mt-2 max-w-2xl text-4xl font-black leading-[0.98] tracking-[-0.035em] sm:text-5xl" style={{ color: textColor, fontFamily: headingFontFamily }}>
@@ -569,6 +558,7 @@ export function BrandedHotelExperience({
         </div>
 
         <div className="relative z-10 px-5 py-3 text-sm font-bold sm:px-8"><Link href="/account">My SingHUB · {savedPlans.length} saved karaoke picks</Link></div>
+        </div>
         <footer className="relative z-10 mt-5 overflow-hidden border-t border-slate-200 bg-[#071528] px-5 py-7 sm:px-8">
           <img src="/images/hotel-package/karaoke-stage.webp" alt="" aria-hidden="true" className="hotel-stage-watermark pointer-events-none absolute inset-0 h-full w-full object-cover" style={{objectPosition:"right 20%"}}/>
           <div className="pointer-events-none absolute inset-0 bg-[#071528]/85" aria-hidden="true"/>
