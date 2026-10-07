@@ -27,7 +27,7 @@ Status meanings:
 | 1 | Hard-line V2 QA and canonical cleanup | NEEDS VERIFICATION | Reconcile current source/live data, imagery, mobile hierarchy, copy and known listing corrections. Hotel closure is today's immediate task after Corey's HIE test. |
 | 2 | HIE guest journey and analytics | USER TEST PASSED / analytics NEEDS VERIFICATION | Corey: "HIE test passed" on Oct 6. Do not make him repeat the same flow without a reason. Confirm analytics evidence separately; exact tested steps/device were not enumerated. |
 | 3 | Hotel media/admin | NEEDS VERIFICATION | Confirm authenticated upload/save, hero selection, desktop/mobile positioning, source and rights history. Corey previously reported placement controls working. |
-| 4 | HIE sales and deployment package | ON MAIN / final acceptance TO DO | Inspect actual package previews and approval state. Add 16:9 digital display from the same render source as its export. Assemble reviewable digital handoff. |
+| 4 | HIE sales and deployment package | ON MAIN / final acceptance TO DO | Keep the Guest Experience in the dark SingHUB system with hotel hero imagery. Concierge styling only after real brand handoff/approval. Add 16:9 digital display from the same render source as its export and assemble the reviewable digital handoff. |
 | 5 | Gaslamp hotel outreach | TO DO; HIE contact WAITING | Prepare reusable package first. HIE has already been emailed; no reply reported as of Oct 6. Do not restart first contact or send without explicit authorization. |
 | 6 | Reusable KJ profiles and next product layer | AFTER HOTEL CLOSURE | Use submitted forms; define ownership, verification, venue relationships, substitutions and schedule conflicts before premium features. |
 
@@ -42,7 +42,7 @@ Actual HIE guest screenshot is registered in `src/lib/hotelPackageScreenshots.ts
 | --- | --- | --- |
 | Hotel guest template | ON MAIN; HIE USER TEST PASSED | Reusable `/hotelexperience/[slug]`, config-driven hotel data. |
 | HIE sales sheet | ON MAIN | Verify live preview, current real screenshot, source/rights approval and usable digital export. |
-| Free Guest Guide / Concierge Edition | ON MAIN | Confirm current branding approvals and both actual previews. |
+| SingHUB Guest Experience / Concierge Experience | ON MAIN | Guest is the default dark SingHUB system with property hero. Concierge must remain unbranded until a real hotel brand kit or explicit approval is recorded. |
 | Portrait desk inserts | ON MAIN | Two 4 × 6 inch faces on landscape Letter. Screen review only for now. |
 | Elevator insert | ON MAIN | 8.5 × 11 inch portrait. Screen review only for now. |
 | Tracked hotel QR / source manifest | ON MAIN | Verify actual destination, edition and placement attribution. |
@@ -86,7 +86,7 @@ VERIFIED LIVE Oct 5:
 ## Locked decisions
 
 - Gaslamp/Downtown first; HIE La Mesa parallel lighthouse; La Jolla after proof.
-- Free: SingHUB Guest Guide. Paid: hotel-forward Concierge Edition, Powered by SingHUB.
+- Default public hotel product: dark SingHUB Guest Experience with the real hotel hero image. Concierge Experience is a separate hotel-forward upgrade and must use hotel-supplied or explicitly approved brand assets. Do not invent or infer hotel branding.
 - Real property heroes and exact official SingHUB wordmark. No fake hotel architecture/logos or unsupported editorial claims.
 - Demo image availability is not permission for public production use.
 - Useful complete verified venue pages for everyone; Partner monetizes reach, analytics and tools. No public "Basic Profile" label.
@@ -112,3 +112,5 @@ VERIFIED LIVE Oct 5:
 | Oct 5, 2026 | Hotel package code verified on GitHub/main. Final production package approval/export not verified. |
 | Oct 6, 2026 | Corey reported HIE test passed. Requested digital display as part of package; physical printing deferred. |
 | Oct 6, 2026 | Created shared launch checklist; main at creation: `c7169724988b11d170bf5bf4a774ab6944fffbd7`. |
+
+| Oct 6, 2026 | Locked hotel packaging distinction: dark SingHUB Guest Experience is the default using the property hero; Concierge Experience is only custom-branded after legitimate hotel brand handoff/approval. |
