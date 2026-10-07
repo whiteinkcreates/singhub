@@ -426,7 +426,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
               </div>
             </section>
 
-            <VenueMediaLibrary slug={slug} heroUrl={heroImageUrl} heroAlt={heroImageAlt} heroPosition={heroPosition} heroPlacement={heroPlacement} logoPlacement={logoPlacement} onHeroPlacementChange={setHeroPlacement} onLogoPlacementChange={setLogoPlacement} logoUrl={logoImageUrl} logoAlt={logoImageAlt} gallery={gallery} onHeroChange={setHeroImageUrl} onHeroPositionChange={setHeroPosition} onLogoChange={setLogoImageUrl} onGalleryChange={setGallery} />
+            <VenueMediaLibrary slug={slug} heroPreview={enabled ? "venue-partner" : "venue-base"} heroUrl={heroImageUrl} heroAlt={heroImageAlt} heroPosition={heroPosition} heroPlacement={heroPlacement} logoPlacement={logoPlacement} onHeroPlacementChange={setHeroPlacement} onLogoPlacementChange={setLogoPlacement} logoUrl={logoImageUrl} logoAlt={logoImageAlt} gallery={gallery} onHeroChange={setHeroImageUrl} onHeroPositionChange={setHeroPosition} onLogoChange={setLogoImageUrl} onGalleryChange={setGallery} />
             <label className={labelClass}>Hero image alt text<input className={fieldClass} value={heroImageAlt} onChange={(event) => setHeroImageAlt(event.target.value)} placeholder="Describe the hero photo" /></label>
             <label className={labelClass}>Logo / mark alt text<input className={fieldClass} value={logoImageAlt} onChange={(event) => setLogoImageAlt(event.target.value)} placeholder="Venue logo or mark" /></label>
 

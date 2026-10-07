@@ -12,6 +12,7 @@ const MAX_GALLERY_PHOTOS = 15;
 type VenueMediaLibraryProps = {
   slug: string;
   kind?: "venue" | "hotel" | "host";
+  heroPreview?: "venue-base" | "venue-partner";
   allowPortrait?: boolean;
   heroUrl: string;
   heroAlt: string;
@@ -48,6 +49,7 @@ function defaultAlt(slug: string) {
 export function VenueMediaLibrary({
   slug,
   kind = "venue",
+  heroPreview,
   allowPortrait = true,
   heroUrl,
   heroAlt,
@@ -189,7 +191,18 @@ export function VenueMediaLibrary({
       <div className={kind !== "venue" ? "mt-4 grid gap-3" : "mt-4 grid gap-3 lg:grid-cols-[1fr_15rem]"}>
         {heroUrl ? (
           <div className="overflow-hidden rounded-2xl border border-fuchsia-300/25 bg-black/30">
-            <ImagePlacementEditor src={heroUrl} alt={heroAlt || `Selected ${kind} hero`} label="Hero" value={heroPlacement} position={heroPosition} onChange={onHeroPlacementChange} />
+            <ImagePlacementEditor
+              src={heroUrl}
+              alt={heroAlt || `Selected ${kind} hero`}
+              label="Hero"
+              value={heroPlacement}
+              position={heroPosition}
+              onChange={onHeroPlacementChange}
+              desktopAspectRatio={heroPreview==="venue-base"?"3.52 / 1":undefined}
+              mobileAspectRatio={heroPreview==="venue-base"?"16 / 10":undefined}
+              desktopLabel={heroPreview==="venue-base"?"Live desktop":"Desktop"}
+              mobileLabel={heroPreview==="venue-base"?"Live mobile":"Mobile"}
+            />
             <button type="button" onClick={() => onHeroChange("")} className="m-3 rounded-xl border border-rose-300/20 px-3 py-2 text-xs font-black text-rose-200">Clear hero</button>
           </div>
         ) : <div className="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-white/10 bg-black/15 text-sm text-slate-600">No hero selected</div>}

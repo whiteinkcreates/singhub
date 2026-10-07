@@ -44,7 +44,7 @@ jobs:
         run: npm run lint
 
       - name: Prepare isolated media browser fixture
-        if: startsWith(github.head_ref, 'feat/media-')
+        if: (startsWith(github.head_ref, 'feat/media-') || startsWith(github.head_ref, 'fix/venue-hero-'))
         run: node tests/image-placement-browser.mjs --prepare
 
       - name: Prepare isolated star-share browser fixture
@@ -82,11 +82,11 @@ jobs:
           include-hidden-files: true
 
       - name: Install browser for media placement QA
-        if: startsWith(github.head_ref, 'feat/media-')
+        if: (startsWith(github.head_ref, 'feat/media-') || startsWith(github.head_ref, 'fix/venue-hero-'))
         run: npx playwright install --with-deps chromium
 
       - name: Verify media placement on desktop and mobile
-        if: startsWith(github.head_ref, 'feat/media-')
+        if: (startsWith(github.head_ref, 'feat/media-') || startsWith(github.head_ref, 'fix/venue-hero-'))
         run: |
           npm run start -- --port 3100 > /tmp/media-qa-server.log 2>&1 &
           server_pid=$!
@@ -98,7 +98,7 @@ jobs:
           node tests/image-placement-browser.mjs
 
       - name: Save media placement QA evidence
-        if: always() && startsWith(github.head_ref, 'feat/media-')
+        if: always() && (startsWith(github.head_ref, 'feat/media-') || startsWith(github.head_ref, 'fix/venue-hero-'))
         uses: actions/upload-artifact@v4
         with:
           name: media-placement-qa

@@ -287,3 +287,35 @@
 .v2-basic :is(h1,h2) { font-family:"Barlow Condensed",sans-serif; }
 .v2-basic .venue-hero { width:100%; height:220px; margin-bottom:20px; overflow:hidden; border-radius:12px; }
 .v2-basic .venue-hero-photo { display:block; width:100%; height:100%; object-fit:cover; }
+
+.v2-basic .primary-action.singhere-brand-action {
+  position:relative;
+  display:grid;
+  place-items:center;
+  min-height:64px;
+  padding:9px 18px;
+  overflow:hidden;
+  border:1px solid #46505f;
+  background:linear-gradient(145deg,#181d26 0,#0b0e14 62%,#121821 100%);
+  box-shadow:inset 0 1px rgba(255,255,255,.12),inset 0 -1px rgba(0,0,0,.82),0 12px 28px rgba(0,0,0,.28);
+}
+.v2-basic .primary-action.singhere-brand-action:before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at 22% 50%,rgba(255,25,168,.09),transparent 38%),radial-gradient(circle at 78% 50%,rgba(0,200,255,.09),transparent 38%);
+  pointer-events:none;
+}
+.v2-basic .primary-action.singhere-brand-action .singhere-wordmark {
+  position:relative;
+  z-index:1;
+  display:block;
+  width:min(100%,220px);
+  max-height:48px;
+  object-fit:contain;
+  filter:drop-shadow(0 4px 9px rgba(0,0,0,.55));
+}
+.v2-basic .primary-action.singhere-brand-action:hover {
+  border-color:#667386;
+  background:linear-gradient(145deg,#1d2430 0,#0d1118 62%,#151d27 100%);
+}
