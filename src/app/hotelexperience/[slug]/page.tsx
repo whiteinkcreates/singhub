@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `Local Karaoke Guide | ${hotel.name}`,
-    description: `A hotel-curated karaoke guide for guests of ${hotel.name}, powered by SingHUB.`,
+    description: `A SingHUB karaoke guide for guests of ${hotel.name}.`,
     robots: {
       index: false,
       follow: true,
@@ -28,5 +28,5 @@ export default async function HotelExperiencePage({ params,searchParams }: Props
   await connection();
   const { slug } = await params;
   const query=await searchParams;
-  return <HotelExperiencePageContent slug={slug} edition={query.edition==="guest"?"guest":"concierge"} />;
+  return <HotelExperiencePageContent slug={slug} edition={query.edition==="concierge"?"concierge":"guest"} />;
 }

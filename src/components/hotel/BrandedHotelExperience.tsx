@@ -127,6 +127,7 @@ function QuickAction({
   accentColor,
   textColor,
   mutedTextColor,
+  dark = false,
 }: {
   active: boolean;
   title: string;
@@ -137,6 +138,7 @@ function QuickAction({
   accentColor: string;
   textColor: string;
   mutedTextColor: string;
+  dark?: boolean;
 }) {
   return (
     <button
@@ -145,10 +147,10 @@ function QuickAction({
       onClick={onClick}
       className="group relative overflow-hidden rounded-[1.35rem] border p-4 text-left transition duration-200 hover:-translate-y-0.5 hover:shadow-lg"
       style={{
-        borderColor: active ? `${primaryColor}66` : "#E2E8F0",
+        borderColor: active ? `${primaryColor}66` : dark ? "rgba(255,255,255,.12)" : "#E2E8F0",
         background: active
           ? `linear-gradient(135deg, ${primaryColor}14, ${accentColor}12)`
-          : "rgba(255,255,255,.9)",
+          : dark ? "rgba(255,255,255,.045)" : "rgba(255,255,255,.9)",
         boxShadow: active ? `0 10px 28px ${primaryColor}16` : undefined,
       }}
     >
@@ -189,6 +191,7 @@ function EditorialCard({
   surfaceColor,
   textColor,
   mutedTextColor,
+  dark = false,
 }: {
   venue: HotelGuideVenue;
   experienceSlug: string;
@@ -197,14 +200,15 @@ function EditorialCard({
   surfaceColor: string;
   textColor: string;
   mutedTextColor: string;
+  dark?: boolean;
 }) {
   const [imageVisible, setImageVisible] = useState(Boolean(venue.imageUrl));
   return (
     <Link
       href={`/venues/${venue.slug}?source=${encodeURIComponent(experienceSlug)}`}
       onClick={() => trackEvent("hotel_experience_editorial_click", { hotel_experience: experienceSlug, venue_slug: venue.slug })}
-      className="group overflow-hidden rounded-[1.6rem] border border-slate-200/90 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
-      style={{ backgroundColor: surfaceColor }}
+      className="group overflow-hidden rounded-[1.6rem] border shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+      style={{ backgroundColor: surfaceColor, borderColor: dark ? "rgba(255,255,255,.10)" : "#E2E8F0" }}
     >
       {venue.imageUrl && imageVisible ? (
         <div className="relative h-36 overflow-hidden">
@@ -237,6 +241,7 @@ function VenueCard({
   surfaceColor,
   textColor,
   mutedTextColor,
+  dark = false,
 }: {
   venue: HotelGuideVenue;
   onPlan: () => void;
@@ -248,13 +253,14 @@ function VenueCard({
   surfaceColor: string;
   textColor: string;
   mutedTextColor: string;
+  dark?: boolean;
 }) {
   const [imageVisible, setImageVisible] = useState(Boolean(venue.imageUrl));
   const schedule = mode === "tonight" ? venue.tonightSchedule : venue.weekSchedule.slice(0, 2).join(" • ");
   const href = `/venues/${venue.slug}?source=${encodeURIComponent(experienceSlug)}`;
 
   return (
-    <article className="overflow-hidden rounded-[1.45rem] border border-slate-200/90 shadow-sm" style={{backgroundColor:surfaceColor}}>
+    <article className="overflow-hidden rounded-[1.45rem] border shadow-sm" style={{backgroundColor:surfaceColor,borderColor:dark?"rgba(255,255,255,.10)":"#E2E8F0"}}>
     <Link
       href={href}
       onClick={() =>
@@ -265,8 +271,8 @@ function VenueCard({
           mode,
         })
       }
-      className="group block overflow-hidden rounded-[1.45rem] border border-slate-200/90 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
-      style={{ backgroundColor: surfaceColor }}
+      className="group block overflow-hidden rounded-[1.45rem] border shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
+      style={{ backgroundColor: surfaceColor, borderColor: dark ? "rgba(255,255,255,.10)" : "#E2E8F0" }}
     >
       <div className="flex gap-3 p-3">
         {venue.imageUrl && imageVisible ? (
@@ -300,7 +306,7 @@ function VenueCard({
       </div>
 
       {venue.singersSay ? (
-        <div className="border-t border-slate-100 px-3 py-2.5">
+        <div className="border-t px-3 py-2.5" style={{borderColor:dark?"rgba(255,255,255,.08)":"#F1F5F9"}}>
           <p className="text-[9px] font-black uppercase tracking-[0.12em]" style={{ color: accentColor }}>Singers Say</p>
           <p className="mt-1 line-clamp-2 text-[11px] leading-4" style={{ color: mutedTextColor }}>{venue.singersSay}</p>
           {venue.singersSaySource ? <p className="mt-1 text-[9px] font-semibold" style={{ color: mutedTextColor }}>{venue.singersSaySource}{venue.singersSayUpdatedAt ? ` · ${venue.singersSayUpdatedAt}` : ""}</p> : null}
@@ -330,6 +336,7 @@ function TierSection({
   surfaceColor,
   textColor,
   mutedTextColor,
+  dark = false,
 }: {
   tier: keyof typeof tierMeta;
   venues: HotelGuideVenue[];
@@ -342,6 +349,7 @@ function TierSection({
   surfaceColor: string;
   textColor: string;
   mutedTextColor: string;
+  dark?: boolean;
 }) {
   if (venues.length === 0) return null;
   const meta = tierMeta[tier];
@@ -372,6 +380,7 @@ function TierSection({
             surfaceColor={surfaceColor}
             textColor={textColor}
             mutedTextColor={mutedTextColor}
+            dark={dark}
           />
         ))}
       </div>
@@ -380,7 +389,7 @@ function TierSection({
 }
 
 export function BrandedHotelExperience({
-  edition="concierge",
+  edition="guest",
   hotelSlug,
   experienceSlug,
   hotelName,
@@ -406,6 +415,9 @@ export function BrandedHotelExperience({
   tonightVenues,
   weekVenues,
 }: Props) {
+  const guestEdition = edition === "guest";
+  const panelBorder = guestEdition ? "rgba(255,255,255,.10)" : "#E2E8F0";
+  const softSurface = guestEdition ? "rgba(255,255,255,.045)" : "#F8FAFC";
   const {openPlan,savedPlans,overlay:planOverlay}=useHotelGuestPlan({hotelSlug,hotelName,hotelShortName,returnPath:"/hotelexperience/"+experienceSlug+(edition==="guest"?"?edition=guest":""),tonightVenues,weekVenues});
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
   const [focus, setFocus] = useState<FocusMode>("all");
@@ -457,10 +469,10 @@ export function BrandedHotelExperience({
 
   return (
     <main className="min-h-screen" data-hotel-edition={edition} data-hotel-slug={hotelSlug} data-hotel-experience={experienceSlug} style={{ backgroundColor: pageBackground, color: textColor, fontFamily: bodyFontFamily }}>
-      <div className="relative isolate mx-auto min-h-screen max-w-4xl overflow-hidden bg-white shadow-[0_24px_80px_rgba(15,23,42,.12)]">
+      <div className="relative isolate mx-auto min-h-screen max-w-4xl overflow-hidden shadow-[0_24px_80px_rgba(15,23,42,.12)]" style={{backgroundColor:pageBackground}}>
         <KaraokeMicBackdrop color={primaryColor} />
 
-        <header className="relative z-10 flex items-center justify-between gap-4 bg-white/[0.96] px-5 py-4 backdrop-blur-sm sm:px-8">
+        <header className="relative z-10 flex items-center justify-between gap-4 px-5 py-4 backdrop-blur-sm sm:px-8" style={{backgroundColor:guestEdition?"rgba(5,7,11,.94)":"rgba(255,255,255,.96)",borderBottom:`1px solid ${panelBorder}`}}>
           {edition==="guest"?<Link href="/" aria-label="SingHUB home"><img src={SITE_WORDMARK_SRC} alt="SingHUB" className="h-12 w-auto max-w-[220px] object-contain" /></Link>:hotelSiteUrl ? (
             <a href={hotelSiteUrl} target="_blank" rel="noreferrer" className="flex min-h-14 items-center" aria-label={`Visit ${hotelName} website`}>
               {logoVisible && brandLogoUrl ? (
@@ -503,7 +515,7 @@ export function BrandedHotelExperience({
           </div>
         ) : null}
 
-        <section className="relative z-10 bg-white/[0.84] px-5 pb-4 pt-7 sm:px-8 sm:pt-9">
+        <section className="relative z-10 px-5 pb-4 pt-7 sm:px-8 sm:pt-9" style={{backgroundColor:guestEdition?"rgba(7,16,25,.92)":"rgba(255,255,255,.84)"}}>
           <p className="text-xs font-black uppercase tracking-[0.24em]" style={{ color: primaryColor }}>{eyebrow}</p>
           <h1 className="mt-2 max-w-2xl text-4xl font-black leading-[0.98] tracking-[-0.035em] sm:text-5xl" style={{ color: textColor, fontFamily: headingFontFamily }}>
             {headline}
@@ -511,18 +523,18 @@ export function BrandedHotelExperience({
           <p className="mt-3 max-w-2xl text-base leading-7" style={{ color: mutedTextColor }}>{intro}</p>
 
           <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <QuickAction active={focus === "all" && mode === "tonight"} title="Sing Tonight" helper="What is on right now" icon="mic" onClick={() => { setExperienceMode("tonight"); chooseFocus("all"); }} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} />
-            <QuickAction active={focus === "food"} title="Karaoke + Food" helper="Dinner and a mic" icon="food" onClick={() => chooseFocus("food")} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} />
-            <QuickAction active={focus === "vibe"} title="Match My Vibe" helper="Find your kind of room" icon="spark" onClick={() => chooseFocus("vibe")} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} />
-            <QuickAction active={focus === "near"} title="Near Me" helper="Walkable or quick ride" icon="pin" onClick={() => chooseFocus("near")} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+            <QuickAction active={focus === "all" && mode === "tonight"} title="Sing Tonight" helper="What is on right now" icon="mic" onClick={() => { setExperienceMode("tonight"); chooseFocus("all"); }} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} dark={guestEdition} />
+            <QuickAction active={focus === "food"} title="Karaoke + Food" helper="Dinner and a mic" icon="food" onClick={() => chooseFocus("food")} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} dark={guestEdition} />
+            <QuickAction active={focus === "vibe"} title="Match My Vibe" helper="Find your kind of room" icon="spark" onClick={() => chooseFocus("vibe")} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} dark={guestEdition} />
+            <QuickAction active={focus === "near"} title="Near Me" helper="Walkable or quick ride" icon="pin" onClick={() => chooseFocus("near")} primaryColor={primaryColor} accentColor={accentColor} textColor={textColor} mutedTextColor={mutedTextColor} dark={guestEdition} />
           </div>
 
           {focus === "vibe" ? (
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50/90 p-4">
+            <div className="mt-4 rounded-2xl border p-4" style={{borderColor:panelBorder,backgroundColor:softSurface}}>
               <p className="text-[10px] font-black uppercase tracking-[0.16em]" style={{ color: primaryColor }}>Pick your vibe</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {vibeChoices.length > 0 ? vibeChoices.map((vibe) => (
-                  <button key={vibe} type="button" aria-pressed={selectedVibe === vibe} onClick={() => { setSelectedVibe(vibe); trackEvent("hotel_experience_vibe_select", { hotel_experience: experienceSlug, vibe }); }} className="rounded-full border px-3 py-2 text-xs font-black transition hover:-translate-y-0.5" style={{ borderColor: selectedVibe === vibe ? `${primaryColor}77` : "#CBD5E1", backgroundColor: selectedVibe === vibe ? `${primaryColor}12` : "#FFFFFF", color: selectedVibe === vibe ? primaryColor : mutedTextColor }}>
+                  <button key={vibe} type="button" aria-pressed={selectedVibe === vibe} onClick={() => { setSelectedVibe(vibe); trackEvent("hotel_experience_vibe_select", { hotel_experience: experienceSlug, vibe }); }} className="rounded-full border px-3 py-2 text-xs font-black transition hover:-translate-y-0.5" style={{ borderColor: selectedVibe === vibe ? `${primaryColor}77` : panelBorder, backgroundColor: selectedVibe === vibe ? `${primaryColor}12` : guestEdition ? "rgba(255,255,255,.04)" : "#FFFFFF", color: selectedVibe === vibe ? primaryColor : mutedTextColor }}>
                     {vibe}
                   </button>
                 )) : <p className="text-sm" style={{ color: mutedTextColor }}>Vibe notes are being added for nearby venues.</p>}
@@ -530,14 +542,14 @@ export function BrandedHotelExperience({
             </div>
           ) : null}
 
-          <div className="mt-5 grid grid-cols-2 rounded-2xl border border-slate-200 bg-slate-100 p-1">
+          <div className="mt-5 grid grid-cols-2 rounded-2xl border p-1" style={{borderColor:panelBorder,backgroundColor:softSurface}}>
             <button type="button" aria-pressed={mode === "tonight"} onClick={() => setExperienceMode("tonight")} className="rounded-xl px-4 py-3 text-sm font-black transition" style={mode === "tonight" ? { backgroundColor: primaryColor, color: "#FFFFFF" } : { color: mutedTextColor }}>Tonight</button>
             <button type="button" aria-pressed={mode === "week"} onClick={() => setExperienceMode("week")} className="rounded-xl px-4 py-3 text-sm font-black transition" style={mode === "week" ? { backgroundColor: primaryColor, color: "#FFFFFF" } : { color: mutedTextColor }}>This Week</button>
           </div>
         </section>
 
         {mode === "tonight" && focus === "all" && shortlist.length > 0 ? (
-          <section className="relative z-10 border-y border-slate-100 bg-[linear-gradient(180deg,#fff,#f8fafc)] px-5 py-7 sm:px-8">
+          <section className="relative z-10 border-y px-5 py-7 sm:px-8" style={{borderColor:panelBorder,background:guestEdition?"linear-gradient(180deg,#071019,#0B1118)":"linear-gradient(180deg,#fff,#f8fafc)"}}>
             <div className="mb-4 flex items-end justify-between gap-4">
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: accentColor }}>Tonight&apos;s Shortlist</p>
@@ -546,14 +558,14 @@ export function BrandedHotelExperience({
               <p className="hidden max-w-xs text-right text-xs sm:block" style={{ color: mutedTextColor }}>A quick local read before you head out.</p>
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
-              {shortlist.map((venue) => <EditorialCard key={venue.slug} venue={venue} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />)}
+              {shortlist.map((venue) => <EditorialCard key={venue.slug} venue={venue} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} dark={guestEdition} />)}
             </div>
           </section>
         ) : null}
 
         <div className="relative z-10 px-5 sm:px-8">
           {activeVenues.length === 0 ? (
-            <div className="my-8 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-6 text-center">
+            <div className="my-8 rounded-[1.5rem] border p-6 text-center" style={{borderColor:panelBorder,backgroundColor:softSurface}}>
               <p className="text-lg font-black" style={{ color: textColor }}>
                 {focus === "food" ? "No nearby karaoke + food matches are verified for this view yet." : focus === "vibe" && selectedVibe ? `No nearby venues are tagged ${selectedVibe} yet.` : `No verified karaoke is listed ${mode === "tonight" ? "tonight" : "this week"} close enough to recommend right now.`}
               </p>
@@ -561,9 +573,9 @@ export function BrandedHotelExperience({
             </div>
           ) : (
             <>
-              <TierSection openPlan={openPlan} savedPlans={savedPlans} tier="walkable" venues={grouped.walkable} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
-              <TierSection openPlan={openPlan} savedPlans={savedPlans} tier="quick" venues={grouped.quick} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
-              <TierSection openPlan={openPlan} savedPlans={savedPlans} tier="standout" venues={grouped.standout} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} />
+              <TierSection openPlan={openPlan} savedPlans={savedPlans} tier="walkable" venues={grouped.walkable} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} dark={guestEdition} />
+              <TierSection openPlan={openPlan} savedPlans={savedPlans} tier="quick" venues={grouped.quick} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} dark={guestEdition} />
+              <TierSection openPlan={openPlan} savedPlans={savedPlans} tier="standout" venues={grouped.standout} mode={mode} experienceSlug={experienceSlug} primaryColor={primaryColor} accentColor={accentColor} surfaceColor={surfaceColor} textColor={textColor} mutedTextColor={mutedTextColor} dark={guestEdition} />
             </>
           )}
         </div>
