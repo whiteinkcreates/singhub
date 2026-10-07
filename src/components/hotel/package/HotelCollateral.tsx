@@ -5,7 +5,7 @@ import type {HotelPackageEdition,HotelPackageFormat} from '@/lib/hotelPackage';
 import './hotelCollateral.css';
 import '../hotelStage.css';
 export function HotelCollateral({model,edition,format,qr,draft}:{model:HotelPackage;edition:HotelPackageEdition;format:HotelPackageFormat;qr:string;draft:boolean}){
- const {hotel,config}=model;const concierge=edition==='concierge'&&model.readiness.concierge;const conciergePending=edition==='concierge'&&!model.readiness.concierge;
+ const {hotel,config}=model;const brandApproved=Boolean(model.profile?.packageReview?.brandApproved);const concierge=edition==='concierge'&&brandApproved;const conciergePending=edition==='concierge'&&!brandApproved;
  const crop=hotel.heroPlacement?.desktop;
  const imageStyle={objectPosition:crop?`${crop.x}% ${crop.y}%`:hotel.heroPosition||'center',transform:crop?`scale(${crop.zoom})`:undefined};
  const brand=<div className="collateral-brand">{concierge&&config.brandLogoUrl?<img src={config.brandLogoUrl} alt={hotel.shortName} />:<img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" />}</div>;
