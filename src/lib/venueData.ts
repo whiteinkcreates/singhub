@@ -217,6 +217,7 @@ export async function getVenueListings(): Promise<VenueListing[]> {
         bannerImageAlt: getOptionalValue(enhancement.heroImageAlt) || venue.bannerImageAlt,
         bannerImagePosition: enhancement.heroPosition || venue.bannerImagePosition,
         bannerImagePlacement: enhancement.heroPlacement,
+        fallbackHeroEnabled: enhancement.fallbackHeroEnabled !== false,
         enhancementAmenities: enhancement.amenities?.filter(Boolean) || [],
       };
 
