@@ -14,6 +14,13 @@ const META: Record<Slot, { label: string; urlKey: keyof HotelMediaProfile; altKe
   standout: { label: "Local Standouts image", urlKey: "standoutImageUrl", altKey: "standoutImageAlt", placementKey: "standoutImagePlacement" },
 };
 
+async function fetchHotelMediaAssets(slug: string) {
+  const response = await fetch("/api/admin/hotel-media?slug=" + encodeURIComponent(slug), { cache: "no-store" });
+  const payload = await response.json();
+  if (!response.ok) throw new Error(payload.error || "Could not load hotel media.");
+  return (payload.assets || []) as VenueMediaAsset[];
+}
+
 export function HotelGuestGuideMediaPicker({ slug, profile, onChange }: Props) {
   const [assets, setAssets] = useState<VenueMediaAsset[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,7 +39,30 @@ export function HotelGuestGuideMediaPicker({ slug, profile, onChange }: Props) {
     finally { setLoading(false); }
   }
 
-  useEffect(() => { void load(); }, [slug]);
+  useEffect(() => {
+    if (!slug) return;
+
+    let cancelled = false;
+
+    void fetchHotelMediaAssets(slug)
+      .then((nextAssets) => {
+        if (cancelled) return;
+        setAssets(nextAssets);
+        setMessage(nextAssets.length ? nextAssets.length + " hotel images available." : "Upload hotel images above, then refresh this picker.");
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        setAssets([]);
+        setMessage(error instanceof Error ? error.message : "Could not load hotel media.");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
 
   const selected = useMemo(() => new Set([profile.walkableImageUrl, profile.quickRideImageUrl, profile.standoutImageUrl].filter(Boolean)), [profile]);
 
