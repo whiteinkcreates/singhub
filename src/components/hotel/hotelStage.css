@@ -1,2 +1,11 @@
 /* Decorative artwork stays subordinate to property branding in screen and print. */
 .hotel-stage-watermark{filter:grayscale(1);opacity:.14}
+
+/* Keep decorative artwork outside interactive content and allow each breakpoint its own cable. */
+.hotel-mic-banner{position:relative;height:104px;overflow:hidden;background:white;pointer-events:none}
+.hotel-mic-banner>img{position:absolute;width:420px;height:150px;object-fit:contain;left:calc(50% - 220px);top:-23px;filter:grayscale(1);opacity:.23}
+.hotel-mic-banner>svg{position:absolute;inset:0;width:100%;height:100%;stroke:#64748b;stroke-width:3;opacity:.2}
+.hotel-cabled-content{position:relative}
+.hotel-mic-cable{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;stroke:#64748b;stroke-width:3;opacity:.2;z-index:1}
+.hotel-cable-mobile{display:none}
+@media(max-width:639px){.hotel-mic-banner{height:76px}.hotel-mic-banner>img{width:285px;height:100px;left:calc(50% - 155px);top:-13px}.hotel-mic-banner>svg{display:none}.hotel-cable-desktop{display:none}.hotel-cable-mobile{display:block}.hotel-mic-cable{stroke-width:4}}
