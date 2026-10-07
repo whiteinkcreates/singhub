@@ -117,5 +117,5 @@ VERIFIED LIVE Oct 5:
 
 - In progress on `fix/hotel-artwork-polish`: scoped collateral stage photo to 45% grayscale, softened dark overlay, replaced oversized inline SVG with horizontal microphone cutout and responsive cable decoration. Build/lint and hotel package unit checks passed; preview acceptance pending.
 - Thumbnail screenshot located at preview `singhub-bnwrk4mee-whiteinkcreates-projects.vercel.app`, commit `197b8e6f5f880aa2b7bd83218811a140a88a2308`, branch `feature/hotel-guest-guide-v2`. This branch is not main and predates newer TourStops/Offers changes. Do not merge it wholesale.
-- Read-only database check found three distinct global image URLs and no Pacific Terrace media override. Source slot mapping is separate and correct; current preview visual verification remains pending. No global image selections changed.
+- Database and original preview confirmed the saved global Walkable/Standouts images were reversed. Swapped those two slots, kept Quick Ride unchanged, preserved optional crop semantics, and verified both corrected images loaded in the original preview. This template remains preview-only.
 - Correction: Sarah/La Mesa was an unverified old location note. Do not treat it as proof of a second Cheers venue. Resolve identity from direct/canonical evidence.

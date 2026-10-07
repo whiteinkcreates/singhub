@@ -78,7 +78,7 @@ function splitByTier(venues: HotelGuideVenue[]) {
 
 function KaraokeMicBackdrop() {
   return <div className="hotel-mic-banner" aria-hidden="true">
-    <img src="/images/hotel-package/horizontal-microphone.png" alt="" />
+    <img src="/images/hotel-package/horizontal-microphone.webp" alt="" />
     <svg viewBox="0 0 900 100" preserveAspectRatio="none" fill="none"><path d="M610 49 C670 49 735 78 850 94" /></svg>
   </div>;
 }
