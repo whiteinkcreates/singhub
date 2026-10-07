@@ -68,6 +68,10 @@ Any Work chat running SCOUT should record its mission in `scout_runs` and store 
 - Run lint/build or equivalent deployment checks before merging meaningful code changes.
 - Prefer additive migrations and backward-compatible UI changes.
 
+## Launch continuity
+
+Before continuing launch work, read `docs/LAUNCH_STATUS.md`. Update its status and evidence after relevant work. Keep source, merged, production-verified and user-reported tests distinct. This checklist is the shared handoff across chats; do not assume a prior chat's completion claim is a deployment check.
+
 ## Project references
 
 - `docs/SCOUT_OPERATING_SYSTEM.md` for SCOUT and expansion research
