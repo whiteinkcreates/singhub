@@ -2,13 +2,14 @@ import { NextResponse } from "next/server";
 import { listVenueMedia, uploadVenueMedia } from "@/lib/venueMediaCloudinary";
 
 import { getHotelGuide } from "@/lib/hotelGuides";
+import { GUEST_GUIDE_DEFAULTS_SLUG } from "@/lib/hotelProfiles";
 
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
   try {
     const slug = new URL(request.url).searchParams.get("slug") || "";
-    if (!getHotelGuide(slug)) {
+    if (!getHotelGuide(slug) && slug !== GUEST_GUIDE_DEFAULTS_SLUG) {
       return NextResponse.json({ error: "Choose a registered hotel." }, { status: 400 });
     }
 
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     const slug = String(form.get("slug") || "");
     const file = form.get("file");
 
-    if (!getHotelGuide(slug)) {
+    if (!getHotelGuide(slug) && slug !== GUEST_GUIDE_DEFAULTS_SLUG) {
       return NextResponse.json({ error: "Choose a registered hotel." }, { status: 400 });
     }
     if (!(file instanceof File)) {
