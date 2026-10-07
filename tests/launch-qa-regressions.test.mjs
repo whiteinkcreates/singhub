@@ -69,5 +69,5 @@ test('admin uses the same production app navigation as public SingHUB pages',()=
  assert.match(chrome,/if\(position==='header'\)return <AppNavigation \/>/);
  assert.doesNotMatch(chrome,/path\.startsWith\('\/admin'\).*SiteHeader/);
  const nav=readFileSync(new URL('../src/components/layout/AppNavigation.tsx',import.meta.url),'utf8');
- for(const label of ['Discover','Venues','Hosts','Hotels','SingBOARD','My SingHUB']) assert.match(nav,new RegExp(label.replace(/ /g,'\\\\s*')));
+ for(const label of ['Discover','Venues','Hosts','Hotels','SingBOARD','My SingHUB']) assert.ok(nav.includes(label),label+' missing from shared navigation');
 });
