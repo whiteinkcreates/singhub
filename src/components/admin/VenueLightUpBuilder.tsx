@@ -51,6 +51,7 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     menuUrl: "",
     singerSignupUrl: "",
     heroImageUrl: "",
+    fallbackHeroEnabled: true,
     heroImageAlt: "",
     heroPosition: "center",
     logoImageUrl: "",
@@ -175,6 +176,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [singerSignupUrl, setSingerSignupUrl] = useState(initialProfile.singerSignupUrl || "");
   const [menuUrl, setMenuUrl] = useState(initialProfile.menuUrl || "");
   const [heroImageUrl, setHeroImageUrl] = useState(initialProfile.heroImageUrl || "");
+  const [fallbackHeroEnabled, setFallbackHeroEnabled] = useState(initialProfile.fallbackHeroEnabled !== false);
   const [heroImageAlt, setHeroImageAlt] = useState(initialProfile.heroImageAlt || "");
   const [heroPosition, setHeroPosition] = useState<HeroPosition>(initialProfile.heroPosition || "center");
   const [heroPlacement,setHeroPlacement]=useState<ResponsiveImagePlacement|undefined>(initialProfile.heroPlacement);
@@ -216,6 +218,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setMenuUrl(profile.menuUrl || "");
     setSingerSignupUrl(profile.singerSignupUrl || "");
     setHeroImageUrl(profile.heroImageUrl || "");
+    setFallbackHeroEnabled(profile.fallbackHeroEnabled !== false);
     setHeroImageAlt(profile.heroImageAlt || "");
     setHeroPosition(profile.heroPosition || "center");
     setHeroPlacement(profile.heroPlacement);
@@ -272,6 +275,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     menuUrl: menuUrl.trim() || undefined,
     singerSignupUrl: singerSignupUrl.trim() || undefined,
     heroImageUrl: heroImageUrl.trim() || undefined,
+    fallbackHeroEnabled,
     heroImageAlt: heroImageAlt.trim() || undefined,
     heroPosition,heroPlacement,logoPlacement,
     logoImageUrl: logoImageUrl.trim() || undefined,
@@ -300,7 +304,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       terms: singhubOffer.terms?.trim() || undefined,
       days: singhubOffer.days?.length ? singhubOffer.days : undefined,
     },
-  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
+  }), [about, amenities, dailyDeals, enabled, fallbackHeroEnabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const completionChecks = useMemo(() => [
     { label: "Hero + alt text", done: Boolean(heroImageUrl.trim() && heroImageAlt.trim()) },
@@ -427,6 +431,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             </section>
 
             <VenueMediaLibrary slug={slug} heroUrl={heroImageUrl} heroAlt={heroImageAlt} heroPosition={heroPosition} heroPlacement={heroPlacement} logoPlacement={logoPlacement} onHeroPlacementChange={setHeroPlacement} onLogoPlacementChange={setLogoPlacement} logoUrl={logoImageUrl} logoAlt={logoImageAlt} gallery={gallery} onHeroChange={setHeroImageUrl} onHeroPositionChange={setHeroPosition} onLogoChange={setLogoImageUrl} onGalleryChange={setGallery} />
+            <section className="md:col-span-2 rounded-2xl border border-white/10 bg-black/15 p-4"><div className="flex flex-wrap items-center justify-between gap-4"><div><p className={labelClass}>Default hero fallback</p><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">If this venue does not have a real hero photo, SingHUB can either use the generic fallback image or show a branded no-photo treatment. Turn this off for venues that do not want generated/default imagery representing them.</p></div><button type="button" onClick={()=>setFallbackHeroEnabled(current=>!current)} aria-pressed={fallbackHeroEnabled} className={`relative h-8 w-14 shrink-0 rounded-full transition ${fallbackHeroEnabled ? "bg-cyan-300" : "bg-slate-700"}`}><span className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${fallbackHeroEnabled ? "left-7" : "left-1"}`} /></button></div><p className="mt-3 text-xs font-bold text-slate-500">{fallbackHeroEnabled ? "ON · use generic SingHUB fallback when no venue photo exists" : "OFF · never substitute a generic/generated hero for this venue"}</p></section>
             <label className={labelClass}>Hero image alt text<input className={fieldClass} value={heroImageAlt} onChange={(event) => setHeroImageAlt(event.target.value)} placeholder="Describe the hero photo" /></label>
             <label className={labelClass}>Logo / mark alt text<input className={fieldClass} value={logoImageAlt} onChange={(event) => setLogoImageAlt(event.target.value)} placeholder="Venue logo or mark" /></label>
 

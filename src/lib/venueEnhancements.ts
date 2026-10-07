@@ -39,6 +39,8 @@ export type VenueEnhancement = {
   menuUrl?: string;
   singerSignupUrl?: string;
   heroImageUrl?: string;
+  /** When false, never substitute the generic SingHUB hero if this venue has no real hero/banner image. */
+  fallbackHeroEnabled?: boolean;
   heroImageAlt?: string;
   heroPosition?: HeroPosition;
   heroPlacement?: ResponsiveImagePlacement;
