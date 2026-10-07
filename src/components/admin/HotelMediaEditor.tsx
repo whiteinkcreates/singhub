@@ -3,77 +3,28 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { VenueMediaLibrary } from "@/components/admin/VenueMediaLibrary";
+import { HotelGuestGuideMediaPicker } from "@/components/admin/HotelGuestGuideMediaPicker";
 import type { HotelGuide } from "@/lib/hotelGuides";
 import type { HotelMediaProfile } from "@/lib/hotelProfiles";
-
-function defaults(hotel: HotelGuide): HotelMediaProfile {
-  return { heroImageUrl: hotel.heroImageUrl || "", heroAlt: hotel.name + " exterior", imageSource: "", usageRights: "" };
-}
-export function HotelMediaEditor({ hotels }: { hotels: HotelGuide[] }) {
-  const [slug, setSlug] = useState(hotels[0].slug);
-  const hotel = hotels.find(item => item.slug === slug)!;
-  const [profile, setProfile] = useState(() => defaults(hotels[0]));
-  const [loading, setLoading] = useState(true);
-  const [loadFailed, setLoadFailed] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [dirty, setDirty] = useState(false);
-  const [message, setMessage] = useState("");
-  const previews = useRef<Array<HTMLIFrameElement | null>>([]);
-  const sendPreview = () => previews.current.forEach(frame => frame?.contentWindow?.postMessage({type:"singhub:hotel-hero-preview",slug,profile}, location.origin));
-  useEffect(() => {
-    sendPreview();
-    const ready = (event: MessageEvent) => {if(event.origin===location.origin && event.data?.type==="singhub:hotel-preview-ready" && event.data.slug===slug)sendPreview();};
-    window.addEventListener("message",ready);return () => window.removeEventListener("message",ready);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profile, slug]);
-  useEffect(() => {
-    const controller = new AbortController();
-    fetch(`/api/admin/hotel-profiles?slug=${encodeURIComponent(slug)}`, { cache: "no-store", signal: controller.signal })
-      .then(async response => {
-        const payload = await response.json();
-        if (!response.ok) throw new Error(payload.error || "Could not load hotel media.");
-        if (controller.signal.aborted) return;
-        setLoadFailed(false);
-        setProfile(payload.profile || defaults(hotel));
-        setDirty(false);
-        setMessage("Choose or upload a hotel photo, then save.");
-      }).catch(error => { if (!controller.signal.aborted) { setLoadFailed(true); setMessage(error.message); } })
-      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
-    return () => controller.abort();
-  }, [slug, hotel]);
-  function edit(patch: Partial<HotelMediaProfile>) { setProfile(current => ({ ...current, ...patch })); setDirty(true); }
-  async function save() {
-    setSaving(true); setMessage("Saving hotel media…");
-    try {
-      const response = await fetch("/api/admin/hotel-profiles", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug, profile }) });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || "Hotel media was not saved.");
-      setProfile(payload.profile); setDirty(false); setMessage("Saved. The hotel guide now uses these media settings.");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Hotel media was not saved."); }
-    finally { setSaving(false); }
-  }
-  const field = "mt-2 block w-full rounded-xl border border-white/15 bg-slate-950 p-3 text-white";
-  return <main className="mx-auto max-w-6xl px-4 py-10 text-white">
-    <Link href="/admin" className="text-sm text-cyan-300">← Admin tools</Link>
-    <h1 className="mt-4 text-4xl font-black">Hotel media</h1>
-    <p className="mt-3 text-slate-400">Upload or choose a hero, check its crop, and save it to the shared hotel guide.</p>
-    <label className="mt-6 block font-bold">Hotel<select aria-label="Hotel" value={slug} disabled={saving} className={field} onChange={event => {
-      if (dirty && !window.confirm("Discard unsaved hotel media changes?")) return;
-      const next = hotels.find(item => item.slug === event.target.value)!;
-      setLoading(true); setLoadFailed(false); setDirty(false); setProfile(defaults(next)); setMessage(""); setSlug(next.slug);
-    }}>{hotels.map(item => <option key={item.slug} value={item.slug}>{item.name}</option>)}</select></label>
-    <p className="mt-4"><Link href={`/admin/hotels/${slug}/package`} className="mr-4 text-cyan-200 underline">Build hotel package ↗</Link><Link href={`/admin/hotels/${slug}/demo`} target="_blank" className="text-cyan-200 underline">Open internal hotel demo ↗</Link><span className="ml-3 text-sm text-slate-400">Research photos are examples with permission pending; this does not publish them.</span></p>
-    <fieldset disabled={loading || saving || loadFailed} className="mt-6 space-y-5 disabled:opacity-60">
-      <VenueMediaLibrary key={slug} kind="hotel" slug={slug} heroUrl={profile.heroImageUrl} heroAlt={profile.heroAlt} heroPosition={profile.heroPosition || "center"} heroPlacement={profile.heroPlacement} onHeroPlacementChange={value=>edit({heroPlacement:value})} onLogoPlacementChange={()=>{}} logoUrl="" logoAlt="" gallery={[]} onHeroChange={url => edit({ heroImageUrl: url })} onHeroPositionChange={position => edit({ heroPosition: position })} onLogoChange={() => {}} onGalleryChange={() => {}} />
-      <div className="grid gap-5 md:grid-cols-2">
-        <label>Image description<input className={field} value={profile.heroAlt} onChange={event => edit({ heroAlt: event.target.value })} maxLength={300} /></label>
-        <label>Image source<input className={field} value={profile.imageSource} onChange={event => edit({ imageSource: event.target.value })} placeholder="Hotel contact, photographer or source URL" maxLength={2048} /></label>
-        <label className="md:col-span-2">Usage permission / license notes<textarea className={field} value={profile.usageRights} onChange={event => edit({ usageRights: event.target.value })} placeholder="Record permission or license details for this image." maxLength={2000} /></label>
-      </div>
-      <details className="rounded-xl border border-white/10 p-4"><summary>External image URL</summary><input aria-label="External hero image URL" className={field} value={profile.heroImageUrl} onChange={event => edit({ heroImageUrl: event.target.value })} /></details>
-      {profile.heroImageUrl && <section><h2 className="text-xl font-black">Desktop and mobile crops</h2><p className="mt-2 text-sm text-slate-400">The actual shared hotel hero, at desktop and mobile viewport sizes. Changes here are a draft until saved.</p><div className="mt-4 grid items-start gap-4 lg:grid-cols-[1fr_260px]">{[{ name:"Desktop", width:1440, height:900 },{ name:"Mobile", width:390, height:844 }].map((preview,index) => <div key={preview.name}><p className="mb-2 text-sm">{preview.name}</p><div className="relative overflow-hidden rounded-2xl bg-black" style={{aspectRatio:`${preview.width} / ${preview.height}`,containerType:"inline-size"}}><iframe ref={frame => {previews.current[index]=frame;}} onLoad={sendPreview} title={`${preview.name} hotel hero preview`} src={`/admin/hotels/preview?slug=${encodeURIComponent(slug)}`} tabIndex={-1} className="absolute left-0 top-0 border-0" style={{width:preview.width,height:preview.height,transform:`scale(calc(100cqw / ${preview.width}px))`,transformOrigin:"top left",pointerEvents:"none"}} /></div></div>)}</div></section>}
-      <div className="flex flex-wrap items-center gap-4"><button type="button" disabled={!dirty || saving || loading} onClick={() => void save()} className="rounded-xl bg-cyan-300 px-5 py-3 font-black text-slate-950 disabled:opacity-40">{saving ? "Saving…" : "Save hotel media"}</button><Link href={`/hotel/${slug}`} target="_blank" className="text-cyan-200 underline">Open hotel guide ↗</Link></div>
+function defaults(hotel:HotelGuide):HotelMediaProfile{return {heroImageUrl:hotel.heroImageUrl||"",heroAlt:hotel.name+" exterior",imageSource:"",usageRights:"",walkableImageUrl:"",walkableImageAlt:"",quickRideImageUrl:"",quickRideImageAlt:"",standoutImageUrl:"",standoutImageAlt:""};}
+export function HotelMediaEditor({hotels}:{hotels:HotelGuide[]}){
+  const [slug,setSlug]=useState(hotels[0].slug);const hotel=hotels.find(item=>item.slug===slug)!;const [profile,setProfile]=useState(()=>defaults(hotels[0]));const [loading,setLoading]=useState(true);const [loadFailed,setLoadFailed]=useState(false);const [saving,setSaving]=useState(false);const [dirty,setDirty]=useState(false);const [message,setMessage]=useState("");const previews=useRef<Array<HTMLIFrameElement|null>>([]);
+  const sendPreview=()=>previews.current.forEach(frame=>frame?.contentWindow?.postMessage({type:"singhub:hotel-hero-preview",slug,profile},location.origin));
+  useEffect(()=>{sendPreview();const ready=(event:MessageEvent)=>{if(event.origin===location.origin&&event.data?.type==="singhub:hotel-preview-ready"&&event.data.slug===slug)sendPreview();};window.addEventListener("message",ready);return()=>window.removeEventListener("message",ready);},[profile,slug]);
+  useEffect(()=>{const controller=new AbortController();fetch(`/api/admin/hotel-profiles?slug=${encodeURIComponent(slug)}`,{cache:"no-store",signal:controller.signal}).then(async response=>{const payload=await response.json();if(!response.ok)throw new Error(payload.error||"Could not load hotel media.");if(controller.signal.aborted)return;setLoadFailed(false);setProfile({...defaults(hotel),...(payload.profile||{})});setDirty(false);setMessage("Choose or upload hotel media, then save.");}).catch(error=>{if(!controller.signal.aborted){setLoadFailed(true);setMessage(error.message);}}).finally(()=>{if(!controller.signal.aborted)setLoading(false);});return()=>controller.abort();},[slug,hotel]);
+  function edit(patch:Partial<HotelMediaProfile>){setProfile(current=>({...current,...patch}));setDirty(true);}
+  async function save(){setSaving(true);setMessage("Saving hotel media…");try{const response=await fetch("/api/admin/hotel-profiles",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({slug,profile})});const payload=await response.json();if(!response.ok)throw new Error(payload.error||"Hotel media was not saved.");setProfile(payload.profile);setDirty(false);setMessage("Saved. The Guest Guide now uses these media settings.");}catch(error){setMessage(error instanceof Error?error.message:"Hotel media was not saved.");}finally{setSaving(false);}}
+  const field="mt-2 block w-full rounded-xl border border-white/15 bg-slate-950 p-3 text-white";
+  return <main className="mx-auto max-w-6xl px-4 py-10 text-white"><Link href="/admin" className="text-sm text-cyan-300">← Admin tools</Link><h1 className="mt-4 text-4xl font-black">Hotel media</h1><p className="mt-3 text-slate-400">Set the property hero and the three lifestyle images used by the SingHUB Guest Guide.</p>
+    <label className="mt-6 block font-bold">Hotel<select aria-label="Hotel" value={slug} disabled={saving} className={field} onChange={event=>{if(dirty&&!window.confirm("Discard unsaved hotel media changes?"))return;const next=hotels.find(item=>item.slug===event.target.value)!;setLoading(true);setLoadFailed(false);setDirty(false);setProfile(defaults(next));setMessage("");setSlug(next.slug);}}>{hotels.map(item=><option key={item.slug} value={item.slug}>{item.name}</option>)}</select></label>
+    <p className="mt-4"><Link href={`/admin/hotels/${slug}/package`} className="mr-4 text-cyan-200 underline">Build hotel package ↗</Link><Link href={`/hotelexperience/${slug}?edition=guest`} target="_blank" className="text-cyan-200 underline">Open Guest Guide ↗</Link></p>
+    <fieldset disabled={loading||saving||loadFailed} className="mt-6 space-y-5 disabled:opacity-60">
+      <VenueMediaLibrary key={slug} kind="hotel" slug={slug} heroUrl={profile.heroImageUrl} heroAlt={profile.heroAlt} heroPosition={profile.heroPosition||"center"} heroPlacement={profile.heroPlacement} onHeroPlacementChange={value=>edit({heroPlacement:value})} onLogoPlacementChange={()=>{}} logoUrl="" logoAlt="" gallery={[]} onHeroChange={url=>edit({heroImageUrl:url})} onHeroPositionChange={position=>edit({heroPosition:position})} onLogoChange={()=>{}} onGalleryChange={()=>{}}/>
+      <HotelGuestGuideMediaPicker slug={slug} profile={profile} onChange={edit}/>
+      <div className="grid gap-5 md:grid-cols-2"><label>Hero image description<input className={field} value={profile.heroAlt} onChange={event=>edit({heroAlt:event.target.value})} maxLength={300}/></label><label>Image source<input className={field} value={profile.imageSource} onChange={event=>edit({imageSource:event.target.value})} placeholder="Hotel contact, photographer or source URL" maxLength={2048}/></label><label className="md:col-span-2">Usage permission / license notes<textarea className={field} value={profile.usageRights} onChange={event=>edit({usageRights:event.target.value})} placeholder="Record permission or license details for these images." maxLength={2000}/></label></div>
+      {profile.heroImageUrl&&<section><h2 className="text-xl font-black">Hero desktop and mobile crops</h2><div className="mt-4 grid items-start gap-4 lg:grid-cols-[1fr_260px]">{[{name:"Desktop",width:1440,height:900},{name:"Mobile",width:390,height:844}].map((preview,index)=><div key={preview.name}><p className="mb-2 text-sm">{preview.name}</p><div className="relative overflow-hidden rounded-2xl bg-black" style={{aspectRatio:`${preview.width} / ${preview.height}`,containerType:"inline-size"}}><iframe ref={frame=>{previews.current[index]=frame;}} onLoad={sendPreview} title={`${preview.name} hotel hero preview`} src={`/admin/hotels/preview?slug=${encodeURIComponent(slug)}`} tabIndex={-1} className="absolute left-0 top-0 border-0" style={{width:preview.width,height:preview.height,transform:`scale(calc(100cqw / ${preview.width}px))`,transformOrigin:"top left",pointerEvents:"none"}}/></div></div>)}</div></section>}
+      <div className="flex flex-wrap items-center gap-4"><button type="button" disabled={!dirty||saving||loading} onClick={()=>void save()} className="rounded-xl bg-cyan-300 px-5 py-3 font-black text-slate-950 disabled:opacity-40">{saving?"Saving…":"Save hotel media"}</button><Link href={`/hotelexperience/${slug}?edition=guest`} target="_blank" className="text-cyan-200 underline">Open Guest Guide ↗</Link></div>
     </fieldset>
-    <p role="status" className="mt-4 text-sm text-cyan-100">{loading ? "Loading saved hotel settings…" : message}</p>
+    <p role="status" className="mt-4 text-sm text-cyan-100">{loading?"Loading saved hotel settings…":message}</p>
   </main>;
 }
