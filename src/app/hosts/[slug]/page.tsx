@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: HostProfilePageProps): Promis
     description,
     alternates: { canonical: `/hosts/${host.slug}` },
     openGraph: {
-      type: "profile",
+      type: "website",
       url: `/hosts/${host.slug}`,
       siteName: "SingHUB",
       title,
