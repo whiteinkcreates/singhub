@@ -101,6 +101,8 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
   const [boardExportMessage,setBoardExportMessage]=useState<string|null>(null);
   const [lastPublished,setLastPublished]=useState<{id:string;title:string;postType:PostType;linkUrl?:string}|null>(null);
   const [status,setStatus]=useState("Choose an image post, note, or wanted poster.");
+  const [showPostingTools,setShowPostingTools]=useState(false);
+  const [brokenImages,setBrokenImages]=useState<Set<string>>(new Set());
 
   const visible=useMemo(
     ()=>[...posts,...(draft&&selectedSlotId?[draft]:[])].filter(p=>region==="all"||p.region===region),
@@ -167,28 +169,26 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
     }
   }
 
-  return <div className="space-y-5">
-    <div className="overflow-hidden rounded-2xl border border-fuchsia-400/20 bg-[linear-gradient(100deg,rgba(236,72,153,.12),rgba(139,92,246,.08),rgba(34,211,238,.08))] p-4 shadow-[0_0_35px_rgba(217,70,239,.08)]">
-      <p className="text-sm font-black uppercase tracking-[.2em] text-fuchsia-300">Got something worth pinning?</p>
-      <p className="mt-1 text-sm text-slate-300">Verified venues and KJs can upload event art or create a quick note right here.</p>
+  return <div className="space-y-3">
+    <div className="flex items-center gap-2 overflow-x-auto pb-1">
+      <button type="button" onClick={()=>setShowPostingTools(value=>!value)} className="shrink-0 rounded-full border border-fuchsia-300/40 bg-fuchsia-300/10 px-3 py-2 text-[11px] font-black uppercase tracking-[.08em] text-fuchsia-100">
+        {showPostingTools?"Close posting tools":"Post to SingBOARD"}
+      </button>
+      {regions.map(r=><button key={r.id} onClick={()=>setRegion(r.id)} className={`shrink-0 rounded-full border px-3 py-2 text-[11px] font-black transition ${region===r.id?"border-cyan-300 bg-cyan-300 text-slate-950 shadow-[0_0_18px_rgba(34,211,238,.28)]":"border-white/15 bg-white/[.04] text-slate-200 hover:border-fuchsia-300/60 hover:bg-fuchsia-300/10"}`}>{r.label}</button>)}
     </div>
 
-    <div className="flex gap-2 overflow-x-auto pb-1">
-      {regions.map(r=><button key={r.id} onClick={()=>setRegion(r.id)} className={`shrink-0 rounded-full border px-3 py-2 text-xs font-black transition ${region===r.id?"border-cyan-300 bg-cyan-300 text-slate-950 shadow-[0_0_18px_rgba(34,211,238,.28)]":"border-white/15 bg-white/[.04] text-slate-200 hover:border-fuchsia-300/60 hover:bg-fuchsia-300/10"}`}>{r.label}</button>)}
-    </div>
-
-    <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-white/[.035] p-3">
+    {showPostingTools&&<div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-white/[.035] p-3">
       <button type="button" onClick={downloadBoard} disabled={exportingBoard} className="rounded-xl bg-fuchsia-300 px-4 py-2.5 text-sm font-black text-slate-950 disabled:opacity-50">{exportingBoard?"Creating JPG…":"Download board JPG"}</button>
       <button type="button" onClick={shareBoard} disabled={exportingBoard} className="rounded-xl border border-cyan-300/35 px-4 py-2.5 text-sm font-black text-cyan-100 disabled:opacity-50">Share current board</button>
       {lastPublished&&<button type="button" onClick={copyLastFlyerLink} className="rounded-xl border border-white/15 px-4 py-2.5 text-sm font-black text-white">Copy new flyer link</button>}
       {boardExportMessage&&<p className="basis-full text-xs font-semibold text-cyan-200" aria-live="polite">{boardExportMessage}</p>}
-    </div>
+    </div>}
 
-    <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
-      <div className="rounded-[1.5rem] border border-white/10 bg-[#05060a] p-2 shadow-[0_24px_70px_rgba(0,0,0,.55),0_0_36px_rgba(236,72,153,.10)] sm:p-4">
+    <div className="grid gap-4">
+      <div className="rounded-[1.25rem] border border-white/10 bg-[#05060a] p-1.5 shadow-[0_24px_70px_rgba(0,0,0,.55),0_0_36px_rgba(236,72,153,.10)] sm:p-3">
         <div
           ref={boardRef}
-          className="relative min-h-[900px] overflow-hidden rounded-[1.15rem] border border-white/10 bg-[#080910] shadow-[inset_0_0_90px_rgba(0,0,0,.75),inset_0_0_35px_rgba(139,92,246,.08)]"
+          className="relative h-[calc(100dvh-190px)] min-h-[620px] overflow-hidden rounded-[1rem] border border-white/10 bg-[#080910] shadow-[inset_0_0_90px_rgba(0,0,0,.75),inset_0_0_35px_rgba(139,92,246,.08)] sm:h-[calc(100dvh-170px)] sm:min-h-[720px]"
           style={{backgroundImage:"radial-gradient(circle at 14% 7%, rgba(236,72,153,.18), transparent 28%), radial-gradient(circle at 88% 10%, rgba(34,211,238,.14), transparent 30%), radial-gradient(circle at 54% 74%, rgba(139,92,246,.12), transparent 35%), repeating-linear-gradient(135deg, rgba(255,255,255,.018) 0 1px, transparent 1px 8px), linear-gradient(180deg,#10121a 0%,#090a10 58%,#06070b 100%)"}}
         >
           <div className="pointer-events-none absolute -left-20 top-8 h-56 w-56 rounded-full bg-fuchsia-500/10 blur-3xl"/>
@@ -214,29 +214,23 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             The bulletin board for karaoke + community
           </p>
 
-          <div className="pointer-events-none absolute left-[4%] top-[19%] z-20 w-[21%] rotate-[-4deg] border border-black/10 bg-[#f3e8dc] px-4 py-5 text-slate-950 shadow-[0_12px_24px_rgba(0,0,0,.4)]">
-            <span className="absolute left-1/2 top-2 h-4 w-4 -translate-x-1/2 rounded-full bg-fuchsia-500 shadow-[0_0_15px_rgba(236,72,153,.8)]"/>
-            <p className="pt-3 text-sm font-black uppercase leading-5 sm:text-base">Special events.<br/>One place.</p>
-            <p className="mt-2 text-sm font-black uppercase text-fuchsia-600">Don&apos;t miss out.</p>
-          </div>
-
-          <div className="pointer-events-none absolute right-[3%] top-[18%] z-20 w-[19%] rotate-[4deg] border border-white/10 bg-[#11131a] px-4 py-5 text-white shadow-[0_12px_24px_rgba(0,0,0,.5)]">
-            <span className="absolute left-1/2 top-2 h-4 w-4 -translate-x-1/2 rounded-full bg-violet-500 shadow-[0_0_15px_rgba(139,92,246,.85)]"/>
-            <p className="pt-3 text-xs font-black uppercase text-fuchsia-300 sm:text-sm">Hosting an event?</p>
-            <p className="mt-2 text-xs font-bold uppercase leading-5 text-slate-200 sm:text-sm">Send us your flyer &amp; we&apos;ll pin it.</p>
-          </div>
-
           {visible.map(post=><button
             key={post.id}
             type="button"
             onClick={post.pinned?()=>{const href=post.postType==="wanted"&&post.linkUrl?post.linkUrl:`/events/${post.id}`;if(isExternalWebUrl(href,window.location.origin))window.open(href,"_blank","noopener,noreferrer");else window.location.assign(href);}:undefined}
             title={post.pinned?`View ${post.title}`:"Flyer placement preview"}
-            className={`absolute ${post.postType==="wanted"?"w-[28%]":"w-[22%]"} select-none text-left shadow-[0_18px_28px_rgba(0,0,0,.5)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
+            className={`absolute ${post.postType==="wanted"?"w-[18%]":post.postType==="note"?"w-[12%]":"w-[23%]"} select-none text-left shadow-[0_12px_20px_rgba(0,0,0,.48)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
             style={{left:`${post.x}%`,top:`${post.y}%`,transform:`rotate(${post.rotation}deg)`,zIndex:post.pinned?10:35}}
           >
-            {post.pinned&&<span className={`absolute left-1/2 top-2 z-20 h-5 w-5 -translate-x-1/2 rounded-full ${pinClass(post.id)}`}/>} 
-            {post.postType==="image"&&post.imageUrl
-              ?<img src={post.imageUrl} alt={post.title} className="block max-h-[390px] w-full border border-white/5 object-contain" draggable={false}/>
+            {post.pinned&&<span className={`absolute left-1/2 top-1 z-20 h-3 w-3 -translate-x-1/2 rounded-full sm:h-4 sm:w-4 ${pinClass(post.id)}`}/>} 
+            {post.postType==="image"&&post.imageUrl&&!brokenImages.has(post.id)
+              ?<img
+                src={post.imageUrl}
+                alt={post.title}
+                className="block max-h-[52vh] w-full border border-white/5 bg-black object-contain"
+                draggable={false}
+                onError={()=>setBrokenImages(current=>new Set(current).add(post.id))}
+              />
               :post.postType==="wanted"
                 ?<span
                   className="relative flex aspect-[4/5] w-full flex-col overflow-hidden border-[2px] border-slate-950 bg-[#f5f2ea] p-2 text-slate-950 shadow-[0_10px_24px_rgba(0,0,0,.45)]"
@@ -270,22 +264,21 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
                     <span className="mt-1 block border-t border-white/60 pt-1 text-[4px] font-black leading-none text-cyan-300 sm:text-[6px]">{wantedLinkLabel(post.linkUrl)}</span>
                   </span>
                 </span>
-                :<span className={`block min-h-44 p-5 pt-9 text-slate-950 shadow-inner ${noteColors[post.noteColor||"yellow"]}`}>
-                  <strong className="block text-lg leading-tight">{post.title}</strong>
-                  <span className="mt-3 block whitespace-pre-wrap text-base font-semibold leading-6">{post.noteText}</span>
-                  <span className="mt-4 block border-t border-black/15 pt-2 text-xs font-bold">{post.venue}{post.startTime?` · ${post.startTime}`:""}</span>
+                :<span className={`block aspect-[4/5] overflow-hidden p-2 pt-5 text-slate-950 shadow-inner sm:p-2.5 sm:pt-6 ${noteColors[post.noteColor||"yellow"]}`}>
+                  <strong className="block text-[8px] font-black uppercase leading-[1.05] sm:text-[10px]" style={{display:"-webkit-box",WebkitLineClamp:4,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{post.title}</strong>
+                  <span className="mt-2 block border-t border-black/15 pt-1 text-[6px] font-black uppercase leading-tight sm:text-[7px]">{post.venue}</span>
+                  {post.startTime&&<span className="mt-0.5 block text-[6px] font-bold leading-tight sm:text-[7px]">{post.startTime.replace(/\\n/g," ")}</span>}
+                  <span className="mt-1 block text-[5px] font-black uppercase tracking-[.08em] text-black/55 sm:text-[6px]">Tap for details</span>
                 </span>}
           </button>)}
 
-          <div className="pointer-events-none absolute bottom-4 left-1/2 z-20 w-[58%] -translate-x-1/2 rounded-full border border-white/10 bg-black/55 px-4 py-3 text-center text-[10px] font-black uppercase tracking-[.14em] text-slate-300 backdrop-blur-sm sm:text-xs">
-            <span className="text-fuchsia-300">📌 Events + wanted posts from local hosts &amp; venues</span>
-            <span className="mx-2 text-slate-600">•</span>
-            <span className="text-cyan-300">New events added regularly</span>
+          <div className="pointer-events-none absolute bottom-2 left-1/2 z-20 -translate-x-1/2 rounded-full border border-white/10 bg-black/55 px-3 py-1.5 text-center text-[7px] font-black uppercase tracking-[.1em] text-slate-300 backdrop-blur-sm sm:text-[9px]">
+            Tap a pin for the full event
           </div>
         </div>
       </div>
 
-      <aside className="space-y-3 rounded-2xl border border-fuchsia-400/15 bg-[linear-gradient(180deg,rgba(15,17,28,.98),rgba(5,7,12,.98))] p-4 text-white shadow-[0_20px_50px_rgba(0,0,0,.35)]">
+      {showPostingTools&&<aside className="space-y-3 rounded-2xl border border-fuchsia-400/15 bg-[linear-gradient(180deg,rgba(15,17,28,.98),rgba(5,7,12,.98))] p-4 text-white shadow-[0_20px_50px_rgba(0,0,0,.35)]">
         <div>
           <p className="text-xs font-black uppercase tracking-[.22em] text-fuchsia-300">Pin to SingBOARD</p>
           <p className="mt-1 text-xs leading-5 text-slate-400">Events, quick notes, and wanted posters for verified SingBOARD posters.</p>
@@ -320,7 +313,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
         <button disabled={posting||!draft||!selectedSlotId} onClick={publish} className="w-full rounded-xl bg-cyan-300 px-4 py-3 font-black text-slate-950 shadow-[0_0_20px_rgba(34,211,238,.18)] disabled:opacity-40">{posting?"Publishing…":"Publish in selected space"}</button>
         <p className="text-xs leading-5 text-slate-300" aria-live="polite">{status}</p>
         <p className="text-[11px] text-slate-500">Event posts open their event page. Wanted posters can point to a full job ad and use the date as an automatic cleanup date.</p>
-      </aside>
+      </aside>}
     </div>
   </div>;
 }
