@@ -188,93 +188,80 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
       <div className="rounded-[1.25rem] border border-white/10 bg-[#05060a] p-1.5 shadow-[0_24px_70px_rgba(0,0,0,.55),0_0_36px_rgba(236,72,153,.10)] sm:p-3">
         <div
           ref={boardRef}
-          className="relative h-[calc(100dvh-190px)] min-h-[620px] overflow-hidden rounded-[1rem] border border-white/10 bg-[#080910] shadow-[inset_0_0_90px_rgba(0,0,0,.75),inset_0_0_35px_rgba(139,92,246,.08)] sm:h-[calc(100dvh-170px)] sm:min-h-[720px]"
+          className="relative min-h-[60vh] overflow-hidden rounded-[1rem] border border-white/10 bg-[#080910] p-3 shadow-[inset_0_0_90px_rgba(0,0,0,.75),inset_0_0_35px_rgba(139,92,246,.08)] sm:p-5"
           style={{backgroundImage:"radial-gradient(circle at 14% 7%, rgba(236,72,153,.18), transparent 28%), radial-gradient(circle at 88% 10%, rgba(34,211,238,.14), transparent 30%), radial-gradient(circle at 54% 74%, rgba(139,92,246,.12), transparent 35%), repeating-linear-gradient(135deg, rgba(255,255,255,.018) 0 1px, transparent 1px 8px), linear-gradient(180deg,#10121a 0%,#090a10 58%,#06070b 100%)"}}
         >
           <div className="pointer-events-none absolute -left-20 top-8 h-56 w-56 rounded-full bg-fuchsia-500/10 blur-3xl"/>
           <div className="pointer-events-none absolute -right-16 top-24 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl"/>
           <div className="pointer-events-none absolute bottom-8 left-1/3 h-52 w-72 rounded-full bg-violet-500/10 blur-3xl"/>
 
-          {draft&&availableSlots.map(slot=><button
-            key={slot.id}
-            type="button"
-            data-export-exclude="true"
-            onClick={()=>chooseSlot(slot.id)}
-            aria-label={`Place flyer in space ${slot.id}`}
-            className={`absolute z-30 flex items-center justify-center rounded-lg border-2 border-dashed text-[9px] font-black uppercase tracking-[.12em] transition sm:text-xs ${selectedSlotId===slot.id?"border-cyan-200 bg-cyan-300/20 text-cyan-50 shadow-[0_0_24px_rgba(34,211,238,.28)]":"border-white/35 bg-black/20 text-white/55 hover:border-fuchsia-300 hover:bg-fuchsia-300/10 hover:text-white"}`}
-            style={{left:`${slot.x}%`,top:`${slot.y}%`,width:`${slot.width}%`,height:`${slot.height}%`,transform:`rotate(${slot.rotation}deg)`}}
-          >
-            {selectedSlotId===slot.id?"Selected":`Place here · ${slot.id}`}
-          </button>)}
+          {draft&&availableSlots.length>0&&<div data-export-exclude="true" className="relative z-20 mb-4 rounded-xl border border-dashed border-cyan-300/40 bg-cyan-300/5 p-3 text-center text-[10px] font-black uppercase tracking-[.12em] text-cyan-100">
+            Preview mode: new posts auto-flow into the board layout when published.
+          </div>}
 
-          <div className="pointer-events-none absolute left-1/2 top-8 z-30 w-[62%] max-w-[760px] -translate-x-1/2">
-            <img src="/images/singboard-wordmark.webp" alt="SingBOARD" className="h-auto w-full object-contain" />
-          </div>
-          <p className="pointer-events-none absolute left-1/2 top-3 z-30 w-[72%] -translate-x-1/2 text-center text-[8px] font-black uppercase tracking-[.26em] text-slate-300/80 sm:text-[10px]">
-            The bulletin board for karaoke + community
-          </p>
-
-          {visible.map(post=><button
-            key={post.id}
-            type="button"
-            onClick={post.pinned?()=>{const href=post.postType==="wanted"&&post.linkUrl?post.linkUrl:`/events/${post.id}`;if(isExternalWebUrl(href,window.location.origin))window.open(href,"_blank","noopener,noreferrer");else window.location.assign(href);}:undefined}
-            title={post.pinned?`View ${post.title}`:"Flyer placement preview"}
-            className={`absolute ${post.postType==="wanted"?"w-[18%]":post.postType==="note"?"w-[12%]":"w-[23%]"} select-none text-left shadow-[0_12px_20px_rgba(0,0,0,.48)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
-            style={{left:`${post.x}%`,top:`${post.y}%`,transform:`rotate(${post.rotation}deg)`,zIndex:post.pinned?10:35}}
-          >
-            {post.pinned&&<span className={`absolute left-1/2 top-1 z-20 h-3 w-3 -translate-x-1/2 rounded-full sm:h-4 sm:w-4 ${pinClass(post.id)}`}/>} 
-            {post.postType==="image"&&post.imageUrl&&!brokenImages.has(post.id)
-              ?<img
-                src={post.imageUrl}
-                alt={post.title}
-                className="block max-h-[52vh] w-full border border-white/5 bg-black object-contain"
-                draggable={false}
-                onError={()=>setBrokenImages(current=>new Set(current).add(post.id))}
-              />
-              :post.postType==="wanted"
-                ?<span
-                  className="relative flex aspect-[4/5] w-full flex-col overflow-hidden border-[2px] border-slate-950 bg-[#f5f2ea] p-2 text-slate-950 shadow-[0_10px_24px_rgba(0,0,0,.45)]"
-                  style={{backgroundImage:"radial-gradient(circle at 18% 23%,rgba(15,23,42,.05) 0 1px,transparent 1.3px),radial-gradient(circle at 72% 68%,rgba(15,23,42,.045) 0 1px,transparent 1.4px)",backgroundSize:"16px 16px,20px 20px"}}
-                >
-                  <span className="block border-y-[2px] border-slate-950 py-1 text-center text-[24px] font-black uppercase leading-[.88] tracking-[-.055em] sm:text-[34px]">WANTED</span>
-
-                  <strong className="mt-1 block shrink-0 bg-[#ef4a2c] px-1 py-1 text-center text-[8px] font-black uppercase leading-none tracking-[.02em] text-white sm:text-[11px]">
-                    ★ {post.title} ★
-                  </strong>
-
-                  <span className="mt-1.5 flex items-center gap-1">
-                    <span className="h-px flex-1 bg-slate-950"/>
-                    <span className="shrink-0 text-center text-[7px] font-black leading-none sm:text-[9px]">{post.venue} is hiring</span>
-                    <span className="h-px flex-1 bg-slate-950"/>
+          <div className="relative z-10 grid auto-rows-max grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 lg:grid-cols-6 xl:grid-cols-8">
+            {visible.map(post=>{
+              const isBroken=post.postType==="image"&&(!post.imageUrl||brokenImages.has(post.id));
+              const span=post.postType==="image"&&!isBroken
+                ?"col-span-2 sm:col-span-2"
+                :post.postType==="wanted"
+                  ?"col-span-2 sm:col-span-2"
+                  :"col-span-1";
+              return <button
+                key={post.id}
+                type="button"
+                onClick={post.pinned?()=>{const href=post.postType==="wanted"&&post.linkUrl?post.linkUrl:`/events/${post.id}`;if(isExternalWebUrl(href,window.location.origin))window.open(href,"_blank","noopener,noreferrer");else window.location.assign(href);}:undefined}
+                title={post.pinned?`View ${post.title}`:"Flyer placement preview"}
+                className={`relative ${span} self-start select-none text-left shadow-[0_12px_20px_rgba(0,0,0,.48)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:-translate-y-1 hover:scale-[1.015] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
+                style={{transform:`rotate(${Math.max(-2,Math.min(2,post.rotation))}deg)`}}
+              >
+                {post.pinned&&<span className={`absolute left-1/2 top-1 z-20 h-3 w-3 -translate-x-1/2 rounded-full sm:h-4 sm:w-4 ${pinClass(post.id)}`}/>}
+                {post.postType==="image"&&post.imageUrl&&!isBroken
+                  ?<span className="block overflow-hidden rounded-[3px] border border-white/10 bg-black">
+                    <img
+                      src={post.imageUrl}
+                      alt={post.title}
+                      className="block h-auto max-h-[560px] w-full object-contain"
+                      draggable={false}
+                      onError={()=>setBrokenImages(current=>new Set(current).add(post.id))}
+                    />
+                    <span className="block border-t border-white/10 bg-black/80 px-2 py-1.5 text-[8px] font-black uppercase tracking-[.05em] text-white/80 sm:text-[9px]">
+                      {post.title}
+                    </span>
                   </span>
-
-                  <span className="mt-1.5 grid grid-cols-3 gap-1">
-                    {wantedRoles(post.noteText).map((role,index)=><span key={`${post.id}-role-${index}`} className="flex min-h-[52px] flex-col items-center justify-between border border-slate-950 bg-white/25 px-0.5 py-1 text-center sm:min-h-[64px]">
-                      <span className={`flex h-7 w-7 items-center justify-center rounded-full text-white sm:h-9 sm:w-9 ${index===1?"bg-cyan-500":"bg-[#ef4a2c]"}`}>
-                        <WantedRoleIcon role={role}/>
+                  :post.postType==="wanted"
+                    ?<span
+                      className="relative flex aspect-[4/5] w-full flex-col overflow-hidden border-[2px] border-slate-950 bg-[#f5f2ea] p-2 text-slate-950 shadow-[0_10px_24px_rgba(0,0,0,.45)]"
+                      style={{backgroundImage:"radial-gradient(circle at 18% 23%,rgba(15,23,42,.05) 0 1px,transparent 1.3px),radial-gradient(circle at 72% 68%,rgba(15,23,42,.045) 0 1px,transparent 1.4px)",backgroundSize:"16px 16px,20px 20px"}}
+                    >
+                      <span className="block border-y-[2px] border-slate-950 py-1 text-center text-[18px] font-black uppercase leading-[.88] tracking-[-.055em] sm:text-[24px]">WANTED</span>
+                      <strong className="mt-1 block shrink-0 bg-[#ef4a2c] px-1 py-1 text-center text-[7px] font-black uppercase leading-none tracking-[.02em] text-white sm:text-[9px]">★ {post.title} ★</strong>
+                      <span className="mt-1.5 flex items-center gap-1"><span className="h-px flex-1 bg-slate-950"/><span className="shrink-0 text-center text-[6px] font-black leading-none sm:text-[8px]">{post.venue} is hiring</span><span className="h-px flex-1 bg-slate-950"/></span>
+                      <span className="mt-1.5 grid grid-cols-3 gap-1">
+                        {wantedRoles(post.noteText).map((role,index)=><span key={`${post.id}-role-${index}`} className="flex min-h-[44px] flex-col items-center justify-between border border-slate-950 bg-white/25 px-0.5 py-1 text-center sm:min-h-[56px]">
+                          <span className={`flex h-6 w-6 items-center justify-center rounded-full text-white sm:h-8 sm:w-8 ${index===1?"bg-cyan-500":"bg-[#ef4a2c]"}`}><WantedRoleIcon role={role}/></span>
+                          <span className="mt-1 w-full text-[5px] font-black uppercase leading-[.9] sm:text-[6px]">{role}</span>
+                        </span>)}
                       </span>
-                      <span className="mt-1 w-full text-[5px] font-black uppercase leading-[.9] sm:text-[7px]">{role}</span>
-                    </span>)}
-                  </span>
+                      <span className="mt-auto block border-[2px] border-slate-950 bg-slate-950 px-1 py-1.5 text-center text-white">
+                        <span className="block text-[6px] font-black uppercase leading-none tracking-[.02em] sm:text-[8px]">★ Full ad on SingHUB ★</span>
+                        <span className="mt-1 block border-t border-white/60 pt-1 text-[4px] font-black leading-none text-cyan-300 sm:text-[5px]">{wantedLinkLabel(post.linkUrl)}</span>
+                      </span>
+                    </span>
+                    :<span className={`block aspect-[4/5] overflow-hidden p-2.5 pt-5 text-slate-950 shadow-inner sm:p-3 sm:pt-6 ${noteColors[post.noteColor||"yellow"]}`}>
+                      <strong className="block text-[9px] font-black uppercase leading-[1.05] sm:text-[11px]" style={{display:"-webkit-box",WebkitLineClamp:5,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{post.title}</strong>
+                      <span className="mt-2 block border-t border-black/15 pt-1 text-[6px] font-black uppercase leading-tight sm:text-[8px]">{post.venue}</span>
+                      {post.startTime&&<span className="mt-0.5 block text-[6px] font-bold leading-tight sm:text-[7px]">{post.startTime.replace(/\\n/g," ")}</span>}
+                      <span className="mt-1 block text-[5px] font-black uppercase tracking-[.08em] text-black/55 sm:text-[6px]">{isBroken?"Flyer unavailable · tap for details":"Tap for details"}</span>
+                    </span>}
+              </button>;
+            })}
+          </div>
 
-                  <span className="mt-1.5 block text-center text-[5px] font-black leading-tight sm:text-[7px]">Know someone great? Send them our way.</span>
-
-                  <span className="mt-auto block border-[2px] border-slate-950 bg-slate-950 px-1 py-1.5 text-center text-white">
-                    <span className="block text-[7px] font-black uppercase leading-none tracking-[.02em] sm:text-[10px]">★ Full ad on SingHUB ★</span>
-                    <span className="mt-1 block border-t border-white/60 pt-1 text-[4px] font-black leading-none text-cyan-300 sm:text-[6px]">{wantedLinkLabel(post.linkUrl)}</span>
-                  </span>
-                </span>
-                :<span className={`block aspect-[4/5] overflow-hidden p-2 pt-5 text-slate-950 shadow-inner sm:p-2.5 sm:pt-6 ${noteColors[post.noteColor||"yellow"]}`}>
-                  <strong className="block text-[8px] font-black uppercase leading-[1.05] sm:text-[10px]" style={{display:"-webkit-box",WebkitLineClamp:4,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{post.title}</strong>
-                  <span className="mt-2 block border-t border-black/15 pt-1 text-[6px] font-black uppercase leading-tight sm:text-[7px]">{post.venue}</span>
-                  {post.startTime&&<span className="mt-0.5 block text-[6px] font-bold leading-tight sm:text-[7px]">{post.startTime.replace(/\\n/g," ")}</span>}
-                  <span className="mt-1 block text-[5px] font-black uppercase tracking-[.08em] text-black/55 sm:text-[6px]">Tap for details</span>
-                </span>}
-          </button>)}
-
-          <div className="pointer-events-none absolute bottom-2 left-1/2 z-20 -translate-x-1/2 rounded-full border border-white/10 bg-black/55 px-3 py-1.5 text-center text-[7px] font-black uppercase tracking-[.1em] text-slate-300 backdrop-blur-sm sm:text-[9px]">
+          <div className="pointer-events-none relative z-10 mx-auto mt-5 w-fit rounded-full border border-white/10 bg-black/55 px-3 py-1.5 text-center text-[7px] font-black uppercase tracking-[.1em] text-slate-300 backdrop-blur-sm sm:text-[9px]">
             Tap a pin for the full event
           </div>
+        </div>
         </div>
       </div>
 
