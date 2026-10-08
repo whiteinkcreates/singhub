@@ -35,12 +35,33 @@ export async function generateMetadata({ params }: VenuePageProps): Promise<Meta
   const canonicalSlug = LEGACY_VENUE_SLUGS[slug] || slug;
   const venue = await getVenueListingBySlug(canonicalSlug);
   if (!venue || !isPublicVenue(venue)) return { title: "Venue Not Found | SingHUB", robots: { index: false, follow: false } };
+
+  const enhancement = await getPersistedVenueEnhancement(venue.slug);
+  const title = `${venue.venueName}${/\bkaraoke\b/i.test(venue.venueName) ? "" : " Karaoke"} | SingHUB`;
+  const description = `${venue.venueName} karaoke listing in ${venue.neighborhood}, San Diego.`;
+  const image = enhancement?.heroImageUrl || venue.bannerImageUrl || enhancement?.gallery?.[0]?.url || "/images/og/singhub-og.png";
+  const imageAlt = enhancement?.heroImageAlt || venue.bannerImageAlt || enhancement?.gallery?.[0]?.alt || `${venue.venueName} on SingHUB`;
   const shouldNoindex = isPlaceholderVenue(venue.venueName);
+
   return {
-    title: `${venue.venueName}${/\bkaraoke\b/i.test(venue.venueName) ? "" : " Karaoke"} | SingHUB`,
-    description: `${venue.venueName} karaoke listing in ${venue.neighborhood}, San Diego.`,
+    title,
+    description,
     alternates: { canonical: `/venues/${venue.slug}` },
     robots: shouldNoindex ? { index: false, follow: false } : undefined,
+    openGraph: {
+      type: "website",
+      url: `/venues/${venue.slug}`,
+      siteName: "SingHUB",
+      title,
+      description,
+      images: [{ url: image, alt: imageAlt }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
   };
 }
 
