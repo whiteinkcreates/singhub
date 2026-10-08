@@ -262,7 +262,6 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             Tap a pin for the full event
           </div>
         </div>
-        </div>
       </div>
 
       {showPostingTools&&<aside className="space-y-3 rounded-2xl border border-fuchsia-400/15 bg-[linear-gradient(180deg,rgba(15,17,28,.98),rgba(5,7,12,.98))] p-4 text-white shadow-[0_20px_50px_rgba(0,0,0,.35)]">
