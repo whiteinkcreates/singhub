@@ -13,51 +13,27 @@ export const dynamic = "force-dynamic";
 
 export default async function SingBoardPage() {
   const flyers = await getActiveSingBoardFlyers();
-  const stickerBackground = { backgroundImage: `url("${SINGBOARD_STICKER_ART}")` };
 
   return (
-    <main data-scroll-page="singboard" className="min-h-screen bg-[#05060a]">
+    <main data-scroll-page="singboard" className="min-h-[100dvh] overflow-hidden bg-[#05060a] pb-24 text-white">
       <style>{`
-        .singboard-sticker-hero {
-          background-position: center 8%;
-          background-repeat: no-repeat;
-          background-size: cover;
+        @keyframes singboard-rise {
+          from { opacity: 0; transform: translateY(34px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-        @media (max-width: 640px) {
-          .singboard-sticker-hero {
-            background-position: center top;
-            background-size: cover;
-          }
-        }
+        .singboard-rise { animation: singboard-rise .28s cubic-bezier(.2,.8,.2,1) both; }
       `}</style>
 
-      <section
-        data-page-hero="" className="singboard-sticker-hero relative isolate min-h-[320px] overflow-hidden border-b border-white/10 sm:min-h-[390px] lg:min-h-[460px]"
-        style={stickerBackground}
-        aria-labelledby="singboard-page-title"
-      >
-
-        <div data-hero-frame="" className="relative mx-auto flex min-h-[320px] max-w-7xl items-end px-5 pb-9 pt-12 sm:min-h-[390px] sm:px-7 sm:pb-11 lg:min-h-[460px] lg:px-8 lg:pb-14">
-          <div data-hero-copy="" className="max-w-3xl">
-            <img
-              src="/images/singhub-v2/singhub-wordmark.png"
-              alt="SingHUB"
-              className="mb-6 h-auto w-40 drop-shadow-[0_0_20px_rgba(0,0,0,.9)] sm:w-52"
-            />
-            <h1
-              id="singboard-page-title"
-              className="max-w-3xl text-4xl font-black leading-[.94] tracking-[-.045em] text-white drop-shadow-[0_4px_20px_rgba(0,0,0,.9)] sm:text-6xl lg:text-7xl"
-            >
-              San Diego karaoke&apos;s community bulletin board.
-            </h1>
+      <section className="singboard-rise min-h-[100dvh] bg-[#05060a] px-2 pt-3 sm:px-4 sm:pt-4">
+        <div className="mx-auto flex max-w-7xl items-end justify-between gap-3 px-2 pb-2 sm:px-3">
+          <div>
+            <img src="/images/singboard-wordmark.webp" alt="SingBOARD" className="h-auto w-40 sm:w-52" />
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-[.12em] text-slate-400 sm:text-xs">San Diego karaoke events + community</p>
           </div>
+          <p className="max-w-44 text-right text-[10px] leading-tight text-slate-400 sm:max-w-xs sm:text-xs">Tap any pin for the full event page.</p>
         </div>
-      </section>
 
-      <section data-page-surface="" className="relative bg-[#05060a] py-7 sm:py-10">
-        <div className="relative z-10 mx-auto max-w-7xl bg-[#05060a] px-4 py-3 shadow-[0_0_80px_rgba(0,0,0,.92)] sm:px-6 sm:py-5 lg:px-8">
-          <SingBoard initialFlyers={flyers} />
-        </div>
+        <SingBoard initialFlyers={flyers} />
       </section>
     </main>
   );
