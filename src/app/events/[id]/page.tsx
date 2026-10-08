@@ -1,9 +1,28 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSingBoardEvent, recordSingBoardEventMetric } from "@/lib/singboard/repository";
 
 function prettyDate(value:string){
   return new Intl.DateTimeFormat("en-US",{timeZone:"America/Los_Angeles",weekday:"long",month:"long",day:"numeric",year:"numeric"}).format(new Date(`${value}T12:00:00-07:00`));
+}
+
+export async function generateMetadata({params}:{params:Promise<{id:string}>}):Promise<Metadata>{
+  const {id}=await params;
+  const event=await getSingBoardEvent(id);
+  if(!event)return {title:"Karaoke Event | SingHUB"};
+
+  const title=`${event.title} | SingHUB`;
+  const description=`${event.title} at ${event.venue}${event.neighborhood?` in ${event.neighborhood}`:""} on ${prettyDate(event.eventDate)}${event.startTime?` at ${event.startTime}`:""}.`;
+  const image=event.imageUrl||"/images/og/singhub-og.png";
+
+  return {
+    title,
+    description,
+    alternates:{canonical:`/events/${id}`},
+    openGraph:{type:"website",url:`/events/${id}`,siteName:"SingHUB",title,description,images:[{url:image,alt:event.title}]},
+    twitter:{card:"summary_large_image",title,description,images:[image]},
+  };
 }
 
 export default async function EventPage({params}:{params:Promise<{id:string}>}){
