@@ -169,14 +169,12 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
     }
   }
 
-  return <div className="space-y-5">
-    <div className="overflow-hidden rounded-2xl border border-fuchsia-400/20 bg-[linear-gradient(100deg,rgba(236,72,153,.12),rgba(139,92,246,.08),rgba(34,211,238,.08))] p-4 shadow-[0_0_35px_rgba(217,70,239,.08)]">
-      <p className="text-sm font-black uppercase tracking-[.2em] text-fuchsia-300">Got something worth pinning?</p>
-      <p className="mt-1 text-sm text-slate-300">Verified venues and KJs can upload event art or create a quick note right here.</p>
-    </div>
-
-    <div className="flex gap-2 overflow-x-auto pb-1">
-      {regions.map(r=><button key={r.id} onClick={()=>setRegion(r.id)} className={`shrink-0 rounded-full border px-3 py-2 text-xs font-black transition ${region===r.id?"border-cyan-300 bg-cyan-300 text-slate-950 shadow-[0_0_18px_rgba(34,211,238,.28)]":"border-white/15 bg-white/[.04] text-slate-200 hover:border-fuchsia-300/60 hover:bg-fuchsia-300/10"}`}>{r.label}</button>)}
+  return <div className="space-y-3">
+    <div className="flex items-center gap-2 overflow-x-auto pb-1">
+      <button type="button" onClick={()=>setShowPostingTools(value=>!value)} className="shrink-0 rounded-full border border-fuchsia-300/40 bg-fuchsia-300/10 px-3 py-2 text-[11px] font-black uppercase tracking-[.08em] text-fuchsia-100">
+        {showPostingTools?"Close posting tools":"Post to SingBOARD"}
+      </button>
+      {regions.map(r=><button key={r.id} onClick={()=>setRegion(r.id)} className={`shrink-0 rounded-full border px-3 py-2 text-[11px] font-black transition ${region===r.id?"border-cyan-300 bg-cyan-300 text-slate-950 shadow-[0_0_18px_rgba(34,211,238,.28)]":"border-white/15 bg-white/[.04] text-slate-200 hover:border-fuchsia-300/60 hover:bg-fuchsia-300/10"}`}>{r.label}</button>)}
     </div>
 
     {showPostingTools&&<div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-white/[.035] p-3">
@@ -184,9 +182,9 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
       <button type="button" onClick={shareBoard} disabled={exportingBoard} className="rounded-xl border border-cyan-300/35 px-4 py-2.5 text-sm font-black text-cyan-100 disabled:opacity-50">Share current board</button>
       {lastPublished&&<button type="button" onClick={copyLastFlyerLink} className="rounded-xl border border-white/15 px-4 py-2.5 text-sm font-black text-white">Copy new flyer link</button>}
       {boardExportMessage&&<p className="basis-full text-xs font-semibold text-cyan-200" aria-live="polite">{boardExportMessage}</p>}
-    </div>
+    </div>}
 
-    <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
+    <div className="grid gap-4">
       <div className="rounded-[1.25rem] border border-white/10 bg-[#05060a] p-1.5 shadow-[0_24px_70px_rgba(0,0,0,.55),0_0_36px_rgba(236,72,153,.10)] sm:p-3">
         <div
           ref={boardRef}
