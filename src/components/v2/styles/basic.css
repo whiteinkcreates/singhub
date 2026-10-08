@@ -123,6 +123,9 @@
     .v2-basic .subline { color: var(--muted); font-size: .92rem; }
     .v2-basic .verified { display: inline-flex; align-items: center; gap: 7px; color: #caefff; font-size: .84rem; font-weight: 750; }
     .v2-basic .verified-dot { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--cyan); color: #00131a; font-size: .68rem; }
+    .v2-basic .venue-partner-badge { display:flex; align-items:center; gap:9px; width:max-content; margin-top:10px; padding:6px 10px; border:1px solid rgba(255,25,168,.42); border-radius:999px; background:rgba(255,25,168,.07); }
+    .v2-basic .venue-partner-badge img { display:block; width:92px; height:auto; object-fit:contain; }
+    .v2-basic .venue-partner-badge span { color:var(--pink); font-size:.72rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
     .v2-basic .section { padding: 18px 0; border-top: 1px solid var(--line); }
     .v2-basic .section:first-child { border-top: 0; padding-top: 0; }
     .v2-basic .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
@@ -177,6 +180,11 @@
     .v2-basic .enhanced-card { min-height: 112px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
     .v2-basic .enhanced-card span { color: var(--pink); font-size: 1.1rem; }
     .v2-basic .enhanced-card p { margin: 6px 0 0; font-size: .78rem; }
+    .v2-basic .partner-amenities { margin-bottom:12px; }
+    .v2-basic .partner-post { display:block; width:100%; padding:14px 0; border:0; border-bottom:1px solid var(--line); background:transparent; text-align:left; cursor:pointer; }
+    .v2-basic .partner-post:last-child { border-bottom:0; }
+    .v2-basic .partner-post strong { color:var(--text); font-size:.92rem; }
+    .v2-basic .partner-post p { margin:5px 0 0; color:var(--muted); font-size:.8rem; }
 
     .v2-basic .search-box { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); color: var(--muted); }
     .v2-basic .filter-row { display: flex; gap: 8px; margin: 12px 0 18px; overflow-x: auto; scrollbar-width: none; }
