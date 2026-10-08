@@ -123,6 +123,9 @@
     .v2-basic .subline { color: var(--muted); font-size: .92rem; }
     .v2-basic .verified { display: inline-flex; align-items: center; gap: 7px; color: #caefff; font-size: .84rem; font-weight: 750; }
     .v2-basic .verified-dot { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--cyan); color: #00131a; font-size: .68rem; }
+    .v2-basic .venue-partner-badge { display:flex; align-items:center; gap:9px; width:max-content; margin-top:10px; padding:6px 10px; border:1px solid rgba(255,25,168,.42); border-radius:999px; background:rgba(255,25,168,.07); }
+    .v2-basic .venue-partner-badge img { display:block; width:92px; height:auto; object-fit:contain; }
+    .v2-basic .venue-partner-badge span { color:var(--pink); font-size:.72rem; font-weight:900; letter-spacing:.12em; text-transform:uppercase; }
     .v2-basic .section { padding: 18px 0; border-top: 1px solid var(--line); }
     .v2-basic .section:first-child { border-top: 0; padding-top: 0; }
     .v2-basic .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
