@@ -18,6 +18,8 @@ export function BasicVenueTemplate({venue,events,enhancement,weekday,singersSay}
 const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();void viewerInitials;
 const row=makeVenueRow(venue,events,weekday,enhancement);const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:enhancement?.singHere});
 const details=[['Address',venue.address],['Room type',row.kind],['Age policy',venue.agePolicy],['Parking',venue.parkingInfo],['Accessibility',venue.accessibilityNotes],['Cover',venue.coverCharge],['About the room',venue.description]].filter((item):item is [string,string]=>Boolean(item[1]));
+const isPartner=Boolean(enhancement?.enabled);
+const activeOffer=isPartner&&enhancement?.singhubOffer?.enabled&&(!enhancement.singhubOffer.days?.length||enhancement.singhubOffer.days.some(day=>day.toLowerCase()===weekday.toLowerCase()))?enhancement.singhubOffer:undefined;
 
 return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <article className="app-view active">
@@ -31,6 +33,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <div className="venue-hero"><PositionedImage placement={enhancement?.heroPlacement||venue.bannerImagePlacement} position={enhancement?.heroPosition||venue.bannerImagePosition||'center'} src={enhancement?.heroImageUrl||venue.bannerImageUrl||'/images/og/singhub-og.png'} alt={enhancement?.heroImageAlt||venue.bannerImageAlt||(enhancement?.heroImageUrl||venue.bannerImageUrl?venue.venueName+' venue':'SingHUB karaoke guide')} className="venue-hero-photo" style={{objectPosition:enhancement?.heroPosition||venue.bannerImagePosition||'center'}} /></div>
 <h1>{venue.venueName}</h1>
 <div className="verified" title={row.verification}><span className="verified-dot">{venue.listingStatus==='verified'?'✓':'·'}</span>{' '+row.trust.replace(/^✓\s*/, '')}</div>
+{isPartner?<div className="venue-partner-badge"><img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /><span>Partner</span></div>:null}
 <p className="subline" style={{"marginTop": "10px"}}>{venue.neighborhood+' · '+venue.address}</p>
 <div className="chips">{row.tags.map(tag=><span className="chip" key={tag}>{tag}</span>)}</div>
 </section>
@@ -40,7 +43,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <div className="event-row"><div><strong>{venue.venueType==='private_room'?'Reserve a room':'Karaoke'}</strong><div className="host">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Host details pending' : venue.venueType==='private_room'?'Contact the venue for room availability.':'No confirmed karaoke tonight'}</div></div><time className="event-time">{row.tonight ? [compactTime(row.tonight.startTime),compactTime(row.tonight.endTime)].filter(Boolean).join(" - ") || "Time pending" : row.tonightTime}</time></div>
 <button className="primary-action singhere-brand-action" aria-label={venue.venueType==='private_room'?'SingHERE private rooms':row.tonight?'SingHERE tonight':'SingHERE signup information'} data-toast="SingHERE flow would open here"><SingHereMark alt="" className="singhere-wordmark" /></button>
 </div>
-<TourStopCheckIn venueSlug={venue.slug} venueName={venue.venueName} />
+<TourStopCheckIn venueSlug={venue.slug} venueName={venue.venueName} offer={activeOffer} />
 <div className="secondary-actions"><button data-toast="Directions opened">{"Directions"}</button><button data-toast="Venue saved">{"Save"}</button><button data-toast="Share sheet opened">{"Share"}</button></div>
 </section>
 <section className="section">
