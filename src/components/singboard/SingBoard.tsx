@@ -223,8 +223,14 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             style={{left:`${post.x}%`,top:`${post.y}%`,transform:`rotate(${post.rotation}deg)`,zIndex:post.pinned?10:35}}
           >
             {post.pinned&&<span className={`absolute left-1/2 top-1 z-20 h-3 w-3 -translate-x-1/2 rounded-full sm:h-4 sm:w-4 ${pinClass(post.id)}`}/>} 
-            {post.postType==="image"&&post.imageUrl
-              ?<img src={post.imageUrl} alt={post.title} className="block max-h-[390px] w-full border border-white/5 object-contain" draggable={false}/>
+            {post.postType==="image"&&post.imageUrl&&!brokenImages.has(post.id)
+              ?<img
+                src={post.imageUrl}
+                alt={post.title}
+                className="block max-h-[52vh] w-full border border-white/5 bg-black object-contain"
+                draggable={false}
+                onError={()=>setBrokenImages(current=>new Set(current).add(post.id))}
+              />
               :post.postType==="wanted"
                 ?<span
                   className="relative flex aspect-[4/5] w-full flex-col overflow-hidden border-[2px] border-slate-950 bg-[#f5f2ea] p-2 text-slate-950 shadow-[0_10px_24px_rgba(0,0,0,.45)]"
