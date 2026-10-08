@@ -266,10 +266,8 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
                 </span>}
           </button>)}
 
-          <div className="pointer-events-none absolute bottom-4 left-1/2 z-20 w-[58%] -translate-x-1/2 rounded-full border border-white/10 bg-black/55 px-4 py-3 text-center text-[10px] font-black uppercase tracking-[.14em] text-slate-300 backdrop-blur-sm sm:text-xs">
-            <span className="text-fuchsia-300">📌 Events + wanted posts from local hosts &amp; venues</span>
-            <span className="mx-2 text-slate-600">•</span>
-            <span className="text-cyan-300">New events added regularly</span>
+          <div className="pointer-events-none absolute bottom-2 left-1/2 z-20 -translate-x-1/2 rounded-full border border-white/10 bg-black/55 px-3 py-1.5 text-center text-[7px] font-black uppercase tracking-[.1em] text-slate-300 backdrop-blur-sm sm:text-[9px]">
+            Tap a pin for the full event
           </div>
         </div>
       </div>
@@ -309,7 +307,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
         <button disabled={posting||!draft||!selectedSlotId} onClick={publish} className="w-full rounded-xl bg-cyan-300 px-4 py-3 font-black text-slate-950 shadow-[0_0_20px_rgba(34,211,238,.18)] disabled:opacity-40">{posting?"Publishing…":"Publish in selected space"}</button>
         <p className="text-xs leading-5 text-slate-300" aria-live="polite">{status}</p>
         <p className="text-[11px] text-slate-500">Event posts open their event page. Wanted posters can point to a full job ad and use the date as an automatic cleanup date.</p>
-      </aside>
+      </aside>}
     </div>
   </div>;
 }
