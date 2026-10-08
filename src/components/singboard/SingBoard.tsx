@@ -184,11 +184,11 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
       {boardExportMessage&&<p className="basis-full text-xs font-semibold text-cyan-200" aria-live="polite">{boardExportMessage}</p>}
     </div>}
 
-    <div className="grid gap-4">
+    <div className="mx-auto grid max-w-5xl gap-4">
       <div className="rounded-[1.25rem] border border-white/10 bg-[#05060a] p-1.5 shadow-[0_24px_70px_rgba(0,0,0,.55),0_0_36px_rgba(236,72,153,.10)] sm:p-3">
         <div
           ref={boardRef}
-          className="relative h-[calc(100dvh-190px)] min-h-[620px] overflow-hidden rounded-[1rem] border border-white/10 bg-[#080910] shadow-[inset_0_0_90px_rgba(0,0,0,.75),inset_0_0_35px_rgba(139,92,246,.08)] sm:h-[calc(100dvh-170px)] sm:min-h-[720px]"
+          className="relative h-[620px] overflow-hidden rounded-[1rem] border border-white/10 bg-[#080910] shadow-[inset_0_0_90px_rgba(0,0,0,.75),inset_0_0_35px_rgba(139,92,246,.08)] sm:h-[560px] lg:h-[600px]"
           style={{backgroundImage:"radial-gradient(circle at 14% 7%, rgba(236,72,153,.18), transparent 28%), radial-gradient(circle at 88% 10%, rgba(34,211,238,.14), transparent 30%), radial-gradient(circle at 54% 74%, rgba(139,92,246,.12), transparent 35%), repeating-linear-gradient(135deg, rgba(255,255,255,.018) 0 1px, transparent 1px 8px), linear-gradient(180deg,#10121a 0%,#090a10 58%,#06070b 100%)"}}
         >
           <div className="pointer-events-none absolute -left-20 top-8 h-56 w-56 rounded-full bg-fuchsia-500/10 blur-3xl"/>
@@ -207,10 +207,10 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             {selectedSlotId===slot.id?"Selected":`Place here · ${slot.id}`}
           </button>)}
 
-          <div className="pointer-events-none absolute left-1/2 top-8 z-30 w-[62%] max-w-[760px] -translate-x-1/2">
+          <div className="pointer-events-none absolute left-1/2 top-5 z-30 w-[46%] max-w-[420px] -translate-x-1/2">
             <img src="/images/singboard-wordmark.webp" alt="SingBOARD" className="h-auto w-full object-contain" />
           </div>
-          <p className="pointer-events-none absolute left-1/2 top-3 z-30 w-[72%] -translate-x-1/2 text-center text-[8px] font-black uppercase tracking-[.26em] text-slate-300/80 sm:text-[10px]">
+          <p className="pointer-events-none absolute left-1/2 top-2 z-30 w-[72%] -translate-x-1/2 text-center text-[7px] font-black uppercase tracking-[.22em] text-slate-300/70 sm:text-[8px]">
             The bulletin board for karaoke + community
           </p>
 
