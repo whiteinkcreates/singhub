@@ -1,4 +1,5 @@
 export const revalidate = 300;
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HostProfileTemplate } from "@/components/host/HostProfileTemplate";
 import { getActiveHosts, getHostBySlug } from "@/lib/hostData";
@@ -12,30 +13,33 @@ export async function generateStaticParams() {
   return hosts.map((host) => ({ slug: host.slug }));
 }
 
-export async function generateMetadata({ params }: HostProfilePageProps) {
+export async function generateMetadata({ params }: HostProfilePageProps): Promise<Metadata> {
   const { slug } = await params;
   const host = await getHostBySlug(slug);
 
-  if (!host) {
-    return {
-      title: "Karaoke Host | SingHUB",
-    };
-  }
+  if (!host) return { title: "Karaoke Host | SingHUB" };
 
-  const description =
-    host.bio ||
-    `See where ${host.publicDisplayName} is hosting karaoke this week in San Diego on SingHUB.`;
+  const title = `${host.publicDisplayName} Karaoke Schedule | SingHUB`;
+  const description = host.bio || `See where ${host.publicDisplayName} is hosting karaoke this week in San Diego on SingHUB.`;
+  const image = host.profileImageUrl || host.heroImageUrl || host.directoryHeroImageUrl || host.logoUrl || "/images/og/singhub-og.png";
 
   return {
-    title: `${host.publicDisplayName} Karaoke Schedule | SingHUB`,
+    title,
     description,
-    alternates: {
-      canonical: `/hosts/${host.slug}`,
-    },
+    alternates: { canonical: `/hosts/${host.slug}` },
     openGraph: {
-      title: `${host.publicDisplayName} Karaoke Schedule | SingHUB`,
+      type: "profile",
+      url: `/hosts/${host.slug}`,
+      siteName: "SingHUB",
+      title,
       description,
-      images: [host.profileImageUrl || host.logoUrl || "/images/og/singhub-og.png"],
+      images: [{ url: image, alt: `${host.publicDisplayName} on SingHUB` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
     },
   };
 }
