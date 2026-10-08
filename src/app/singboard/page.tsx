@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { SingBoard } from "@/components/singboard/SingBoard";
 import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
-import { SINGBOARD_STICKER_ART } from "@/lib/singboardStickerArt";
 
 export const metadata: Metadata = {
   title: "SingBOARD | SingHUB",
