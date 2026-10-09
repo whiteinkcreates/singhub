@@ -36,8 +36,9 @@ function fixture(){
  const imports={
   'next/server':{NextResponse:Response},
   '@/lib/supabase/admin':{createAdminClient:()=>client},
-  '@/lib/venueData':{getVenueListings:async()=>[{id:'venue-1',slug:'one',venueName:'One',neighborhood:'La Mesa',latitude:32.77,longitude:-117.02}]},
+  '@/lib/venueData':{getVenueListings:async()=>[{id:'venue-1',slug:'one',venueName:'One',neighborhood:'La Mesa',metro:'san-diego',latitude:32.77,longitude:-117.02}]},
   '@/lib/publicVenueFilters':{getPublicVenues:venues=>venues},
+  '@/lib/markets':{getMarketConfig:id=>id==='san-diego'?{status:'live'}:{status:'staging'}},
   '@/lib/tourStops':{
    nightlifeDate:()=>today,
    locationMatchReason:(location)=>location&&location.accuracy<=150?null:'low_accuracy'
