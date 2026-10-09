@@ -9,6 +9,25 @@
 :is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog form label{display:grid;gap:8px}
 :is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog input{width:100%;background:#061018;color:white;border:1px solid #667582;border-radius:6px;padding:12px}
 :is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions{display:grid;gap:12px}
+
+/* An inaccurate indoor GPS fix must not strand a singer at the venue.
+   Recovery is an explicit, labeled self-report and never impersonates GPS verification. */
+:is(.v2-basic,.v2-enhanced,.v2-account) .gig-gps-recovery{
+ display:grid;gap:9px;margin:14px 0 18px;padding:16px;
+ border:1px solid rgba(255,25,168,.65);border-left:5px solid #ff19a8;
+ border-radius:10px;background:linear-gradient(135deg,rgba(255,25,168,.12),rgba(0,200,255,.07));
+}
+:is(.v2-basic,.v2-enhanced,.v2-account) .gig-gps-recovery strong{
+ color:#fff;font:900 18px/1.22 Barlow,sans-serif;
+}
+:is(.v2-basic,.v2-enhanced,.v2-account) .gig-gps-recovery p{
+ margin:0;color:#d6e3ec;font:500 15px/1.45 Barlow,sans-serif;
+}
+:is(.v2-basic,.v2-enhanced,.v2-account) .gig-gps-recovery button{
+ min-height:48px;width:100%;background:#0b2430;border:1px solid #00c8ff;border-radius:8px;
+ color:#fff;font:800 16px Barlow,sans-serif;cursor:pointer;
+}
+
 :is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog button:disabled{opacity:.6;cursor:wait}
 :is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog a{color:#0bd3ef;text-decoration:underline}
 :is(.v2-basic,.v2-enhanced,.v2-account) .gig-stub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:16px;padding:20px}
