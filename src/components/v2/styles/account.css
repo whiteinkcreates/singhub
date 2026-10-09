@@ -39,6 +39,11 @@
     .v2-account .patch-slot.earned { border:0; background-image:url("/images/singhub-v2/achievement-patch-direction.png"); background-repeat:no-repeat; background-size:400% auto; box-shadow:0 4px 8px rgba(0,0,0,.55); }
     .v2-account .patch-slot.p1 { background-position:0% 16%; } .v2-account .patch-slot.p2 { background-position:33.333% 16%; } .v2-account .patch-slot.p3 { background-position:66.666% 16%; } .v2-account .patch-slot.p4 { background-position:100% 16%; } .v2-account .patch-slot.p5 { background-position:0% 36%; } .v2-account .patch-slot.p6 { background-position:33.333% 36%; }
     .v2-account .performance-star { position:absolute; z-index:3; transform:translate(-50%,-50%) rotate(var(--r,0deg)); color:var(--gold); font-size:clamp(.48rem,1.1vw,.86rem); line-height:1; text-shadow:0 1px 2px #000,0 0 7px rgba(255,206,78,.6); pointer-events:none; }
+    /* Star provenance is a tiny sleeve stamp, not an invented award. */
+    .v2-account .performance-star .star-sr { position:absolute; top:80%; left:45%; transform:translateX(-50%) rotate(calc(-1 * var(--r,0deg))); padding:1px 2px; border:1px solid rgba(255,255,255,.22); border-radius:2px; background:rgba(5,10,18,.88); color:#e4edf2; font:900 clamp(5px,.55vw,8px)/1 Barlow,sans-serif; letter-spacing:0; text-decoration:none; text-shadow:none; }
+    .v2-account .star-source-note { display:block; margin:10px 0 0; color:#b8c7d2; font:600 .76rem/1.5 Barlow,sans-serif; }
+    .v2-account .star-source-note abbr { display:inline-block; padding:1px 4px; margin-right:3px; border:1px solid rgba(0,200,255,.45); border-radius:3px; background:rgba(0,200,255,.08); color:#92e9fc; font:900 .66rem Barlow,sans-serif; text-decoration:none; }
+
     .v2-account .surface { position:relative; z-index:5; width:min(1180px,calc(100% - 34px)); margin:-34px auto 110px; }
     .v2-account .career-strip { display:grid; grid-template-columns:1.35fr repeat(4,.65fr); border:1px solid var(--line-hi); border-top-color:#657181; background:linear-gradient(145deg,rgba(27,33,42,.98),rgba(10,13,18,.98)); box-shadow:0 28px 65px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.09); }
     .v2-account .career-name,.v2-account .metric { min-height:94px; padding:18px 20px; border-left:1px solid var(--line); }
@@ -103,7 +108,8 @@
     .v2-account .song-list { padding:0 19px 8px; }
     .v2-account .song-row { display:grid; grid-template-columns:38px minmax(0,1fr) auto; gap:13px; align-items:center; min-height:76px; border-bottom:1px solid var(--line); }
     .v2-account .song-row:last-child { border-bottom:0; }
-    .v2-account .song-star { display:grid; place-items:center; width:34px; height:34px; border:1px solid rgba(255,25,168,.34); border-radius:50%; background:rgba(255,25,168,.07); color:var(--pink); }
+    .v2-account .song-star { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; width:34px; height:34px; border:1px solid rgba(255,25,168,.34); border-radius:50%; background:rgba(255,25,168,.07); color:var(--pink); font-size:14px; line-height:1; }
+    .v2-account .song-star abbr { margin-top:1px; color:#d9e1e9; font:900 8px/1 Barlow,sans-serif; text-decoration:none; }
     .v2-account .song-row strong { display:block; font-size:.9rem; }
     .v2-account .song-row p { margin:4px 0 0; color:var(--muted); font-size:.76rem; }
     .v2-account .song-row time { color:var(--muted); font-size:.72rem; white-space:nowrap; }
