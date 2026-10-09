@@ -219,7 +219,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             type="button"
             onClick={post.pinned?()=>{const href=post.postType==="wanted"&&post.linkUrl?post.linkUrl:`/events/${post.id}`;if(isExternalWebUrl(href,window.location.origin))window.open(href,"_blank","noopener,noreferrer");else window.location.assign(href);}:undefined}
             title={post.pinned?`View ${post.title}`:"Flyer placement preview"}
-            className={`absolute ${post.postType==="wanted"?"w-[18%]":post.postType==="note"?"w-[12%]":"w-[23%]"} select-none text-left shadow-[0_12px_20px_rgba(0,0,0,.48)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
+            className={`absolute ${post.postType==="wanted"?"w-[18%]":post.postType==="note"||brokenImages.has(post.id)?"w-[12%]":"w-[23%]"} select-none text-left shadow-[0_12px_20px_rgba(0,0,0,.48)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
             style={{left:`${post.x}%`,top:`${post.y}%`,transform:`rotate(${post.rotation}deg)`,zIndex:post.pinned?10:35}}
           >
             {post.pinned&&<span className={`absolute left-1/2 top-1 z-20 h-3 w-3 -translate-x-1/2 rounded-full sm:h-4 sm:w-4 ${pinClass(post.id)}`}/>} 
@@ -231,6 +231,13 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
                 draggable={false}
                 onError={()=>setBrokenImages(current=>new Set(current).add(post.id))}
               />
+              :post.postType==="image"
+                ?<span className="block aspect-[4/5] overflow-hidden border border-white/10 bg-[linear-gradient(160deg,rgba(236,72,153,.18),rgba(8,9,16,.96)_45%,rgba(34,211,238,.12))] p-2.5 pt-5 text-white shadow-inner">
+                  <strong className="block text-[8px] font-black uppercase leading-[1.05] sm:text-[10px]" style={{display:"-webkit-box",WebkitLineClamp:4,WebkitBoxOrient:"vertical",overflow:"hidden"}}>{post.title}</strong>
+                  <span className="mt-2 block border-t border-white/15 pt-1 text-[6px] font-black uppercase leading-tight text-cyan-200 sm:text-[7px]">{post.venue}</span>
+                  {post.startTime&&<span className="mt-0.5 block text-[6px] font-bold leading-tight text-slate-300 sm:text-[7px]">{post.startTime.replace(/\\n/g," ")}</span>}
+                  <span className="mt-2 block text-[5px] font-black uppercase tracking-[.08em] text-fuchsia-200 sm:text-[6px]">Tap for event details</span>
+                </span>
               :post.postType==="wanted"
                 ?<span
                   className="relative flex aspect-[4/5] w-full flex-col overflow-hidden border-[2px] border-slate-950 bg-[#f5f2ea] p-2 text-slate-950 shadow-[0_10px_24px_rgba(0,0,0,.45)]"
