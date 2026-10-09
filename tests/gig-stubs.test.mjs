@@ -112,3 +112,20 @@ test('early arrival stays pending until the user confirms they are still there a
  const confirmed=await (await post()).json();assert.equal(confirmed.confirmedFromPending,true);assert.equal(rows[0].status,'confirmed');assert.ok(rows[0].confirmed_at);
  collection=await (await api.GET(new Request('https://singhub.app/api/tour-stops',{headers:{Authorization:'Bearer test-token'}}))).json();assert.equal(collection.stops.length,1);
 });
+
+test('Pal Joey’s official map position is near the canonical pin for reliable GPS check-in',()=>{
+ const [header,...rows]=readFileSync('public/data/venues.tsv','utf8').trim().split(/\r?\n/).map(line=>line.split('\t'));
+ const at=key=>header.indexOf(key);
+ const row=rows.find(cells=>cells[at('slug')]==='pal-joeys');
+ assert.ok(row,'Pal Joey’s canonical listing must exist');
+ const venue={latitude:Number(row[at('latitude')]),longitude:Number(row[at('longitude')])};
+ // Coordinates of the Google map embedded on the venue's own Location page.
+ const officialMap={latitude:32.79090049058461,longitude:-117.08328418486511};
+ const rad=n=>n*Math.PI/180;
+ const a=Math.sin(rad(officialMap.latitude-venue.latitude)/2)**2
+  +Math.cos(rad(venue.latitude))*Math.cos(rad(officialMap.latitude))
+  *Math.sin(rad(officialMap.longitude-venue.longitude)/2)**2;
+ const distance=6371000*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+ assert.ok(distance<75,'Pal Joey’s pin is displaced '+Math.round(distance)+'m from the venue’s embedded map');
+ assert.equal(helpers.locationMatch({...officialMap,accuracy:30},venue),true);
+});
