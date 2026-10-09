@@ -71,7 +71,14 @@ export async function POST(request:Request){
     checkinId=race.id;
    }
   }
-  const offerUnlock=await unlockVenueOffer({userId:auth.user.id,checkinId,venueId:venue.id,venueSlug:venue.slug,nightlifeDate:day,weekday:offerWeekday(day)});
-  return NextResponse.json({checkedIn:true,alreadyCheckedIn:Boolean(existing),venueName:venue.venueName,offerUnlock,tourStopCollected:false},{headers:{'Cache-Control':'private, no-store'}});
+  let offerUnlock;
+  let offerError: string|undefined;
+  try {
+   offerUnlock=await unlockVenueOffer({userId:auth.user.id,checkinId,venueId:venue.id,venueSlug:venue.slug,nightlifeDate:day,weekday:offerWeekday(day)});
+  } catch(error) {
+   console.error('Venue offer unlock failed after successful check-in',error);
+   offerError='Your visit was saved, but the venue offer could not be loaded. Try again shortly.';
+  }
+  return NextResponse.json({checkedIn:true,alreadyCheckedIn:Boolean(existing),venueName:venue.venueName,offerUnlock,offerError,tourStopCollected:false},{headers:{'Cache-Control':'private, no-store'}});
  }catch(error){console.error('Venue check-in save failed',error);return NextResponse.json({error:'Venue check-in could not be saved.'},{status:503});}
 }
