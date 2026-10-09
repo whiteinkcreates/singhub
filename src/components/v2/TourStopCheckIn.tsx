@@ -85,7 +85,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
    if(action==='venue'){
     setVenueCheckedIn(true);
     setOfferUnlock(result.offerUnlock||offerUnlock);
-    setMessage(result.offerUnlock?'Checked in! Your SingHUB Offer is unlocked below.':result.alreadyCheckedIn?'You have already checked in here for this venue day.':'Venue check-in recorded. A Tour Stop is earned separately during karaoke.');
+    setMessage(result.offerError|| (result.offerUnlock?'Checked in! Your SingHUB Offer is unlocked below.':result.alreadyCheckedIn?'You have already checked in here for this venue day.':'Venue check-in recorded. A Tour Stop is earned separately during karaoke.'));
     trackEvent('venue_check_in',{venue_slug:venueSlug,check_in_method:method,offer_unlocked:Boolean(result.offerUnlock)});
    }else{
     if(result.pending){
