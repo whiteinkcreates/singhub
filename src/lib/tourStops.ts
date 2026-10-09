@@ -12,13 +12,19 @@ export function nightlifeDate(now=new Date()){
  return date.toISOString().slice(0,10);
 }
 
-export function locationMatch(input:unknown,venue:{latitude:number|null;longitude:number|null}){
- if(!input||typeof input!=='object')return false;
+export function locationMatchReason(input:unknown,venue:{latitude:number|null;longitude:number|null}):'invalid_location'|'low_accuracy'|'missing_venue_coordinates'|'too_far'|null{
+ if(!input||typeof input!=='object')return 'invalid_location';
  const {latitude,longitude,accuracy}=input as Record<string,unknown>;
- if(typeof latitude!=='number'||typeof longitude!=='number'||typeof accuracy!=='number'||![latitude,longitude,accuracy].every(Number.isFinite)||Math.abs(latitude)>90||Math.abs(longitude)>180||accuracy<0||accuracy>150||venue.latitude===null||venue.longitude===null)return false;
+ if(typeof latitude!=='number'||typeof longitude!=='number'||typeof accuracy!=='number'||![latitude,longitude,accuracy].every(Number.isFinite)||Math.abs(latitude)>90||Math.abs(longitude)>180||accuracy<0)return 'invalid_location';
+ if(accuracy>150)return 'low_accuracy';
+ if(venue.latitude===null||venue.longitude===null)return 'missing_venue_coordinates';
  const rad=(n:number)=>n*Math.PI/180;
  const a=Math.sin(rad(latitude-venue.latitude)/2)**2+Math.cos(rad(venue.latitude))*Math.cos(rad(latitude))*Math.sin(rad(longitude-venue.longitude)/2)**2;
- return 6371000*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))<=250;
+ return 6371000*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))<=250?null:'too_far';
+}
+
+export function locationMatch(input:unknown,venue:{latitude:number|null;longitude:number|null}){
+ return locationMatchReason(input,venue)===null;
 }
 
 export function collectTourStops(visits:TourStopVisit[]){
