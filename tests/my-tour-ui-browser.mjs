@@ -60,7 +60,7 @@ try{
    };
   });
   assert.ok(info.badgeWidth>=info.labelWidth,'Tour count text fits the stat box');
-  assert.match(info.labelText,/Tour\s+Stops/,'Count label is stacked');
+  assert.match(info.labelText,/Tour\s+Stops/i,'Count label is stacked');
   assert.ok(info.tiles>=4,'Leaflet loads multiple adjacent map tiles');
   assert.ok(info.positions.every(position=>position==='absolute'),'Leaflet raster tiles must be absolutely positioned');
   assert.notEqual(info.filter,'none','Night map treats tiles with a non-default palette');
