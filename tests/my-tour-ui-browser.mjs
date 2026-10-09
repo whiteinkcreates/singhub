@@ -60,7 +60,7 @@ try{
    };
   });
   assert.ok(info.badgeWidth>=info.labelWidth,'Tour count text fits the stat box');
-  assert.match(info.labelText,/Tour\\s+Stops/,'Count label is stacked');
+  assert.match(info.labelText,/Tour\s+Stops/,'Count label is stacked');
   assert.ok(info.tiles>=4,'Leaflet loads multiple adjacent map tiles');
   assert.ok(info.positions.every(position=>position==='absolute'),'Leaflet raster tiles must be absolutely positioned');
   assert.notEqual(info.filter,'none','Night map treats tiles with a non-default palette');
@@ -74,7 +74,7 @@ try{
   await page.getByRole('button',{name:'I just sang',exact:true}).click();
   const songLink=page.getByRole('link',{name:/Log a song I sang/});
   await songLink.waitFor();
-  assert.match(await songLink.getAttribute('href'),/^\\/account\\?perform=deanos-pub$/);
+  assert.match(await songLink.getAttribute('href'),/^\/account\?perform=deanos-pub$/);
   assert.ok(Number.parseFloat(await songLink.evaluate(el=>getComputedStyle(el).borderTopWidth))>=1,'Log song link must be visibly boxed');
   await page.screenshot({path:'.my-tour-qa/song-log-'+width+'.png'});
   assert.deepEqual(errors,[],'No browser JS errors');
