@@ -13,8 +13,9 @@ async function viewer(request:Request){
  const {data,error}=await client.auth.getUser(token);
  return !error&&data.user?.email_confirmed_at?{client,user:data.user}:null;
 }
-function weekdayInSanDiego(now=new Date()){
- return new Intl.DateTimeFormat('en-US',{weekday:'long',timeZone:'America/Los_Angeles'}).format(now);
+function offerWeekday(day:string){
+ // Offer days use the same 4 AM venue-day rollover as redemption and check-ins.
+ return new Intl.DateTimeFormat('en-US',{weekday:'long',timeZone:'UTC'}).format(new Date(day+'T12:00:00Z'));
 }
 async function venueFor(slug:string){
  return getPublicVenues(await getVenueListings()).find(venue=>venue.slug===slug);
@@ -30,7 +31,7 @@ export async function GET(request:Request){
   const day=nightlifeDate();
   const {data,error}=await auth.client.from('singer_venue_checkins').select('id,method,checked_in_at').eq('user_id',auth.user.id).eq('venue_id',venue.id).eq('checked_in_on',day).maybeSingle();
   if(error)throw error;
-  const offerUnlock=data?await getVenueOfferUnlock(auth.user.id,venue.id,day):undefined;
+  const offerUnlock=await getVenueOfferUnlock(auth.user.id,venue.id,day);
   return NextResponse.json({checkin:data||null,offerUnlock},{headers:{'Cache-Control':'private, no-store'}});
  }catch(error){console.error('Venue check-in lookup failed',error);return NextResponse.json({error:'Could not load venue check-in.'},{status:503});}
 }
@@ -67,7 +68,7 @@ export async function POST(request:Request){
     checkinId=race.id;
    }
   }
-  const offerUnlock=await unlockVenueOffer({userId:auth.user.id,checkinId,venueId:venue.id,venueSlug:venue.slug,nightlifeDate:day,weekday:weekdayInSanDiego()});
+  const offerUnlock=await unlockVenueOffer({userId:auth.user.id,checkinId,venueId:venue.id,venueSlug:venue.slug,nightlifeDate:day,weekday:offerWeekday(day)});
   return NextResponse.json({checkedIn:true,alreadyCheckedIn:Boolean(existing),venueName:venue.venueName,offerUnlock,tourStopCollected:false},{headers:{'Cache-Control':'private, no-store'}});
  }catch(error){console.error('Venue check-in save failed',error);return NextResponse.json({error:'Venue check-in could not be saved.'},{status:503});}
 }
