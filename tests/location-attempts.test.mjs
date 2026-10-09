@@ -98,10 +98,10 @@ test('venue and karaoke GPS buttons are primary, while self-report stays availab
  const page=readFileSync('src/components/v2/TourStopCheckIn.tsx','utf8');
  const css=readFileSync('src/components/v2/tourStops.css','utf8');
  for(const method of ["checkIn('venue','location_matched')","checkIn('tour','location_matched')"]){
-  assert.ok(page.includes('className="gig-gps-primary" disabled={pending} onClick={()=>void '+method+')'));
+  assert.ok(page.includes('className="gig-gps-primary" disabled={pending} onClick={()=>void '+method+'}'));
  }
  for(const method of ["checkIn('venue','self_reported')","checkIn('tour','self_reported')"]){
-  assert.ok(page.includes('className="gig-self-report" disabled={pending} onClick={()=>void '+method+')'));
+  assert.ok(page.includes('className="gig-self-report" disabled={pending} onClick={()=>void '+method+'}'));
  }
  assert.match(css,/\.gig-actions button\.gig-gps-primary/);
  assert.match(css,/\.gig-actions button\.gig-self-report/);
