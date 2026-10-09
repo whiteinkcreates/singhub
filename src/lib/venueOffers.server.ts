@@ -69,7 +69,8 @@ export async function getVenueOfferUnlock(userId: string, venueId: string, night
 
 export async function unlockVenueOffer(input: {
   userId: string;
-  visitId: string;
+  visitId?: string;
+  checkinId?: string;
   venueId: string;
   venueSlug: string;
   nightlifeDate: string;
@@ -88,7 +89,8 @@ export async function unlockVenueOffer(input: {
       .from("venue_offer_unlocks")
       .insert({
         user_id: input.userId,
-        visit_id: input.visitId,
+        ...(input.visitId ? { visit_id: input.visitId } : {}),
+        ...(input.checkinId ? { checkin_id: input.checkinId } : {}),
         venue_id: input.venueId,
         venue_slug: input.venueSlug,
         nightlife_date: input.nightlifeDate,
