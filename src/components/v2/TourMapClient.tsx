@@ -79,7 +79,7 @@ export default function TourMapClient({venues}:{venues:MappableVenue[]}){
    <button type="button" aria-pressed={mapTheme==='street'} onClick={()=>setMapTheme('street')}>Street</button>
   </div>
   {tilesFailed&&<div className="tour-map-error" role="status">
-   Some map tiles didn't load.
+   Some map tiles didn’t load.
    <button type="button" onClick={()=>{setTilesFailed(false);setTileRefresh(value=>value+1);}}>Retry map</button>
   </div>}
  </div>;
