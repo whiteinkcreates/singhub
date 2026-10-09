@@ -7,6 +7,6 @@ export function MyJacket({skin,patches=[],performanceStars=0,onPatch}:{skin:'den
  return <div className="jacket-layer" data-jacket-layer aria-label="Achievement jacket with 24 fixed patch spaces">
    <img src={'/images/singhub-v2/jacket-'+(skin==='neon'?'neon':'denim')+'-blank.png'} alt={(skin==='neon'?'Black neon premium':'Denim')+' SingHUB achievement jacket'} data-jacket-image />
    {slots.map(([x,y,r],index)=>{const style={left:x+'%',top:y+'%','--r':r+'deg'} as CSSProperties;const patch=patches[index];return patch?<button key={index} className={'patch-slot earned '+patch.className} style={style} onClick={()=>onPatch(patch)} aria-label={'Open '+patch.name+' patch'} title={patch.name} />:<span key={index} className="patch-slot empty" style={style} title="Open patch space" />;})}
-   {stars.slice(0,performanceStars).map(([x,y,r],index)=><span className="performance-star" key={index} style={{left:x+'%',top:y+'%','--r':r+'deg'} as CSSProperties}>★</span>)}
+   {stars.slice(0,performanceStars).map(([x,y,r],index)=><span className="performance-star" key={index} style={{left:x+'%',top:y+'%','--r':r+'deg'} as CSSProperties} title="SR · Singer-reported performance" aria-label="Self-reported performance star">★<abbr className="star-sr" title="Self-reported performance">SR</abbr></span>)}
  </div>;
 }

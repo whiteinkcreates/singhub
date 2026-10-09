@@ -9,6 +9,25 @@
 :is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog form label{display:grid;gap:8px}
 :is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog input{width:100%;background:#061018;color:white;border:1px solid #667582;border-radius:6px;padding:12px}
 :is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions{display:grid;gap:12px}
+/* GPS is the recommended route. Self-report remains available for indoor drift. */
+:is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions button.gig-gps-primary{
+ min-height:54px;width:100%;border:2px solid #00c8ff;
+ background:linear-gradient(112deg,#036c92,#092a53 58%,#30143a);
+ box-shadow:inset 0 1px rgba(255,255,255,.17),0 0 16px rgba(0,200,255,.19);
+ color:#fff;font:900 17px/1.2 Barlow,sans-serif;
+}
+:is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions button.gig-gps-primary:not(:disabled):hover{
+ border-color:#61edff;background:linear-gradient(112deg,#047da7,#0d3567 58%,#471648);
+ box-shadow:0 0 20px rgba(0,200,255,.27);
+}
+:is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions button.gig-self-report{
+ min-height:42px;width:100%;padding:9px 12px;border:1px solid rgba(142,171,190,.55);
+ background:rgba(5,12,20,.55);color:#d1dfe8;font:650 14px/1.3 Barlow,sans-serif;
+}
+:is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions button.gig-self-report:not(:disabled):hover{
+ border-color:#ff19a8;background:rgba(255,25,168,.09);color:#fff;
+}
+
 
 /* An inaccurate indoor GPS fix must not strand a singer at the venue.
    Recovery is an explicit, labeled self-report and never impersonates GPS verification. */
