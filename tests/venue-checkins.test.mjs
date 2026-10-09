@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import ts from 'typescript';
 
 function fixture(){
- const rows=[];let offerEnabled=true;
+ const rows=[];let offerEnabled=true;let offerFailure=false;
  const visits=[];
  const today='2026-10-08';
  const client={
@@ -47,6 +47,7 @@ function fixture(){
    getVenueOfferUnlock:async()=>undefined,
    unlockVenueOffer:async(input)=>{
     visits.push(input);
+    if(offerFailure)throw new Error('simulated offer failure');
     return offerEnabled?{title:'Venue deal',code:'321987'}:undefined;
    }
   }
@@ -59,7 +60,7 @@ function fixture(){
    method,headers:{Authorization:'Bearer '+token,Origin:origin},...(method==='POST'?{body:JSON.stringify(body)}:{})
   });
  }
- return {api:output,rows,visits,request,setOfferEnabled:value=>{offerEnabled=value;}};
+ return {api:output,rows,visits,request,setOfferEnabled:value=>{offerEnabled=value;},setOfferFailure:value=>{offerFailure=value;}};
 }
 
 test('venue check-in saves without any karaoke schedule and never awards a Tour Stop',async()=>{
@@ -108,4 +109,15 @@ test('GET returns venue presence, separate from Tour Stops',async()=>{
  const result=await response.json();
  assert.equal(result.checkin.id,'checkin-1');
  assert.equal(result.offerUnlock,undefined);
+});
+
+test('successful venue check-in survives a temporary offer error',async()=>{
+ const {api,rows,request,setOfferFailure}=fixture();
+ setOfferFailure(true);
+ const response=await api.POST(request('POST',{venueSlug:'one',method:'self_reported'}));
+ assert.equal(response.status,200);
+ const data=await response.json();
+ assert.equal(data.checkedIn,true);
+ assert.match(data.offerError,/visit was saved/i);
+ assert.equal(rows.length,1);
 });
