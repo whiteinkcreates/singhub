@@ -213,16 +213,16 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
     <div className="gig-actions">
      <strong>{venueCheckedIn?'✓ Venue check-in saved':'Venue check-in · Anytime'}</strong>
      {!venueCheckedIn&&<>
-      <button type="button" disabled={pending} onClick={()=>void checkIn('venue','location_matched')}>{pending?'Working…':'Check in with my location'}</button>
-      <button type="button" disabled={pending} onClick={()=>void checkIn('venue','self_reported')}>Self-report venue visit</button>
+      <button type="button" className="gig-gps-primary" disabled={pending} onClick={()=>void checkIn('venue','location_matched')}>{pending?'Working…':'Check in with my location'}</button>
+      <button type="button" className="gig-self-report" disabled={pending} onClick={()=>void checkIn('venue','self_reported')}>Self-report venue visit</button>
      </>}
     </div>
     <div className="gig-actions">
      <strong>{visitStatus==='confirmed'?'★ Tour Stop collected':'Tour Stop · Karaoke nights only'}</strong>
      {visitStatus==='confirmed'?<Link href="/account#tour-stops">View My Tour →</Link>:tourOpen?
       <>
-       <button type="button" disabled={pending} onClick={()=>void checkIn('tour','location_matched')}>{pending?'Working…':'Collect Tour Stop with GPS'}</button>
-       <button type="button" disabled={pending} onClick={()=>void checkIn('tour','self_reported')}>Self-report karaoke attendance</button>
+       <button type="button" className="gig-gps-primary" disabled={pending} onClick={()=>void checkIn('tour','location_matched')}>{pending?'Working…':'Collect Tour Stop with GPS'}</button>
+       <button type="button" className="gig-self-report" disabled={pending} onClick={()=>void checkIn('tour','self_reported')}>Self-report karaoke attendance</button>
       </>:<p className="gig-fine">{eligibility?.reason||'Tour Stop availability is loading. Karaoke must have started before collecting.'}</p>
      }
     </div>
