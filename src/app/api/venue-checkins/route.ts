@@ -3,6 +3,7 @@ import {createAdminClient} from '@/lib/supabase/admin';
 import {getVenueListings} from '@/lib/venueData';
 import {getPublicVenues} from '@/lib/publicVenueFilters';
 import {locationMatchReason,nightlifeDate} from '@/lib/tourStops';
+import {getMarketConfig} from '@/lib/markets';
 import {getVenueOfferUnlock,unlockVenueOffer} from '@/lib/venueOffers.server';
 export const dynamic='force-dynamic';
 
@@ -18,7 +19,9 @@ function offerWeekday(day:string){
  return new Intl.DateTimeFormat('en-US',{weekday:'long',timeZone:'UTC'}).format(new Date(day+'T12:00:00Z'));
 }
 async function venueFor(slug:string){
- return getPublicVenues(await getVenueListings()).find(venue=>venue.slug===slug);
+ const venue=getPublicVenues(await getVenueListings()).find(item=>item.slug===slug);
+ // Multi-market check-ins stay staged until every market has local-time tests.
+ return venue&&getMarketConfig(venue.metro)?.status==='live'?venue:undefined;
 }
 export async function GET(request:Request){
  try{
