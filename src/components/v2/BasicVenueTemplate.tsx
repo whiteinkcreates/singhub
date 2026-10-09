@@ -5,6 +5,7 @@ import {PositionedImage} from '@/components/media/PositionedImage';
 import {SingHereMark} from '@/components/brand/SingHereMark';
 import Link from "next/link";
 import {TourStopCheckIn} from './TourStopCheckIn';
+import {getMarketConfig} from '@/lib/markets';
 import { eventRunsOnNight, scheduleQualification } from '@/lib/eventOccurrence';
 import { useRef,useState } from 'react';
 import { useV2Actions,useViewerInitials } from './actions';
@@ -49,7 +50,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <div className="event-row"><div><strong>{venue.venueType==='private_room'?'Reserve a room':'Karaoke'}</strong><div className="host">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Host details pending' : venue.venueType==='private_room'?'Contact the venue for room availability.':'No confirmed karaoke tonight'}</div></div><time className="event-time">{row.tonight ? [compactTime(row.tonight.startTime),compactTime(row.tonight.endTime)].filter(Boolean).join(" - ") || "Time pending" : row.tonightTime}</time></div>
 <button className="primary-action singhere-brand-action" aria-label={venue.venueType==='private_room'?'SingHERE private rooms':row.tonight?'SingHERE tonight':'SingHERE signup information'} data-toast="SingHERE flow would open here"><SingHereMark alt="" className="singhere-wordmark" /></button>
 </div>
-<TourStopCheckIn venueSlug={venue.slug} venueName={venue.venueName} offer={activeOffer} />
+{getMarketConfig(venue.metro)?.status==='live'&&<TourStopCheckIn venueSlug={venue.slug} venueName={venue.venueName} offer={activeOffer} />}
 <div className="secondary-actions"><button data-toast="Directions opened">{"Directions"}</button><button data-toast="Venue saved">{"Save"}</button><button data-toast="Share sheet opened">{"Share"}</button></div>
 </section>
 <section className="section">
