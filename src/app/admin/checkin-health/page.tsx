@@ -30,10 +30,12 @@ function localTime(date:string){
  }).format(new Date(date));
 }
 
+function recentCutoff(){return new Date(Date.now()-30*24*60*60*1000).toISOString();}
+
 export default async function CheckInHealthPage(){
  await requireAdminAuthorization();
  const db=createAdminClient();
- const since=new Date(Date.now()-30*24*60*60*1000).toISOString();
+ const since=recentCutoff();
  const {data,error}=await db.from('singer_location_attempts')
   .select('venue_slug,venue_name,action,outcome,phase,reason,accuracy_band,source,created_at')
   .gte('created_at',since).order('created_at',{ascending:false}).limit(1500);
