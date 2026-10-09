@@ -126,8 +126,8 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
    <p className="gig-eyebrow">Check in · Collect · Keep singing</p>
    <h2 id={'tour-stop-title-'+venueSlug}>{venueName}</h2>
    <p>Check in to record your visit and access eligible venue offers. Tour Stops are separate and open only after karaoke starts.</p>
-   {hasOffer&&!offerUnlock&&<div className="tour-offer-teaser"><strong>SingHUB Offer</strong><span>{offer!.title}</span><small>Check in to see if today's offer is available. Venue offer terms apply, even when karaoke isn't running.</small></div>}
-   <p className="gig-fine">Location matching is optional. Self-reported check-ins are labeled. We don't save your precise GPS location.</p>
+   {hasOffer&&!offerUnlock&&<div className="tour-offer-teaser"><strong>SingHUB Offer</strong><span>{offer!.title}</span><small>Check in to see if today’s offer is available. Venue offer terms apply, even when karaoke isn’t running.</small></div>}
+   <p className="gig-fine">Location matching is optional. Self-reported check-ins are labeled. We don’t save your precise GPS location.</p>
    {needsSignIn?<form onSubmit={signIn}><label>Email<input name="email" type="email" autoComplete="email" required /></label><button type="submit" disabled={pending||sent}>{sent?'Link sent':'Email me a sign-in link'}</button></form>:
    <>
     <div className="gig-actions">
