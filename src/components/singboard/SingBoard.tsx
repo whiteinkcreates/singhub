@@ -188,7 +188,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
       <div className="rounded-[1.25rem] border border-white/10 bg-[#05060a] p-1.5 shadow-[0_24px_70px_rgba(0,0,0,.55),0_0_36px_rgba(236,72,153,.10)] sm:p-3">
         <div
           ref={boardRef}
-          className="relative h-[620px] overflow-hidden rounded-[1rem] border border-white/10 bg-[#080910] shadow-[inset_0_0_90px_rgba(0,0,0,.75),inset_0_0_35px_rgba(139,92,246,.08)] sm:h-[560px] lg:h-[600px]"
+          className="relative h-[460px] overflow-hidden rounded-[1rem] border border-white/10 bg-[#080910] shadow-[inset_0_0_90px_rgba(0,0,0,.75),inset_0_0_35px_rgba(139,92,246,.08)] sm:h-[520px] lg:h-[560px]"
           style={{backgroundImage:"radial-gradient(circle at 14% 7%, rgba(236,72,153,.18), transparent 28%), radial-gradient(circle at 88% 10%, rgba(34,211,238,.14), transparent 30%), radial-gradient(circle at 54% 74%, rgba(139,92,246,.12), transparent 35%), repeating-linear-gradient(135deg, rgba(255,255,255,.018) 0 1px, transparent 1px 8px), linear-gradient(180deg,#10121a 0%,#090a10 58%,#06070b 100%)"}}
         >
           <div className="pointer-events-none absolute -left-20 top-8 h-56 w-56 rounded-full bg-fuchsia-500/10 blur-3xl"/>
@@ -219,7 +219,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             type="button"
             onClick={post.pinned?()=>{const href=post.postType==="wanted"&&post.linkUrl?post.linkUrl:`/events/${post.id}`;if(isExternalWebUrl(href,window.location.origin))window.open(href,"_blank","noopener,noreferrer");else window.location.assign(href);}:undefined}
             title={post.pinned?`View ${post.title}`:"Flyer placement preview"}
-            className={`absolute ${post.postType==="wanted"?"w-[18%]":post.postType==="note"||brokenImages.has(post.id)?"w-[12%]":"w-[23%]"} select-none text-left shadow-[0_12px_20px_rgba(0,0,0,.48)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
+            className={`absolute ${post.postType==="wanted"?"w-[22%] sm:w-[18%]":post.postType==="note"||brokenImages.has(post.id)?"w-[15%] sm:w-[12%]":"w-[30%] sm:w-[23%]"} select-none text-left shadow-[0_12px_20px_rgba(0,0,0,.48)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
             style={{left:`${post.x}%`,top:`${post.y}%`,transform:`rotate(${post.rotation}deg)`,zIndex:post.pinned?10:35}}
           >
             {post.pinned&&<span className={`absolute left-1/2 top-1 z-20 h-3 w-3 -translate-x-1/2 rounded-full sm:h-4 sm:w-4 ${pinClass(post.id)}`}/>} 
