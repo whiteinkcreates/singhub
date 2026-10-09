@@ -93,3 +93,28 @@ test('client instruments browser GPS errors, API rejections and successful check
  assert.match(source,/stage==='network'\?'network_error'/);
  assert.match(source,/gpsAccuracyBand/);
 });
+
+test('venue and karaoke GPS buttons are primary, while self-report stays available',()=>{
+ const page=readFileSync('src/components/v2/TourStopCheckIn.tsx','utf8');
+ const css=readFileSync('src/components/v2/tourStops.css','utf8');
+ for(const method of ["checkIn('venue','location_matched')","checkIn('tour','location_matched')"]){
+  assert.ok(page.includes('className="gig-gps-primary" disabled={pending} onClick={()=>void '+method+')'));
+ }
+ for(const method of ["checkIn('venue','self_reported')","checkIn('tour','self_reported')"]){
+  assert.ok(page.includes('className="gig-self-report" disabled={pending} onClick={()=>void '+method+')'));
+ }
+ assert.match(css,/\.gig-actions button\.gig-gps-primary/);
+ assert.match(css,/\.gig-actions button\.gig-self-report/);
+});
+test('performance stars show honest, subtle SR provenance without inventing verification',()=>{
+ const jacket=readFileSync('src/components/v2/MyJacket.tsx','utf8');
+ const account=readFileSync('src/components/v2/MySingHubTemplate.tsx','utf8');
+ const css=readFileSync('src/components/v2/styles/account.css','utf8');
+ assert.match(jacket,/star-sr/);
+ assert.match(jacket,/Self-reported performance/);
+ assert.match(account,/SR.*singer-reported song/);
+ assert.match(account,/song-star.*Self-reported performance/);
+ assert.match(css,/\.performance-star \.star-sr/);
+ assert.match(css,/\.star-source-note/);
+ assert.match(css,/\.song-star abbr/);
+});
