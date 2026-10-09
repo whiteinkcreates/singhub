@@ -75,7 +75,7 @@ export default async function CheckInHealthPage(){
   <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Location reliability totals">
    {[
     ['Automatic GPS attempts',automatic.length],
-    ['Verified GPS successes',successes],
+    ['GPS button successes',successes],
     ['Automatic failures',failures],
     ['Reported incidents',reports.length]
    ].map(([label,value])=><div key={String(label)} className="rounded-2xl border border-cyan-500/25 bg-slate-950 p-5">
