@@ -63,3 +63,15 @@ test('confirmed TourStop unlocks one offer and register key redeems it once',asy
  const redeemed=await api.redeemVenueOffer({venueSlug:'one',registerKey:key,code:first.code});assert.equal(redeemed.ok,true);assert.equal(redeemed.alreadyRedeemed,false);assert.ok(redeemed.unlock.redeemedAt);
  const duplicate=await api.redeemVenueOffer({venueSlug:'one',registerKey:key,code:first.code});assert.equal(duplicate.ok,true);assert.equal(duplicate.alreadyRedeemed,true);
 });
+
+test('venue check-in unlocks an offer without requiring a Tour Stop',async()=>{
+ const {api,tables}=fixture();
+ const unlocked=await api.unlockVenueOffer({userId:'user-2',checkinId:'checkin-9',venueId:'venue-9',venueSlug:'one',nightlifeDate:'2026-10-06',weekday:'Tuesday'});
+ assert.ok(unlocked.code);
+ assert.equal(tables.venue_offer_unlocks[0].checkin_id,'checkin-9');
+ assert.equal('visit_id' in tables.venue_offer_unlocks[0],false);
+ const repeated=await api.unlockVenueOffer({userId:'user-2',checkinId:'checkin-9',venueId:'venue-9',venueSlug:'one',nightlifeDate:'2026-10-06',weekday:'Tuesday'});
+ assert.equal(repeated.code,unlocked.code);
+ const unavailable=await api.unlockVenueOffer({userId:'user-3',checkinId:'checkin-3',venueId:'venue-3',venueSlug:'one',nightlifeDate:'2026-10-07',weekday:'Wednesday'});
+ assert.equal(unavailable,undefined);
+});
