@@ -39,6 +39,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
  const [offerUnlock,setOfferUnlock]=useState<OfferUnlock|undefined>();
  const [message,setMessage]=useState('');
  const [errorMessage,setErrorMessage]=useState('');
+ const [gpsRecoveryAction,setGpsRecoveryAction]=useState<Action|null>(null);
 
  const refresh=useCallback(async()=>{
   try{
@@ -65,7 +66,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
  },[refresh]);
 
  async function checkIn(action:Action,method:CheckinMethod){
-  setPending(true);setErrorMessage('');setMessage('');
+  setPending(true);setErrorMessage('');setMessage('');setGpsRecoveryAction(null);
   try{
    const {data,error}=await accountClient().auth.getSession();
    if(error)throw error;
@@ -74,14 +75,24 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
     setMessage(eligibility?.reason||'Tour Stops open after karaoke starts.');
     return;
    }
-   const position=method==='location_matched'?await currentLocation():undefined;
+   const position=method==='location_matched'?await currentLocation().catch(error=>{
+    setGpsRecoveryAction(action);
+    throw error;
+   }):undefined;
    const response=await fetch(action==='venue'?'/api/venue-checkins':'/api/tour-stops',{
     method:'POST',
     headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},
     body:JSON.stringify({venueSlug,method,...(position?{location:position}:{})})
    });
    if(response.status===401){setNeedsSignIn(true);return;}
-   const result=await readResponse(response);
+   const result=await response.json();
+   if(!response.ok){
+    if(method==='location_matched'&&response.status===422&&
+       ['too_far','low_accuracy','invalid_location','missing_venue_coordinates'].includes(result.code)){
+      setGpsRecoveryAction(action);
+    }
+    throw new Error(result.error||'Could not complete check-in.');
+   }
    if(action==='venue'){
     setVenueCheckedIn(true);
     setOfferUnlock(result.offerUnlock||offerUnlock);
@@ -111,7 +122,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
   finally{setPending(false);}
  }
  const open=()=>{
-  setMessage('');setErrorMessage('');setNeedsSignIn(false);setSent(false);
+  setMessage('');setErrorMessage('');setGpsRecoveryAction(null);setNeedsSignIn(false);setSent(false);
   dialog.current?.showModal();void refresh();
   trackEvent('venue_check_in_open',{venue_slug:venueSlug});
  };
@@ -128,6 +139,13 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
    <p>Check in to record your visit and access eligible venue offers. Tour Stops are separate and open only after karaoke starts.</p>
    {hasOffer&&!offerUnlock&&<div className="tour-offer-teaser"><strong>SingHUB Offer</strong><span>{offer!.title}</span><small>Check in to see if today’s offer is available. Venue offer terms apply, even when karaoke isn’t running.</small></div>}
    <p className="gig-fine">Location matching is optional. Self-reported check-ins are labeled. We don’t save your precise GPS location.</p>
+   {gpsRecoveryAction&&!needsSignIn&&<section className="gig-gps-recovery" aria-label="GPS check-in alternative">
+    <strong>Inside the venue? GPS can drift indoors.</strong>
+    <p>We couldn’t verify your phone’s reading. You can still save your visit as self-reported. It won’t be marked GPS-verified.</p>
+    <button type="button" disabled={pending} onClick={()=>void checkIn(gpsRecoveryAction,'self_reported')}>
+     {pending?'Saving…':gpsRecoveryAction==='tour'?'Collect Tour Stop · Self-reported':'Check in here · Self-reported'}
+    </button>
+   </section>}
    {needsSignIn?<form onSubmit={signIn}><label>Email<input name="email" type="email" autoComplete="email" required /></label><button type="submit" disabled={pending||sent}>{sent?'Link sent':'Email me a sign-in link'}</button></form>:
    <>
     <div className="gig-actions">
