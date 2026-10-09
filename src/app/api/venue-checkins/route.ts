@@ -55,7 +55,19 @@ export async function POST(request:Request){
   if(!venue)return NextResponse.json({error:'Venue unavailable.'},{status:404});
   if(input.method==='location_matched'){
    const reason=locationMatchReason(input.location,venue);
-   if(reason)return NextResponse.json({error:'Location could not be verified. You can record a self-reported visit.',code:reason},{status:422});
+   if(reason){
+    const messages={
+     invalid_location:'Your phone returned an invalid location reading.',
+     low_accuracy:'Your phone could not get a precise location reading indoors.',
+     missing_venue_coordinates:'This venue’s map pin is not ready for GPS check-in.',
+     too_far:'Your phone’s reported location is outside the venue check-in radius. Indoor GPS can drift.'
+    };
+    console.warn('Venue location match rejected',{venueSlug:venue.slug,reason});
+    return NextResponse.json({
+     error:messages[reason]+' If you are at the venue, you can explicitly save a self-reported visit instead.',
+     code:reason
+    },{status:422});
+   }
   }
   const day=nightlifeDate();
   const {data:existing,error:lookupError}=await auth.client.from('singer_venue_checkins').select('id').eq('user_id',auth.user.id).eq('venue_id',venue.id).eq('checked_in_on',day).maybeSingle();
