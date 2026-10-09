@@ -8,7 +8,8 @@ import { nightlifeDate } from "@/lib/tourStops";
 export type VenueOfferUnlock = {
   id: string;
   user_id: string;
-  visit_id: string;
+  visit_id: string | null;
+  checkin_id: string | null;
   venue_id: string;
   venue_slug: string;
   nightlife_date: string;
@@ -69,12 +70,16 @@ export async function getVenueOfferUnlock(userId: string, venueId: string, night
 
 export async function unlockVenueOffer(input: {
   userId: string;
-  visitId: string;
+  visitId?: string;
+  checkinId?: string;
   venueId: string;
   venueSlug: string;
   nightlifeDate: string;
   weekday: string;
 }) {
+  if (!input.visitId && !input.checkinId) {
+    throw new Error("A confirmed Tour Stop or venue check-in is required before unlocking an offer.");
+  }
   const existing = await getVenueOfferUnlock(input.userId, input.venueId, input.nightlifeDate);
   if (existing) return existing;
 
@@ -88,7 +93,8 @@ export async function unlockVenueOffer(input: {
       .from("venue_offer_unlocks")
       .insert({
         user_id: input.userId,
-        visit_id: input.visitId,
+        ...(input.visitId ? { visit_id: input.visitId } : {}),
+        ...(input.checkinId ? { checkin_id: input.checkinId } : {}),
         venue_id: input.venueId,
         venue_slug: input.venueSlug,
         nightlife_date: input.nightlifeDate,

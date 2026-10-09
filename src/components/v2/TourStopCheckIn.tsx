@@ -7,78 +7,149 @@ import type {SingHubOffer} from '@/lib/venueEnhancements';
 
 type VisitStatus='none'|'pending'|'confirmed';
 type OfferUnlock={title:string;detail?:string;terms?:string;code:string;redeemedAt?:string};
+type Eligibility={phase:'early'|'open'|'closed';open:boolean;reason:string;startTime:string|null};
+type CheckinMethod='location_matched'|'self_reported';
+type Action='venue'|'tour';
+
+async function readResponse(response:Response){
+ const result=await response.json();
+ if(!response.ok)throw new Error(result.error||'Could not complete check-in.');
+ return result;
+}
+async function currentLocation(){
+ if(!navigator.geolocation)throw new Error('This browser does not support location check-in. Try a self-reported visit.');
+ return new Promise<{latitude:number;longitude:number;accuracy:number}>((resolve,reject)=>{
+  navigator.geolocation.getCurrentPosition(
+   result=>resolve({latitude:result.coords.latitude,longitude:result.coords.longitude,accuracy:result.coords.accuracy}),
+   error=>{
+    const message=error.code===1?'Your browser denied location access for this site. Check the site permission and retry.':error.code===2?'Your phone could not determine your location. Move somewhere with a clearer GPS signal.':error.code===3?'GPS timed out. Try again with a stronger signal.':'Your location could not be determined.';
+    reject(new Error(message+' You can also self-report your visit.'));
+   },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
+ });
+}
 
 export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;venueName:string;offer?:SingHubOffer}){
  const dialog=useRef<HTMLDialogElement>(null);
  const [pending,setPending]=useState(false);
  const [needsSignIn,setNeedsSignIn]=useState(false);
  const [sent,setSent]=useState(false);
- const [saved,setSaved]=useState(false);
+ const [venueCheckedIn,setVenueCheckedIn]=useState(false);
  const [visitStatus,setVisitStatus]=useState<VisitStatus>('none');
+ const [eligibility,setEligibility]=useState<Eligibility|undefined>();
  const [offerUnlock,setOfferUnlock]=useState<OfferUnlock|undefined>();
  const [message,setMessage]=useState('');
+ const [errorMessage,setErrorMessage]=useState('');
 
- const refreshVisitStatus=useCallback(async()=>{
+ const refresh=useCallback(async()=>{
   try{
-   const {data,error}=await accountClient().auth.getSession();if(error)throw error;
+   const {data,error}=await accountClient().auth.getSession();
+   if(error)throw error;
    if(!data.session)return;
-   const response=await fetch('/api/tour-stops?venueSlug='+encodeURIComponent(venueSlug),{headers:{Authorization:'Bearer '+data.session.access_token},cache:'no-store'});
-   if(!response.ok)return;
-   const result=await response.json();
-   const status=(result.visit?.status||'none') as VisitStatus;
-   setVisitStatus(status);setSaved(status==='confirmed');setOfferUnlock(result.offerUnlock||undefined);
-   if(status==='pending')setMessage('Early check-in saved. Once karaoke starts, confirm you’re still here to turn it into a TourStop.');
-   if(status==='confirmed')setMessage(result.offerUnlock?'TourStop collected. Your SingHUB Offer is unlocked below.':'You already have tonight’s TourStop.');
-  }catch{}
+   const headers={Authorization:'Bearer '+data.session.access_token};
+   const query='?venueSlug='+encodeURIComponent(venueSlug);
+   const [venue,tour]=await Promise.all([
+    fetch('/api/venue-checkins'+query,{headers,cache:'no-store'}).then(readResponse),
+    fetch('/api/tour-stops'+query,{headers,cache:'no-store'}).then(readResponse)
+   ]);
+   setVenueCheckedIn(Boolean(venue.checkin));
+   setVisitStatus((tour.visit?.status||'none') as VisitStatus);
+   setEligibility(tour.eligibility);
+   setOfferUnlock(venue.offerUnlock||tour.offerUnlock||undefined);
+  }catch(error){setErrorMessage(error instanceof Error?error.message:'Check-in status could not load.');}
  },[venueSlug]);
+ useEffect(()=>{
+  if(new URLSearchParams(location.search).get('checkin')!=='1')return;
+  dialog.current?.showModal();
+  const timer=window.setTimeout(()=>void refresh(),0);
+  return ()=>window.clearTimeout(timer);
+ },[refresh]);
 
- useEffect(()=>{if(new URLSearchParams(location.search).get('checkin')!=='1')return;dialog.current?.showModal();const timer=window.setTimeout(()=>void refreshVisitStatus(),0);return()=>window.clearTimeout(timer);},[refreshVisitStatus]);
-
- async function checkIn(method:'self_reported'|'location_matched'){
-  setPending(true);setMessage('');
+ async function checkIn(action:Action,method:CheckinMethod){
+  setPending(true);setErrorMessage('');setMessage('');
   try{
-   const {data,error}=await accountClient().auth.getSession();if(error)throw error;if(!data.session){setNeedsSignIn(true);return;}
-   const locationData=method==='location_matched'?await new Promise<GeolocationCoordinates>((resolve,reject)=>{if(!navigator.geolocation){reject(new Error('Location is unavailable. You can record a self-reported visit.'));return;}navigator.geolocation.getCurrentPosition(p=>resolve(p.coords),()=>reject(new Error('Location was unavailable. You can record a self-reported visit.')),{enableHighAccuracy:true,timeout:10000,maximumAge:30000});}):undefined;
-   const response=await fetch('/api/tour-stops',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},body:JSON.stringify({venueSlug,method,...(locationData?{location:{latitude:locationData.latitude,longitude:locationData.longitude,accuracy:locationData.accuracy}}:{})})});
-   const result=await response.json();if(response.status===401){setNeedsSignIn(true);return;}if(!response.ok)throw new Error(result.error);
-
-   if(result.pending){
-    setVisitStatus('pending');setSaved(false);setOfferUnlock(undefined);
-    setMessage(result.eligibility?.startTime?`Early check-in saved. Karaoke starts at ${result.eligibility.startTime}. Come back once it starts and confirm you’re still here to earn the TourStop.`:'Early check-in saved. Come back once karaoke starts and confirm you’re still here to earn the TourStop.');
-    trackEvent('venue_check_in_pending',{venue_slug:venueSlug,check_in_method:method});
+   const {data,error}=await accountClient().auth.getSession();
+   if(error)throw error;
+   if(!data.session){setNeedsSignIn(true);return;}
+   if(action==='tour'&&!eligibility?.open){
+    setMessage(eligibility?.reason||'Tour Stops open after karaoke starts.');
     return;
    }
-
-   setVisitStatus('confirmed');setSaved(true);setOfferUnlock(result.offerUnlock||undefined);
-   setMessage(result.offerUnlock?'TourStop collected. Your SingHUB Offer is unlocked below.':result.alreadyCheckedIn?'You already checked in here this karaoke night.':result.confirmedFromPending?'Still here. TourStop added to My Tour.':result.collected?'TourStop added. This room is now on My Tour.':'Welcome back. This karaoke night is saved in My Tour.');
-   trackEvent('venue_check_in',{venue_slug:venueSlug,check_in_method:method,new_tour_stop:Boolean(result.collected),duplicate:Boolean(result.alreadyCheckedIn),confirmed_from_pending:Boolean(result.confirmedFromPending),offer_unlocked:Boolean(result.offerUnlock)});
-  }catch(error){setMessage(error instanceof Error?error.message:'Your visit was not saved.');}finally{setPending(false);}
- }
-
- async function signIn(event:FormEvent<HTMLFormElement>){
-  event.preventDefault();setPending(true);
-  try{await sendAccountLink(String(new FormData(event.currentTarget).get('email')),location.pathname+'?checkin=1');setSent(true);setMessage('Check your email. Open the link in this browser, then confirm your visit.');}
-  catch(error){setMessage(error instanceof Error?error.message:'Sign-in link was not sent.');}
+   const position=method==='location_matched'?await currentLocation():undefined;
+   const response=await fetch(action==='venue'?'/api/venue-checkins':'/api/tour-stops',{
+    method:'POST',
+    headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},
+    body:JSON.stringify({venueSlug,method,...(position?{location:position}:{})})
+   });
+   if(response.status===401){setNeedsSignIn(true);return;}
+   const result=await readResponse(response);
+   if(action==='venue'){
+    setVenueCheckedIn(true);
+    setOfferUnlock(result.offerUnlock||offerUnlock);
+    setMessage(result.offerError|| (result.offerUnlock?'Checked in! Your SingHUB Offer is unlocked below.':result.alreadyCheckedIn?'You have already checked in here for this venue day.':'Venue check-in recorded. A Tour Stop is earned separately during karaoke.'));
+    trackEvent('venue_check_in',{venue_slug:venueSlug,check_in_method:method,offer_unlocked:Boolean(result.offerUnlock)});
+   }else{
+    if(result.pending){
+     setVisitStatus('pending');
+     setMessage('Visit pending. Return after karaoke starts to confirm your Tour Stop.');
+    }else{
+     setVisitStatus('confirmed');
+     setMessage(result.alreadyCheckedIn?'You already collected this karaoke night.':'Tour Stop added to My Tour!');
+    }
+    trackEvent('tour_stop_check_in',{venue_slug:venueSlug,check_in_method:method,new_tour_stop:Boolean(result.collected)});
+   }
+   await refresh();
+  }catch(error){setErrorMessage(error instanceof Error?error.message:'Your check-in was not saved.');}
   finally{setPending(false);}
  }
 
- const open=()=>{setMessage('');setSaved(false);setNeedsSignIn(false);setSent(false);dialog.current?.showModal();void refreshVisitStatus();trackEvent('venue_check_in_open',{venue_slug:venueSlug});};
- const primaryLabel=visitStatus==='pending'?'I’m still here · Confirm with location':'Check my location & check in';
- const selfLabel=visitStatus==='pending'?'I’m still here · Self-report':'Record a self-reported visit';
+ async function signIn(event:FormEvent<HTMLFormElement>){
+  event.preventDefault();setPending(true);setErrorMessage('');
+  try{
+   await sendAccountLink(String(new FormData(event.currentTarget).get('email')),location.pathname+'?checkin=1');
+   setSent(true);setMessage('Check your email. Open the link in this browser to finish checking in.');
+  }catch(error){setErrorMessage(error instanceof Error?error.message:'The sign-in link could not be sent.');}
+  finally{setPending(false);}
+ }
+ const open=()=>{
+  setMessage('');setErrorMessage('');setNeedsSignIn(false);setSent(false);
+  dialog.current?.showModal();void refresh();
+  trackEvent('venue_check_in_open',{venue_slug:venueSlug});
+ };
  const hasOffer=Boolean(offer?.enabled&&offer.title?.trim());
-
+ const tourOpen=eligibility?.open===true;
  return <div className="gig-check-in">
-  <button type="button" className="gig-check-in-button" onClick={open}>{visitStatus==='pending'?'Early check-in saved · Finish TourStop':hasOffer?'Check in · Unlock SingHUB Offer':'I’m here · Add TourStop'}</button>
+  <button type="button" className="gig-check-in-button" onClick={open}>
+   {visitStatus==='confirmed'?'Tour Stop collected · View check-in':hasOffer?'Check in · SingHUB Offer & Tour Stop':'Check in · Collect Tour Stop'}
+  </button>
   <dialog className="gig-dialog" ref={dialog} aria-labelledby={'tour-stop-title-'+venueSlug} onClick={e=>{if(e.target===e.currentTarget)e.currentTarget.close();}}>
    <button className="gig-close" aria-label="Close check-in" onClick={()=>dialog.current?.close()}>×</button>
-   <p className="gig-eyebrow">Check in · TourStop</p><h2 id={'tour-stop-title-'+venueSlug}>{venueName}</h2>
-   <p>{visitStatus==='pending'?'You checked in before karaoke. Confirm you’re still here once karaoke starts and this becomes a TourStop.':'Check in to put this room on My Tour. You do not have to sing to collect a TourStop.'}</p>
-   {hasOffer&&!offerUnlock&&<div className="tour-offer-teaser"><strong>SingHUB Offer tonight</strong><span>{offer!.title}</span><small>Collect your TourStop to unlock it.</small></div>}
-   <p className="gig-fine">TourStops record karaoke-night attendance, not performances. Location is optional; self-reported visits are labeled. Your collection is private. We don’t save your precise location.</p>
-   {needsSignIn?<form onSubmit={signIn}><label>Email<input name="email" type="email" autoComplete="email" required /></label><button type="submit" disabled={pending||sent}>{sent?'Link sent':'Email me a sign-in link'}</button></form>:!saved&&<div className="gig-actions"><button disabled={pending} onClick={()=>void checkIn('location_matched')}>{pending?'Working…':primaryLabel}</button><button disabled={pending} onClick={()=>void checkIn('self_reported')}>{selfLabel}</button></div>}
+   <p className="gig-eyebrow">Check in · Collect · Keep singing</p>
+   <h2 id={'tour-stop-title-'+venueSlug}>{venueName}</h2>
+   <p>Check in to record your visit and access eligible venue offers. Tour Stops are separate and open only after karaoke starts.</p>
+   {hasOffer&&!offerUnlock&&<div className="tour-offer-teaser"><strong>SingHUB Offer</strong><span>{offer!.title}</span><small>Check in to see if today’s offer is available. Venue offer terms apply, even when karaoke isn’t running.</small></div>}
+   <p className="gig-fine">Location matching is optional. Self-reported check-ins are labeled. We don’t save your precise GPS location.</p>
+   {needsSignIn?<form onSubmit={signIn}><label>Email<input name="email" type="email" autoComplete="email" required /></label><button type="submit" disabled={pending||sent}>{sent?'Link sent':'Email me a sign-in link'}</button></form>:
+   <>
+    <div className="gig-actions">
+     <strong>{venueCheckedIn?'✓ Venue check-in saved':'Venue check-in · Anytime'}</strong>
+     {!venueCheckedIn&&<>
+      <button type="button" disabled={pending} onClick={()=>void checkIn('venue','location_matched')}>{pending?'Working…':'Check in with my location'}</button>
+      <button type="button" disabled={pending} onClick={()=>void checkIn('venue','self_reported')}>Self-report venue visit</button>
+     </>}
+    </div>
+    <div className="gig-actions">
+     <strong>{visitStatus==='confirmed'?'★ Tour Stop collected':'Tour Stop · Karaoke nights only'}</strong>
+     {visitStatus==='confirmed'?<Link href="/account#tour-stops">View My Tour →</Link>:tourOpen?
+      <>
+       <button type="button" disabled={pending} onClick={()=>void checkIn('tour','location_matched')}>{pending?'Working…':'Collect Tour Stop with GPS'}</button>
+       <button type="button" disabled={pending} onClick={()=>void checkIn('tour','self_reported')}>Self-report karaoke attendance</button>
+      </>:<p className="gig-fine">{eligibility?.reason||'Tour Stop availability is loading. Karaoke must have started before collecting.'}</p>
+     }
+    </div>
+   </>}
    <p role="status">{message}</p>
+   {errorMessage&&<p role="alert">{errorMessage}</p>}
    {offerUnlock&&<section className={'tour-offer-unlocked'+(offerUnlock.redeemedAt?' redeemed':'')} aria-label="Unlocked SingHUB Offer"><p className="gig-eyebrow">{offerUnlock.redeemedAt?'Offer redeemed':'SingHUB Offer unlocked'}</p><h3>{offerUnlock.title}</h3>{offerUnlock.detail&&<p>{offerUnlock.detail}</p>}<div className="tour-offer-code"><span>REGISTER CODE</span><strong>{offerUnlock.code}</strong></div><p className="gig-fine">{offerUnlock.redeemedAt?'This offer has already been redeemed.':'Show this code at the register. Venue staff marks it redeemed.'}</p>{offerUnlock.terms&&<small>{offerUnlock.terms}</small>}</section>}
-   {saved&&<Link href="/account#tour-stops">See My Tour →</Link>}
   </dialog>
  </div>;
 }

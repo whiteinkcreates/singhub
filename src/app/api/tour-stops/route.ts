@@ -3,7 +3,7 @@ import {createAdminClient} from '@/lib/supabase/admin';
 import {getVenueListings} from '@/lib/venueData';
 import {getPublicVenues} from '@/lib/publicVenueFilters';
 import {getKaraokeEventsByVenueSlug} from '@/lib/eventData';
-import {collectTourStops,locationMatch,nightlifeDate,tourStopEligibility,type TourStopVisit} from '@/lib/tourStops';
+import {collectTourStops,locationMatchReason,nightlifeDate,tourStopEligibility,type TourStopVisit} from '@/lib/tourStops';
 import {getVenueOfferUnlock,unlockVenueOffer} from '@/lib/venueOffers.server';
 export const dynamic='force-dynamic';
 
@@ -24,8 +24,10 @@ export async function GET(request:Request){
    const night=nightlifeDate();
    const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('venue_slug',venueSlug).eq('nightlife_date',night).maybeSingle();
    if(error)throw error;
-   const offerUnlock=data?.status==='confirmed'?await getVenueOfferUnlock(auth.user.id,data.venue_id,night):undefined;
-   return NextResponse.json({visit:data||null,offerUnlock},{headers:{'Cache-Control':'private, no-store'}});
+   const venue=getPublicVenues(await getVenueListings()).find(v=>v.slug===venueSlug);
+   const eligibility=venue?tourStopEligibility(await getKaraokeEventsByVenueSlug(venueSlug)):undefined;
+   const offerUnlock=venue?await getVenueOfferUnlock(auth.user.id,venue.id,night):undefined;
+   return NextResponse.json({visit:data||null,offerUnlock,eligibility},{headers:{'Cache-Control':'private, no-store'}});
   }
   const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('status','confirmed').order('created_at',{ascending:true});if(error)throw error;
   const stops=collectTourStops((data||[]) as TourStopVisit[]);return NextResponse.json({stops,stubs:stops},{headers:{'Cache-Control':'private, no-store'}});
@@ -42,7 +44,14 @@ export async function POST(request:Request){
   const venue=getPublicVenues(await getVenueListings()).find(v=>v.slug===body.venueSlug);if(!venue)return NextResponse.json({error:'This venue is not available for check-in.'},{status:404});
   const eligibility=tourStopEligibility(await getKaraokeEventsByVenueSlug(venue.slug));
   if(eligibility.phase==='closed')return NextResponse.json({error:eligibility.reason,eligibility},{status:409});
-  if(body.method==='location_matched'&&!locationMatch(body.location,venue))return NextResponse.json({error:'Your location could not be matched nearby. You can record a self-reported visit instead.'},{status:422});
+  if(body.method==='location_matched'){
+   const reason=locationMatchReason(body.location,venue);
+   if(reason){
+    const messages={invalid_location:'The GPS reading was invalid. Please try again.',low_accuracy:'Your location reading is not precise enough. Try again with a clearer GPS signal.',missing_venue_coordinates:'This venue is not ready for GPS check-in yet.',too_far:'Your location does not appear close enough to this venue.'};
+    console.warn('TourStop location match rejected',{venueSlug:venue.slug,reason});
+    return NextResponse.json({error:messages[reason]+' You can record a self-reported visit instead.',code:reason},{status:422});
+   }
+  }
 
   const night=nightlifeDate();
   const {data:existing,error:existingError}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('venue_id',venue.id).eq('nightlife_date',night).maybeSingle();

@@ -35,7 +35,7 @@ jobs:
         run: node --test tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs tests/hotel-package.test.mjs tests/hotel-photo-rights.test.mjs
 
       - name: Verify TourStops and Partner offer redemption
-        run: node --test tests/gig-stubs.test.mjs tests/venue-offers.test.mjs
+        run: node --test tests/gig-stubs.test.mjs tests/venue-offers.test.mjs tests/venue-checkins.test.mjs
 
       - name: Keep heavy media out of deployments
         run: npm run check:assets
