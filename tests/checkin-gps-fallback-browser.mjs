@@ -98,7 +98,7 @@ try{
   await page.getByRole('button',{name:'Collect Tour Stop · Self-reported'}).waitFor();
   await page.screenshot({path:'.gps-recovery-qa/tour-fallback-'+width+'.png'});
   await page.getByRole('button',{name:'Collect Tour Stop · Self-reported'}).click();
-  await page.getByText('Tour Stop collected').waitFor();
+  await page.getByRole('link',{name:'View My Tour →'}).waitFor();
   assert.equal(tourSaved,true);
   assert.deepEqual(submissions.venue.map(v=>v.method),['location_matched','self_reported']);
   assert.deepEqual(submissions.tour.map(v=>v.method),['location_matched','self_reported']);
