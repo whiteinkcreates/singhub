@@ -1,6 +1,7 @@
 /* Original declarations and media queries are retained verbatim; selectors are scoped. */
 .v2-account { min-height:100vh; line-height:normal; font-size:16px; isolation:isolate; }
-.v2-account :where(*) { all:revert; box-sizing:border-box; }
+/* Keep the V2 reset out of Leaflet: its positioned panes and tiles must retain their library CSS. */
+.v2-account :where(*:not(.leaflet-container, .leaflet-container *)) { all:revert; box-sizing:border-box; }
 
     .v2-account { color-scheme:dark; --bg:#050609; --surface:#0d1117; --surface-2:#141922; --line:#2a303a; --line-hi:#46515e; --text:#f7f8fb; --muted:#9da7b5; --cyan:#00c8ff; --pink:#ff19a8; --gold:#ffce4e; --sans:"Barlow",sans-serif; --display:"Barlow Condensed",sans-serif; }
     .v2-account * { box-sizing:border-box; }

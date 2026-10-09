@@ -11,6 +11,23 @@
 .singhere-dialog .singhere-note { color:#9ba5b3; font-size:.8rem; }
 .singhere-dialog .singhere-caption { padding:18px; border:1px solid #45505e; border-radius:10px; background:#090b0f; white-space:pre-wrap; }
 .singhere-dialog .singhere-text { margin-top:14px; }
+
+/* Star collection is a real account action, not an unstyled text footnote. */
+.singhere-dialog .singhere-log-song{
+ display:flex;align-items:center;gap:13px;width:100%;min-height:72px;margin:14px 0 20px;
+ padding:12px 15px;border:1px solid rgba(0,200,255,.72);border-radius:12px;
+ background:linear-gradient(115deg,rgba(0,200,255,.12),rgba(255,25,168,.09));
+ box-shadow:inset 0 1px rgba(255,255,255,.09),0 8px 24px rgba(0,0,0,.25);
+ color:#fff;text-decoration:none;transition:border-color .18s,background .18s;
+}
+.singhere-dialog .singhere-log-song:hover{border-color:#ff19a8;background:linear-gradient(115deg,rgba(0,200,255,.17),rgba(255,25,168,.16))}
+.singhere-dialog .singhere-log-icon{display:grid;place-items:center;flex:0 0 40px;height:40px;border-radius:9px;background:rgba(255,25,168,.15);color:#ffce4e;font-size:24px}
+.singhere-dialog .singhere-log-copy{display:grid;flex:1;gap:4px;min-width:0}
+.singhere-dialog .singhere-log-copy strong{font:900 1rem/1.15 Barlow,sans-serif}
+.singhere-dialog .singhere-log-copy small{color:#bfd0dd;font:600 .78rem/1.3 Barlow,sans-serif}
+.singhere-dialog .singhere-log-arrow{font-size:1.4rem;color:#00c8ff}
+.singhere-dialog .singhere-log-song:focus-visible{outline:3px solid #00c8ff;outline-offset:3px}
+
 .singhere-dialog :focus-visible { outline:2px solid #00c8ff; outline-offset:3px; }
 .v2-basic[data-responsive-basic] .app-view.active { max-width:1120px; }
 .v2-basic .basic-browse-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:20px; padding:12px 18px; border-bottom:1px solid var(--line); }

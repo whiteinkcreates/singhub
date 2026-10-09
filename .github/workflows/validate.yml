@@ -37,6 +37,10 @@ jobs:
       - name: Verify TourStops and Partner offer redemption
         run: node --test tests/gig-stubs.test.mjs tests/venue-offers.test.mjs tests/venue-checkins.test.mjs
 
+      - name: Prepare isolated My Tour map and song-log UI fixture
+        if: startsWith(github.head_ref, 'fix/my-tour-')
+        run: node tests/my-tour-ui-browser.mjs --prepare
+
       - name: Keep heavy media out of deployments
         run: npm run check:assets
 
@@ -56,6 +60,30 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops')) && 'http://127.0.0.1:3101' || '' }}
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops')) && 'qa-public-key' || '' }}
         run: npm run build
+
+      - name: Install browser for My Tour mobile QA
+        if: startsWith(github.head_ref, 'fix/my-tour-')
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify My Tour tile grid, map themes, counter and song CTA
+        if: startsWith(github.head_ref, 'fix/my-tour-')
+        run: |
+          npm run start -- --port 3100 > /tmp/my-tour-qa-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://localhost:3100/my-tour-qa > /dev/null; then break; fi
+            sleep 1
+          done
+          node tests/my-tour-ui-browser.mjs
+
+      - name: Save My Tour mobile QA evidence
+        if: always() && startsWith(github.head_ref, 'fix/my-tour-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-tour-map-and-song-log-qa
+          path: .my-tour-qa
+          include-hidden-files: true
 
       - name: Install browser for hotel journey QA
         if: startsWith(github.head_ref, 'fix/hotel-')
