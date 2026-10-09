@@ -16,14 +16,49 @@ async function readResponse(response:Response){
  if(!response.ok)throw new Error(result.error||'Could not complete check-in.');
  return result;
 }
+type GpsFailure='gps_unsupported'|'permission_denied'|'position_unavailable'|'gps_timeout'|'unknown';
+class GpsLocationError extends Error {
+ constructor(readonly diagnosticReason:GpsFailure,message:string){super(message);}
+}
+function gpsAccuracyBand(accuracy:number){
+ if(accuracy<=25)return '0-25m';
+ if(accuracy<=75)return '26-75m';
+ if(accuracy<=150)return '76-150m';
+ if(accuracy<=300)return '151-300m';
+ if(accuracy<=1000)return '301-1000m';
+ return 'over-1000m';
+}
+const gpsApiReasons=new Set([
+ 'too_far','low_accuracy','invalid_location','missing_venue_coordinates',
+ 'auth_expired','schedule_closed','request_error'
+]);
+function logLocationButtonOutcome(input:{
+ token:string;venueSlug:string;action:Action;outcome:'success'|'failure';
+ phase:'browser'|'api'|'network';reason?:string;accuracy?:number;
+}){
+ // A lightweight best-effort diagnostic independent of the check-in result.
+ // Never send coordinates, a raw browser error, IP, or user agent.
+ const body=JSON.stringify({
+  venueSlug:input.venueSlug,action:input.action,outcome:input.outcome,
+  phase:input.phase,
+  ...(input.outcome==='failure'?{reason:input.reason||'unknown'}:{}),
+  ...(typeof input.accuracy==='number'&&Number.isFinite(input.accuracy)&&input.accuracy>=0
+   ?{accuracyBand:gpsAccuracyBand(input.accuracy)}:{})
+ });
+ void fetch('/api/location-attempts',{
+  method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+input.token},
+  body,keepalive:true
+ }).catch(()=>{ /* Reporting must never interfere with the singer's check-in. */ });
+}
 async function currentLocation(){
- if(!navigator.geolocation)throw new Error('This browser does not support location check-in. Try a self-reported visit.');
+ if(!navigator.geolocation)throw new GpsLocationError('gps_unsupported','This browser does not support location check-in. Try a self-reported visit.');
  return new Promise<{latitude:number;longitude:number;accuracy:number}>((resolve,reject)=>{
   navigator.geolocation.getCurrentPosition(
    result=>resolve({latitude:result.coords.latitude,longitude:result.coords.longitude,accuracy:result.coords.accuracy}),
    error=>{
+    const reason:GpsFailure=error.code===1?'permission_denied':error.code===2?'position_unavailable':error.code===3?'gps_timeout':'unknown';
     const message=error.code===1?'Your browser denied location access for this site. Check the site permission and retry.':error.code===2?'Your phone could not determine your location. Move somewhere with a clearer GPS signal.':error.code===3?'GPS timed out. Try again with a stronger signal.':'Your location could not be determined.';
-    reject(new Error(message+' You can also self-report your visit.'));
+    reject(new GpsLocationError(reason,message+' You can also self-report your visit.'));
    },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
  });
 }
@@ -67,32 +102,56 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
 
  async function checkIn(action:Action,method:CheckinMethod){
   setPending(true);setErrorMessage('');setMessage('');setGpsRecoveryAction(null);
+  let accessToken:string|undefined;
+  let gpsAccuracy:number|undefined;
+  let stage:'browser'|'api'|'network'='browser';
+  let responseReason:string|undefined;
+  let diagnosticSent=false;
+  const report=(outcome:'success'|'failure',reason?:string)=>{
+   if(method!=='location_matched'||!accessToken||diagnosticSent)return;
+   diagnosticSent=true;
+   logLocationButtonOutcome({
+    token:accessToken,venueSlug,action,outcome,phase:stage,reason,accuracy:gpsAccuracy
+   });
+  };
   try{
    const {data,error}=await accountClient().auth.getSession();
    if(error)throw error;
    if(!data.session){setNeedsSignIn(true);return;}
+   accessToken=data.session.access_token;
    if(action==='tour'&&!eligibility?.open){
     setMessage(eligibility?.reason||'Tour Stops open after karaoke starts.');
     return;
    }
+   stage='browser';
    const position=method==='location_matched'?await currentLocation().catch(error=>{
     setGpsRecoveryAction(action);
     throw error;
    }):undefined;
+   gpsAccuracy=position?.accuracy;
+   stage='network';
    const response=await fetch(action==='venue'?'/api/venue-checkins':'/api/tour-stops',{
     method:'POST',
-    headers:{'Content-Type':'application/json',Authorization:'Bearer '+data.session.access_token},
+    headers:{'Content-Type':'application/json',Authorization:'Bearer '+accessToken},
     body:JSON.stringify({venueSlug,method,...(position?{location:position}:{})})
    });
-   if(response.status===401){setNeedsSignIn(true);return;}
+   stage='api';
+   if(response.status===401){
+    report('failure','auth_expired');
+    setNeedsSignIn(true);return;
+   }
    const result=await response.json();
    if(!response.ok){
     if(method==='location_matched'&&response.status===422&&
        ['too_far','low_accuracy','invalid_location','missing_venue_coordinates'].includes(result.code)){
       setGpsRecoveryAction(action);
     }
+    responseReason=typeof result.code==='string'&&gpsApiReasons.has(result.code)
+     ?result.code:(response.status===409?'schedule_closed':'request_error');
+    report('failure',responseReason);
     throw new Error(result.error||'Could not complete check-in.');
    }
+   report('success');
    if(action==='venue'){
     setVenueCheckedIn(true);
     setOfferUnlock(result.offerUnlock||offerUnlock);
@@ -109,8 +168,11 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
     trackEvent('tour_stop_check_in',{venue_slug:venueSlug,check_in_method:method,new_tour_stop:Boolean(result.collected)});
    }
    await refresh();
-  }catch(error){setErrorMessage(error instanceof Error?error.message:'Your check-in was not saved.');}
-  finally{setPending(false);}
+  }catch(error){
+   if(error instanceof GpsLocationError)report('failure',error.diagnosticReason);
+   else report('failure',responseReason||(stage==='network'?'network_error':'request_error'));
+   setErrorMessage(error instanceof Error?error.message:'Your check-in was not saved.');
+  }finally{setPending(false);}
  }
 
  async function signIn(event:FormEvent<HTMLFormElement>){
