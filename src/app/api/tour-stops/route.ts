@@ -24,8 +24,10 @@ export async function GET(request:Request){
    const night=nightlifeDate();
    const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('venue_slug',venueSlug).eq('nightlife_date',night).maybeSingle();
    if(error)throw error;
-   const offerUnlock=data?.status==='confirmed'?await getVenueOfferUnlock(auth.user.id,data.venue_id,night):undefined;
-   return NextResponse.json({visit:data||null,offerUnlock},{headers:{'Cache-Control':'private, no-store'}});
+   const venue=getPublicVenues(await getVenueListings()).find(v=>v.slug===venueSlug);
+   const eligibility=venue?tourStopEligibility(await getKaraokeEventsByVenueSlug(venueSlug)):undefined;
+   const offerUnlock=venue?await getVenueOfferUnlock(auth.user.id,venue.id,night):undefined;
+   return NextResponse.json({visit:data||null,offerUnlock,eligibility},{headers:{'Cache-Control':'private, no-store'}});
   }
   const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('status','confirmed').order('created_at',{ascending:true});if(error)throw error;
   const stops=collectTourStops((data||[]) as TourStopVisit[]);return NextResponse.json({stops,stubs:stops},{headers:{'Cache-Control':'private, no-store'}});
