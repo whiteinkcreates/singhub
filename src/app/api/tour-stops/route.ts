@@ -3,7 +3,7 @@ import {createAdminClient} from '@/lib/supabase/admin';
 import {getVenueListings} from '@/lib/venueData';
 import {getPublicVenues} from '@/lib/publicVenueFilters';
 import {getKaraokeEventsByVenueSlug} from '@/lib/eventData';
-import {collectTourStops,locationMatch,nightlifeDate,tourStopEligibility,type TourStopVisit} from '@/lib/tourStops';
+import {collectTourStops,locationMatchReason,nightlifeDate,tourStopEligibility,type TourStopVisit} from '@/lib/tourStops';
 import {getVenueOfferUnlock,unlockVenueOffer} from '@/lib/venueOffers.server';
 export const dynamic='force-dynamic';
 
@@ -42,7 +42,14 @@ export async function POST(request:Request){
   const venue=getPublicVenues(await getVenueListings()).find(v=>v.slug===body.venueSlug);if(!venue)return NextResponse.json({error:'This venue is not available for check-in.'},{status:404});
   const eligibility=tourStopEligibility(await getKaraokeEventsByVenueSlug(venue.slug));
   if(eligibility.phase==='closed')return NextResponse.json({error:eligibility.reason,eligibility},{status:409});
-  if(body.method==='location_matched'&&!locationMatch(body.location,venue))return NextResponse.json({error:'Your location could not be matched nearby. You can record a self-reported visit instead.'},{status:422});
+  if(body.method==='location_matched'){
+   const reason=locationMatchReason(body.location,venue);
+   if(reason){
+    const messages={invalid_location:'The GPS reading was invalid. Please try again.',low_accuracy:'Your location reading is not precise enough. Try again with a clearer GPS signal.',missing_venue_coordinates:'This venue is not ready for GPS check-in yet.',too_far:'Your location does not appear close enough to this venue.'};
+    console.warn('TourStop location match rejected',{venueSlug:venue.slug,reason});
+    return NextResponse.json({error:messages[reason]+' You can record a self-reported visit instead.',code:reason},{status:422});
+   }
+  }
 
   const night=nightlifeDate();
   const {data:existing,error:existingError}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('venue_id',venue.id).eq('nightlife_date',night).maybeSingle();
