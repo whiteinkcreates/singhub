@@ -61,8 +61,8 @@ jobs:
 
       - name: Build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops')) && 'http://127.0.0.1:3101' || '' }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops')) && 'qa-public-key' || '' }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-')) && 'http://127.0.0.1:3101' || '' }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-')) && 'qa-public-key' || '' }}
         run: npm run build
 
       - name: Install browser for My Tour mobile QA
