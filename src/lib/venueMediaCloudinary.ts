@@ -142,3 +142,39 @@ export async function listVenueMedia(slug: string, kind: "venues" | "hotels" | "
   const fallbackPayload = (await fallbackResponse.json()) as { resources?: CloudinaryResource[] };
   return mapResources(fallbackPayload.resources);
 }
+
+
+export async function deleteVenueMedia(publicId: string, slug: string, kind: "venues" | "hotels" | "hosts" = "venues") {
+  const normalizedPublicId = publicId.trim();
+  if (!normalizedPublicId) throw new Error("Media public ID is required.");
+
+  const assets = await listVenueMedia(slug, kind);
+  const asset = assets.find((item) => item.publicId === normalizedPublicId);
+  if (!asset) throw new Error("That image is not in this media library.");
+
+  const { cloudName, apiKey, apiSecret } = getCloudinaryConfig();
+  const authorization = Buffer.from(`${apiKey}:${apiSecret}`).toString("base64");
+  const params = new URLSearchParams();
+  params.append("public_ids[]", normalizedPublicId);
+  params.set("invalidate", "true");
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/resources/image/upload?${params.toString()}`,
+    {
+      method: "DELETE",
+      headers: { Authorization: `Basic ${authorization}` },
+      cache: "no-store",
+    },
+  );
+
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`Cloudinary delete failed (${response.status}): ${details.slice(0, 300)}`);
+  }
+
+  const payload = (await response.json()) as { deleted?: Record<string, string> };
+  const status = payload.deleted?.[normalizedPublicId];
+  if (status !== "deleted") throw new Error("Cloudinary did not confirm that the image was deleted.");
+
+  return asset;
+}

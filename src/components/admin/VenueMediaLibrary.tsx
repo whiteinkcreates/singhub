@@ -34,6 +34,7 @@ type VenueMediaLibraryProps = {
 type MediaResponse = {
   assets?: VenueMediaAsset[];
   asset?: VenueMediaAsset;
+  deleted?: string;
   error?: string;
 };
 
@@ -66,6 +67,7 @@ export function VenueMediaLibrary({
   const [assets, setAssets] = useState<VenueMediaAsset[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [deletingPublicId, setDeletingPublicId] = useState<string | null>(null);
   const [message, setMessage] = useState("Loading this venue's Cloudinary library…");
   const requestSequence = useRef(0);
 
@@ -142,6 +144,37 @@ export function VenueMediaLibrary({
     }
   }
 
+
+  async function deleteAsset(asset: VenueMediaAsset) {
+    const requestedSlug = slug.trim();
+    if (!requestedSlug || kind !== "venue") return;
+    const assigned = heroUrl === asset.url || logoUrl === asset.url || galleryUrls.has(asset.url);
+    if (assigned) {
+      setMessage("Remove this image from its hero, logo, or gallery role first. Save the venue profile, then delete the upload.");
+      return;
+    }
+    if (!window.confirm("Permanently delete this image from the venue media library? This cannot be undone.")) return;
+
+    setDeletingPublicId(asset.publicId);
+    setMessage("Deleting image from Cloudinary…");
+    try {
+      const response = await fetch(endpoint, {
+        method: "DELETE",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ slug: requestedSlug, publicId: asset.publicId }),
+      });
+      const payload = (await response.json()) as MediaResponse;
+      if (!response.ok) throw new Error(payload.error || "Could not delete venue media.");
+      if (slug.trim() !== requestedSlug) return;
+      setAssets((current) => current.filter((item) => item.publicId !== asset.publicId));
+      setMessage("Image permanently deleted from the venue media library.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Venue media delete failed.");
+    } finally {
+      setDeletingPublicId(null);
+    }
+  }
+
   function toggleGallery(asset: VenueMediaAsset) {
     if (galleryUrls.has(asset.url)) {
       onGalleryChange(gallery.filter((item) => item.url !== asset.url));
@@ -172,7 +205,7 @@ export function VenueMediaLibrary({
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">{kind === "host" ? "Host media" : kind === "hotel" ? "Hotel media" : "Venue media"}</p>
           <h3 className="mt-1 text-lg font-black normal-case tracking-normal text-white">Cloudinary library</h3>
-          <p className="mt-2 max-w-2xl text-sm font-medium normal-case tracking-normal text-slate-400">{kind === "host" ? "Upload photos, assign a portrait or hero, then save your selections in the host editor." : kind === "hotel" ? "Choose a hotel hero from this hotel’s library, or upload a photo. Save your selection in the hotel editor." : "One library, explicit roles. Choose a hero, optional venue mark, and gallery photos without copying image URLs."}</p>
+          <p className="mt-2 max-w-2xl text-sm font-medium normal-case tracking-normal text-slate-400">{kind === "host" ? "Upload photos, assign a portrait or hero, then save your selections in the host editor." : kind === "hotel" ? "Choose a hotel hero from this hotel’s library, or upload a photo. Save your selection in the hotel editor." : "One library, explicit roles. Choose a hero, optional venue mark, and gallery photos without copying image URLs. To permanently delete an upload, remove any assigned role and save the profile first."}</p>
         </div>
         <button type="button" onClick={() => void loadLibrary()} disabled={!slug.trim() || loading} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-black normal-case tracking-normal text-white disabled:opacity-40">{loading ? "Loading…" : "Refresh library"}</button>
       </div>
@@ -219,7 +252,7 @@ export function VenueMediaLibrary({
         const galleryFull = gallery.length >= MAX_GALLERY_PHOTOS && !inGallery;
         return <div key={asset.publicId} className={`overflow-hidden rounded-2xl border bg-black/25 ${isHero ? "border-fuchsia-300/70" : isLogo ? "border-cyan-300/70" : inGallery ? "border-cyan-300/50" : "border-white/10"}`}>
           <div className="relative aspect-square overflow-hidden bg-black/30"><MediaImagePreview src={asset.url} alt={`${kind} media option`} className="h-full w-full object-cover" /><div className="absolute left-2 top-2 flex flex-wrap gap-1">{isHero && <span className="rounded-full bg-[#ff2aa3] px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-white">Hero</span>}{isLogo && <span className="rounded-full bg-violet-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">{kind === "host" ? "Portrait" : "Logo"}</span>}{inGallery && <span className="rounded-full bg-cyan-300 px-2 py-1 text-[9px] font-black uppercase tracking-[0.1em] text-slate-950">Gallery</span>}</div></div>
-          <div className="grid gap-2 p-2"><button type="button" onClick={() => onHeroChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isHero ? "bg-fuchsia-300 text-slate-950" : "border border-white/15 text-white"}`}>{isHero ? "Selected hero" : "Set as hero"}</button>{(kind === "venue" || (kind === "host" && allowPortrait)) && <button type="button" onClick={() => onLogoChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isLogo ? "bg-violet-300 text-slate-950" : "border border-white/15 text-white"}`}>{kind === "host" ? (isLogo ? "Selected portrait" : "Set as portrait") : (isLogo ? "Selected logo" : "Set as logo")}</button>}{kind === "venue" && <button type="button" onClick={() => toggleGallery(asset)} disabled={galleryFull} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal disabled:cursor-not-allowed disabled:opacity-35 ${inGallery ? "bg-cyan-300 text-slate-950" : "border border-white/15 text-white"}`}>{inGallery ? "Remove from gallery" : galleryFull ? "Gallery full" : "Add to gallery"}</button>}</div>
+          <div className="grid gap-2 p-2"><button type="button" onClick={() => onHeroChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isHero ? "bg-fuchsia-300 text-slate-950" : "border border-white/15 text-white"}`}>{isHero ? "Selected hero" : "Set as hero"}</button>{(kind === "venue" || (kind === "host" && allowPortrait)) && <button type="button" onClick={() => onLogoChange(asset.url)} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal ${isLogo ? "bg-violet-300 text-slate-950" : "border border-white/15 text-white"}`}>{kind === "host" ? (isLogo ? "Selected portrait" : "Set as portrait") : (isLogo ? "Selected logo" : "Set as logo")}</button>}{kind === "venue" && <button type="button" onClick={() => toggleGallery(asset)} disabled={galleryFull} className={`rounded-lg px-2 py-2 text-[11px] font-black normal-case tracking-normal disabled:cursor-not-allowed disabled:opacity-35 ${inGallery ? "bg-cyan-300 text-slate-950" : "border border-white/15 text-white"}`}>{inGallery ? "Remove from gallery" : galleryFull ? "Gallery full" : "Add to gallery"}</button>}{kind === "venue" && <button type="button" onClick={() => void deleteAsset(asset)} disabled={deletingPublicId === asset.publicId || isHero || isLogo || inGallery} title={isHero || isLogo || inGallery ? "Remove this image from its assigned role and save the profile before deleting it." : "Permanently delete this upload"} className="rounded-lg border border-rose-300/25 px-2 py-2 text-[11px] font-black normal-case tracking-normal text-rose-200 disabled:cursor-not-allowed disabled:opacity-35">{deletingPublicId === asset.publicId ? "Deleting…" : isHero || isLogo || inGallery ? "Remove role first" : "Delete upload"}</button>}</div>
         </div>;
       })}</div>}
 
