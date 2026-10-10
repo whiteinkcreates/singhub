@@ -81,7 +81,7 @@ function displayDate(value: string | null | undefined) {
   if (!value) return "—";
   // Nightlife and performance dates are DATE columns, not UTC timestamps.
   // Parsing date-only values at UTC midnight would display the prior day in San Diego.
-  const d = new Date(/^\\d{4}-\\d{2}-\\d{2}$/.test(value) ? value + "T12:00:00Z" : value);
+  const d = new Date(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(value) ? value + "T12:00:00Z" : value);
   return Number.isNaN(d.valueOf()) ? "—" : new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Los_Angeles", month: "short", day: "numeric", year: "numeric",
   }).format(d);
