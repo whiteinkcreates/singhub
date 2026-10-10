@@ -5,14 +5,16 @@ if (!baseUrl) {
   throw new Error("Set SINGHUB_SMOKE_BASE_URL to the preview or production origin.");
 }
 
-const response = await fetch(new URL("/admin/scout", baseUrl), {
-  redirect: "manual",
-});
+for (const path of ["/admin/scout", "/admin/singers"]) {
+  const response = await fetch(new URL(path, baseUrl), {
+    redirect: "manual",
+  });
 
-if (![401, 404].includes(response.status)) {
-  throw new Error(
-    `Expected unauthenticated /admin/scout to return 401 or 404, received ${response.status}.`,
-  );
+  if (![401, 404].includes(response.status)) {
+    throw new Error(
+      "Expected unauthenticated " + path + " to return 401 or 404, received " + response.status + ".",
+    );
+  }
+
+  console.log("PASS " + path + " rejected an unauthenticated request with " + response.status + ".");
 }
-
-console.log(`PASS /admin/scout rejected an unauthenticated request with ${response.status}.`);
