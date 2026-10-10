@@ -14,3 +14,22 @@
 @media(max-width:860px){.sh-header{height:62px;min-height:62px;padding:4px 14px}.sh-logo img{width:112px;height:48px}.sh-desktop-nav{display:none}.sh-header-actions{gap:12px}.sh-return{display:flex;font-size:12px}.sh-return i{width:30px;height:30px;font-size:22px}.sh-bag-button{padding:6px 10px;font-size:14px!important}.sh-app-nav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));padding:7px 4px max(7px,env(safe-area-inset-bottom));gap:0}.sh-app-nav a{min-height:48px;align-content:center;font-size:10px;white-space:nowrap;min-width:0}.sh-footer{padding-bottom:110px}}
 @media(max-width:350px){.sh-return{font-size:0}.sh-return i{font-size:22px}.sh-header-actions{gap:8px}}
 .sh-entry-return{display:inline-block;position:relative;z-index:1;font-size:14px;color:var(--sh-muted)!important;margin-bottom:30px;text-decoration:underline!important;text-underline-offset:4px}
+
+/* Full-screen photo hero. The solid product sheet scrolls over the stationary hero. */
+.sh-merch{--sh-header-height:70px}
+.sh-merch-main{position:relative;isolation:isolate}
+.sh-hero{position:sticky;top:var(--sh-header-height);z-index:0;display:flex;flex-direction:column;justify-content:var(--sh-hero-placement,center);min-height:calc(100vh - var(--sh-header-height));min-height:calc(100svh - var(--sh-header-height));padding:48px max(24px,calc((100vw - 1192px)/2));border:0;color:var(--sh-hero-text,#fff)}
+.sh-hero-media,.sh-hero-overlay{position:absolute;inset:0;display:block;pointer-events:none}
+.sh-hero-media{z-index:0}
+.sh-hero-media img{display:block;width:100%;height:100%;object-fit:cover;object-position:var(--sh-hero-x,50%) var(--sh-hero-y,50%)}
+.sh-hero-overlay{z-index:1;background:var(--sh-hero-overlay,#000);opacity:var(--sh-hero-opacity,0)}
+.sh-hero-copy{position:relative;z-index:2;width:100%;text-align:var(--sh-hero-align,left)}
+.sh-hero h1{max-width:900px;font-size:clamp(56px,7.7vw,104px);color:inherit}
+.sh-hero-copy .sh-intro{color:inherit;max-width:520px}
+.sh-hero-copy .sh-entry-return{color:inherit!important}
+.sh-hero-copy .sh-eyebrow{color:inherit}
+.sh-hero[style*="--sh-hero-align:center"] :is(h1,.sh-intro){margin-inline:auto}
+.sh-hero[style*="--sh-hero-align:right"] :is(h1,.sh-intro){margin-left:auto}
+.sh-merch-content{position:relative;z-index:2;width:100%;margin:0;background:var(--sh-content-bg,#06090e);border-top:1px solid var(--sh-line)}
+.sh-footer{position:relative;z-index:2;max-width:none;background:var(--sh-bg);padding-inline:max(24px,calc((100vw - 1192px)/2))}
+@media(max-width:860px){.sh-merch{--sh-header-height:62px}.sh-hero{padding:40px 20px 84px}.sh-hero-media img{object-position:var(--sh-hero-mobile-x,50%) var(--sh-hero-mobile-y,50%)}.sh-hero h1{font-size:clamp(52px,12vw,80px)}.sh-hero-copy .sh-intro{font-size:18px}}

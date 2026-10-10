@@ -9,15 +9,25 @@
     <a class="sh-logo" href="https://singhub.app" aria-label="SingHUB home"><img src="{{ 'singhub-wordmark.png' | asset_url }}" alt="SingHUB" width="400" height="168"></a>
     <nav class="sh-desktop-nav" aria-label="Primary"><a href="https://singhub.app">Discover</a><a href="https://singhub.app/find-karaoke">Venues</a><a href="https://singhub.app/hosts">Hosts</a><a href="https://singhub.app/hotel">Hotels</a><a href="https://singhub.app/singboard">SingBOARD</a></nav><div class="sh-header-actions"><a class="sh-return" data-return href="https://singhub.app/account#merch">My SingHUB <i class="material-symbols-rounded" aria-hidden="true">account_circle</i></a><button class="sh-bag-button" data-open-bag aria-haspopup="dialog" aria-controls="sh-bag">Bag <span data-cart-count>{{ cart.item_count }}</span></button><noscript><a href="{{ routes.cart_url }}">View cart</a></noscript></div>
   </header>
-  <main id="merch-main">
-    <section class="sh-hero" aria-labelledby="sh-merch-title">
+  <main id="merch-main" class="sh-merch-main">
+    <section class="sh-hero" aria-labelledby="sh-merch-title" style="--sh-hero-x:{{ section.settings.hero_x | default: 50 }}%;--sh-hero-y:{{ section.settings.hero_y | default: 50 }}%;--sh-hero-mobile-x:{{ section.settings.hero_mobile_x | default: 50 }}%;--sh-hero-mobile-y:{{ section.settings.hero_mobile_y | default: 50 }}%;--sh-hero-overlay:{{ section.settings.hero_overlay_color | default: '#000000' }};--sh-hero-opacity:{{ section.settings.hero_overlay_opacity | default: 0 | divided_by: 100.0 }};--sh-hero-text:{{ section.settings.hero_text_color | default: '#ffffff' }};--sh-hero-align:{{ section.settings.hero_text_align | default: 'left' }};--sh-hero-placement:{{ section.settings.hero_text_placement | default: 'center' }};">
+      {% assign hero_image = section.settings.hero_image | default: section.settings.hero_mobile_image %}
+      {% if hero_image != blank %}
+        <picture class="sh-hero-media">
+          {% if section.settings.hero_mobile_image != blank %}<source media="(max-width: 860px)" srcset="{{ section.settings.hero_mobile_image | image_url: width: 1200 }}">{% endif %}
+          <img src="{{ hero_image | image_url: width: 2400 }}" srcset="{{ hero_image | image_url: width: 1200 }} 1200w, {{ hero_image | image_url: width: 1800 }} 1800w, {{ hero_image | image_url: width: 2400 }} 2400w" sizes="100vw" width="{{ hero_image.width }}" height="{{ hero_image.height }}" alt="" loading="eager" fetchpriority="high">
+        </picture>
+      {% endif %}
+      <div class="sh-hero-overlay" aria-hidden="true"></div>
+      <div class="sh-hero-copy">
       <a class="sh-entry-return" data-entry-return href="https://singhub.app/account#merch">← Back to SingHUB</a>
       <p class="sh-eyebrow">SINGHUB · MERCH TABLE</p>
       <h1 id="sh-merch-title">{{ section.settings.heading | escape }}</h1>
       <p class="sh-intro">{{ section.settings.intro | escape }}</p>
-      <a class="sh-hero-link" href="#sh-products">Find your gear <span aria-hidden="true">↓</span></a>
-      <div class="sh-hero-mark" aria-hidden="true"><span>MIC ON.</span><span>WORLD OFF.</span></div>
+      <a class="sh-hero-link" href="#sh-products">{{ section.settings.hero_cta | default: 'Find your gear' | escape }} <span aria-hidden="true">↓</span></a>
+      </div>
     </section>
+    <div class="sh-merch-content" style="--sh-content-bg:{{ section.settings.content_background | default: '#06090e' }};">
     <section class="sh-products" id="sh-products" aria-labelledby="sh-products-title">
       <div class="sh-section-heading"><div><p class="sh-eyebrow">OFF THE STAGE. STILL YOU.</p><h2 id="sh-products-title">On the table.</h2></div><p>Pick your gear. Choose your fit.</p></div>
       {% if merch_collection != blank and merch_collection.products_count > 0 %}
@@ -50,6 +60,7 @@
       {% else %}<div class="sh-empty"><h3>The next drop is on its way.</h3><p>Check back for SingHUB gear. Your next karaoke night is already waiting.</p><a href="https://singhub.app/find-karaoke">Find somewhere to sing ↗</a></div>{% endif %}
     </section>
     <section class="sh-encore"><p class="sh-eyebrow">ONE MORE SONG?</p><h2>You’ve got places to sing.</h2><a href="https://singhub.app/find-karaoke">Find tonight’s lineup ↗</a></section>
+    </div>
   </main>
   <footer class="sh-footer"><img src="{{ 'singhub-wordmark.png' | asset_url }}" alt="SingHUB" width="400" height="168"><p>SingHUB gear. Checkout and order support by {{ shop.name | escape }}.</p><nav aria-label="Store policies">{% if shop.shipping_policy != blank %}<a href="{{ shop.shipping_policy.url }}">Shipping</a>{% endif %}{% if shop.refund_policy != blank %}<a href="{{ shop.refund_policy.url }}">Returns</a>{% endif %}{% if shop.privacy_policy != blank %}<a href="{{ shop.privacy_policy.url }}">Privacy</a>{% endif %}<a href="https://singhub.app">Back to SingHUB</a></nav></footer>
   <nav class="sh-app-nav" aria-label="SingHUB navigation"><a href="https://singhub.app"><i class="material-symbols-rounded" aria-hidden="true">search</i>Discover</a><a href="https://singhub.app/find-karaoke"><i class="material-symbols-rounded" aria-hidden="true">location_on</i>Venues</a><a href="https://singhub.app/hosts"><i class="material-symbols-rounded" aria-hidden="true">mic</i>Hosts</a><a href="https://singhub.app/hotel"><i class="material-symbols-rounded" aria-hidden="true">hotel</i>Hotels</a><a href="https://singhub.app/singboard"><i class="material-symbols-rounded" aria-hidden="true">dashboard</i>SingBOARD</a><a href="https://singhub.app/account"><i class="material-symbols-rounded" aria-hidden="true">account_circle</i>My SingHUB</a></nav>
@@ -59,10 +70,157 @@
 {
   "name": "SingHUB Merch Table",
   "settings": [
-    {"type":"collection","id":"collection","label":"SingHUB collection"},
-    {"type":"text","id":"heading","label":"Headline","default":"TAKE THE NIGHT WITH YOU."},
-    {"type":"textarea","id":"intro","label":"Introduction","default":"For the rooms you love. The songs you live for. And the next time you grab the mic."}
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "SingHUB collection"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Headline",
+      "default": "TAKE THE NIGHT WITH YOU."
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Introduction",
+      "default": "For the rooms you love. The songs you live for. And the next time you grab the mic."
+    },
+    {
+      "type": "header",
+      "content": "Hero image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Desktop hero image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_mobile_image",
+      "label": "Mobile hero image",
+      "info": "Uses the desktop image when left blank."
+    },
+    {
+      "type": "range",
+      "id": "hero_x",
+      "label": "Desktop left / right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "hero_y",
+      "label": "Desktop up / down",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "hero_mobile_x",
+      "label": "Mobile left / right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "hero_mobile_y",
+      "label": "Mobile up / down",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "color",
+      "id": "hero_overlay_color",
+      "label": "Overlay color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "hero_overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "hero_text_color",
+      "label": "Hero text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "hero_text_align",
+      "label": "Hero text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "hero_text_placement",
+      "label": "Hero text vertical placement",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Middle"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "hero_cta",
+      "label": "Hero button label",
+      "default": "Find your gear"
+    },
+    {
+      "type": "color",
+      "id": "content_background",
+      "label": "Content background",
+      "default": "#06090e"
+    }
   ],
-  "presets": [{"name":"SingHUB Merch Table"}]
+  "presets": [
+    {
+      "name": "SingHUB Merch Table"
+    }
+  ]
 }
 {% endschema %}
