@@ -599,6 +599,31 @@ function buildLiveOnlyReview(candidateEvents) {
     }));
 }
 
+function buildCanonicalRemovalApprovalKeys(eventSourceRows) {
+  const approved = new Set();
+
+  for (const row of eventSourceRows) {
+    const explicitlyInactive =
+      clean(row.active_status) && key(row.active_status) !== "active";
+    const explicitlyHidden =
+      clean(row.app_visible) && !truthy(row.app_visible);
+    const explicitlyArchived =
+      Boolean(clean(row.archive_reason)) || Boolean(clean(row.duplicate_of));
+
+    if (!explicitlyInactive && !explicitlyHidden && !explicitlyArchived) {
+      continue;
+    }
+
+    for (const day of dayList(row.karaoke_day)) {
+      const venueSlug = clean(row.venue_slug);
+      if (!venueSlug) continue;
+      approved.add(`${venueSlug}::${day}`);
+    }
+  }
+
+  return approved;
+}
+
 function reportStableVenueIdentityChanges(candidateVenues) {
   const currentById = new Map(
     readPublicRows("venues.tsv").map((venue) => [clean(venue.id), venue]),
@@ -910,11 +935,14 @@ async function main() {
   const liveOnlyReview = buildLiveOnlyReview(events);
   report.stableVenueIdentityChanges = reportStableVenueIdentityChanges(venues);
   const approvedLiveOnlyRemovals = loadApprovedLiveOnlyRemovals();
+  const canonicalRemovalApprovalKeys =
+    buildCanonicalRemovalApprovalKeys(eventSourceRows);
   report.unapprovedHandEnteredRemovals = liveOnlyReview
     .filter(
       (event) =>
         event.source_class === "hand_entered" &&
-        !approvedLiveOnlyRemovals.has(clean(event.event_id)),
+        !approvedLiveOnlyRemovals.has(clean(event.event_id)) &&
+        !canonicalRemovalApprovalKeys.has(eventSlugDayKey(event)),
     )
     .map(
       (event) =>
