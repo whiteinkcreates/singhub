@@ -9,6 +9,9 @@ const venueHeaders = [
   "id",
   "venue_name",
   "slug",
+  "city",
+  "latitude",
+  "longitude",
   "banner_image_url",
   "is_featured",
   "confidence_score",
@@ -97,4 +100,21 @@ test("rejects an active event when venue evidence denies current karaoke", () =>
   const result = validatePublicData({ dataDir, skipMinimums: true });
   assert.equal(result.passed, false);
   assert.match(result.failures.join("\n"), /denying current karaoke/);
+});
+
+test("requires valid GPS coordinates for public San Diego County venues", () => {
+  const missingDir = writeFixture({
+    venue: {...validVenue, city: "San Diego"},
+    event: validEvent,
+  });
+  const missing = validatePublicData({dataDir: missingDir, skipMinimums: true});
+  assert.equal(missing.passed, false);
+  assert.match(missing.failures.join("\n"), /require valid GPS coordinates/);
+
+  const validDir = writeFixture({
+    venue: {...validVenue, city: "San Diego", latitude: "32.75", longitude: "-117.16"},
+    event: validEvent,
+  });
+  const valid = validatePublicData({dataDir: validDir, skipMinimums: true});
+  assert.equal(valid.passed, true);
 });
