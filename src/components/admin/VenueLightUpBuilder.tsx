@@ -3,7 +3,7 @@ import {PositionedImage} from '@/components/media/PositionedImage';
 import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 
 /* eslint-disable @next/next/no-img-element */
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { VenueMediaLibrary } from "@/components/admin/VenueMediaLibrary";
 import { VenueOfferEditor } from "@/components/admin/VenueOfferEditor";
 import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
@@ -201,6 +201,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [baselineSignature, setBaselineSignature] = useState<string | null>(null);
 
   const selectedVenue = venues.find((venue) => venue.slug === slug);
   const selectedFacts = new Set(amenities);
@@ -241,22 +242,31 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   }
 
   async function selectVenue(nextSlug: string) {
-    const nextVenue = venues.find((venue) => venue.slug === nextSlug);
-    setSlug(nextSlug);
-    setSaveMessage(null);
+    if (loading || saving || nextSlug === slug) return;
+    const nextVenue = venues.find(venue => venue.slug === nextSlug);
+    if (!nextVenue) return;
+    if (isDirty && !window.confirm("Unsaved changes for " + (selectedVenue?.name || slug) + ". Discard changes and switch venues?")) return;
     setLoading(true);
+    setSaveMessage(null);
     try {
       const response = await fetch(`/api/admin/venue-enhancements?slug=${encodeURIComponent(nextSlug)}`, { cache: "no-store" });
+      let nextProfile: VenueEnhancement;
       if (response.status === 404) {
-        applyProfile(emptyProfile(nextVenue?.isFeatured ?? false, nextVenue?.featuredPriority), nextVenue);
-        return;
+        nextProfile = emptyProfile(nextVenue.isFeatured, nextVenue.featuredPriority);
+      } else {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Could not load venue profile.");
+        nextProfile = result.profile as VenueEnhancement;
       }
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Could not load venue profile.");
-      applyProfile(result.profile as VenueEnhancement, nextVenue);
+      applyProfile(nextProfile, nextVenue);
+      setSlug(nextSlug);
+      setBaselineSignature(null);
+      const url = new URL(window.location.href);
+      url.searchParams.set("venue", nextSlug);
+      window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
     } catch (error) {
+      // Preserve the prior profile on loading errors to prevent accidental data loss.
       setSaveMessage(error instanceof Error ? error.message : "Could not load venue profile.");
-      applyProfile(emptyProfile(nextVenue?.isFeatured ?? false, nextVenue?.featuredPriority), nextVenue);
     } finally {
       setLoading(false);
     }
@@ -302,6 +312,14 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     },
   }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
+  const isDirty = baselineSignature !== null && JSON.stringify(output) !== baselineSignature;
+  useEffect(() => {
+    if (!loading && baselineSignature === null) setBaselineSignature(JSON.stringify(output));
+  }, [loading, baselineSignature, output]);
+  const currentIndex = venues.findIndex(venue => venue.slug === slug);
+  const previousVenue = currentIndex > 0 ? venues[currentIndex - 1] : null;
+  const nextVenue = currentIndex >= 0 && currentIndex < venues.length - 1 ? venues[currentIndex + 1] : null;
+
   const completionChecks = useMemo(() => [
     { label: "Hero + alt text", done: Boolean(heroImageUrl.trim() && heroImageAlt.trim()) },
     { label: "Tagline", done: Boolean(tagline.trim()) },
@@ -342,6 +360,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Profile could not be saved.");
+      setBaselineSignature(JSON.stringify(output));
       const status = enabled ? "Saved and live." : "Saved. Base profile remains live; Partner features are off.";
       setSaveMessage(featured ? `${status} Featured priority ${output.featuredPriority}.` : status);
     } catch (error) {
@@ -371,6 +390,20 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             <div className="flex items-center justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Featured</p><p className="mt-1 text-sm font-bold text-white">{featured ? "Extra placement on" : "Normal placement"}</p></div><button type="button" onClick={() => setFeatured((current) => !current)} aria-pressed={featured} className={`relative h-8 w-14 shrink-0 rounded-full transition ${featured ? "bg-violet-400" : "bg-slate-700"}`}><span className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${featured ? "left-7" : "left-1"}`} /></button></div>
             {featured ? <label className="mt-3 block text-[10px] font-black uppercase tracking-[0.12em] text-slate-500">Priority <span className="normal-case tracking-normal text-slate-600">1 = highest</span><input type="number" min={1} max={99} value={featuredPriority} onChange={(event) => setFeaturedPriority(Number(event.target.value) || 10)} className="mt-1 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" /></label> : null}
           </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" aria-label={previousVenue ? "Previous venue: " + previousVenue.name : "No previous venue"}
+              title={previousVenue?.name} disabled={!previousVenue || loading || saving}
+              onClick={() => previousVenue && void selectVenue(previousVenue.slug)}
+              className="rounded-full border border-cyan-300/35 px-4 py-2 text-sm font-black text-cyan-100 disabled:cursor-not-allowed disabled:opacity-30">← Previous</button>
+            <span className="px-2 text-xs font-bold text-slate-400">{currentIndex + 1} / {venues.length}</span>
+            <button type="button" aria-label={nextVenue ? "Next venue: " + nextVenue.name : "No next venue"}
+              title={nextVenue?.name} disabled={!nextVenue || loading || saving}
+              onClick={() => nextVenue && void selectVenue(nextVenue.slug)}
+              className="rounded-full border border-cyan-300/35 px-4 py-2 text-sm font-black text-cyan-100 disabled:cursor-not-allowed disabled:opacity-30">Next →</button>
+          </div>
+          {isDirty && <span role="status" className="rounded-full border border-amber-300/35 bg-amber-300/10 px-3 py-1.5 text-xs font-bold text-amber-100">Unsaved changes</span>}
         </div>
         {selectedVenue ? <p className="mt-3 text-xs text-slate-500">Editing {selectedVenue.name} · {selectedVenue.neighborhood || selectedVenue.city} · Venue Index slug: {selectedVenue.slug}</p> : null}
       </section>
@@ -481,6 +514,10 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             {saveMessage ? <p className="mb-4 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-sm text-slate-200">{saveMessage}</p> : null}
             <button type="button" onClick={saveProfile} disabled={saving || loading || !slug.trim()} className="w-full rounded-full bg-[#ff2aa3] px-5 py-3 text-sm font-black text-white transition hover:bg-[#ff4bb2] disabled:cursor-not-allowed disabled:opacity-40">{saving ? "Saving..." : enabled ? "Save + Publish Partner" : "Save Base Profile"}</button>
             <a href={`/venues/${slug}`} target="_blank" rel="noreferrer" className="mt-3 block w-full rounded-full border border-cyan-300/30 px-5 py-3 text-center text-sm font-black text-cyan-100">Open live profile ↗</a>
+             <div className="mt-3 grid grid-cols-2 gap-2">
+               <button type="button" disabled={!previousVenue || loading || saving} onClick={() => previousVenue && void selectVenue(previousVenue.slug)} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-black text-cyan-200 disabled:opacity-30">← Previous venue</button>
+               <button type="button" disabled={!nextVenue || loading || saving} onClick={() => nextVenue && void selectVenue(nextVenue.slug)} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-black text-cyan-200 disabled:opacity-30">Next venue →</button>
+             </div>
           </section>
         </aside>
       </div>

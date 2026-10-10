@@ -5,7 +5,7 @@ if (!baseUrl) {
   throw new Error("Set SINGHUB_SMOKE_BASE_URL to the preview or production origin.");
 }
 
-for (const path of ["/admin/scout", "/admin/singers"]) {
+for (const path of ["/admin/scout", "/admin/singers", "/admin/venue-activity", "/admin/light-up-venues", "/api/admin/venue-enhancements/bulk"]) {
   const response = await fetch(new URL(path, baseUrl), {
     redirect: "manual",
   });
