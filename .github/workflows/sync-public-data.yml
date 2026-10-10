@@ -1,9 +1,12 @@
 name: Sync public karaoke data
 
 on:
-  # Run intentionally when canonical sheet changes need to refresh public snapshots.
-  # The nightly schedule was removed to avoid generating unnecessary
-  # preview + production deployments when no product release is needed.
+  # The canonical Google Sheet is the operational source of truth.
+  # Poll it every two hours so verified closures, removals, host changes,
+  # and new events cannot sit in the sheet while the public app stays stale.
+  # No-op runs exit without opening a pull request.
+  schedule:
+    - cron: "17 */2 * * *"
   workflow_dispatch:
   push:
     branches:
