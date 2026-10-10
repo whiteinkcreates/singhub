@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 const tools = [
+  { href: "/admin/venue-activity", eyebrow: "Venue Intelligence", title: "Venue Activity", description: "Compare recorded Performance Stars, Tour Stop visits, and check-ins by venue, with singer breakdowns and direct edit links." },
   { href: "/admin/singers", eyebrow: "Singer Community", title: "Singer Activity", description: "Private admin view of accounts, karaoke aliases, Performance Stars, Tour Stops, check-ins, and recorded song histories." },
   { href: "/admin/checkin-health", eyebrow: "Singer Experience", title: "GPS Check-in Health", description: "See which venue and Tour Stop GPS buttons work or fail, failure reasons, and recurring reliability issues without collecting coordinates." },
   { href: "/admin/hosts", eyebrow: "Karaoke Hosts", title: "Host Media", description: "Upload portraits and hero images, choose focal points, and save media for host profiles and trading cards." },
