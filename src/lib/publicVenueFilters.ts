@@ -6,6 +6,7 @@ const HIDDEN_PUBLIC_VENUE_IDS = new Set([
   "venue-0044", // The Hole in the Wall is closed.
   "venue-0061", // The Hole in the Wall duplicate is closed.
   "venue-0063", // Duplicate Cordova import; keep venue-0016 as canonical.
+  "venue-0121", // Vogue Tavern permanently closed October 2026.
 ]);
 
 const HIDDEN_PUBLIC_SLUGS = new Set([
@@ -16,6 +17,7 @@ const HIDDEN_PUBLIC_SLUGS = new Set([
   "the-hole",
   "hole-in-the-wall",
   "the-cordova-bar", // duplicate Cordova import, venue-0063. Canonical slug is cordova-bar.
+  "vogue-tavern", // permanently closed October 2026.
 ]);
 
 const HIDDEN_PUBLIC_NAME_MATCHES = [
