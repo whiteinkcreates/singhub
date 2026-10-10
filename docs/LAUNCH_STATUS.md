@@ -112,3 +112,10 @@ VERIFIED LIVE Oct 5:
 | Oct 5, 2026 | Hotel package code verified on GitHub/main. Final production package approval/export not verified. |
 | Oct 6, 2026 | Corey reported HIE test passed. Requested digital display as part of package; physical printing deferred. |
 | Oct 6, 2026 | Created shared launch checklist; main at creation: `c7169724988b11d170bf5bf4a774ab6944fffbd7`. |
+
+## Hotel artwork pass, Oct 6
+
+- In progress on `fix/hotel-artwork-polish`: scoped collateral stage photo to 45% grayscale, softened dark overlay, replaced oversized inline SVG with horizontal microphone cutout and responsive cable decoration. Build/lint and hotel package unit checks passed; preview acceptance pending.
+- Thumbnail screenshot located at preview `singhub-bnwrk4mee-whiteinkcreates-projects.vercel.app`, commit `197b8e6f5f880aa2b7bd83218811a140a88a2308`, branch `feature/hotel-guest-guide-v2`. This branch is not main and predates newer TourStops/Offers changes. Do not merge it wholesale.
+- Thumbnail mismatch was observed on an older Vercel preview, not established in production. An initial global Walkable/Standouts swap was premature and was reversed after Corey clarified the uncertainty. Original slot assignments restored. Live Pacific Terrace inspected Oct 6 uses a different template with venue imagery and no global lifestyle tier thumbnails; the preview mismatch was not reproduced there.
+- Correction: Sarah/La Mesa was an unverified old location note. Do not treat it as proof of a second Cheers venue. Resolve identity from direct/canonical evidence.
