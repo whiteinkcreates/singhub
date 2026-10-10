@@ -105,11 +105,12 @@ jobs:
         run: npm run sync:data -- --write --no-backup --output-dir .data-sync-output
 
       - name: Validate generated snapshot
+        # Keep data publishing independent from unrelated UI lint/build failures.
+        # The repository's normal validation workflow owns app-wide code quality;
+        # this job's production responsibility is keeping verified karaoke data fresh.
         run: |
           npm run check:data
           npm run test:data
-          npm run lint
-          npm run build
 
       - name: Create automated data pull request
         id: data_pr
