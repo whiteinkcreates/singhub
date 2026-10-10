@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listVenueMedia, uploadVenueMedia } from "@/lib/venueMediaCloudinary";
+import { deleteVenueMedia, listVenueMedia, uploadVenueMedia } from "@/lib/venueMediaCloudinary";
 
 export const runtime = "nodejs";
 
@@ -48,5 +48,20 @@ export async function POST(request: Request) {
       { error: error instanceof Error ? error.message : "Venue media upload failed." },
       { status: 500 },
     );
+  }
+}
+
+
+export async function DELETE(request: Request) {
+  try {
+    const body = (await request.json()) as { slug?: string; publicId?: string };
+    const slug = String(body.slug || "");
+    const publicId = String(body.publicId || "");
+    if (!slug || !publicId) return NextResponse.json({ error: "Venue slug and image ID are required." }, { status: 400 });
+    await deleteVenueMedia(publicId, slug);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Venue media delete failed", error);
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Venue media delete failed." }, { status: 500 });
   }
 }
