@@ -904,18 +904,6 @@
         "rightsStatus": "review-needed"
       },
       {
-        "venueSlug": "vogue-tavern",
-        "venueName": "Vogue Tavern",
-        "metro": "san-diego",
-        "city": "Chula Vista",
-        "neighborhood": "Downtown Chula Vista",
-        "currentHero": "",
-        "sourceUrl": "https://voguetavern.com/",
-        "instagram": "@voguetav",
-        "sourceClass": "official-site-review",
-        "rightsStatus": "review-needed"
-      },
-      {
         "venueSlug": "stoneys-bar-grill",
         "venueName": "Stoney's Bar & Grill",
         "metro": "san-diego",
