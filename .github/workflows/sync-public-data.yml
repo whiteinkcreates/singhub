@@ -2,9 +2,9 @@ name: Sync public karaoke data
 
 on:
   # The canonical Google Sheet is the operational source of truth.
-  # Poll it every two hours so verified closures, removals, host changes,
-  # and new events cannot sit in the sheet while the public app stays stale.
-  # No-op runs exit without opening a pull request.
+  # Poll the canonical sheet every two hours with a lightweight preflight.
+  # The full sync only runs when that preflight detects a public-data change,
+  # so unchanged checks do not create commits, deployments, or Vercel usage.
   schedule:
     - cron: "17 */2 * * *"
   workflow_dispatch:
@@ -20,6 +20,7 @@ on:
       - "config/public-data-thresholds.json"
       - "config/location-taxonomy.json"
       - "scripts/check-public-data.mjs"
+      - "scripts/check-canonical-sync-needed.mjs"
       - "scripts/google-sheets-api.mjs"
       - "scripts/sync-public-data.mjs"
       - "scripts/sync-public-data-with-taxonomy.mjs"
@@ -32,6 +33,7 @@ on:
       - "config/public-data-thresholds.json"
       - "config/location-taxonomy.json"
       - "scripts/check-public-data.mjs"
+      - "scripts/check-canonical-sync-needed.mjs"
       - "scripts/google-sheets-api.mjs"
       - "scripts/sync-public-data.mjs"
       - "scripts/sync-public-data-with-taxonomy.mjs"
@@ -46,7 +48,38 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+      changed_files: ${{ steps.check.outputs.changed_files }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Decide whether a full sync is needed
+        id: check
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+          GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
+        run: |
+          if [ "$EVENT_NAME" != "schedule" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "changed_files=forced_by_$EVENT_NAME" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          node scripts/check-canonical-sync-needed.mjs
+
   dry-run:
+    needs: preflight
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
@@ -80,7 +113,8 @@ jobs:
           retention-days: 7
 
   publish:
-    if: github.event_name != 'pull_request'
+    needs: preflight
+    if: github.event_name != 'pull_request' && needs.preflight.outputs.changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -120,6 +154,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          if git diff --quiet -- \
+            public/data/venues.tsv \
+            public/data/events_by_night.tsv \
+            public/data/generated_events_review.tsv \
+            public/data/venue_slug_aliases.tsv; then
+            echo "No public-facing data changes to publish."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
           git add \
             public/data/venues.tsv \
             public/data/events_by_night.tsv \
@@ -131,12 +175,6 @@ jobs:
 
           git status --short
 
-          if git diff --cached --quiet; then
-            echo "No public data changes to publish."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
           BRANCH="automation/data-sync-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           git checkout -b "$BRANCH"
           git commit -m "data: intentional canonical sync"
@@ -146,7 +184,7 @@ jobs:
             --base main \
             --head "$BRANCH" \
             --title "data: intentional canonical sync" \
-            --body "Intentional SingHUB canonical-to-public data sync. Data guardrails, committed-data checks, lint, and build passed before this pull request was created.")
+            --body "Intentional SingHUB canonical-to-public data sync. Data guardrails and committed-data checks passed before this pull request was created.")
 
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
