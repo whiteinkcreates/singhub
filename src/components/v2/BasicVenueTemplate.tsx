@@ -26,6 +26,11 @@ const photos=[{url:heroUrl,alt:enhancement?.heroImageAlt||venue.bannerImageAlt||
 const [photoIndex,setPhotoIndex]=useState(0);
 const photo=photos[Math.min(photoIndex,Math.max(0,photos.length-1))];
 const partnerSpecials=isPartner?[...(enhancement?.weeklySpecials||[]),...(enhancement?.dailyDeals||[])]:[];
+const todayParts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+const todayMap=Object.fromEntries(todayParts.map(part=>[part.type,part.value]));
+const localToday=`${todayMap.year}-${todayMap.month}-${todayMap.day}`;
+const venueEvents=(isPartner?(enhancement?.venueEvents||[]):[]).filter(event=>event.date>=localToday).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
+const eventDateLabel=(value:string)=>new Intl.DateTimeFormat('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric'}).format(new Date(value+'T12:00:00Z'));
 
 return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <article className="app-view active">
@@ -58,6 +63,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <div className="schedule-list">{!events.length&&<p className="subline">{venue.venueType==='private_room'?'Private-room sessions are booked directly with the venue.':'Regular karaoke nights are being confirmed. Contact the venue before heading out.'}</p>}{events.map(event=><div className={"schedule-row"+(eventRunsOnNight(event,weekday)?" tonight-row":"")} key={event.eventId}><strong>{event.karaokeDay}</strong><span>{[usable(event.hostName)||"Host pending",scheduleQualification(event)].filter(Boolean).join(" · ")}</span><time title={[usable(event.startTime),usable(event.endTime)].filter(Boolean).join(" to ")}>{[compactTime(event.startTime),compactTime(event.endTime)].filter(Boolean).join(" to ")||"Time pending"}</time></div>)}</div>
 </section>
 {isPartner&&partnerSpecials.length?<section className="section"><div className="section-heading"><h2>Specials</h2></div><div className="enhanced-grid">{partnerSpecials.map((special,index)=><div className="enhanced-card" key={index}><span>★</span><strong>{'title' in special?special.title:'Special'}</strong><p>{['day' in special&&special.day,'price' in special&&special.price,'detail' in special&&special.detail].filter(Boolean).join(' · ')}</p></div>)}</div></section>:null}
+{isPartner&&venueEvents.length?<section className="section"><div className="section-heading"><h2>Upcoming events</h2></div><div className="enhanced-grid">{venueEvents.map((event,index)=><div className="enhanced-card" key={event.date+'-'+event.title+'-'+index}><span>{eventDateLabel(event.date)}</span><strong>{event.title}</strong><p>{[event.time,event.detail,event.recurring?'Recurring':undefined].filter(Boolean).join(' · ')}</p></div>)}</div></section>:null}
 {isPartner&&posts.length?<section className="section"><div className="section-heading"><h2>From the venue</h2></div><div className="detail-list">{posts.map(post=><button type="button" className="partner-post" key={post.id} onClick={()=>location.assign('/events/'+post.id)}><strong>{post.title}</strong><p>{post.detail}</p></button>)}</div></section>:null}
 <section className="section"><div className="section-heading"><h2>{"Good to know"}</h2></div>{isPartner&&enhancement?.amenities?.length?<div className="chips partner-amenities">{enhancement.amenities.map(item=><span className="chip" key={item}>{item}</span>)}</div>:null}<div className="detail-list">{details.map(([label,value])=><div className="detail" key={label}><span>⌖</span><div><strong>{label}</strong><p>{value}</p></div></div>)}</div></section>
 <section className="section"><div className="section-heading"><h2>Singers Say</h2></div><VenueFeedback venue={venue} events={events} summary={singersSay} /></section></div>

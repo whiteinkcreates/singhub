@@ -57,6 +57,20 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "Profile lists are invalid." }, { status: 400 });
     }
 
+    if (profile.venueEvents !== undefined) {
+      if (!Array.isArray(profile.venueEvents) || profile.venueEvents.length > 40) {
+        return NextResponse.json({ error: "Upcoming events must contain 40 items or fewer." }, { status: 400 });
+      }
+      const invalidEvent = profile.venueEvents.some((event) =>
+        !event || typeof event.title !== "string" || !event.title.trim() || event.title.length > 140 ||
+        typeof event.date !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(event.date) ||
+        (event.time !== undefined && (typeof event.time !== "string" || event.time.length > 40)) ||
+        (event.detail !== undefined && (typeof event.detail !== "string" || event.detail.length > 240)) ||
+        (event.recurring !== undefined && typeof event.recurring !== "boolean")
+      );
+      if (invalidEvent) return NextResponse.json({ error: "One or more upcoming events are invalid." }, { status: 400 });
+    }
+
     if (profile.singerSignupUrl && !/^https?:\/\//i.test(profile.singerSignupUrl)) {
       return NextResponse.json({ error: "Singer signup URL must start with https:// or http://." }, { status: 400 });
     }
