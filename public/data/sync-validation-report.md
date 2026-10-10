@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 100.
-Exported events: 197.
+Exported venues: 105.
+Exported events: 202.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -18,13 +18,14 @@ Exported events: 197.
 - venue-0073 Dock's Cocktail Lounge
 - venue-0048 Hive Karaoke
 - venue-0065 Jin Music Studios
-- venue-0025 McGuffie's Live
 - venue-0066 North County - Larrys Beach Club
 - venue-0109 N City Sports Lounge
 - venue-0119 Rich's San Diego
 - venue-0127 Smitty's Downtown
 - venue-0128 La Estación
+- venue-0129 Barlando
 - venue-0132 Alpine VFW Post 9578
+- venue-0145 Watra Night Club
 ## Public Venues Missing Schedule
 - venue-0051 #1 Fifth Avenue
 - venue-0062 710 Beach Club
@@ -34,6 +35,7 @@ Exported events: 197.
 - venue-0027 Cheers Bar San Diego
 - venue-0009 Deano's Pub - La Mesa
 - venue-0082 Deano's East
+- venue-0069 Dirk's Niteclub
 - venue-0077 Clark Cabaret
 - venue-0073 Dock's Cocktail Lounge
 - venue-0020 Don's Cocktails
@@ -50,7 +52,6 @@ Exported events: 197.
 - venue-0071 Kaminski's Sports Lounge
 - venue-0012 Main Tap Tavern
 - venue-0057 Moxy San Diego (Hotel)
-- venue-0025 McGuffie's Live
 - venue-0004 Norms
 - venue-0067 Grand Comedy Club and Pizzeria
 - venue-0066 North County - Larrys Beach Club
@@ -113,7 +114,6 @@ Exported events: 197.
 - venue-0125 Poway's Irish Pub
 - venue-0126 Way Point Saloon
 - venue-0120 Eastbound Bar & Grill
-- venue-0121 Vogue Tavern
 - venue-0122 Stoney's Bar & Grill
 - venue-0123 Mr. Peabody's Bar & Grill
 - venue-0124 The Rabbit Hole
@@ -125,11 +125,16 @@ Exported events: 197.
 - venue-0132 Alpine VFW Post 9578
 - venue-0133 VFW Santee Post 9327
 - venue-0137 Kimball Coastal Eatery
+- venue-0141 Ye Olde Plank Inn
+- venue-0140 Moonshine Beach
+- venue-0142 Gossip Grill
+- venue-0143 Jimmy O's
+- venue-0144 Barley & Sword Brewing Company - Escondido
+- venue-0145 Watra Night Club
 - venue-0139 El Viejon Seafood - Mira Mesa
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
-- row 12: venue-0069 Dirk's Niteclub
 - row 18: venue-0058 Gaslamp Lumpia Factory
 - row 21: venue-0078 Good News Bar
 - row 22: venue-0055 Good Night John Boy
@@ -137,6 +142,7 @@ Exported events: 197.
 - row 32: venue-0031 Manhattan Bar
 - row 33: venue-0040 Melody Karaoke & Cafe
 - row 34: venue-0032 Mikami Bar & Revolving Sushi
+- row 36: venue-0025 McGuffie's Live
 - row 38: venue-0068 North County - CoLab Public House
 - row 42: venue-0033 Off Base Bar
 - row 43: venue-0074 On The Rocks Cocktails
@@ -149,6 +155,7 @@ Exported events: 197.
 - row 55: venue-0016 The Cordova Bar
 - row 63: venue-0024 Tremont St. Bar & Grill
 - row 77: venue-0093 Rosie O'Grady's
+- row 995: venue-0121 Vogue Tavern
 ## Venues With Invalid App Visibility
 - None
 ## Venues Skipped As Not Public-Usable
@@ -168,16 +175,19 @@ Exported events: 197.
 - event row 120: event-mcguffies-karaoke-2026-09-02
 - event row 121: event-mcguffies-karaoke-2026-09-23
 - event row 122: event-mcguffies-karaoke-2026-09-30
-- event row 146: weekly-redwing-bar-grill-sunday
 - event row 151: weekly-richs-san-diego-thursday
 - event row 152: event-n-city-sports-lounge-thursday-karaoke-party
 - event row 153: weekly-docks-cocktail-lounge-friday
 - event row 154: weekly-docks-cocktail-lounge-saturday
 - event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
+- event row 163: weekly-vogue-tavern-tuesday
+- event row 164: weekly-vogue-tavern-saturday
 - event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
 - event row 176: event-richs-san-diego-karaoke-2026-09-17
 - event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
+- event row 180: weekly-barlando-friday
 - event row 184: weekly-alpine-vfw-post-9578-thursday
+- event row 208: weekly-mcguffies-live-wednesday
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -199,7 +209,6 @@ Exported events: 197.
 - event row 47: weekly-gaslamplighter-friday Gaslamplighter Karaoke Cocktail Bar
 - event row 48: weekly-gaslamplighter-sunday Gaslamplighter Karaoke Cocktail Bar
 - event row 50: weekly-star-bar-tuesday Star Bar
-- event row 54: weekly-710-beach-club-thursday 710 Beach Club
 - event row 64: weekly-clark-cabaret-friday Clark Cabaret
 - event row 70: event-winstons-friday Winstons Beach Club
 - event row 94: weekly-mine-oyster-wednesday Mine Oyster
@@ -215,7 +224,6 @@ Exported events: 197.
 - event row 132: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
 - event row 139: event-0046 Market on 8th
 - event row 147: weekly-redwing-bar-grill-monday Redwing Bar & Grill
-- event row 148: weekly-redwing-bar-grill-tuesday Redwing Bar & Grill
 - event row 149: weekly-redwing-bar-grill-wednesday Redwing Bar & Grill
 - event row 156: weekly-the-luau-thursday The Luau
 - event row 157: weekly-the-luau-saturday The Luau
@@ -224,24 +232,25 @@ Exported events: 197.
 - event row 167: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
 - event row 178: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
 - event row 179: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
-- event row 180: weekly-barlando-friday Barlando
-- event row 188: weekly-jts-tavern-saturday JT's Tavern
-- event row 189: weekly-jts-tavern-sunday JT's Tavern
 - event row 191: weekly-casa-reveles-valley-center-monday Casa Reveles
 - event row 192: weekly-redwing-bar-grill-thursday Redwing Bar & Grill
 - event row 200: weekly-710-beach-club-tuesday 710 Beach Club
-- event row 201: weekly-710-beach-club-friday 710 Beach Club
-- event row 202: weekly-710-beach-club-sunday 710 Beach Club
+- event row 205: weekly-jimmy-os-del-mar-tuesday Jimmy O's
+- event row 206: weekly-moonshine-beach-friday Moonshine Beach
+- event row 207: weekly-moonshine-beach-saturday Moonshine Beach
+- event row 210: event-barley-sword-escondido-2026-10-08 Barley & Sword Brewing Company - Escondido
+- event row 211: weekly-dirks-niteclub-friday Dirk's Niteclub
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
-- venue: venue-0025 McGuffie's Live
 - venue: venue-0066 North County - Larrys Beach Club
 - venue: venue-0109 N City Sports Lounge
 - venue: venue-0119 Rich's San Diego
 - venue: venue-0127 Smitty's Downtown
 - venue: venue-0128 La Estación
+- venue: venue-0129 Barlando
 - venue: venue-0132 Alpine VFW Post 9578
+- venue: venue-0145 Watra Night Club
 ## Public Venues Missing Coordinates
 - venue-0101 Urban Mo’s Bar & Grill
 - venue-0102 Three Stags Irish Pub and Restaurant
@@ -278,6 +287,11 @@ Exported events: 197.
 - venue-0132 Alpine VFW Post 9578
 - venue-0133 VFW Santee Post 9327
 - venue-0137 Kimball Coastal Eatery
+- venue-0141 Ye Olde Plank Inn
+- venue-0142 Gossip Grill
+- venue-0143 Jimmy O's
+- venue-0144 Barley & Sword Brewing Company - Escondido
+- venue-0145 Watra Night Club
 - venue-0139 El Viejon Seafood - Mira Mesa
 ## Closed/Hidden/Archived Rows Excluded
 - None
@@ -292,17 +306,17 @@ Exported events: 197.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 100
-Authoritative events: 197
+Public venues: 105
+Authoritative events: 202
 Legacy venue slug aliases: 0
 
 PASS Monday: 20 authoritative / 8 expected minimum
-PASS Tuesday: 31 authoritative / 8 expected minimum
+PASS Tuesday: 33 authoritative / 8 expected minimum
 PASS Wednesday: 30 authoritative / 9 expected minimum
-PASS Thursday: 40 authoritative / 14 expected minimum
-PASS Friday: 30 authoritative / 10 expected minimum
+PASS Thursday: 41 authoritative / 14 expected minimum
+PASS Friday: 31 authoritative / 10 expected minimum
 PASS Saturday: 22 authoritative / 10 expected minimum
-PASS Sunday: 24 authoritative / 7 expected minimum
+PASS Sunday: 25 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
