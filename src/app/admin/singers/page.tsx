@@ -79,7 +79,9 @@ type SingerRow = {
 const limit = 1000;
 function displayDate(value: string | null | undefined) {
   if (!value) return "—";
-  const d = new Date(value);
+  // Nightlife and performance dates are DATE columns, not UTC timestamps.
+  // Parsing date-only values at UTC midnight would display the prior day in San Diego.
+  const d = new Date(/^\\d{4}-\\d{2}-\\d{2}$/.test(value) ? value + "T12:00:00Z" : value);
   return Number.isNaN(d.valueOf()) ? "—" : new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Los_Angeles", month: "short", day: "numeric", year: "numeric",
   }).format(d);
@@ -249,7 +251,7 @@ export default async function SingerActivityPage({
       <Stat label="Account records" count={all.length} detail="Auth or member/singer records" />
       <Stat label="Active singers" count={activeCount} detail="With a performance, Tour Stop or venue check-in" />
       <Stat label="Performance stars" count={performances.length} detail="Self-reported song records" />
-      <Stat label="Confirmed Tour Stops" count={stops.filter(stop => stop.status === "confirmed").length} detail="May include self-reported attendance" />
+      <Stat label="Tour Stop visits" count={stops.filter(stop => stop.status === "confirmed").length} detail="May include self-reported attendance" />
       <Stat label="Venue check-ins" count={checkins.length} detail="Anytime check-in, separate from Tour Stops" />
       <Stat label="Awarded patches" count={awards.length} detail="Server-awarded achievements" />
       <Stat label="Singer aliases" count={profiles.filter(profile => profile.karaoke_alias?.trim()).length} />
@@ -266,7 +268,7 @@ export default async function SingerActivityPage({
         <label className="grid gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
           Order
           <select name="sort" defaultValue={sort} className="h-11 rounded-xl border border-white/20 bg-slate-950 px-3 text-sm text-white">
-            <option value="stars">Most stars</option><option value="tour">Most Tour Stops</option>
+            <option value="stars">Most stars</option><option value="tour">Most Tour visits</option>
             <option value="recent">Recent activity</option><option value="alias">Alias A–Z</option>
           </select>
         </label>
