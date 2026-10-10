@@ -2,6 +2,7 @@ import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 import fs from "node:fs";
 import path from "node:path";
 import type { ListingStatus, ProfileTier, VenueListing, VenueType } from "@/types";
+import { isSanDiegoRegionVenue } from "@/lib/sanDiegoMarket";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -156,7 +157,9 @@ function rowToVenueListing(row: VenueSourceRow, fallback: VenueSourceRow | undef
     city: getAny(row, fallback, ["city"]) || "",
     neighborhood: getAny(row, fallback, ["neighborhood"]) || "",
     market: getAny(row, fallback, ["market"]) || "",
-    metro: getAny(row, fallback, ["metro"]) || "",
+    metro:
+      getAny(row, fallback, ["metro"]) ||
+      (isSanDiegoRegionVenue({ city: getAny(row, fallback, ["city"]) || "" }) ? "san-diego" : ""),
     address: getAny(row, fallback, ["address"]) || "",
     latitude: parseNumber(getAny(row, fallback, ["latitude"])) ?? parseNumber(coordinate.latitude),
     longitude: parseNumber(getAny(row, fallback, ["longitude"])) ?? parseNumber(coordinate.longitude),

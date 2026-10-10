@@ -121,3 +121,8 @@ test('successful venue check-in survives a temporary offer error',async()=>{
  assert.match(data.offerError,/visit was saved/i);
  assert.equal(rows.length,1);
 });
+
+test("public San Diego venue rows infer the live san-diego metro for check-ins",()=>{
+ const source=readFileSync('src/lib/venueData.ts','utf8');
+ assert.match(source,/isSanDiegoRegionVenue\(\{ city: getAny\(row, fallback, \["city"\]\) \|\| "" \}\) \? "san-diego" : ""/);
+});
