@@ -127,15 +127,15 @@ export default async function SingerActivityPage({
   ]);
 
   const failures = [
-    ["Singer profiles", profilesResult.error],
-    ["Member profiles", membersResult.error],
-    ["Performances", performancesResult.error],
-    ["Tour Stops", stopsResult.error],
-    ["Venue check-ins", checkinsResult.error],
-    ["Achievements", awardsResult.error],
-    ["Saved venues", savedResult.error],
-    ["Auth accounts", usersResult.error],
-  ].filter(([, error]) => error);
+    { label: "Singer profiles", message: profilesResult.error?.message || "" },
+    { label: "Member profiles", message: membersResult.error?.message || "" },
+    { label: "Performances", message: performancesResult.error?.message || "" },
+    { label: "Tour Stops", message: stopsResult.error?.message || "" },
+    { label: "Venue check-ins", message: checkinsResult.error?.message || "" },
+    { label: "Achievements", message: awardsResult.error?.message || "" },
+    { label: "Saved venues", message: savedResult.error?.message || "" },
+    { label: "Auth accounts", message: usersResult.error?.message || "" },
+  ].filter(item => Boolean(item.message));
 
   if (failures.length) {
     return <main className="mx-auto max-w-5xl px-4 py-10 text-white">
@@ -144,8 +144,8 @@ export default async function SingerActivityPage({
       <div role="alert" className="mt-8 rounded-2xl border border-rose-400/40 bg-rose-950/30 p-5">
         <p className="font-bold text-rose-200">The singer report could not load completely.</p>
         <p className="mt-2 text-sm text-slate-300">No partial totals are displayed. Please retry or check database access.</p>
-        <ul className="mt-3 list-disc pl-5 text-sm text-rose-100">{failures.map(([name, error]) =>
-          <li key={String(name)}>{String(name)}: {error?.message}</li>
+        <ul className="mt-3 list-disc pl-5 text-sm text-rose-100">{failures.map(item =>
+          <li key={item.label}>{item.label}: {item.message}</li>
         )}</ul>
       </div>
     </main>;
