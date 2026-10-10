@@ -15,6 +15,7 @@ import {
   type VenueDailyDeal,
   type VenueEnhancement,
   type VenueGalleryItem,
+  type VenueProgramEvent,
   type VenueSpecial,
   type SingHubOffer,
 } from "@/lib/venueEnhancements";
@@ -60,6 +61,7 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     standoutFeatures: [],
     weeklySpecials: [],
     dailyDeals: [],
+    venueEvents: [],
     vibeTags: [],
     foodSummary: "",
     singersSay: "",
@@ -97,6 +99,34 @@ function SpecialEditor({ specials, onChange }: { specials: VenueSpecial[]; onCha
           </div>
         ))}
         {specials.length === 0 ? <p className="text-sm text-slate-600">No weekly specials added yet.</p> : null}
+      </div>
+    </section>
+  );
+}
+
+
+function EventEditor({ events, onChange }: { events: VenueProgramEvent[]; onChange: (items: VenueProgramEvent[]) => void }) {
+  function patch(index: number, next: Partial<VenueProgramEvent>) {
+    onChange(events.map((item, itemIndex) => itemIndex === index ? { ...item, ...next } : item));
+  }
+
+  return (
+    <section className="rounded-2xl border border-fuchsia-300/15 bg-fuchsia-300/[0.035] p-4 md:col-span-2">
+      <div className="flex items-center justify-between gap-3">
+        <div><p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Upcoming events</p><p className="mt-1 text-sm text-slate-500">Venue programming beyond the recurring karaoke schedule. Only mark an event recurring when that is actually confirmed.</p></div>
+        <button type="button" onClick={() => onChange([...events, { title: "", date: new Date().toISOString().slice(0,10) }])} className="rounded-full border border-fuchsia-300/40 px-3 py-2 text-xs font-black text-fuchsia-100">+ Add event</button>
+      </div>
+      <div className="mt-4 space-y-3">
+        {events.map((item, index) => (
+          <div key={item.date+'-'+index} className="grid gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-3 md:grid-cols-[9rem_1.1fr_8rem_1.2fr_auto]">
+            <input type="date" value={item.date} onChange={(event) => patch(index, { date: event.target.value })} className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
+            <input value={item.title} onChange={(event) => patch(index, { title: event.target.value })} placeholder="Event name" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
+            <input value={item.time || ""} onChange={(event) => patch(index, { time: event.target.value || undefined })} placeholder="6:00 PM" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
+            <input value={item.detail || ""} onChange={(event) => patch(index, { detail: event.target.value || undefined })} placeholder="Band, host, or note" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
+            <div className="flex items-center gap-2"><label className="flex items-center gap-1 text-[11px] font-bold text-slate-400"><input type="checkbox" checked={Boolean(item.recurring)} onChange={(event) => patch(index, { recurring: event.target.checked || undefined })} />Recurring</label><button type="button" aria-label="Remove event" onClick={() => onChange(events.filter((_, itemIndex) => itemIndex !== index))} className="rounded-xl border border-rose-300/20 px-3 py-2 font-black text-rose-200">×</button></div>
+          </div>
+        ))}
+        {events.length === 0 ? <p className="text-sm text-slate-600">No upcoming venue events added yet.</p> : null}
       </div>
     </section>
   );
@@ -186,6 +216,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [standoutFeatures, setStandoutFeatures] = useState(initialProfile.standoutFeatures || []);
   const [weeklySpecials, setWeeklySpecials] = useState<VenueSpecial[]>(initialProfile.weeklySpecials || []);
   const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);
+  const [venueEvents, setVenueEvents] = useState<VenueProgramEvent[]>(initialProfile.venueEvents || []);
   const [vibeTags, setVibeTags] = useState(initialProfile.vibeTags || []);
   const [foodSummary, setFoodSummary] = useState(initialProfile.foodSummary || "");
   const [singersSay, setSingersSay] = useState(initialProfile.singersSay || "");
@@ -228,6 +259,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setStandoutFeatures(profile.standoutFeatures || []);
     setWeeklySpecials(profile.weeklySpecials || []);
     setDailyDeals(profile.dailyDeals || []);
+    setVenueEvents(profile.venueEvents || []);
     setVibeTags(profile.vibeTags || []);
     setFoodSummary(profile.foodSummary || "");
     setSingersSay(profile.singersSay || "");
@@ -290,6 +322,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     standoutFeatures,
     weeklySpecials: weeklySpecials.filter((special) => special.title.trim()),
     dailyDeals: dailyDeals.filter((deal) => deal.title.trim()),
+    venueEvents: venueEvents.filter((item) => item.title.trim() && item.date),
     gallery,
     vibeTags,
     foodSummary: foodSummary.trim() || undefined,
@@ -491,6 +524,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             </section>
 
             <VenueOfferEditor slug={slug} partnerEnabled={enabled} offer={singhubOffer} onChange={setSinghubOffer} />
+            <EventEditor events={venueEvents} onChange={setVenueEvents} />
             <SpecialEditor specials={weeklySpecials} onChange={setWeeklySpecials} />
             <DailyDealEditor deals={dailyDeals} onChange={setDailyDeals} />
 
