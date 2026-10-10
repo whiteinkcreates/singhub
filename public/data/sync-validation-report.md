@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 105.
-Exported events: 202.
+Exported venues: 106.
+Exported events: 203.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -52,6 +52,7 @@ Exported events: 202.
 - venue-0071 Kaminski's Sports Lounge
 - venue-0012 Main Tap Tavern
 - venue-0057 Moxy San Diego (Hotel)
+- venue-0025 McGuffie's Live
 - venue-0004 Norms
 - venue-0067 Grand Comedy Club and Pizzeria
 - venue-0066 North County - Larrys Beach Club
@@ -142,7 +143,6 @@ Exported events: 202.
 - row 32: venue-0031 Manhattan Bar
 - row 33: venue-0040 Melody Karaoke & Cafe
 - row 34: venue-0032 Mikami Bar & Revolving Sushi
-- row 36: venue-0025 McGuffie's Live
 - row 38: venue-0068 North County - CoLab Public House
 - row 42: venue-0033 Off Base Bar
 - row 43: venue-0074 On The Rocks Cocktails
@@ -187,7 +187,6 @@ Exported events: 202.
 - event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
 - event row 180: weekly-barlando-friday
 - event row 184: weekly-alpine-vfw-post-9578-thursday
-- event row 208: weekly-mcguffies-live-wednesday
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -238,6 +237,7 @@ Exported events: 202.
 - event row 205: weekly-jimmy-os-del-mar-tuesday Jimmy O's
 - event row 206: weekly-moonshine-beach-friday Moonshine Beach
 - event row 207: weekly-moonshine-beach-saturday Moonshine Beach
+- event row 208: weekly-mcguffies-live-wednesday McGuffie's Live
 - event row 210: event-barley-sword-escondido-2026-10-08 Barley & Sword Brewing Company - Escondido
 - event row 211: weekly-dirks-niteclub-friday Dirk's Niteclub
 - venue: venue-0073 Dock's Cocktail Lounge
@@ -252,47 +252,12 @@ Exported events: 202.
 - venue: venue-0132 Alpine VFW Post 9578
 - venue: venue-0145 Watra Night Club
 ## Public Venues Missing Coordinates
-- venue-0101 Urban Mo’s Bar & Grill
 - venue-0102 Three Stags Irish Pub and Restaurant
 - venue-0103 Whiskey Republic
 - venue-0086 The Redlands Underground
 - venue-0104 Flights Bar & Eats
 - venue-0088 Batter Rebellion
-- venue-0089 U-31
-- venue-0091 Harbor Town Pub
-- venue-0092 Neon Moon
-- venue-0083 Tony’s Martini Bar
-- venue-0084 Side Piece
-- venue-0085 Hennessey’s La Jolla
-- venue-0105 De Oro Mine Co.
-- venue-0106 Silver Dollar
-- venue-0107 Coyote Bar & Grill Carlsbad
-- venue-0108 The North Bar
-- venue-0109 N City Sports Lounge
-- venue-0112 Cow Shed Bar & Grill
-- venue-0114 Casino Inn Bar & Grill
-- venue-0115 Market on 8th
-- venue-0116 Filippi's Pizza Grotto - Santee
-- venue-0117 Rosie O'Grady's
-- venue-0118 Chief's Da Tiki Bar
-- venue-0119 Rich's San Diego
-- venue-0072 The Search Bar
-- venue-0134 Steele 94 Restaurant Bar
-- venue-0135 Casa Reveles
-- venue-0136 The Pour House
-- venue-0138 The Brass Rail
-- venue-0126 Way Point Saloon
-- venue-0130 Spring Valley Inn
-- venue-0131 Mike's Cocktails
-- venue-0132 Alpine VFW Post 9578
-- venue-0133 VFW Santee Post 9327
-- venue-0137 Kimball Coastal Eatery
-- venue-0141 Ye Olde Plank Inn
-- venue-0142 Gossip Grill
-- venue-0143 Jimmy O's
-- venue-0144 Barley & Sword Brewing Company - Escondido
 - venue-0145 Watra Night Club
-- venue-0139 El Viejon Seafood - Mira Mesa
 ## Closed/Hidden/Archived Rows Excluded
 - None
 ## Stable Venue Identity Changes
@@ -306,13 +271,13 @@ Exported events: 202.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 105
-Authoritative events: 202
+Public venues: 106
+Authoritative events: 203
 Legacy venue slug aliases: 0
 
 PASS Monday: 20 authoritative / 8 expected minimum
 PASS Tuesday: 33 authoritative / 8 expected minimum
-PASS Wednesday: 30 authoritative / 9 expected minimum
+PASS Wednesday: 31 authoritative / 9 expected minimum
 PASS Thursday: 41 authoritative / 14 expected minimum
 PASS Friday: 31 authoritative / 10 expected minimum
 PASS Saturday: 22 authoritative / 10 expected minimum
