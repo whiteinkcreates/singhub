@@ -82,18 +82,9 @@ function isUsable(value: string | undefined) {
 }
 
 function getDisplayName(venue: VenueListing) {
-  const canonicalNames: Record<string, string> = {
-    "venue-0006": "JT's Tavern",
-    "venue-0010": "The Regal",
-    "venue-0043": "Carriage House Cocktails & Karaoke",
-    "venue-0044": "The Hole in the Wall",
-    "venue-0045": "Pal Joey's Cocktail Lounge",
-    "venue-0048": "Hive Karaoke",
-    "venue-0063": "The Cordova Bar",
-    "venue-0064": "Spot KTV & Restaurant",
-    "venue-0073": "McGuffie's Live",
-  };
-  return canonicalNames[venue.id] ?? venue.venueName;
+  // The canonical venue record owns the public name. Avoid hard-coded ID/name
+  // overrides, which can resurrect removed venues or mislabel reassigned IDs.
+  return venue.venueName;
 }
 
 function getVenueHref(venue: VenueListing) {
