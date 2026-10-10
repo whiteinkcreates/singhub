@@ -71,3 +71,9 @@ test('admin uses the same production app navigation as public SingHUB pages',()=
  const nav=readFileSync(new URL('../src/components/layout/AppNavigation.tsx',import.meta.url),'utf8');
  for(const label of ['Discover','Venues','Hosts','Hotels','SingBOARD','My SingHUB']) assert.ok(nav.includes(label),label+' missing from shared navigation');
 });
+
+test("McGuffie's is public while the retired Navajo Live slug stays hidden",()=>{
+ const {isPublicVenue}=module('../src/lib/publicVenueFilters.ts');
+ assert.equal(isPublicVenue({id:'venue-0025',venueName:"McGuffie's Live",slug:'mcguffies-live'}),true);
+ assert.equal(isPublicVenue({id:'venue-0025',venueName:'Navajo Live',slug:'navajo-live'}),false);
+});
