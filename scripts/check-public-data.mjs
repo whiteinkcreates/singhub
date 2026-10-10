@@ -8,6 +8,14 @@ const ROOT = process.cwd();
 const DEFAULT_DATA_DIR = path.join(ROOT, "public", "data");
 const THRESHOLDS_PATH = path.join(ROOT, "config", "public-data-thresholds.json");
 
+const SAN_DIEGO_REGION_CITIES = new Set([
+  "san diego", "la mesa", "chula vista", "bonita", "national city",
+  "imperial beach", "santee", "el cajon", "lakeside", "poway",
+  "oceanside", "vista", "escondido", "carlsbad", "encinitas",
+  "san marcos", "spring valley", "lemon grove", "coronado",
+  "solana beach", "del mar", "alpine", "ramona", "valley center",
+]);
+
 function clean(value) {
   return String(value ?? "").replace(/[\t\r\n]+/g, " ").trim();
 }
@@ -72,6 +80,20 @@ function publicSchemaFailures(venues, events) {
     }
     if (clean(venue.is_featured) && !booleanCell(venue.is_featured)) {
       failures.push(`${label}: is_featured must be boolean`);
+    }
+    if (SAN_DIEGO_REGION_CITIES.has(clean(venue.city).toLowerCase())) {
+      const latitude = Number(venue.latitude);
+      const longitude = Number(venue.longitude);
+      if (
+        !clean(venue.latitude) ||
+        !clean(venue.longitude) ||
+        !Number.isFinite(latitude) ||
+        !Number.isFinite(longitude) ||
+        Math.abs(latitude) > 90 ||
+        Math.abs(longitude) > 180
+      ) {
+        failures.push(`${label}: San Diego public venues require valid GPS coordinates for check-in`);
+      }
     }
   }
 
