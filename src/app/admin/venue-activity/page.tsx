@@ -20,7 +20,11 @@ function aggregateKey(slug: string | null | undefined, fallback: string | null |
   return "unmatched:" + (fallback?.trim().toLowerCase() || "unknown");
 }
 function localDateToday() {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/Los_Angeles",
+    year: "numeric", month: "2-digit", day: "2-digit",
+  }).formatToParts(new Date());
+  const part = (type: string) => parts.find(item => item.type === type)?.value || "";
+  return part("year") + "-" + part("month") + "-" + part("day");
 }
 function daysAgo(days: number) {
   const local = localDateToday();
