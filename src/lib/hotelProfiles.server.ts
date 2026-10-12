@@ -37,7 +37,7 @@ export async function getHotelGuideMediaBundle(slug:string,demo=false){
   try{
     const [media, defaults] = await Promise.all([getHotelMediaProfile(slug), getGuestGuideDefaults()]);
     const lifestyle = resolveLifestyle(defaults, media);
-    return {hotel:applyHotelPhoto(media?{...hotel,heroImageUrl:media.heroImageUrl,heroAlt:media.heroAlt,heroPosition:media.heroPosition,heroPlacement:media.heroPlacement}:hotel,demo),media:media ? {...media,...lifestyle} : {...lifestyle}};
+    return {hotel:applyHotelPhoto(media?{...hotel,heroImageUrl:media.heroImageUrl || hotel.heroImageUrl,heroAlt:media.heroAlt || hotel.heroAlt,heroPosition:media.heroPosition || hotel.heroPosition,heroPlacement:media.heroPlacement || hotel.heroPlacement}:hotel,demo),media:media ? {...media,...lifestyle} : {...lifestyle}};
   }catch(error){console.error("Hotel media read failed; using registered guide",error);return {hotel:applyHotelPhoto(hotel,demo),media:null};}
 }
 export async function getHotelGuideWithMedia(slug: string, demo = false) { return (await getHotelGuideMediaBundle(slug,demo))?.hotel || null; }
