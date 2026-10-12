@@ -32,7 +32,10 @@
  .header { grid-template-columns:112px 1fr; height:62px; padding:4px 14px; }
  .brand { width:112px; height:48px; }
  .primary { display:none; }
- .tools { justify-self:end; gap:6px; }\n .account { justify-self:end; }\n .account span { display:none; }\n .more summary { padding:8px 4px; font-size:.76rem; }
+ .tools { justify-self:end; gap:6px; }
+ .account { justify-self:end; }
+ .account span { display:none; }
+ .more summary { padding:8px 4px; font-size:.76rem; }
  .mobile { position:fixed; bottom:0; left:0; right:0; z-index:60; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); padding:7px 4px max(7px,env(safe-area-inset-bottom)); border-top:1px solid #292f39; background:rgba(9,11,15,.97); backdrop-filter:blur(16px); color:#9ba5b3; font-family:"Barlow",sans-serif; }
  .mobile a { display:grid; justify-items:center; align-content:center; gap:4px; min-height:48px; font-size:10px; font-weight:700; white-space:nowrap; }
  .mobile i { font-size:22px; font-style:normal; }
