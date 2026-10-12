@@ -12,7 +12,8 @@ const footerLinks = [
   { href: "/singboard", label: "SingBOARD" },
   { href: "/submit-listing", label: "Submit Listing" },
   { href: "/claim-listing", label: "Claim Listing" },
-  { href: "/venues/premium", label: "For Venues" },\n  { href: "/hotel", label: "For Hotels" },
+  { href: "/venues/premium", label: "For Venues" },
+  { href: "/hotel", label: "For Hotels" },
 ];
 
 export function SiteFooter() {
