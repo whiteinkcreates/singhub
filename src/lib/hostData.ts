@@ -441,6 +441,8 @@ function rowToHost(row: HostSourceRow): HostProfile {
     tipLink: getCellAny(row, ["tip_link", "Tip Link"]),
     bookingLink: getCellAny(row, ["booking_link", "Booking Link"]),
     bio: getCellAny(row, ["bio", "Bio"]),
+    rotationPolicy: getCellAny(row, ["rotation_policy", "Rotation Policy", "KJ Rotation Rules"]),
+    singerGuidelines: getCellAny(row, ["singer_guidelines", "Singer Guidelines", "KJ House Rules"]),
     vibeTags: parseList(getCellAny(row, ["vibe_tags", "Vibe Tags"])),
     primaryAreas: parseList(
       getCellAny(row, ["primary_areas", "Primary Areas"]),
