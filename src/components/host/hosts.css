@@ -25,3 +25,11 @@
 @media(max-width:600px){.host-directory-hero .host-hero-photo,.host-profile-hero .host-booth-photo{height:150%;top:auto;bottom:0}.host-trading-identity{padding-right:82px;min-height:80px}.host-trading-portrait{top:18px;right:18px}.host-trading-portrait>img,.host-trading-portrait>div{width:70px;height:70px;font-size:28px}}
 
 @media(max-width:600px){.host-directory-hero .host-custom-directory-photo{height:100%;top:0;bottom:0}}
+
+/* Host-supplied rules only, with no placeholder policies shown to singers. */
+.host-rules { margin:20px 0; padding:18px; border:1px solid rgba(34,211,238,.24); border-radius:16px; background:rgba(7,20,30,.78); }
+.host-rules h3 { margin:0 0 12px; color:#f6fafc; font-family:"Barlow Condensed",sans-serif; letter-spacing:.08em; font-size:1.2rem; }
+.host-rules > div + div { margin-top:14px; }
+.host-rules .host-small-label { margin:0 0 3px; color:#72ddec; }
+.host-rules div > p:last-child { margin:0; color:#d9e1ec; white-space:pre-line; line-height:1.55; }
+.host-rules small { display:block; margin-top:15px; color:#99adbc; line-height:1.4; }

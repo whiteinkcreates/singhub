@@ -135,6 +135,10 @@ export type HostProfile = {
   tipLink?: string;
   bookingLink?: string;
   bio?: string;
+  /** KJ-supplied rotation policy. Never infer this from show times or reviews. */
+  rotationPolicy?: string;
+  /** Additional KJ-supplied expectations for singers at the microphone. */
+  singerGuidelines?: string;
   vibeTags: string[];
   primaryAreas: string[];
   schedule: Record<HostWeekday, HostGig[]>;
