@@ -215,6 +215,7 @@ export function SingHubHotelGuestGuide(props: Props) {
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
   const [heroSource, setHeroSource] = useState(heroImageUrl || fallbackHeroImageUrl || "");
   const [heroVisible, setHeroVisible] = useState(Boolean(heroImageUrl || fallbackHeroImageUrl));
+  const hasHeroPhoto = Boolean(heroSource && heroVisible);
   useListReturn({ mode }, (saved) => { if (saved?.mode === "tonight" || saved?.mode === "week") setMode(saved.mode); });
   const active = mode === "tonight" ? tonightVenues : weekVenues;
   const grouped = useMemo(() => splitByTier(active), [active]);
@@ -225,11 +226,12 @@ export function SingHubHotelGuestGuide(props: Props) {
 
   return <main className="min-h-screen bg-[#020508] text-white" data-hotel-guest-guide="" data-hotel-slug={hotelSlug}>
     <div className="mx-auto min-h-screen w-full max-w-[760px] overflow-hidden bg-[#020508] shadow-[0_24px_90px_rgba(0,0,0,.6)]">
-      <section className="relative isolate min-h-[52svh] overflow-hidden bg-[#07111c] sm:min-h-[580px]">
+      <section className={"relative isolate overflow-hidden bg-[#07111c] " + (hasHeroPhoto ? "min-h-[52svh] sm:min-h-[580px]" : "min-h-[300px] sm:min-h-[390px]")}>
+        {!hasHeroPhoto ? <div aria-hidden className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_75%_15%,rgba(34,211,238,.13),transparent_48%),radial-gradient(ellipse_at_10%_85%,rgba(236,72,153,.14),transparent_55%),linear-gradient(140deg,#091625,#040712_70%,#020508)]" /> : null}
         {heroSource && heroVisible ? <PositionedImage placement={heroPlacement} position={heroPosition} src={heroSource} alt={heroAlt || hotelName + " exterior"} className="absolute inset-0 -z-20 h-full w-full object-cover" onError={() => { if (fallbackHeroImageUrl && heroSource !== fallbackHeroImageUrl) setHeroSource(fallbackHeroImageUrl); else setHeroVisible(false); }} /> : null}
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,6,14,.12)_0%,rgba(0,6,14,.08)_35%,rgba(2,5,8,.42)_68%,#020508_100%)]" />
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_10%_5%,rgba(255,42,163,.15),transparent_32%),radial-gradient(circle_at_90%_12%,rgba(34,211,238,.14),transparent_28%)]" />
-        <div className="flex min-h-[52svh] flex-col justify-between px-5 pb-8 pt-5 sm:min-h-[580px] sm:px-7 sm:pb-10 sm:pt-7">
+        <div className={"flex flex-col justify-between px-5 pb-8 pt-5 sm:px-7 sm:pb-10 sm:pt-7 " + (hasHeroPhoto ? "min-h-[52svh] sm:min-h-[580px]" : "min-h-[300px] sm:min-h-[390px]")}>
           <div className="flex items-start justify-between gap-4"><Link href="/" aria-label="SingHUB home"><img src={SITE_WORDMARK_SRC} alt="SingHUB" className="h-auto w-[178px] drop-shadow-[0_0_15px_rgba(34,211,238,.25)] sm:w-[205px]" /></Link>
             <details className="relative"><summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-white/15 bg-black/30 backdrop-blur" aria-label="Open navigation"><span className="grid gap-1.5"><i className="block h-px w-5 bg-white" /><i className="block h-px w-5 bg-white" /><i className="block h-px w-5 bg-white" /></span></summary>
               <nav className="absolute right-0 top-13 z-30 w-44 rounded-2xl border border-white/10 bg-[#07111a]/95 p-2 text-sm shadow-2xl backdrop-blur-xl"><Link href="/" className="block rounded-xl px-3 py-2 hover:bg-white/5">Discover</Link><Link href="/find-karaoke" className="block rounded-xl px-3 py-2 hover:bg-white/5">Venue Index</Link><Link href="/account" className="block rounded-xl px-3 py-2 hover:bg-white/5">My SingHUB</Link></nav>
