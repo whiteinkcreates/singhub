@@ -59,7 +59,7 @@ export function CommunityNominationForm({ token, alias, venues }: {
     </p>
     {!ready?<p className="mt-5 text-sm text-slate-400">Checking SingHUB sign-in…</p>
     :!userId?<form onSubmit={signIn} className="mt-5 space-y-3">
-      <p className="text-sm text-slate-300">Sign in with your free SingHUB account to nominate. KJs can participate if they want to, but they're not required to verify awards.</p>
+      <p className="text-sm text-slate-300">Sign in with your free SingHUB account to nominate. KJs can participate if they want to, but they&apos;re not required to verify awards.</p>
       <label className="block text-sm font-bold text-slate-200">Email address
         <input type="email" autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)} required className={fieldClass}/>
       </label>
@@ -86,7 +86,7 @@ export function CommunityNominationForm({ token, alias, venues }: {
       </label>
       <label className="flex items-start gap-3 text-sm text-slate-300">
         <input type="checkbox" className="mt-1 accent-fuchsia-400" checked={witnessed} onChange={e=>setWitnessed(e.target.checked)} disabled={saved} required/>
-        I personally witnessed this moment and I'm not nominating myself.
+        I personally witnessed this moment and I&apos;m not nominating myself.
       </label>
       <button type="submit" disabled={pending||saved||!witnessed}
         className="rounded-full bg-fuchsia-400 px-6 py-3 text-sm font-black text-[#0b1120] disabled:opacity-40">
