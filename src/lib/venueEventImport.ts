@@ -130,11 +130,14 @@ function parseIcs(input: string): CalendarImportResult {
       continue;
     }
     const start = find("DTSTART");
-    const title = find("SUMMARY")?.split(/:(.*)/s)[1];
+    const titleLine = find("SUMMARY");
+    const title = titleLine?.slice(titleLine.indexOf(":") + 1);
     const parsed = start ? parseIcsDate(start) : null;
     if (!parsed || !title) { warnings.push("Skipped an ICS event with missing or unsupported date/title."); continue; }
-    const description = find("DESCRIPTION")?.split(/:(.*)/s)[1];
-    const url = find("URL")?.split(/:(.*)/s)[1];
+    const descriptionLine = find("DESCRIPTION");
+    const description = descriptionLine?.slice(descriptionLine.indexOf(":") + 1);
+    const urlLine = find("URL");
+    const url = urlLine?.slice(urlLine.indexOf(":") + 1);
     const normalizedTitle = unescapeIcs(title);
     events.push({
       ...parsed, title: normalizedTitle,
