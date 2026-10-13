@@ -156,8 +156,8 @@ DECLARE
 BEGIN
   IF p_recipient_user_id IS NULL OR p_nightlife_date IS NULL
     OR p_venue_slug IS NULL OR length(trim(p_venue_slug)) < 2
-    OR p_action NOT IN ('approve','reject')
-    OR p_badge_key NOT IN ('sing_along_superstar','cheer_captain')
+    OR p_action IS NULL OR p_action NOT IN ('approve','reject')
+    OR p_badge_key IS NULL OR p_badge_key NOT IN ('sing_along_superstar','cheer_captain')
   THEN
     RAISE EXCEPTION 'Invalid nomination review request.';
   END IF;
