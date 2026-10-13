@@ -15,5 +15,5 @@ export function FollowHostButton({hostId,hostSlug,hostName}:Props){
   }catch(e){setMessage(e instanceof Error?e.message:"Could not update your following.");}
   finally{setWorking(false);}
  }
- return <div className="host-follow-control"><button type="button" className="host-follow-button" aria-pressed={following} disabled={working} onClick={()=>void toggle()}>{working?"Saving…":following?"✓ Following":"+ Follow KJ"}</button><span className="sr-only" role="status">{message}</span></div>;
+ return <span className="host-follow-control"><button type="button" className="host-follow-button" aria-pressed={following} disabled={working} onClick={()=>void toggle()}>{working?"Saving…":following?"✓ Following":"+ Follow KJ"}</button><span className="sr-only" role="status">{message}</span></span>;
 }
