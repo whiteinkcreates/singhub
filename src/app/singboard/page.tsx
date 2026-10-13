@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import {PositionedImage} from "@/components/media/PositionedImage";
 import { SingBoard } from "@/components/singboard/SingBoard";
 import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
 import { SINGBOARD_STICKER_ART } from "@/lib/singboardStickerArt";
@@ -20,10 +21,10 @@ export default async function SingBoardPage() {
     <main data-scroll-page="singboard" className="min-h-[100dvh] bg-[#05060a] pb-24 text-white">
       <section className="relative isolate overflow-hidden border-b border-white/10">
         <div className="relative h-[48vh] min-h-[360px] max-h-[620px] sm:h-[54vh]">
-          <img
+          <PositionedImage placement={hero?.heroPlacement} position={hero?.heroPosition}
             src={hero?.heroUrl||SINGBOARD_STICKER_ART}
             alt={hero?.heroAlt||"SingBOARD sticker wall"}
-            className="absolute inset-0 h-full w-full object-cover object-center" style={hero?.heroPosition?{objectPosition:hero.heroPosition}:undefined}
+            className="absolute inset-0 h-full w-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,6,10,.08)_0%,rgba(5,6,10,.18)_48%,rgba(5,6,10,.92)_100%)]" />
           <div className="absolute inset-x-0 bottom-0 mx-auto max-w-6xl px-5 pb-7 sm:px-8 sm:pb-9">
