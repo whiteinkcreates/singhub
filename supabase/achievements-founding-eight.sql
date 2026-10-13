@@ -28,6 +28,7 @@ CREATE POLICY "Singer reads own achievement events" ON public.singer_achievement
   FOR SELECT TO authenticated USING (auth.uid() = user_id);
 CREATE INDEX IF NOT EXISTS singer_achievement_events_recent
   ON public.singer_achievement_events(user_id,awarded_at DESC);
+GRANT SELECT ON public.singer_achievement_events TO authenticated;
 
 ALTER TABLE public.singer_profiles
   ADD COLUMN IF NOT EXISTS nomination_token uuid NOT NULL DEFAULT gen_random_uuid();
@@ -51,6 +52,7 @@ CREATE TABLE IF NOT EXISTS public.achievement_nominations (
 );
 ALTER TABLE public.achievement_nominations ENABLE ROW LEVEL SECURITY;
 -- No public RLS policies: nominations remain admin-only until moderated.
+REVOKE ALL ON public.achievement_nominations FROM anon, authenticated;
 CREATE INDEX IF NOT EXISTS achievement_nominations_pending
   ON public.achievement_nominations(status,created_at DESC);
 CREATE INDEX IF NOT EXISTS achievement_nominations_group
