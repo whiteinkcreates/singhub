@@ -4,7 +4,7 @@ import QRCode from "qrcode";
 import { accountClient } from "@/lib/v2/singerAccount";
 import {
   ACHIEVEMENT_BY_KEY, FOUNDING_ACHIEVEMENTS,
-  isAchievementKey, type AchievementKey,
+  isAchievementKey,
 } from "@/lib/achievements/catalog";
 
 type Award = {
@@ -62,10 +62,10 @@ export function AchievementHub({ userId, alias, refreshKey }: {
   const [soundEnabled,setSoundEnabled] = useState(false);
   const dismissRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    if (!userId) { setFeed(null);setQrImage(null);setReveal(null);return; }
+    if (!userId) { queueMicrotask(() => { setFeed(null);setQrImage(null);setReveal(null); });return; }
     let alive = true;
+    queueMicrotask(() => { if (alive) { setLoading(true);setError(""); } });
     void (async () => {
-      setLoading(true);setError("");
       try {
         const {data,error:sessionError}=await accountClient().auth.getSession();
         if (sessionError || !data.session) throw new Error("Sign in to view your patches.");
