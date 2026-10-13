@@ -128,6 +128,7 @@ function loadedProfileSignature(profile: VenueEnhancement, venue?: VenueOption):
       url: singHereMode === "external" ? profile.singHere?.url?.trim() || undefined : undefined,
       instructions: (profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.").trim() || undefined,
       linkLabel: (profile.singHere?.linkLabel || "Join the list").trim() || undefined,
+      rotationPolicy: profile.singHere?.rotationPolicy?.trim() || undefined,
     },
     singhubOffer: {
       enabled: singhubOffer.enabled,
@@ -325,6 +326,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [singHereUrl, setSingHereUrl] = useState(initialProfile.singHere?.url || "");
   const [singHereInstructions, setSingHereInstructions] = useState(initialProfile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");
   const [singHereLinkLabel, setSingHereLinkLabel] = useState(initialProfile.singHere?.linkLabel || "Join the list");
+  const [singHereRotationPolicy, setSingHereRotationPolicy] = useState(initialProfile.singHere?.rotationPolicy || "");
   const [singhubOffer, setSinghubOffer] = useState<SingHubOffer>(initialProfile.singhubOffer || { enabled: false, title: "", detail: "", terms: "", days: [] });
   const [previewMode, setPreviewMode] = useState<PreviewMode>("open");
   const [saving, setSaving] = useState(false);
@@ -370,6 +372,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setSingHereUrl(profile.singHere?.url || "");
     setSingHereInstructions(profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");
     setSingHereLinkLabel(profile.singHere?.linkLabel || "Join the list");
+    setSingHereRotationPolicy(profile.singHere?.rotationPolicy || "");
     setSinghubOffer(profile.singhubOffer || { enabled: false, title: "", detail: "", terms: "", days: [] });
   }
 
@@ -437,6 +440,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       url: singHereMode === "external" ? singHereUrl.trim() || undefined : undefined,
       instructions: singHereInstructions.trim() || undefined,
       linkLabel: singHereLinkLabel.trim() || undefined,
+      rotationPolicy: singHereRotationPolicy.trim() || undefined,
     },
     singhubOffer: {
       enabled: singhubOffer.enabled,
@@ -445,7 +449,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       terms: singhubOffer.terms?.trim() || undefined,
       days: singhubOffer.days?.length ? singhubOffer.days : undefined,
     },
-  }), [about, amenities, dailyDeals, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
+  }), [about, amenities, dailyDeals, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereRotationPolicy, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const isDirty = JSON.stringify(output) !== baselineSignature;
   const currentIndex = venues.findIndex(venue => venue.slug === slug);
@@ -622,6 +626,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
                 {singHereMode==="external"?<label className={labelClass}>Signup URL<input className={fieldClass} value={singHereUrl} onChange={(event)=>setSingHereUrl(event.target.value)} placeholder="Existing venue or KJ signup link"/></label>:null}
                 <label className={`${labelClass} md:col-span-2`}>Popup instructions<textarea className={`${fieldClass} min-h-20`} value={singHereInstructions} onChange={(event)=>setSingHereInstructions(event.target.value)}/></label>
                 {singHereMode==="external"?<label className={labelClass}>Button label<input className={fieldClass} value={singHereLinkLabel} onChange={(event)=>setSingHereLinkLabel(event.target.value)} placeholder="Join the list"/></label>:null}
+                <label className={`${labelClass} md:col-span-2`}>KJ rotation policy (optional, host-confirmed only)<textarea className={`${fieldClass} min-h-20`} value={singHereRotationPolicy} maxLength={1200} onChange={(event)=>setSingHereRotationPolicy(event.target.value)} placeholder="Leave blank unless the current KJ confirms the rules for this venue."/><span className="mt-2 block text-xs font-normal normal-case tracking-normal text-slate-500">Only publish rules confirmed by this venue’s current KJ. Blank means no rotation claim appears publicly.</span></label>
               </div>
               <p className="mt-3 text-xs text-slate-500">Future SingHUB-hosted signup can plug into this same action without changing the public SingHERE experience.</p>
             </section>

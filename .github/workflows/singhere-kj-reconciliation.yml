@@ -1,0 +1,29 @@
+name: SingHERE KJ Reconciliation
+on:
+  pull_request:
+    paths:
+      - "src/components/admin/VenueLightUpBuilder.tsx"
+      - "src/lib/venueEnhancements.ts"
+      - "src/lib/singHere.ts"
+      - "src/components/v2/SingHereDialog.tsx"
+      - "src/components/venue/SingHereAction.tsx"
+      - "src/lib/hostData.ts"
+      - "src/types/index.ts"
+      - "src/components/host/HostProfileTemplate.tsx"
+      - "src/app/api/admin/venue-enhancements/route.ts"
+      - "tests/singhere-kj-reconciliation.test.mjs"
+      - ".github/workflows/singhere-kj-reconciliation.yml"
+  push:
+    branches:
+      - "fix/singhere-kj-rules-current-main"
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      - run: node --test tests/singhere-kj-reconciliation.test.mjs

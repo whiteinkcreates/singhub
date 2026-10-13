@@ -14,6 +14,8 @@ export type SingHereConfig = {
   instructions?: string;
   linkLabel?: string;
   title?: string;
+  /** Venue-specific KJ rotation note; publish only after direct host confirmation. */
+  rotationPolicy?: string;
 };
 
 export const HOTEL_VIBE_OPTIONS = [

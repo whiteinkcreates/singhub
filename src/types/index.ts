@@ -151,6 +151,8 @@ export type HostProfile = {
   favoriteKaraokeSpots?: string;
   houseRules?: string;
   rotationPolicy?: string;
+  /** Optional guidance directly supplied in the canonical host sheet. */
+  singerGuidelines?: string;
   profileCompletionLevel: HostProfileCompletionLevel;
 };
 
