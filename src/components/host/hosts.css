@@ -1,4 +1,9 @@
 /* Approved Backstage Editorial host composition. Scoped to preserve other pages. */
+.host-kj-guidelines {padding:18px;margin:18px 0;border:1px solid #264b58;background:rgba(0,200,239,.04);}
+.host-kj-guidelines h3 {font-size:1rem;color:#fff;letter-spacing:.1em;margin-bottom:14px;}
+.host-kj-guidelines>div+div {margin-top:16px;}
+.host-kj-guidelines .host-small-label {margin-bottom:5px;color:#00c8ef;}
+.host-guideline-text {white-space:pre-wrap;overflow-wrap:anywhere;color:#d6e4e9;line-height:1.55;}
 .host-system {color-scheme:dark;min-height:100vh;background:#060c11;color:#f7f8fb;font-family:Barlow,sans-serif;line-height:1.3;--host-pink:#ff19a8;--host-cyan:#00c8ef;}
 .host-system *{box-sizing:border-box}.host-system h1,.host-system h2,.host-system h3,.host-system p{margin:0}.host-system a{color:inherit;text-decoration:none}.host-system button,.host-system input{font:inherit}.host-system .host-icon{font-size:25px;line-height:1;flex-shrink:0;vertical-align:middle}.host-system a:focus-visible,.host-system button:focus-visible,.host-system input:focus-visible{outline:2px solid var(--host-cyan);outline-offset:4px}
 .host-appbar{height:76px;padding:0 3.1%;display:flex;align-items:center;gap:5.3%;border-bottom:1px solid #26303a;background:#080f16}.host-brand{width:164px;flex-shrink:0}.host-brand img{width:100%;height:68px;object-fit:contain}.host-appbar nav{display:flex;align-items:center;gap:52px;height:100%;font:600 22px 'Barlow Condensed',sans-serif;color:#bcc3d3}.host-appbar nav a{position:relative;white-space:nowrap}.host-appbar nav a.active{color:#fff}.host-appbar nav a.active:after{content:'';position:absolute;height:4px;background:var(--host-pink);left:-5px;right:-5px;bottom:-13px;box-shadow:0 0 12px #ff19a866}.host-nav-tools{margin-left:auto;display:flex;gap:32px}.host-nav-tools .host-icon{font-size:34px}
