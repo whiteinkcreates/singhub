@@ -1,9 +1,9 @@
 import {NextResponse} from 'next/server';
 import {listVenueMedia,uploadVenueMedia} from '@/lib/venueMediaCloudinary';
 import {getHostBySlug} from '@/lib/hostData';
-import {HOST_DIRECTORY_MEDIA_KEY} from '@/lib/hostMedia';
+import {HOST_DIRECTORY_MEDIA_KEY,SITE_HERO_KEYS} from '@/lib/hostMedia';
 export const runtime='nodejs';
-async function validTarget(slug:string){return slug===HOST_DIRECTORY_MEDIA_KEY||Boolean(await getHostBySlug(slug));}
+async function validTarget(slug:string){return slug===HOST_DIRECTORY_MEDIA_KEY||SITE_HERO_KEYS.some(key=>key===slug)||Boolean(await getHostBySlug(slug));}
 export async function GET(request:Request){
  const slug=new URL(request.url).searchParams.get('slug')||'';
  if(!await validTarget(slug))return NextResponse.json({error:'Choose a registered host.'},{status:400});
