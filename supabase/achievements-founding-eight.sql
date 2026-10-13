@@ -134,6 +134,103 @@ CREATE TRIGGER singer_visit_achievement_sync
   AFTER INSERT OR UPDATE OR DELETE ON public.singer_venue_visits
   FOR EACH ROW EXECUTE FUNCTION public.update_singer_achievements_from_activity();
 
+-- Only the server-side admin service role can approve or reject a nomination group.
+-- Award + reveal + nomination statuses commit together or not at all.
+CREATE OR REPLACE FUNCTION public.review_singer_achievement_nominations(
+  p_recipient_user_id uuid,
+  p_badge_key text,
+  p_nightlife_date date,
+  p_venue_slug text,
+  p_action text
+)
+RETURNS TABLE(processed integer, newly_awarded boolean)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $
+DECLARE
+  v_pending_count integer;
+  v_unique_nominators integer;
+  v_award_name text;
+  v_new_award_id uuid;
+BEGIN
+  IF p_recipient_user_id IS NULL OR p_nightlife_date IS NULL
+    OR p_venue_slug IS NULL OR length(trim(p_venue_slug)) < 2
+    OR p_action NOT IN ('approve','reject')
+    OR p_badge_key NOT IN ('sing_along_superstar','cheer_captain')
+  THEN
+    RAISE EXCEPTION 'Invalid nomination review request.';
+  END IF;
+
+  -- Serialize reviews of this exact recipient/award/night/venue group.
+  PERFORM id FROM public.achievement_nominations
+    WHERE recipient_user_id = p_recipient_user_id
+      AND badge_key = p_badge_key
+      AND nightlife_date = p_nightlife_date
+      AND venue_slug = p_venue_slug
+      AND status = 'pending'
+    ORDER BY id FOR UPDATE;
+
+  SELECT count(*)::int, count(DISTINCT nominator_user_id)::int
+    INTO v_pending_count, v_unique_nominators
+    FROM public.achievement_nominations
+    WHERE recipient_user_id = p_recipient_user_id
+      AND badge_key = p_badge_key
+      AND nightlife_date = p_nightlife_date
+      AND venue_slug = p_venue_slug
+      AND status = 'pending';
+  IF v_pending_count < 1 THEN
+    RAISE EXCEPTION 'No pending nominations remain for this group.';
+  END IF;
+  IF p_action = 'approve' AND v_unique_nominators < 3 THEN
+    RAISE EXCEPTION 'At least three independent nominators are required.';
+  END IF;
+
+  newly_awarded := false;
+  IF p_action = 'approve' THEN
+    v_award_name := CASE p_badge_key
+      WHEN 'sing_along_superstar' THEN 'Sing-Along Superstar'
+      ELSE 'Cheer Captain'
+    END;
+    INSERT INTO public.singer_achievements
+      (user_id, badge_key, badge_name, level, award_source, award_note)
+    VALUES (
+      p_recipient_user_id, p_badge_key, v_award_name, 1,
+      'community_review',
+      'Approved after three independent community nominations.'
+    )
+    ON CONFLICT (user_id, badge_key) DO NOTHING
+    RETURNING id INTO v_new_award_id;
+    newly_awarded := v_new_award_id IS NOT NULL;
+
+    -- Even if a prior interrupted deployment created the award without an event,
+    -- insert an event idempotently so that its owner sees the unlock.
+    INSERT INTO public.singer_achievement_events
+      (user_id, badge_key, badge_level, event_kind)
+    VALUES (p_recipient_user_id, p_badge_key, 1, 'unlocked')
+    ON CONFLICT (user_id, badge_key, badge_level) DO NOTHING;
+  END IF;
+
+  UPDATE public.achievement_nominations SET
+    status = CASE WHEN p_action = 'approve' THEN 'approved' ELSE 'rejected' END,
+    reviewed_at = now()
+  WHERE recipient_user_id = p_recipient_user_id
+    AND badge_key = p_badge_key
+    AND nightlife_date = p_nightlife_date
+    AND venue_slug = p_venue_slug
+    AND status = 'pending';
+
+  GET DIAGNOSTICS processed = ROW_COUNT;
+  RETURN NEXT;
+END $;
+
+REVOKE ALL ON FUNCTION public.review_singer_achievement_nominations(
+  uuid, text, date, text, text
+) FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.review_singer_achievement_nominations(
+  uuid, text, date, text, text
+) TO service_role;
+
 REVOKE ALL ON FUNCTION public.sync_singer_automatic_achievements(uuid) FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.update_singer_achievements_from_activity() FROM PUBLIC, anon, authenticated;
 
