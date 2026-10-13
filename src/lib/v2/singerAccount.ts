@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/client';
 export type Performance={id:string;song_title:string;artist:string|null;venue_slug:string|null;venue_name:string|null;performed_on:string};
 export type SingerFollow={target_type:'host'|'venue';target_id:string;target_slug:string;target_name:string;notifications_enabled:boolean};
 export type SavedVenue={venue_slug:string;venue_name:string;neighborhood:string|null};
-export type Achievement={id:string;badge_key:string;badge_name:string;awarded_at:string;award_note:string|null};
+export type Achievement={id:string;badge_key:string;badge_name:string;awarded_at:string;award_note:string|null;level:number};
 export type SavedHotel={hotel_slug:string;hotel_name:string};
 export type HotelPlan={hotel_slug:string;hotel_name:string;venue_slug:string;venue_name:string};
 export function countSavedPicks(account:{venues:SavedVenue[];hotels:SavedHotel[];plans:HotelPlan[]}|null){return account?account.venues.length+account.hotels.length+account.plans.length:0;}
@@ -15,7 +15,7 @@ export async function loadSingerAccount(userId:string){
   client.from('singer_performances').select('id,song_title,artist,venue_slug,venue_name,performed_on').eq('user_id',userId).order('performed_on',{ascending:false}).order('created_at',{ascending:false}).limit(10),
   client.from('singer_performances').select('id',{count:'exact',head:true}).eq('user_id',userId),
   client.from('singer_saved_venues').select('venue_slug,venue_name,neighborhood').eq('user_id',userId).order('saved_at',{ascending:false}),
-  client.from('singer_achievements').select('id,badge_key,badge_name,awarded_at,award_note').eq('user_id',userId).order('awarded_at',{ascending:true}),
+  client.from('singer_achievements').select('id,badge_key,badge_name,awarded_at,award_note,level').eq('user_id',userId).order('awarded_at',{ascending:true}),
   client.from('singer_saved_hotels').select('hotel_slug,hotel_name').eq('user_id',userId).order('saved_at',{ascending:false}),
   client.from('hotel_guest_plans').select('hotel_slug,hotel_name,venue_slug,venue_name').eq('user_id',userId).order('created_at',{ascending:false}),
   client.from('singer_follows').select('target_type,target_id,target_slug,target_name,notifications_enabled').eq('user_id',userId).order('followed_at',{ascending:false}),

@@ -1,0 +1,54 @@
+name: Founding Eight Achievement Contract
+on:
+  pull_request:
+    paths:
+      - "src/lib/achievements/**"
+      - "src/app/api/achievements/**"
+      - "src/app/api/admin/achievements/**"
+      - "src/app/nominate/**"
+      - "supabase/achievements-founding-eight.sql"
+      - "tests/achievement-contract.test.mjs"
+      - "tests/achievement-scope.test.mjs"
+      - "tests/sql/**"
+      - ".github/workflows/achievement-contract.yml"
+  push:
+    branches:
+      - "feat/achievements-founding-eight-pilot"
+jobs:
+  contract:
+    name: Achievement catalog and nomination safeguards
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: singhub_achievement_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d singhub_achievement_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node --test tests/achievement-contract.test.mjs tests/achievement-scope.test.mjs
+      - name: Test the real PostgreSQL migration against disposable data
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: "5432"
+          PGDATABASE: singhub_achievement_test
+          PGUSER: postgres
+          PGPASSWORD: postgres
+        run: |
+          command -v psql || (sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client)
+          psql -v ON_ERROR_STOP=1 -f tests/sql/achievement-fixture.sql
+          psql -v ON_ERROR_STOP=1 --single-transaction -f supabase/achievements-founding-eight.sql
+          psql -v ON_ERROR_STOP=1 -f tests/sql/achievement-acceptance.sql
