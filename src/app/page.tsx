@@ -5,6 +5,8 @@ import { getDiscoveryData } from '@/lib/v2/data';
 import { getKaraokeEventsHostingToday } from '@/lib/eventData';
 import { getHotelGuide } from '@/lib/hotelGuides';
 import { buildKaraokeForecast } from '@/lib/homepageForecast';
+import {getHostMediaSettings} from '@/lib/hostMedia.server';
+import {SITE_DISCOVERY_HERO_KEY} from '@/lib/hostMedia';
 
 export const dynamic='force-dynamic';
 export const metadata:Metadata={
@@ -14,10 +16,11 @@ export const metadata:Metadata={
 };
 
 export default async function Home({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}){
-  const [{rows},params,todaysEvents]=await Promise.all([
+  const [{rows},params,todaysEvents,hero]=await Promise.all([
     getDiscoveryData(),
     searchParams,
     getKaraokeEventsHostingToday(),
+    getHostMediaSettings(SITE_DISCOVERY_HERO_KEY).catch(()=>null),
   ]);
   const source=typeof params.source==='string'?params.source:'';
   const hotel=getHotelGuide(source.replace(/^hotel-/,''));
@@ -25,7 +28,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
   const forecast=buildKaraokeForecast(todaysEvents.filter(event=>publicSlugs.has(event.venueSlug)),rows.map(row=>row.venue));
 
   return <>
-    <DiscoveryExperience rows={rows} hotelName={source.startsWith('hotel-')?hotel?.shortName:undefined} />
+    <DiscoveryExperience rows={rows} heroUrl={hero?.heroUrl} heroAlt={hero?.heroAlt} heroPosition={hero?.heroPosition} hotelName={source.startsWith('hotel-')?hotel?.shortName:undefined} />
     <section className="relative bg-slate-950 px-3 pb-24 pt-8 sm:px-4 md:py-12">
       <div className="mx-auto max-w-7xl">
         <div className="mb-5 px-1 md:mb-6">
