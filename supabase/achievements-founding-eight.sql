@@ -1,7 +1,6 @@
 -- SingHUB founding eight pilot: additive achievement tiers and audience nominations.
 -- Public writes are forbidden; server triggers/admin service-role are the only award writers.
--- Run this migration before deploying the associated app routes.
-BEGIN;
+-- Run through Supabase's migration runner in its managed transaction before deploying app routes.
 ALTER TABLE public.singer_achievements
   ADD COLUMN IF NOT EXISTS level integer NOT NULL DEFAULT 1,
   ADD COLUMN IF NOT EXISTS award_source text NOT NULL DEFAULT 'admin',
@@ -247,4 +246,3 @@ BEGIN
     PERFORM public.sync_singer_automatic_achievements(r.user_id);
   END LOOP;
 END $$;
-COMMIT;

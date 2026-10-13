@@ -50,5 +50,5 @@ jobs:
         run: |
           command -v psql || (sudo apt-get update -qq && sudo apt-get install -y -qq postgresql-client)
           psql -v ON_ERROR_STOP=1 -f tests/sql/achievement-fixture.sql
-          psql -v ON_ERROR_STOP=1 -f supabase/achievements-founding-eight.sql
+          psql -v ON_ERROR_STOP=1 --single-transaction -f supabase/achievements-founding-eight.sql
           psql -v ON_ERROR_STOP=1 -f tests/sql/achievement-acceptance.sql

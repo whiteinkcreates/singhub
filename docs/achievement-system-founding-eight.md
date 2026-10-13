@@ -75,3 +75,6 @@ Original hard guitar/amp sting (short, non-copyrighted synthesized chord). A bri
 
 ## Hero-image integration confirmation
 Draft PR #341 is the **replacement** integration on top of latest main, after the Oct 13 Main Page Heroes and Following merges. The earlier conflicting PR #338 is closed. The regression test checks that Main Page Heroes admin controls, account hero rendering/placement, Following and followHost return flows survive intact. No public hero assets, venue/KJ media, or SingHERE code are modified. The SQL pilot is tested in a disposable PostgreSQL CI service; it remains unapplied to production.
+
+## Migration transaction safety
+The SQL file has no manual BEGIN/COMMIT; apply it with the Supabase migration runner so the whole schema change and backfill are transactional. GitHub CI runs the actual file with `psql --single-transaction` in a disposable PostgreSQL service and checks awards, upgrades, moderation and RLS. Do not run against the live project until the coordinated release gate is cleared.
