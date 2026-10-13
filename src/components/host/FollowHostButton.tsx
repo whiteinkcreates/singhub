@@ -4,7 +4,7 @@ import {accountClient} from "@/lib/v2/singerAccount";
 type Props={hostId:string;hostSlug:string;hostName:string};
 export function FollowHostButton({hostId,hostSlug,hostName}:Props){
  const [following,setFollowing]=useState(false),[working,setWorking]=useState(false),[message,setMessage]=useState("");
- useEffect(()=>{let active=true;const client=accountClient();void client.auth.getUser().then(async ({data})=>{if(!data.user)return;const {data:entry}=await client.from("singer_follows").select("target_id").eq("user_id",data.user.id).eq("target_type","host").eq("target_id",hostId).maybeSingle();if(active)setFollowing(Boolean(entry));}).catch(()=>{});return()=>{active=false;};},[hostId]);
+ useEffect(()=>{let active=true;let client:ReturnType<typeof accountClient>;try{client=accountClient();}catch{return()=>{active=false;};}void client.auth.getUser().then(async ({data})=>{if(!data.user)return;const {data:entry}=await client.from("singer_follows").select("target_id").eq("user_id",data.user.id).eq("target_type","host").eq("target_id",hostId).maybeSingle();if(active)setFollowing(Boolean(entry));}).catch(()=>{});return()=>{active=false;};},[hostId]);
  async function toggle(){
   if(working)return;setWorking(true);setMessage("");
   try{
@@ -15,5 +15,5 @@ export function FollowHostButton({hostId,hostSlug,hostName}:Props){
   }catch(e){setMessage(e instanceof Error?e.message:"Could not update your following.");}
   finally{setWorking(false);}
  }
- return <span className="host-follow-control"><button type="button" className="host-follow-button" aria-pressed={following} disabled={working} onClick={()=>void toggle()}>{working?"Saving…":following?"✓ Following":"+ Follow KJ"}</button><span className="sr-only" role="status">{message}</span></span>;
+ return <span className="host-follow-control"><button type="button" className="host-follow-button" aria-pressed={following} disabled={working} onClick={()=>void toggle()}>{working?"Saving…":following?"✓ Following":"+ Follow KJ"}</button><span className={message.includes("Could not")||message.includes("unavailable")?"host-follow-error":"sr-only"} role="status">{message}</span></span>;
 }
