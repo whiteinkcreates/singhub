@@ -11,7 +11,7 @@ import { MediaImagePreview } from "./MediaImagePreview";
 const MAX_GALLERY_PHOTOS = 15;
 type VenueMediaLibraryProps = {
   slug: string;
-  kind?: "venue" | "hotel" | "host";
+  kind?: "venue" | "hotel" | "host" | "site";
   heroPreview?: "venue-base" | "venue-partner";
   allowPortrait?: boolean;
   heroUrl: string;
@@ -63,7 +63,7 @@ export function VenueMediaLibrary({
   onLogoChange,
   onGalleryChange,
 }: VenueMediaLibraryProps) {
-  const endpoint = kind === "host" ? "/api/admin/host-media" : kind === "hotel" ? "/api/admin/hotel-media" : "/api/admin/venue-media";
+  const endpoint = kind === "host" || kind === "site" ? "/api/admin/host-media" : kind === "hotel" ? "/api/admin/hotel-media" : "/api/admin/venue-media";
   const [assets, setAssets] = useState<VenueMediaAsset[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -203,9 +203,9 @@ export function VenueMediaLibrary({
     <section className="md:col-span-2 rounded-[1.6rem] border border-cyan-300/15 bg-[#07131a] p-4 md:p-5">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">{kind === "host" ? "Host media" : kind === "hotel" ? "Hotel media" : "Venue media"}</p>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">{kind === "host" ? "Host media" : kind === "site" ? "Main page media" : kind === "hotel" ? "Hotel media" : "Venue media"}</p>
           <h3 className="mt-1 text-lg font-black normal-case tracking-normal text-white">Cloudinary library</h3>
-          <p className="mt-2 max-w-2xl text-sm font-medium normal-case tracking-normal text-slate-400">{kind === "host" ? "Upload photos, assign a portrait or hero, then save your selections in the host editor." : kind === "hotel" ? "Choose a hotel hero from this hotel’s library, or upload a photo. Save your selection in the hotel editor." : "One library, explicit roles. Choose a hero, optional venue mark, and gallery photos without copying image URLs. To permanently delete an upload, remove any assigned role and save the profile first."}</p>
+          <p className="mt-2 max-w-2xl text-sm font-medium normal-case tracking-normal text-slate-400">{kind === "host" ? "Upload photos, assign a portrait or hero, then save your selections in the host editor." : kind === "site" ? "Upload or choose the main page hero, then save the page configuration." : kind === "hotel" ? "Choose a hotel hero from this hotel’s library, or upload a photo. Save your selection in the hotel editor." : "One library, explicit roles. Choose a hero, optional venue mark, and gallery photos without copying image URLs. To permanently delete an upload, remove any assigned role and save the profile first."}</p>
         </div>
         <button type="button" onClick={() => void loadLibrary()} disabled={!slug.trim() || loading} className="rounded-xl border border-white/15 px-3 py-2 text-xs font-black normal-case tracking-normal text-white disabled:opacity-40">{loading ? "Loading…" : "Refresh library"}</button>
       </div>

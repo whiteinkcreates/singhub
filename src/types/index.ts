@@ -149,6 +149,8 @@ export type HostProfile = {
   tagRepostPermission?: string;
   weeklyStatus?: string;
   favoriteKaraokeSpots?: string;
+  houseRules?: string;
+  rotationPolicy?: string;
   profileCompletionLevel: HostProfileCompletionLevel;
 };
 

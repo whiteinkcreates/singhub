@@ -2,6 +2,7 @@
 // RLS owns authorization. No admin key or browser-awarded achievements.
 import { createClient } from '@/lib/supabase/client';
 export type Performance={id:string;song_title:string;artist:string|null;venue_slug:string|null;venue_name:string|null;performed_on:string};
+export type SingerFollow={target_type:'host'|'venue';target_id:string;target_slug:string;target_name:string;notifications_enabled:boolean};
 export type SavedVenue={venue_slug:string;venue_name:string;neighborhood:string|null};
 export type Achievement={id:string;badge_key:string;badge_name:string;awarded_at:string;award_note:string|null};
 export type SavedHotel={hotel_slug:string;hotel_name:string};
@@ -17,8 +18,9 @@ export async function loadSingerAccount(userId:string){
   client.from('singer_achievements').select('id,badge_key,badge_name,awarded_at,award_note').eq('user_id',userId).order('awarded_at',{ascending:true}),
   client.from('singer_saved_hotels').select('hotel_slug,hotel_name').eq('user_id',userId).order('saved_at',{ascending:false}),
   client.from('hotel_guest_plans').select('hotel_slug,hotel_name,venue_slug,venue_name').eq('user_id',userId).order('created_at',{ascending:false}),
+  client.from('singer_follows').select('target_type,target_id,target_slug,target_name,notifications_enabled').eq('user_id',userId).order('followed_at',{ascending:false}),
  ]);for(const result of results)if(result.error)throw result.error;
- return {alias:results[0].data?.karaoke_alias as string||'',performances:(results[1].data||[]) as Performance[],performanceCount:results[2].count||0,venues:(results[3].data||[]) as SavedVenue[],achievements:(results[4].data||[]) as Achievement[],hotels:(results[5].data||[]) as SavedHotel[],plans:(results[6].data||[]) as HotelPlan[]};
+ return {alias:results[0].data?.karaoke_alias as string||'',performances:(results[1].data||[]) as Performance[],performanceCount:results[2].count||0,venues:(results[3].data||[]) as SavedVenue[],achievements:(results[4].data||[]) as Achievement[],hotels:(results[5].data||[]) as SavedHotel[],plans:(results[6].data||[]) as HotelPlan[],follows:(results[7].data||[]) as SingerFollow[]};
 }
 export async function sendAccountLink(email:string,next:string){const {error}=await accountClient().auth.signInWithOtp({email:email.trim(),options:{emailRedirectTo:location.origin+'/auth/callback?next='+encodeURIComponent(next),shouldCreateUser:true}});if(error)throw error;}
 export async function saveHotelPlan(hotel:{slug:string;name:string},venue:{slug:string;name:string},saveHotel:boolean){const client=accountClient();const {data,error}=await client.auth.getUser();if(error&&error.name!=='AuthSessionMissingError')throw error;if(!data.user)return false;

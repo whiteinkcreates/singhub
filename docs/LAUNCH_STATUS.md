@@ -108,6 +108,7 @@ VERIFIED LIVE Oct 5:
 
 | Date (LA) | Evidence / change |
 | --- | --- |
+| Oct 13, 2026 | PR #340 proposes KJ Following backed by existing singer_follows, main-page hero editor, Hotels navigation change, optional KJ rules and rotation, and shared SingHERE signup routing. Source on branch only until CI, merge and live QA are verified. |
 | Oct 5, 2026 | Merch live round trip, cart and checkout handoff verified; PRs 289/290 merged. |
 | Oct 5, 2026 | Hotel package code verified on GitHub/main. Final production package approval/export not verified. |
 | Oct 6, 2026 | Corey reported HIE test passed. Requested digital display as part of package; physical printing deferred. |

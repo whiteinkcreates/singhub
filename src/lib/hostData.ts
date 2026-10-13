@@ -557,6 +557,8 @@ export async function getHosts({includeMedia=true}: {includeMedia?:boolean} = {}
       portraitPlacement: settings?.portraitPlacement,
       heroPlacement: settings?.heroPlacement,
       directoryHeroPlacement: directory?.heroPlacement,
+      houseRules: settings?.houseRules,
+      rotationPolicy: settings?.rotationPolicy,
       heroImageUrl: settings?.heroUrl || undefined,
       heroImageAlt: settings?.heroAlt,
       heroPosition: settings?.heroPosition,

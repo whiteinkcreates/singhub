@@ -2,13 +2,18 @@ import {parseImagePlacement,type ResponsiveImagePlacement} from './imagePlacemen
 import type {HeroPosition} from '@/lib/venueEnhancements';
 export const HOST_DIRECTORY_MEDIA_KEY='singhub-hosts-directory';
 export const HOST_BOOTH_IMAGE='/images/hosts/hosts-booth.webp';
-export type HostMediaSettings={heroPlacement?:ResponsiveImagePlacement;portraitPlacement?:ResponsiveImagePlacement;portraitUrl?:string;portraitPosition?:HeroPosition;heroUrl?:string;heroAlt?:string;heroPosition?:HeroPosition;imageSource?:string;usageRights?:string};
+export const SITE_DISCOVERY_HERO_KEY='singhub-discovery-hero';
+export const SITE_VENUES_HERO_KEY='singhub-venues-hero';
+export const SITE_ACCOUNT_HERO_KEY='singhub-account-hero';
+export const SITE_SINGBOARD_HERO_KEY='singhub-singboard-hero';
+export const SITE_HERO_KEYS=[SITE_DISCOVERY_HERO_KEY,SITE_VENUES_HERO_KEY,SITE_ACCOUNT_HERO_KEY,SITE_SINGBOARD_HERO_KEY] as const;
+export type HostMediaSettings={heroPlacement?:ResponsiveImagePlacement;portraitPlacement?:ResponsiveImagePlacement;portraitUrl?:string;portraitPosition?:HeroPosition;heroUrl?:string;heroAlt?:string;heroPosition?:HeroPosition;imageSource?:string;usageRights?:string;houseRules?:string;rotationPolicy?:string};
 export function parseHostMediaSettings(input:unknown):HostMediaSettings{
  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('Host media settings are required.');
  const value=input as Record<string,unknown>;const output:HostMediaSettings={};
- for(const key of ['portraitUrl','heroUrl','heroAlt','imageSource','usageRights'] as const){
+ for(const key of ['portraitUrl','heroUrl','heroAlt','imageSource','usageRights','houseRules','rotationPolicy'] as const){
   if(value[key]===undefined)continue;
-  const limit=key==='heroAlt'?300:2048;
+  const limit=key==='heroAlt'?300:key==='houseRules'||key==='rotationPolicy'?1200:2048;
   if(typeof value[key]!=='string'||value[key].length>limit)throw new Error(`Invalid ${key}.`);
   output[key]=value[key].trim();
  }
