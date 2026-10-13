@@ -28,7 +28,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
   const forecast=buildKaraokeForecast(todaysEvents.filter(event=>publicSlugs.has(event.venueSlug)),rows.map(row=>row.venue));
 
   return <>
-    <DiscoveryExperience rows={rows} heroUrl={hero?.heroUrl} heroAlt={hero?.heroAlt} heroPosition={hero?.heroPosition} hotelName={source.startsWith('hotel-')?hotel?.shortName:undefined} />
+    <DiscoveryExperience rows={rows} heroUrl={hero?.heroUrl} heroAlt={hero?.heroAlt} heroPosition={hero?.heroPosition} heroPlacement={hero?.heroPlacement} hotelName={source.startsWith('hotel-')?hotel?.shortName:undefined} />
     <section className="relative bg-slate-950 px-3 pb-24 pt-8 sm:px-4 md:py-12">
       <div className="mx-auto max-w-7xl">
         <div className="mb-5 px-1 md:mb-6">
