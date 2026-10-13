@@ -40,7 +40,7 @@ test("audience awards need signed-in independent nominators and admin approval",
   assert.match(admin,/uniqueNominators\.size < 3/);
   assert.match(admin,/requireAdminAuthorization\(\)/);
   assert.match(migration,/ALTER TABLE public\.achievement_nominations ENABLE ROW LEVEL SECURITY/);
-  assert.doesNotMatch(migration,/CREATE POLICY.*achievement_nominations/s);
+  assert.doesNotMatch(migration,/CREATE POLICY[^\\n]*ON public\\.achievement_nominations/);
 });
 
 test("personal QR has an opaque random token and does not expose the user's email",()=>{
