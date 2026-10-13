@@ -3,7 +3,7 @@ import {PositionedImage} from '@/components/media/PositionedImage';
 import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 
 /* eslint-disable @next/next/no-img-element */
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { VenueMediaLibrary } from "@/components/admin/VenueMediaLibrary";
 import { VenueOfferEditor } from "@/components/admin/VenueOfferEditor";
 import { parseVenueCalendarImport, mergeVenueCalendarEvents } from "@/lib/venueEventImport";
@@ -78,6 +78,65 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     },
     singhubOffer: { enabled: false, title: "", detail: "", terms: "", days: [] },
   };
+}
+
+/**
+ * Match the exact persisted editor output shape for a loaded profile.
+ * Snapshots are assigned during initialization and successful venue switches,
+ * never from a React effect (where they can race with user edits).
+ */
+function loadedProfileSignature(profile: VenueEnhancement, venue?: VenueOption): string {
+  const enabled = profile.enabled;
+  const featured = profile.featured ?? venue?.isFeatured ?? false;
+  const featuredPriority = profile.featuredPriority ?? venue?.featuredPriority ?? 10;
+  const singHereMode = profile.singHere?.mode || "instructions";
+  const singhubOffer = profile.singhubOffer || {
+    enabled: false, title: "", detail: "", terms: "", days: [],
+  };
+  return JSON.stringify({
+    enabled,
+    partnerConfirmed: enabled && profile.partnerConfirmed === true,
+    featured,
+    featuredPriority: featured ? Math.max(1, Math.min(99, featuredPriority || 10)) : undefined,
+    tagline: profile.tagline?.trim() || undefined,
+    about: profile.about?.trim() || undefined,
+    phone: profile.phone?.trim() || undefined,
+    menuUrl: profile.menuUrl?.trim() || undefined,
+    singerSignupUrl: profile.singerSignupUrl?.trim() || undefined,
+    heroImageUrl: profile.heroImageUrl?.trim() || undefined,
+    heroImageAlt: profile.heroImageAlt?.trim() || undefined,
+    heroPosition: profile.heroPosition || "center",
+    heroPlacement: profile.heroPlacement,
+    logoPlacement: profile.logoPlacement,
+    logoImageUrl: profile.logoImageUrl?.trim() || undefined,
+    logoImageAlt: profile.logoImageAlt?.trim() || undefined,
+    amenities: profile.amenities || [],
+    standoutFeatures: profile.standoutFeatures || [],
+    weeklySpecials: (profile.weeklySpecials || []).filter(special => special.title.trim()),
+    dailyDeals: (profile.dailyDeals || []).filter(deal => deal.title.trim()),
+    venueEvents: (profile.venueEvents || []).filter(item => item.title.trim() && item.date),
+    eventCalendarUrl: profile.eventCalendarUrl?.trim() || undefined,
+    gallery: profile.gallery || [],
+    vibeTags: profile.vibeTags || [],
+    foodSummary: profile.foodSummary?.trim() || undefined,
+    singersSay: profile.singersSay?.trim() || undefined,
+    singersSaySource: profile.singersSaySource?.trim() || undefined,
+    singersSayUpdatedAt: profile.singersSayUpdatedAt?.trim() || undefined,
+    whyHere: profile.whyHere?.trim() || undefined,
+    singHere: {
+      mode: singHereMode,
+      url: singHereMode === "external" ? profile.singHere?.url?.trim() || undefined : undefined,
+      instructions: (profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.").trim() || undefined,
+      linkLabel: (profile.singHere?.linkLabel || "Join the list").trim() || undefined,
+    },
+    singhubOffer: {
+      enabled: singhubOffer.enabled,
+      title: singhubOffer.title.trim(),
+      detail: singhubOffer.detail?.trim() || undefined,
+      terms: singhubOffer.terms?.trim() || undefined,
+      days: singhubOffer.days?.length ? singhubOffer.days : undefined,
+    },
+  });
 }
 
 function SpecialEditor({ specials, onChange }: { specials: VenueSpecial[]; onChange: (items: VenueSpecial[]) => void }) {
@@ -271,7 +330,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
-  const [baselineSignature, setBaselineSignature] = useState<string | null>(null);
+  const [baselineSignature, setBaselineSignature] = useState(() => loadedProfileSignature(initialProfile, initialVenue));
 
   const selectedVenue = venues.find((venue) => venue.slug === slug);
   const selectedFacts = new Set(amenities);
@@ -333,7 +392,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       }
       applyProfile(nextProfile, nextVenue);
       setSlug(nextSlug);
-      setBaselineSignature(null);
+      setBaselineSignature(loadedProfileSignature(nextProfile, nextVenue));
       const url = new URL(window.location.href);
       url.searchParams.set("venue", nextSlug);
       window.history.replaceState(window.history.state, "", url.pathname + url.search + url.hash);
@@ -388,10 +447,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     },
   }), [about, amenities, dailyDeals, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
-  const isDirty = baselineSignature !== null && JSON.stringify(output) !== baselineSignature;
-  useEffect(() => {
-    if (!loading && baselineSignature === null) setBaselineSignature(JSON.stringify(output));
-  }, [loading, baselineSignature, output]);
+  const isDirty = JSON.stringify(output) !== baselineSignature;
   const currentIndex = venues.findIndex(venue => venue.slug === slug);
   const previousVenue = currentIndex > 0 ? venues[currentIndex - 1] : null;
   const nextVenue = currentIndex >= 0 && currentIndex < venues.length - 1 ? venues[currentIndex + 1] : null;
