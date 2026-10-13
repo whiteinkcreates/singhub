@@ -146,6 +146,7 @@
   },
   "mcguffies-live": {
     "enabled": true,
+    "partnerConfirmed": false,
     "featured": false,
     "tagline": "A different night, every night. Karaoke, live bands, open mics and unexpected nights out.",
     "about": "McGuffie's Live is a San Carlos neighborhood bar built around the stage. Catch karaoke, local and touring bands, blues jams, open mic nights, comedy, bingo, games and themed events throughout the month. The lineup changes constantly, so browse the calendar and pick your night.",

@@ -45,6 +45,7 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 function emptyProfile(featured = false, featuredPriority?: number): VenueEnhancement {
   return {
     enabled: false,
+    partnerConfirmed: false,
     featured,
     featuredPriority,
     tagline: "",
@@ -134,7 +135,7 @@ function EventEditor({ events, onChange, calendarUrl, onCalendarUrlChange }: {
   return (
     <section className="rounded-2xl border border-fuchsia-300/15 bg-fuchsia-300/[0.035] p-4 md:col-span-2">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div><p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Full month calendar</p><p className="mt-1 text-sm text-slate-500">Partner programming. Add individual dates or import CSV/ICS; the canonical karaoke schedule is managed separately.</p></div>
+        <div><p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Full month calendar</p><p className="mt-1 text-sm text-slate-500">Enhanced-profile programming. Add individual dates or import CSV/ICS; the canonical karaoke schedule is managed separately.</p></div>
         <button type="button" onClick={() => onChange([...events, { title: "", date: new Date().toISOString().slice(0,10) }])} className="rounded-full border border-fuchsia-300/40 px-3 py-2 text-xs font-black text-fuchsia-100">+ Add event</button>
       </div>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -233,6 +234,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const initialVenue = venues.find((venue) => venue.slug === initialSlug);
   const [slug, setSlug] = useState(initialSlug);
   const [enabled, setEnabled] = useState(initialProfile.enabled);
+  const [partnerConfirmed, setPartnerConfirmed] = useState(initialProfile.partnerConfirmed === true);
   const [featured, setFeatured] = useState(initialProfile.featured ?? initialVenue?.isFeatured ?? false);
   const [featuredPriority, setFeaturedPriority] = useState(initialProfile.featuredPriority ?? initialVenue?.featuredPriority ?? 10);
   const [tagline, setTagline] = useState(initialProfile.tagline || "");
@@ -277,6 +279,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
   function applyProfile(profile: VenueEnhancement, venue = selectedVenue) {
     setEnabled(profile.enabled);
+    setPartnerConfirmed(profile.partnerConfirmed === true);
     setFeatured(profile.featured ?? venue?.isFeatured ?? false);
     setFeaturedPriority(profile.featuredPriority ?? venue?.featuredPriority ?? 10);
     setTagline(profile.tagline || "");
@@ -344,6 +347,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
   const output = useMemo<VenueEnhancement>(() => ({
     enabled,
+    partnerConfirmed: enabled && partnerConfirmed,
     featured,
     featuredPriority: featured ? Math.max(1, Math.min(99, featuredPriority || 10)) : undefined,
     tagline: tagline.trim() || undefined,
@@ -382,7 +386,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       terms: singhubOffer.terms?.trim() || undefined,
       days: singhubOffer.days?.length ? singhubOffer.days : undefined,
     },
-  }), [about, amenities, dailyDeals, eventCalendarUrl, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
+  }), [about, amenities, dailyDeals, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const isDirty = baselineSignature !== null && JSON.stringify(output) !== baselineSignature;
   useEffect(() => {
@@ -433,7 +437,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "Profile could not be saved.");
       setBaselineSignature(JSON.stringify(output));
-      const status = enabled ? "Saved and live." : "Saved. Base profile remains live; Partner features are off.";
+      const status = enabled ? (partnerConfirmed ? "Saved. Enhanced profile and confirmed Partner badge live." : "Saved. Enhanced profile live with no Partner badge.") : "Saved. Base profile remains live; enhanced features are off.";
       setSaveMessage(featured ? `${status} Featured priority ${output.featuredPriority}.` : status);
     } catch (error) {
       setSaveMessage(error instanceof Error ? error.message : "Profile could not be saved.");
@@ -448,15 +452,19 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   return (
     <div className="space-y-6">
       <section className="rounded-[2rem] border border-cyan-300/15 bg-[#07131a] p-5 md:p-6">
-        <div className="grid gap-5 xl:grid-cols-[1fr_auto_auto] xl:items-end">
+        <div className="grid gap-5 xl:grid-cols-[1fr_auto_auto_auto] xl:items-end">
           <label className={labelClass}>Venue
             <select value={slug} disabled={loading} onChange={(event) => void selectVenue(event.target.value)} className={`${fieldClass} min-w-0 xl:min-w-[30rem]`}>
               {venues.map((venue) => <option key={venue.slug} value={venue.slug}>{venue.name} · {venue.neighborhood || venue.city}</option>)}
             </select>
           </label>
           <div className="flex min-w-64 items-center justify-between gap-4 rounded-2xl border border-white/10 bg-black/20 p-3">
-            <div><p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Partner</p><p className="mt-1 text-sm font-bold text-white">{enabled ? "Partner features live" : "Base profile only"}</p></div>
+            <div><p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Enhanced profile</p><p className="mt-1 text-sm font-bold text-white">{enabled ? "Enhanced features live" : "Base profile only"}</p></div>
             <button type="button" onClick={() => setEnabled((current) => !current)} aria-pressed={enabled} className={`relative h-8 w-14 shrink-0 rounded-full transition ${enabled ? "bg-fuchsia-400" : "bg-slate-700"}`}><span className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${enabled ? "left-7" : "left-1"}`} /></button>
+          </div>
+          <div className="min-w-64 rounded-2xl border border-white/10 bg-black/20 p-3">
+            <div className="flex items-center justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Confirmed Partner</p><p className="mt-1 text-sm font-bold text-white">{enabled && partnerConfirmed ? "Public Partner badge on" : "No Partner badge"}</p></div><button type="button" disabled={!enabled} onClick={() => setPartnerConfirmed((current) => !current)} aria-label="Confirmed Partner status" aria-pressed={enabled && partnerConfirmed} className={`relative h-8 w-14 shrink-0 rounded-full transition ${enabled && partnerConfirmed ? "bg-fuchsia-400" : "bg-slate-700"} disabled:cursor-not-allowed disabled:opacity-40`}><span className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${enabled && partnerConfirmed ? "left-7" : "left-1"}`} /></button></div>
+            <p className="mt-2 text-xs text-slate-400">Only enable after the venue explicitly accepts the partnership. An enhanced preview alone is not confirmation.</p>
           </div>
           <div className="min-w-64 rounded-2xl border border-white/10 bg-black/20 p-3">
             <div className="flex items-center justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-[0.14em] text-slate-500">Featured</p><p className="mt-1 text-sm font-bold text-white">{featured ? "Extra placement on" : "Normal placement"}</p></div><button type="button" onClick={() => setFeatured((current) => !current)} aria-pressed={featured} className={`relative h-8 w-14 shrink-0 rounded-full transition ${featured ? "bg-violet-400" : "bg-slate-700"}`}><span className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${featured ? "left-7" : "left-1"}`} /></button></div>
@@ -573,7 +581,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
         <aside className="self-start space-y-4 xl:sticky xl:top-6">
           <section className="rounded-[2rem] border border-fuchsia-300/20 bg-[#081018] p-5 md:p-6">
-            <div className="flex items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Profile readiness</p><h2 className="mt-2 text-2xl font-black text-white">{completionPercent}% complete</h2></div><span className={`rounded-full px-3 py-1 text-xs font-black ${enabled ? "bg-emerald-300/15 text-emerald-200" : "bg-white/[0.06] text-slate-400"}`}>{enabled ? "PARTNER" : "BASE"}</span></div>
+            <div className="flex items-center justify-between gap-3"><div><p className="text-xs font-black uppercase tracking-[0.2em] text-fuchsia-300">Profile readiness</p><h2 className="mt-2 text-2xl font-black text-white">{completionPercent}% complete</h2></div><span className={`rounded-full px-3 py-1 text-xs font-black ${enabled ? "bg-emerald-300/15 text-emerald-200" : "bg-white/[0.06] text-slate-400"}`}>{enabled ? (partnerConfirmed ? "PARTNER" : "ENHANCED") : "BASE"}</span></div>
             <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.06]"><div className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-fuchsia-400 transition-all" style={{ width: `${completionPercent}%` }} /></div>
             <div className="mt-4 grid grid-cols-2 gap-2">{completionChecks.map((item) => <div key={item.label} className={`rounded-xl border px-3 py-2 text-xs font-bold ${item.done ? "border-emerald-300/20 bg-emerald-300/[0.06] text-emerald-100" : "border-white/10 text-slate-500"}`}>{item.done ? "✓" : "○"} {item.label}</div>)}</div>
           </section>

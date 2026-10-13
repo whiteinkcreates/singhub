@@ -30,8 +30,10 @@ export const HOTEL_VIBE_OPTIONS = [
 ] as const;
 
 export type VenueEnhancement = {
-  /** Partner status. Base-profile fields remain usable when this is false. */
+  /** Enables enhanced features and previews, not a partnership claim. */
   enabled: boolean;
+  /** Public Partner badge requires explicit confirmation, never inferred from enhanced features. */
+  partnerConfirmed?: boolean;
   featured?: boolean;
   featuredPriority?: number;
   tagline?: string;
@@ -92,19 +94,19 @@ export function getVenueProfileData(slug: string) {
   return enhancements[slug];
 }
 
-/** Returns Partner-only enhancement data. */
+/** Returns enhanced profile data when public enhanced modules are enabled. */
 export function getVenueEnhancement(slug: string) {
   const enhancement = enhancements[slug];
   return enhancement?.enabled ? enhancement : undefined;
 }
 
 export function isPartnerVenue(slug: string) {
-  return Boolean(getVenueEnhancement(slug));
+  return getVenueEnhancement(slug)?.partnerConfirmed === true;
 }
 
 /** Backward-compatible alias while old callers are migrated. */
 export function isLitUpVenue(slug: string) {
-  return isPartnerVenue(slug);
+  return Boolean(getVenueEnhancement(slug));
 }
 
 export function getTonightSpecials(enhancement: VenueEnhancement | undefined, weekday: string) {
