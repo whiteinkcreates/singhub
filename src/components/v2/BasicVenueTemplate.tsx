@@ -20,17 +20,18 @@ export function BasicVenueTemplate({venue,events,enhancement,weekday,singersSay,
 const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();void viewerInitials;
 const row=makeVenueRow(venue,events,weekday,enhancement);const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:enhancement?.singHere});
 const details=[['Address',venue.address],['Room type',row.kind],['Age policy',venue.agePolicy],['Parking',venue.parkingInfo],['Accessibility',venue.accessibilityNotes],['Cover',venue.coverCharge],['About the room',venue.description],['Phone',enhancement?.phone]].filter((item):item is [string,string]=>Boolean(item[1]));
-const isPartner=Boolean(enhancement?.enabled);
-const activeOffer=isPartner&&enhancement?.singhubOffer?.enabled&&(!enhancement.singhubOffer.days?.length||enhancement.singhubOffer.days.some(day=>day.toLowerCase()===weekday.toLowerCase()))?enhancement.singhubOffer:undefined;
+const isEnhanced=Boolean(enhancement?.enabled);
+const isConfirmedPartner=isEnhanced&&enhancement?.partnerConfirmed===true;
+const activeOffer=isConfirmedPartner&&enhancement?.singhubOffer?.enabled&&(!enhancement.singhubOffer.days?.length||enhancement.singhubOffer.days.some(day=>day.toLowerCase()===weekday.toLowerCase()))?enhancement.singhubOffer:undefined;
 const heroUrl=enhancement?.heroImageUrl||venue.bannerImageUrl||'/images/og/singhub-og.png';
-const photos=[{url:heroUrl,alt:enhancement?.heroImageAlt||venue.bannerImageAlt||(enhancement?.heroImageUrl||venue.bannerImageUrl?venue.venueName+' venue':'SingHUB karaoke guide'),placement:enhancement?.heroPlacement||venue.bannerImagePlacement},...(isPartner?(enhancement?.gallery||[]).filter(item=>item.url!==heroUrl):[])];
+const photos=[{url:heroUrl,alt:enhancement?.heroImageAlt||venue.bannerImageAlt||(enhancement?.heroImageUrl||venue.bannerImageUrl?venue.venueName+' venue':'SingHUB karaoke guide'),placement:enhancement?.heroPlacement||venue.bannerImagePlacement},...(isEnhanced?(enhancement?.gallery||[]).filter(item=>item.url!==heroUrl):[])];
 const [photoIndex,setPhotoIndex]=useState(0);
 const photo=photos[Math.min(photoIndex,Math.max(0,photos.length-1))];
-const partnerSpecials=isPartner?[...(enhancement?.weeklySpecials||[]),...(enhancement?.dailyDeals||[])]:[];
+const partnerSpecials=isEnhanced?[...(enhancement?.weeklySpecials||[]),...(enhancement?.dailyDeals||[])]:[];
 const todayParts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
 const todayMap=Object.fromEntries(todayParts.map(part=>[part.type,part.value]));
 const localToday=`${todayMap.year}-${todayMap.month}-${todayMap.day}`;
-const venueEvents=(isPartner?(enhancement?.venueEvents||[]):[]).filter(event=>event.date>=localToday).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
+const venueEvents=(isEnhanced?(enhancement?.venueEvents||[]):[]).filter(event=>event.date>=localToday).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
 
 return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <article className="app-view active">
@@ -42,14 +43,14 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <nav className="basic-browse-nav" aria-label="Primary"><Link href="/">Discover</Link><Link href="/find-karaoke">Venues</Link><Link href="/hosts">Hosts</Link><Link href="/hotel">Hotels</Link><Link href="/account">My SingHUB</Link></nav><div className="content">
 <section className="section">
 <div className="venue-hero"><PositionedImage placement={photo?.placement} position={photo?.url===heroUrl?enhancement?.heroPosition||venue.bannerImagePosition||'center':undefined} src={photo?.url||heroUrl} alt={photo?.alt||venue.venueName} className="venue-hero-photo" style={{objectPosition:photo?.url===heroUrl?enhancement?.heroPosition||venue.bannerImagePosition||'center':undefined}} /></div>
-{isPartner&&photos.length>1?<div className="gallery-strip" aria-label={venue.venueName+' photo gallery'}>{photos.slice(0,4).map((item,index)=><button type="button" className="gallery-thumb" key={item.url} aria-pressed={index===photoIndex} onClick={()=>setPhotoIndex(index)}><PositionedImage placement={item.placement} src={item.url} alt={item.alt} /></button>)}</div>:null}
+{isEnhanced&&photos.length>1?<div className="gallery-strip" aria-label={venue.venueName+' photo gallery'}>{photos.slice(0,4).map((item,index)=><button type="button" className="gallery-thumb" key={item.url} aria-pressed={index===photoIndex} onClick={()=>setPhotoIndex(index)}><PositionedImage placement={item.placement} src={item.url} alt={item.alt} /></button>)}</div>:null}
 <h1>{venue.venueName}</h1>
 <div className="verified" title={row.verification}><span className="verified-dot">{venue.listingStatus==='verified'?'✓':'·'}</span>{' '+row.trust.replace(/^✓\s*/, '')}</div>
-{isPartner?<div className="venue-partner-badge"><img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /><span>Partner</span></div>:null}
+{isConfirmedPartner?<div className="venue-partner-badge"><img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /><span>Partner</span></div>:null}
 <p className="subline" style={{"marginTop": "10px"}}>{venue.neighborhood+' · '+venue.address}</p>
 <div className="chips">{row.tags.map(tag=><span className="chip" key={tag}>{tag}</span>)}</div>
 </section>
-{isPartner&&(enhancement?.tagline||enhancement?.about)?<section className="section"><div className="section-heading"><h2>Why here</h2></div>{enhancement?.tagline?<strong className="partner-editorial-tagline">{enhancement.tagline}</strong>:null}{enhancement?.about?<p className="partner-editorial-about">{enhancement.about}</p>:null}</section>:null}
+{isEnhanced&&(enhancement?.tagline||enhancement?.about)?<section className="section"><div className="section-heading"><h2>Why here</h2></div>{enhancement?.tagline?<strong className="partner-editorial-tagline">{enhancement.tagline}</strong>:null}{enhancement?.about?<p className="partner-editorial-about">{enhancement.about}</p>:null}</section>:null}
 <section className="section">
 <div className="card tonight-card">
 <div className="tonight-label"><span className="live-dot"></span>{venue.venueType==='private_room'?' PRIVATE ROOMS':row.tonight?' TONIGHT':' KARAOKE SCHEDULE'}</div>
@@ -63,10 +64,10 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <div className="section-heading"><h2>{"Regular schedule"}</h2></div>
 <div className="schedule-list">{!events.length&&<p className="subline">{venue.venueType==='private_room'?'Private-room sessions are booked directly with the venue.':'Regular karaoke nights are being confirmed. Contact the venue before heading out.'}</p>}{events.map(event=><div className={"schedule-row"+(eventRunsOnNight(event,weekday)?" tonight-row":"")} key={event.eventId}><strong>{event.karaokeDay}</strong><span>{[usable(event.hostName)||"Host pending",scheduleQualification(event)].filter(Boolean).join(" · ")}</span><time title={[usable(event.startTime),usable(event.endTime)].filter(Boolean).join(" to ")}>{[compactTime(event.startTime),compactTime(event.endTime)].filter(Boolean).join(" to ")||"Time pending"}</time></div>)}</div>
 </section>
-{isPartner&&partnerSpecials.length?<section className="section"><div className="section-heading"><h2>Specials</h2></div><div className="enhanced-grid">{partnerSpecials.map((special,index)=><div className="enhanced-card" key={index}><span>★</span><strong>{'title' in special?special.title:'Special'}</strong><p>{['day' in special&&special.day,'price' in special&&special.price,'detail' in special&&special.detail].filter(Boolean).join(' · ')}</p></div>)}</div></section>:null}
-{isPartner&&venueEvents.length?<VenueMonthlyCalendar events={venueEvents} venueName={venue.venueName} sourceUrl={enhancement?.eventCalendarUrl}/>:null}
-{isPartner&&posts.length?<section className="section"><div className="section-heading"><h2>From the venue</h2></div><div className="detail-list">{posts.map(post=><button type="button" className="partner-post" key={post.id} onClick={()=>location.assign('/events/'+post.id)}><strong>{post.title}</strong><p>{post.detail}</p></button>)}</div></section>:null}
-<section className="section"><div className="section-heading"><h2>{"Good to know"}</h2></div>{isPartner&&enhancement?.amenities?.length?<div className="chips partner-amenities">{enhancement.amenities.map(item=><span className="chip" key={item}>{item}</span>)}</div>:null}<div className="detail-list">{details.map(([label,value])=><div className="detail" key={label}><span>⌖</span><div><strong>{label}</strong><p>{value}</p></div></div>)}</div></section>
+{isEnhanced&&partnerSpecials.length?<section className="section"><div className="section-heading"><h2>Specials</h2></div><div className="enhanced-grid">{partnerSpecials.map((special,index)=><div className="enhanced-card" key={index}><span>★</span><strong>{'title' in special?special.title:'Special'}</strong><p>{['day' in special&&special.day,'price' in special&&special.price,'detail' in special&&special.detail].filter(Boolean).join(' · ')}</p></div>)}</div></section>:null}
+{isEnhanced&&venueEvents.length?<VenueMonthlyCalendar events={venueEvents} venueName={venue.venueName} sourceUrl={enhancement?.eventCalendarUrl}/>:null}
+{isEnhanced&&posts.length?<section className="section"><div className="section-heading"><h2>From the venue</h2></div><div className="detail-list">{posts.map(post=><button type="button" className="partner-post" key={post.id} onClick={()=>location.assign('/events/'+post.id)}><strong>{post.title}</strong><p>{post.detail}</p></button>)}</div></section>:null}
+<section className="section"><div className="section-heading"><h2>{"Good to know"}</h2></div>{isEnhanced&&enhancement?.amenities?.length?<div className="chips partner-amenities">{enhancement.amenities.map(item=><span className="chip" key={item}>{item}</span>)}</div>:null}<div className="detail-list">{details.map(([label,value])=><div className="detail" key={label}><span>⌖</span><div><strong>{label}</strong><p>{value}</p></div></div>)}</div></section>
 <section className="section"><div className="section-heading"><h2>Singers Say</h2></div><VenueFeedback venue={venue} events={events} summary={singersSay} /></section></div>
 </article>
 <div className="toast" role="status" aria-live="polite"></div>
