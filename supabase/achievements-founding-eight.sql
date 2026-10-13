@@ -149,7 +149,7 @@ RETURNS TABLE(processed integer, newly_awarded boolean)
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public, pg_temp
-AS $
+AS $review$
 DECLARE
   v_pending_count integer;
   v_unique_nominators integer;
@@ -224,7 +224,7 @@ BEGIN
 
   GET DIAGNOSTICS processed = ROW_COUNT;
   RETURN NEXT;
-END $;
+END $review$;
 
 REVOKE ALL ON FUNCTION public.review_singer_achievement_nominations(
   uuid, text, date, text, text
