@@ -9,12 +9,13 @@ export async function GET(request: Request) {
     const auth = await authenticatedSinger(request);
     if (!auth) return NextResponse.json({ error: "Sign in to My SingHUB." }, { status: 401 });
     const { admin, user } = auth;
-    let { data: profile, error: profileError } = await admin
+    const lookup = await admin
       .from("singer_profiles")
       .select("karaoke_alias,nomination_token")
       .eq("user_id", user.id)
       .maybeSingle();
-    if (profileError) throw profileError;
+    let profile = lookup.data;
+    if (lookup.error) throw lookup.error;
     if (!profile) {
       const inserted = await admin.from("singer_profiles")
         .upsert({ user_id: user.id }, { onConflict: "user_id", ignoreDuplicates: true })
