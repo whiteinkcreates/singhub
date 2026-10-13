@@ -111,4 +111,5 @@ VERIFIED LIVE Oct 5:
 | Oct 5, 2026 | Merch live round trip, cart and checkout handoff verified; PRs 289/290 merged. |
 | Oct 5, 2026 | Hotel package code verified on GitHub/main. Final production package approval/export not verified. |
 | Oct 6, 2026 | Corey reported HIE test passed. Requested digital display as part of package; physical printing deferred. |
+| Oct 12, 2026 | McGuffie's enhanced profile and Partner monthly calendar/CSV-ICS import drafted on `feat/partner-month-calendar-mcguffies-20261012`. 54 source-backed Oct-Nov events from mcguffieslive.com/shows, website venue hero, with missing host and calendar conflicts held for verification. Branch implementation only; production unverified. |
 | Oct 6, 2026 | Created shared launch checklist; main at creation: `c7169724988b11d170bf5bf4a774ab6944fffbd7`. |

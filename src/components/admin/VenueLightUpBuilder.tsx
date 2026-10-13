@@ -6,6 +6,7 @@ import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 import { useEffect, useMemo, useState } from "react";
 import { VenueMediaLibrary } from "@/components/admin/VenueMediaLibrary";
 import { VenueOfferEditor } from "@/components/admin/VenueOfferEditor";
+import { parseVenueCalendarImport, mergeVenueCalendarEvents } from "@/lib/venueEventImport";
 import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 import {
   HOTEL_VIBE_OPTIONS,
@@ -62,6 +63,7 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     weeklySpecials: [],
     dailyDeals: [],
     venueEvents: [],
+    eventCalendarUrl: "",
     vibeTags: [],
     foodSummary: "",
     singersSay: "",
@@ -105,28 +107,62 @@ function SpecialEditor({ specials, onChange }: { specials: VenueSpecial[]; onCha
 }
 
 
-function EventEditor({ events, onChange }: { events: VenueProgramEvent[]; onChange: (items: VenueProgramEvent[]) => void }) {
+function EventEditor({ events, onChange, calendarUrl, onCalendarUrlChange }: {
+  events: VenueProgramEvent[];
+  onChange: (items: VenueProgramEvent[]) => void;
+  calendarUrl: string;
+  onCalendarUrlChange: (url: string) => void;
+}) {
+  const [importMessage, setImportMessage] = useState("");
   function patch(index: number, next: Partial<VenueProgramEvent>) {
     onChange(events.map((item, itemIndex) => itemIndex === index ? { ...item, ...next } : item));
+  }
+  async function importFile(file?: File) {
+    if (!file) return;
+    if (file.size > 1024 * 1024) { setImportMessage("File too large. Limit 1 MB."); return; }
+    try {
+      const parsed = parseVenueCalendarImport(await file.text(), file.name);
+      if (!parsed.events.length) { setImportMessage("No usable dated events. " + parsed.warnings.join(" ")); return; }
+      const merged = mergeVenueCalendarEvents(events, parsed.events);
+      onChange(merged);
+      setImportMessage(parsed.events.length + " imported, " + merged.length + " total. Review entries and Save Profile to publish. " + parsed.warnings.slice(0, 3).join(" "));
+    } catch {
+      setImportMessage("Could not read calendar. Use CSV with date,title,time,detail,category,sourceUrl or a standard ICS export.");
+    }
   }
 
   return (
     <section className="rounded-2xl border border-fuchsia-300/15 bg-fuchsia-300/[0.035] p-4 md:col-span-2">
-      <div className="flex items-center justify-between gap-3">
-        <div><p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Upcoming events</p><p className="mt-1 text-sm text-slate-500">Venue programming beyond the recurring karaoke schedule. Only mark an event recurring when that is actually confirmed.</p></div>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div><p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">Full month calendar</p><p className="mt-1 text-sm text-slate-500">Partner programming. Add individual dates or import CSV/ICS; the canonical karaoke schedule is managed separately.</p></div>
         <button type="button" onClick={() => onChange([...events, { title: "", date: new Date().toISOString().slice(0,10) }])} className="rounded-full border border-fuchsia-300/40 px-3 py-2 text-xs font-black text-fuchsia-100">+ Add event</button>
       </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
+        <label className="text-xs font-bold text-slate-300">Venue calendar source URL
+          <input type="url" value={calendarUrl} onChange={event => onCalendarUrlChange(event.target.value)} placeholder="https://venue.com/events" className="mt-2 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
+        </label>
+        <label className="cursor-pointer text-xs font-bold text-slate-300">Import calendar events (.csv or .ics)
+          <input type="file" accept=".csv,.ics,text/csv,text/calendar" onChange={event => { void importFile(event.currentTarget.files?.[0]); event.currentTarget.value = ""; }} className="mt-2 block w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
+        </label>
+      </div>
+      <p className="mt-2 text-xs text-slate-500">CSV headers: date,title,time,detail,category,sourceUrl. Imports merge with existing events, then require Save Profile. Calendar imports are snapshots, not live website sync. ICS repeating RRULEs need expanded dates.</p>
+      {importMessage ? <p role="status" className="mt-2 text-xs text-cyan-200">{importMessage}</p> : null}
       <div className="mt-4 space-y-3">
         {events.map((item, index) => (
           <div key={item.date+'-'+index} className="grid gap-2 rounded-2xl border border-white/10 bg-white/[0.03] p-3 md:grid-cols-[9rem_1.1fr_8rem_1.2fr_auto]">
-            <input type="date" value={item.date} onChange={(event) => patch(index, { date: event.target.value })} className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
-            <input value={item.title} onChange={(event) => patch(index, { title: event.target.value })} placeholder="Event name" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
-            <input value={item.time || ""} onChange={(event) => patch(index, { time: event.target.value || undefined })} placeholder="6:00 PM" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
-            <input value={item.detail || ""} onChange={(event) => patch(index, { detail: event.target.value || undefined })} placeholder="Band, host, or note" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
-            <div className="flex items-center gap-2"><label className="flex items-center gap-1 text-[11px] font-bold text-slate-400"><input type="checkbox" checked={Boolean(item.recurring)} onChange={(event) => patch(index, { recurring: event.target.checked || undefined })} />Recurring</label><button type="button" aria-label="Remove event" onClick={() => onChange(events.filter((_, itemIndex) => itemIndex !== index))} className="rounded-xl border border-rose-300/20 px-3 py-2 font-black text-rose-200">×</button></div>
+            <input type="date" aria-label="Event date" value={item.date} onChange={event => patch(index, { date: event.target.value })} className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
+            <input aria-label="Event title" value={item.title} onChange={event => patch(index, { title: event.target.value })} placeholder="Event name" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
+            <input aria-label="Event time" value={item.time || ""} onChange={event => patch(index, { time: event.target.value || undefined })} placeholder="8:00 PM" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
+            <input aria-label="Event details" value={item.detail || ""} onChange={event => patch(index, { detail: event.target.value || undefined })} placeholder="Lineup, admission or host" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" />
+            <button type="button" aria-label="Remove event" onClick={() => onChange(events.filter((_, itemIndex) => itemIndex !== index))} className="rounded-xl border border-rose-300/20 px-3 py-2 font-black text-rose-200">×</button>
+            <select aria-label="Event type" value={item.category || "special"} onChange={event => patch(index,{ category:event.target.value as VenueProgramEvent["category"] })} className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white">
+              <option value="karaoke">Karaoke</option><option value="live_music">Live music</option><option value="game">Games</option><option value="community">Community</option><option value="special">Other</option>
+            </select>
+            <input aria-label="Event URL" type="url" value={item.sourceUrl || ""} onChange={event => patch(index,{ sourceUrl:event.target.value || undefined })} placeholder="Event/ticket URL (optional)" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white md:col-span-3" />
+            <label className="text-xs text-slate-400"><input type="checkbox" checked={Boolean(item.recurring)} onChange={event => patch(index, { recurring: event.target.checked || undefined })} /> Confirmed recurring</label>
           </div>
         ))}
-        {events.length === 0 ? <p className="text-sm text-slate-600">No upcoming venue events added yet.</p> : null}
+        {!events.length ? <p className="text-sm text-slate-600">No events yet. Import a calendar or add dated shows.</p> : null}
       </div>
     </section>
   );
@@ -217,6 +253,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [weeklySpecials, setWeeklySpecials] = useState<VenueSpecial[]>(initialProfile.weeklySpecials || []);
   const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);
   const [venueEvents, setVenueEvents] = useState<VenueProgramEvent[]>(initialProfile.venueEvents || []);
+  const [eventCalendarUrl, setEventCalendarUrl] = useState(initialProfile.eventCalendarUrl || "");
   const [vibeTags, setVibeTags] = useState(initialProfile.vibeTags || []);
   const [foodSummary, setFoodSummary] = useState(initialProfile.foodSummary || "");
   const [singersSay, setSingersSay] = useState(initialProfile.singersSay || "");
@@ -260,6 +297,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setWeeklySpecials(profile.weeklySpecials || []);
     setDailyDeals(profile.dailyDeals || []);
     setVenueEvents(profile.venueEvents || []);
+    setEventCalendarUrl(profile.eventCalendarUrl || "");
     setVibeTags(profile.vibeTags || []);
     setFoodSummary(profile.foodSummary || "");
     setSingersSay(profile.singersSay || "");
@@ -323,6 +361,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     weeklySpecials: weeklySpecials.filter((special) => special.title.trim()),
     dailyDeals: dailyDeals.filter((deal) => deal.title.trim()),
     venueEvents: venueEvents.filter((item) => item.title.trim() && item.date),
+    eventCalendarUrl: eventCalendarUrl.trim() || undefined,
     gallery,
     vibeTags,
     foodSummary: foodSummary.trim() || undefined,
@@ -343,7 +382,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       terms: singhubOffer.terms?.trim() || undefined,
       days: singhubOffer.days?.length ? singhubOffer.days : undefined,
     },
-  }), [about, amenities, dailyDeals, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
+  }), [about, amenities, dailyDeals, eventCalendarUrl, enabled, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const isDirty = baselineSignature !== null && JSON.stringify(output) !== baselineSignature;
   useEffect(() => {
@@ -524,7 +563,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             </section>
 
             <VenueOfferEditor slug={slug} partnerEnabled={enabled} offer={singhubOffer} onChange={setSinghubOffer} />
-            <EventEditor events={venueEvents} onChange={setVenueEvents} />
+            <EventEditor events={venueEvents} onChange={setVenueEvents} calendarUrl={eventCalendarUrl} onCalendarUrlChange={setEventCalendarUrl} />
             <SpecialEditor specials={weeklySpecials} onChange={setWeeklySpecials} />
             <DailyDealEditor deals={dailyDeals} onChange={setDailyDeals} />
 

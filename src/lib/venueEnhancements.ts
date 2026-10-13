@@ -6,7 +6,7 @@ export type HeroPosition = "center" | "top" | "bottom" | "left" | "right";
 export type VenueGalleryItem = { url: string; alt: string; caption?: string; placement?: ResponsiveImagePlacement; };
 export type VenueSpecial = { day: string; title: string; price?: string; detail?: string; };
 export type VenueDailyDeal = { title: string; price?: string; detail?: string; };
-export type VenueProgramEvent = { title: string; date: string; time?: string; detail?: string; recurring?: boolean; category?: "karaoke" | "live_music" | "game" | "community" | "special"; };
+export type VenueProgramEvent = { title: string; date: string; time?: string; detail?: string; recurring?: boolean; category?: "karaoke" | "live_music" | "game" | "community" | "special"; sourceUrl?: string; };
 export type SingHubOffer = { enabled: boolean; title: string; detail?: string; terms?: string; days?: string[]; };
 export type SingHereConfig = {
   mode?: "instructions" | "external";
@@ -52,6 +52,7 @@ export type VenueEnhancement = {
   weeklySpecials: VenueSpecial[];
   dailyDeals: VenueDailyDeal[];
   venueEvents?: VenueProgramEvent[];
+  eventCalendarUrl?: string;
   singHere?: SingHereConfig;
   singhubOffer?: SingHubOffer;
 
