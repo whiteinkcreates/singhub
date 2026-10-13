@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdminAuthorization } from "@/lib/adminAuthorization";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { ACHIEVEMENT_BY_KEY, isNominationBadge } from "@/lib/achievements/catalog";
+import { isNominationBadge } from "@/lib/achievements/catalog";
 import { isSameOrigin, isUuid } from "@/lib/achievements/auth.server";
 
 export const dynamic = "force-dynamic";
@@ -38,30 +38,25 @@ export async function POST(request: Request) {
     if (body.action === "approve" && uniqueNominators.size < 3) {
       return NextResponse.json({ error: "Three distinct nominators are required before approval." }, { status: 409 });
     }
-    if (body.action === "approve") {
-      const current = await db.from("singer_achievements").select("level")
-        .eq("user_id",body.recipientUserId).eq("badge_key",body.badgeKey).maybeSingle();
-      if (current.error) throw current.error;
-      if (!current.data) {
-        const inserted = await db.from("singer_achievements").insert({
-          user_id:body.recipientUserId, badge_key:body.badgeKey,
-          badge_name:ACHIEVEMENT_BY_KEY[body.badgeKey].name,level:1,
-          award_source:"community_review", award_note:"Approved after three independent community nominations.",
-        });
-        if (inserted.error?.code !== "23505" && inserted.error) throw inserted.error;
+    // One database transaction checks quorum, inserts award/reveal, and updates
+    // nomination states. No half-awarded patches if an operation fails.
+    const result = await db.rpc("review_singer_achievement_nominations",{
+      p_recipient_user_id:body.recipientUserId,
+      p_badge_key:body.badgeKey,
+      p_nightlife_date:body.nightlifeDate,
+      p_venue_slug:body.venueSlug,
+      p_action:body.action,
+    });
+    if (result.error) {
+      if (/No pending nominations|independent nominators/i.test(result.error.message)) {
+        return NextResponse.json({error:result.error.message},{status:409});
       }
-      const event = await db.from("singer_achievement_events").insert({
-        user_id:body.recipientUserId,badge_key:body.badgeKey,badge_level:1,
-        event_kind:"unlocked",
-      });
-      if (event.error?.code !== "23505" && event.error) throw event.error;
+      throw result.error;
     }
-    const updated = await db.from("achievement_nominations")
-      .update({status:body.action === "approve" ? "approved" : "rejected",reviewed_at:new Date().toISOString()})
-      .match(filter).eq("status","pending").select("id");
-    if (updated.error) throw updated.error;
+    const processed = Number(result.data?.[0]?.processed || 0);
+    const newlyAwarded = result.data?.[0]?.newly_awarded === true;
     return NextResponse.json({
-      saved:true,action:body.action,processed:updated.data?.length||0,
+      saved:true,action:body.action,processed,newlyAwarded,
       message:body.action === "approve" ? "Community achievement awarded." : "Nomination group rejected.",
     },{headers:{"Cache-Control":"private, no-store"}});
   } catch(error) {
