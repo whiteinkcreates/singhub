@@ -106,6 +106,7 @@ export function AchievementHub({ userId, alias, refreshKey }: {
     try { localStorage.setItem(localSeenKey(userId),JSON.stringify([...seen].slice(-150))); } catch {}
     const next=[...(feed?.events||[])].reverse().find(event=>!seen.has(event.id));
     setReveal(next||null);
+    if (!next) window.setTimeout(()=>document.getElementById("jacket")?.scrollIntoView({behavior:"smooth",block:"start"}),40);
   }
   useEffect(()=>{
     if (!reveal) return;
@@ -182,7 +183,7 @@ export function AchievementHub({ userId, alias, refreshKey }: {
         <p className="text-xs font-black uppercase tracking-[.22em] text-fuchsia-300">
           {reveal.event_kind==="upgraded"?"Patch levelled up!":"Achievement unlocked!"}
         </p>
-        <div className="mx-auto my-7 flex h-36 w-36 items-center justify-center rounded-2xl border-4 border-fuchsia-400 bg-[#182136] text-7xl text-cyan-200 sh-patch-reveal"
+        <div key={reveal.id} className="mx-auto my-7 flex h-36 w-36 items-center justify-center rounded-2xl border-4 border-fuchsia-400 bg-[#182136] text-7xl text-cyan-200 sh-patch-reveal"
           style={{boxShadow:"0 0 32px rgba(255,42,163,.5)"}} aria-hidden="true">★</div>
         <h2 className="text-3xl font-black text-white">{revealName}</h2>
         <p className="mt-2 text-sm text-cyan-200">
@@ -196,7 +197,7 @@ export function AchievementHub({ userId, alias, refreshKey }: {
           </button>
           <button ref={dismissRef} onClick={dismissReveal}
             className="rounded-full bg-fuchsia-400 px-6 py-2.5 text-sm font-black text-[#090e1c]">
-            Add to My Jacket
+            See My Jacket
           </button>
         </div>
       </div>
