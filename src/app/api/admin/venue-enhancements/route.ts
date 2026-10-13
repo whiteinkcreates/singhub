@@ -34,6 +34,13 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: "A valid venue profile is required." }, { status: 400 });
     }
 
+    if (profile.partnerConfirmed !== undefined && typeof profile.partnerConfirmed !== "boolean") {
+      return NextResponse.json({ error: "Confirmed Partner status must be a boolean." }, { status: 400 });
+    }
+    if (profile.partnerConfirmed && !profile.enabled) {
+      return NextResponse.json({ error: "Confirmed Partner requires an enabled enhanced profile." }, { status: 400 });
+    }
+
     if (profile.featured !== undefined && typeof profile.featured !== "boolean") {
       return NextResponse.json({ error: "Featured state is invalid." }, { status: 400 });
     }
