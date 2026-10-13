@@ -40,7 +40,7 @@ Newly granted/levelled-up awards create an immutable, unique `singer_achievement
 - A nominator must be signed in to a confirmed-email SingHUB account and explicitly attest that they personally witnessed the event.
 - Nominees cannot nominate themselves. One counted vote per nominee + badge + nightlife date + nominator. At most five nominations per account/night.
 - Venue must be from the current public Venue Index; freeform reason (10–280 characters) is mandatory.
-- All nominations are private. The admin queue groups by nominee + badge + nightlife date + venue, and only offers approval when at least three independent nominators have submitted. Admin can reject a group.
+- All nominations are private. The admin queue groups by nominee + badge + nightlife date + venue, and only offers approval when at least three independent nominators have submitted. Admin can reject a group. Review uses a server-only database function that serializes group review and commits the patch, reveal event, and nomination statuses in one transaction.
 - V1 approvals grant Level I only. Level II community-award logic is deliberately deferred until participation volumes justify its criteria.
 
 These checks deter casual fraud but do not establish physical presence or eliminate coordinated fake accounts. Do not call a nomination \"GPS-verified\" or automatically award on a single QR scan.
@@ -67,8 +67,8 @@ Original hard guitar/amp sting (short, non-copyrighted synthesized chord). A bri
 2. Test triggers via transaction/rollback in a staging database before any live awards. Assert duplicate Tour Stops don't increase venue counts, Level II upgrades rather than duplicating the patch, same-night Traveller threshold, and no award from pending visits.
 3. Apply `supabase/achievements-founding-eight.sql` (additive migration), then verify read-only counts and idempotency. Preview cannot fully exercise authenticated achievement UI until schema is present.
 4. Test personal QR on mobile, app sign-in return, self-nomination rejection, one-vote uniqueness, five/day rate limit, and admin Basic-Auth protection.
-5. Test nomination with 3 distinct accounts, approve once, verify one private award plus one reveal; review reject path.
+5. Test nomination with 3 distinct accounts, approve once, verify one private award plus one reveal; review reject path. Test atomic rollback on bad quorum or interrupted review.
 6. Check reduced-motion, sound blocked by browser, mute preference, patch overflow after 18 displayed performance Stars.
 7. Review integration with any independent My SingHUB / venue / KJ workstream before merging PR or shipping to the public.
 
-**No migration, admin nomination approvals, or production rollout should happen while an incompatible parallel flow is being built.**
+**No migration, admin nomination approvals, or production rollout should happen while an incompatible parallel flow is being built.** Automated PR scope checks forbid touching public hero images, venue templates/editor, KJ profiles and SingHERE. Recheck open PRs #294 (venue hero fallback), #288 (venue media management), and #335 (SingHERE/KJ/navigation), plus any newer hero-image work, against the latest main before release.
