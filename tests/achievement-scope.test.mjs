@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { test } from "node:test";
+import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 
 // The achievement pilot must NEVER edit hero assets, venue/editor data, KJ pages,
@@ -34,4 +35,23 @@ test("achievement changes never touch hero-image, venue, KJ, or SingHERE workstr
     protectedExact.has(path) || protectedPrefixes.some(prefix => path.startsWith(prefix))
   );
   assert.deepEqual(violations, [], "Unexpected cross-workstream edits. Coordinate before changing these files.");
+});
+
+test("My SingHUB keeps live hero controls and Following when achievements are integrated",()=>{
+  const account=readFileSync(new URL("../src/components/v2/MySingHubTemplate.tsx",import.meta.url),"utf8");
+  const accountPage=readFileSync(new URL("../src/app/account/page.tsx",import.meta.url),"utf8");
+  const singerData=readFileSync(new URL("../src/lib/v2/singerAccount.ts",import.meta.url),"utf8");
+  const admin=readFileSync(new URL("../src/app/admin/page.tsx",import.meta.url),"utf8");
+  for(const [label,pattern] of [
+    ["hero image",/main-hero-override/],
+    ["hero placement",/heroPlacement/],
+    ["new hero integration",/PositionedImage/],
+    ["Following tab",/href="#following"/],
+    ["host follow login",/followHost/],
+    ["achievements panel",/<AchievementHub/],
+  ]) assert.match(account,pattern,label+" must remain intact");
+  assert.match(accountPage,/SITE_ACCOUNT_HERO_KEY/);
+  assert.match(singerData,/singer_follows/);
+  assert.match(admin,/\/admin\/main-heroes/);
+  assert.match(admin,/\/admin\/achievements/);
 });

@@ -72,3 +72,6 @@ Original hard guitar/amp sting (short, non-copyrighted synthesized chord). A bri
 7. Review integration with any independent My SingHUB / venue / KJ workstream before merging PR or shipping to the public.
 
 **No migration, admin nomination approvals, or production rollout should happen while an incompatible parallel flow is being built.** Automated PR scope checks forbid touching public hero images, venue templates/editor, KJ profiles and SingHERE. Recheck open PRs #294 (venue hero fallback), #288 (venue media management), and #335 (SingHERE/KJ/navigation), plus any newer hero-image work, against the latest main before release.
+
+## Hero-image integration confirmation
+Draft PR #341 is the **replacement** integration on top of latest main, after the Oct 13 Main Page Heroes and Following merges. The earlier conflicting PR #338 is closed. The regression test checks that Main Page Heroes admin controls, account hero rendering/placement, Following and followHost return flows survive intact. No public hero assets, venue/KJ media, or SingHERE code are modified. The SQL pilot is tested in a disposable PostgreSQL CI service; it remains unapplied to production.

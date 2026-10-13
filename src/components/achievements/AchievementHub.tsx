@@ -151,7 +151,7 @@ export function AchievementHub({ userId, alias, refreshKey }: {
           <h3 className="mt-2 text-base font-black text-white">{item.name}</h3>
           <p className="mt-2 text-xs leading-5 text-slate-300">I · {item.levelOne}</p>
           {item.levelTwo&&<p className="mt-1 text-xs leading-5 text-fuchsia-200">II · {item.levelTwo}</p>}
-          <p className="mt-2 text-[11px] text-slate-500">{item.kind==="nominated"?"Community nomination + SingHUB review":"Automatic · singer-reported evidence"}</p>
+          <p className="mt-2 text-[11px] text-slate-500">{item.evidence}</p>
         </article>;
       })}
     </div>}
