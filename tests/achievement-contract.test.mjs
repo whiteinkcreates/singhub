@@ -50,3 +50,15 @@ test("personal QR has an opaque random token and does not expose the user's emai
   assert.match(publicPage,/\.select\("karaoke_alias"\)/);
   assert.doesNotMatch(publicPage,/email,/);
 });
+
+test("community review is atomic and executable only by the admin service role", () => {
+  assert.match(migration, /CREATE OR REPLACE FUNCTION public\.review_singer_achievement_nominations\(/);
+  assert.match(migration, /PERFORM id FROM public\.achievement_nominations[\s\S]*?FOR UPDATE/);
+  assert.match(migration, /count\(DISTINCT nominator_user_id\)/);
+  assert.match(migration, /IF p_action = 'approve' AND v_unique_nominators < 3/);
+  assert.match(migration, /INSERT INTO public\.singer_achievements/);
+  assert.match(migration, /INSERT INTO public\.singer_achievement_events/);
+  assert.match(migration, /GRANT EXECUTE ON FUNCTION public\.review_singer_achievement_nominations\([\s\S]*?TO service_role/);
+  assert.match(admin, /\.rpc\("review_singer_achievement_nominations"/);
+  assert.doesNotMatch(admin, /\.from\("singer_achievements"\)\.insert/);
+});
