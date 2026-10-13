@@ -143,5 +143,486 @@
       "Big-screen sports",
       "Darts"
     ]
+  },
+  "mcguffies-live": {
+    "enabled": true,
+    "featured": false,
+    "tagline": "A different night, every night. Karaoke, live bands, open mics and unexpected nights out.",
+    "about": "McGuffie's Live is a San Carlos neighborhood bar built around the stage. Catch karaoke, local and touring bands, blues jams, open mic nights, comedy, bingo, games and themed events throughout the month. The lineup changes constantly, so browse the calendar and pick your night.",
+    "phone": "(619) 465-1730",
+    "heroImageUrl": "https://img1.wsimg.com/isteam/ip/b09acfbc-b26e-4370-ae2c-6ba7c9879f0a/open%20p.jpeg/%3A/rs%3Dh%3A1000%2Ccg%3Atrue%2Cm",
+    "heroImageAlt": "Crowd, stage and pool table inside McGuffie's Live in San Carlos",
+    "heroPosition": "center",
+    "gallery": [],
+    "amenities": [
+      "Full bar",
+      "Pool tables",
+      "Bar games",
+      "Dance floor",
+      "Good for groups"
+    ],
+    "standoutFeatures": [
+      "Live music",
+      "Game night",
+      "Pool tables"
+    ],
+    "weeklySpecials": [],
+    "dailyDeals": [
+      {
+        "title": "Daily happy hour",
+        "detail": "Noon to 7 PM. Ask the bar for current drink specials."
+      }
+    ],
+    "eventCalendarUrl": "https://mcguffieslive.com/shows",
+    "venueEvents": [
+      {
+        "title": "Crashing Wayward / Light Dazed / Channing Channels",
+        "date": "2026-10-12",
+        "time": "8 PM",
+        "detail": "Hard rock tour; $10 tickets",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Open Mic Night",
+        "date": "2026-10-13",
+        "time": "8 PM",
+        "detail": "No cover; full backline; signups 7:30 PM; hosted by T-DOG",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Spirits / Promised Paradigm / Bitter Glow",
+        "date": "2026-10-14",
+        "time": "8 PM",
+        "detail": "Emo tour; tickets via venue",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Bongfather / Tina Fake / The Rolling Blackouts",
+        "date": "2026-10-15",
+        "time": "8 PM",
+        "detail": "Rock; $5 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Roni Lee / Taz Taylor Band",
+        "date": "2026-10-16",
+        "time": "8 PM",
+        "detail": "Original rock; $10 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Brutalian / Drift Mothership / LDM / Exterminator",
+        "date": "2026-10-17",
+        "time": "8 PM",
+        "detail": "Metal; ticket link via venue",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Kitty Mao",
+        "date": "2026-10-18",
+        "time": "5-7 PM",
+        "detail": "Cover songs; $5 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Damon Rabotte / Pip Lewis / Midnight Strangers",
+        "date": "2026-10-18",
+        "time": "8 PM",
+        "detail": "Rock, soul and covers; $10 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Blues Jam",
+        "date": "2026-10-19",
+        "time": "8 PM",
+        "detail": "No cover; full backline; Tyler Ray hosts; signups 7:30 PM",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Open Mic Night",
+        "date": "2026-10-20",
+        "time": "8 PM",
+        "detail": "No cover; full backline; signups 7:30 PM",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Karaoke Night",
+        "date": "2026-10-21",
+        "time": "10 PM",
+        "detail": "No cover; signups listed at 7:30 PM; until 2 AM",
+        "category": "karaoke",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Dust Worship / Eye Mind / Machine",
+        "date": "2026-10-22",
+        "time": "8 PM",
+        "detail": "Punk and metal; $10 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Pirates & Mermaids Party",
+        "date": "2026-10-23",
+        "time": "8 PM",
+        "detail": "Blackstar Sinners, Rev 69, Hollywood Sleeze; $10 cover",
+        "category": "special",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Bingo Tournament",
+        "date": "2026-10-24",
+        "time": "2-4 PM",
+        "detail": "$5 buy-in; happy hour prices",
+        "category": "game",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Flannel Rock / Endless Nameless / Oceans",
+        "date": "2026-10-24",
+        "time": "8 PM",
+        "detail": "Nirvana and Pearl Jam tributes; $10 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "No Respect Comedy",
+        "date": "2026-10-25",
+        "time": "5-7 PM",
+        "detail": "Professional comedians; donations encouraged",
+        "category": "community",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Blues Jam",
+        "date": "2026-10-26",
+        "time": "8 PM",
+        "detail": "No cover; full backline; signups 7:30 PM; hosted by Tyler Ray",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Open Mic Night",
+        "date": "2026-10-27",
+        "time": "8 PM",
+        "detail": "No cover; full backline; signups 7:30 PM",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Karaoke Night",
+        "date": "2026-10-28",
+        "time": "8 PM",
+        "detail": "No cover; big screen; until 2 AM; hosted by T-DOG",
+        "category": "karaoke",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Schisms / Chromatic Vision / Happy in Hemet / DJ Apoc",
+        "date": "2026-10-29",
+        "time": "8 PM",
+        "detail": "Goth rock; ticket link via venue",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Pre-Halloween Metal Party",
+        "date": "2026-10-30",
+        "time": "6 PM",
+        "detail": "Echo Spine, Vile Intention, Coatl and more; costumes, prizes, vendors",
+        "category": "special",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Halloween Punk Rock Bash",
+        "date": "2026-10-31",
+        "time": "7 PM",
+        "detail": "Hobo Bridge, Bridge the Gap, Brighton Street Bullies and more; costumes, prizes",
+        "category": "special",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Primal Wrestling",
+        "date": "2026-11-01",
+        "time": "6:30 PM",
+        "detail": "Ticket link via venue calendar",
+        "category": "community",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Rock Jams",
+        "date": "2026-11-02",
+        "time": "8 PM",
+        "detail": "No cover; rock/metal/indie; full backline; signups 7:30 PM",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Open Mic",
+        "date": "2026-11-03",
+        "time": "8 PM",
+        "detail": "No cover; full backline; signups 7:30 PM",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Karaoke Night",
+        "date": "2026-11-04",
+        "time": "8 PM",
+        "detail": "No cover; hosted by T-DOG; signups 7:30 PM; until 2 AM",
+        "category": "karaoke",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "DJ Holly",
+        "date": "2026-11-05",
+        "time": "8 PM",
+        "detail": "Rap; $10 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Dreams as Nightmares / Maedhira / Superweapon / Astronaut Fight",
+        "date": "2026-11-06",
+        "time": "8 PM",
+        "detail": "Hard rock; $10 tickets",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Syndicate 4 / Disaster Train / Cinderdust",
+        "date": "2026-11-07",
+        "time": "8 PM",
+        "detail": "Tributes; $10 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Rockin Jazz Band",
+        "date": "2026-11-08",
+        "time": "5-7 PM",
+        "detail": "Jazz hits; $8 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Blues Jams",
+        "date": "2026-11-09",
+        "time": "8 PM",
+        "detail": "No cover; full backline; hosted by Tyler Ray",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Open Mic",
+        "date": "2026-11-10",
+        "time": "8 PM",
+        "detail": "No cover; full backline; signups 7:30 PM",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Karaoke Night",
+        "date": "2026-11-11",
+        "time": "8 PM",
+        "detail": "No cover; signups 7:30 PM; until 2 AM",
+        "category": "karaoke",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Out Cold / Dead Error Orbit / Promised Paradigm",
+        "date": "2026-11-12",
+        "time": "8 PM",
+        "detail": "Pop punk; $5 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Stonekyte / Formula 400 / Johnny & the Black Cat",
+        "date": "2026-11-13",
+        "time": "8 PM",
+        "detail": "Mixed rock; $10 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Bingo Tournament",
+        "date": "2026-11-14",
+        "time": "2-4 PM",
+        "detail": "$5 buy-in; hosted by YO",
+        "category": "game",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Eternal Bloom / Butane / Smog",
+        "date": "2026-11-15",
+        "time": "6 PM",
+        "detail": "Metalcore tour; $10 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Game Night",
+        "date": "2026-11-16",
+        "time": "8 PM",
+        "detail": "No cover; free pool, foosball, ping pong and darts",
+        "category": "game",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Open Mic",
+        "date": "2026-11-17",
+        "time": "8 PM",
+        "detail": "No cover; full backline; signups 7:30 PM",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Karaoke Night",
+        "date": "2026-11-18",
+        "time": "8 PM",
+        "detail": "No cover; signups 7:30 PM; until 2 AM",
+        "category": "karaoke",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Brenda Gail & the Twelve Bars",
+        "date": "2026-11-19",
+        "time": "8 PM",
+        "detail": "Americana blues and rock; $5 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Ampsters / Radical Waves",
+        "date": "2026-11-20",
+        "time": "8 PM",
+        "detail": "Cover songs; $10 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Basura / Paramore / Vodka Cranberries",
+        "date": "2026-11-21",
+        "time": "8 PM",
+        "detail": "Tributes; $10 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Side Traxx",
+        "date": "2026-11-22",
+        "time": "4-6 PM",
+        "detail": "Popular covers; $5 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Mama Frida",
+        "date": "2026-11-22",
+        "time": "7 PM",
+        "detail": "Blues, originals and covers; $5 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Blues Jams",
+        "date": "2026-11-23",
+        "time": "8 PM",
+        "detail": "No cover; full backline; hosted by Tyler Ray",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Open Mic",
+        "date": "2026-11-24",
+        "time": "8 PM",
+        "detail": "No cover; full backline; signups 7:30 PM",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Karaoke Night",
+        "date": "2026-11-25",
+        "time": "8 PM",
+        "detail": "No cover; signups 7:30 PM; until 2 AM",
+        "category": "karaoke",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "The 101 Reboots",
+        "date": "2026-11-26",
+        "time": "8 PM",
+        "detail": "Country; $5 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Sea of Snakes / Jade Rabbit / Queen Burial",
+        "date": "2026-11-27",
+        "time": "8 PM",
+        "detail": "Doom metal; $8 presale / $10 door",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Bingo Tournament",
+        "date": "2026-11-28",
+        "time": "2-4 PM",
+        "detail": "$5 buy-in; hosted by YO",
+        "category": "game",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Metalmelicia",
+        "date": "2026-11-28",
+        "time": "8 PM",
+        "detail": "Metallica tribute; ticket link via venue",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Chicago Blues 145",
+        "date": "2026-11-29",
+        "time": "4 PM",
+        "detail": "Chicago blues; $5 cover",
+        "category": "live_music",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      },
+      {
+        "title": "Game Tournaments",
+        "date": "2026-11-30",
+        "time": "8 PM",
+        "detail": "Free pool, foosball, ping pong and darts",
+        "category": "game",
+        "sourceUrl": "https://mcguffieslive.com/shows"
+      }
+    ],
+    "vibeTags": [
+      "Neighborhood Bar",
+      "Late Night",
+      "Live Band"
+    ],
+    "whyHere": "A neighborhood stage with a packed, varied schedule: karaoke one night, rock bands or blues jams the next, plus comedy, bingo and themed parties.",
+    "foodSummary": "Food appears at select events. A regular kitchen or daily menu has not been confirmed.",
+    "singHere": {
+      "mode": "instructions",
+      "instructions": "Ask the karaoke host about signups. The venue calendar typically lists karaoke signups from 7:30 PM; check the night's event details.",
+      "linkLabel": "SingHERE signup info"
+    },
+    "singhubOffer": {
+      "enabled": false,
+      "title": ""
+    }
   }
 }
