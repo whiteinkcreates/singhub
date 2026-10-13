@@ -30,3 +30,5 @@
 @media(max-width:600px){.host-directory-hero .host-hero-photo,.host-profile-hero .host-booth-photo{height:150%;top:auto;bottom:0}.host-trading-identity{padding-right:82px;min-height:80px}.host-trading-portrait{top:18px;right:18px}.host-trading-portrait>img,.host-trading-portrait>div{width:70px;height:70px;font-size:28px}}
 
 @media(max-width:600px){.host-directory-hero .host-custom-directory-photo{height:100%;top:0;bottom:0}}
+
+.host-follow-control{display:inline-flex}.host-follow-button{padding:10px 16px;border:1px solid #00c8ef;border-radius:999px;background:#003343;color:white;font-weight:800;cursor:pointer}.host-follow-button[aria-pressed='true']{border-color:#ff19a8;background:#4e0c39}.host-follow-button:disabled{opacity:.6}
