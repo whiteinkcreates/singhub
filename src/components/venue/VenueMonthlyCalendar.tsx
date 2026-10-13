@@ -98,7 +98,7 @@ export function VenueMonthlyCalendar({
           <div><time dateTime={event.date}>{prettyDate(event.date)}</time><strong>{event.title}</strong></div>
           <span className={"calendar-kind kind-" + (event.category || "special")}>{CATEGORY_LABELS[event.category || "special"] || "Event"}</span>
           <p>{[event.time, event.detail].filter(Boolean).join(" · ")}</p>
-          {event.sourceUrl ? <a href={event.sourceUrl} target="_blank" rel="noopener noreferrer">Event details ↗</a> : null}
+          {event.sourceUrl && event.sourceUrl !== sourceUrl ? <a href={event.sourceUrl} target="_blank" rel="noopener noreferrer">Event details ↗</a> : null}
         </article>)}
       </div>
     </div>
