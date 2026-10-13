@@ -19,7 +19,7 @@ import "./styles/basic.css";
 export function BasicVenueTemplate({venue,events,enhancement,weekday,singersSay,posts=[]}:VenueTemplateProps) {
 const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();void viewerInitials;
 const row=makeVenueRow(venue,events,weekday,enhancement);const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:enhancement?.singHere});
-const details=[['Address',venue.address],['Room type',row.kind],['Age policy',venue.agePolicy],['Parking',venue.parkingInfo],['Accessibility',venue.accessibilityNotes],['Cover',venue.coverCharge],['About the room',venue.description]].filter((item):item is [string,string]=>Boolean(item[1]));
+const details=[['Address',venue.address],['Room type',row.kind],['Age policy',venue.agePolicy],['Parking',venue.parkingInfo],['Accessibility',venue.accessibilityNotes],['Cover',venue.coverCharge],['About the room',venue.description],['Phone',enhancement?.phone]].filter((item):item is [string,string]=>Boolean(item[1]));
 const isPartner=Boolean(enhancement?.enabled);
 const activeOffer=isPartner&&enhancement?.singhubOffer?.enabled&&(!enhancement.singhubOffer.days?.length||enhancement.singhubOffer.days.some(day=>day.toLowerCase()===weekday.toLowerCase()))?enhancement.singhubOffer:undefined;
 const heroUrl=enhancement?.heroImageUrl||venue.bannerImageUrl||'/images/og/singhub-og.png';
@@ -49,6 +49,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <p className="subline" style={{"marginTop": "10px"}}>{venue.neighborhood+' · '+venue.address}</p>
 <div className="chips">{row.tags.map(tag=><span className="chip" key={tag}>{tag}</span>)}</div>
 </section>
+{isPartner&&(enhancement?.tagline||enhancement?.about)?<section className="section"><div className="section-heading"><h2>Why here</h2></div>{enhancement?.tagline?<strong className="partner-editorial-tagline">{enhancement.tagline}</strong>:null}{enhancement?.about?<p className="partner-editorial-about">{enhancement.about}</p>:null}</section>:null}
 <section className="section">
 <div className="card tonight-card">
 <div className="tonight-label"><span className="live-dot"></span>{venue.venueType==='private_room'?' PRIVATE ROOMS':row.tonight?' TONIGHT':' KARAOKE SCHEDULE'}</div>
