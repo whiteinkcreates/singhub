@@ -37,3 +37,5 @@
  .mobile a[aria-current="page"] { color:#ff19a8; }
  :global(body:has([data-app-navigation])) { padding-bottom:74px; }
 }
+
+.mobileMore{position:relative;align-content:center;text-align:center}.mobileMore summary{display:grid;justify-items:center;cursor:pointer;list-style:none}.mobileMoreMenu{position:absolute;bottom:100%;right:0;display:grid;min-width:170px;padding:8px;background:#0b1119;border:1px solid #344452}.mobileMoreMenu a{padding:10px;font-size:12px}
