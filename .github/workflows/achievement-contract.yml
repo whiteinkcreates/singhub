@@ -8,6 +8,7 @@ on:
       - "src/app/nominate/**"
       - "supabase/achievements-founding-eight.sql"
       - "tests/achievement-contract.test.mjs"
+      - "tests/achievement-scope.test.mjs"
       - ".github/workflows/achievement-contract.yml"
   push:
     branches:
@@ -18,7 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: node --test tests/achievement-contract.test.mjs
+      - run: node --test tests/achievement-contract.test.mjs tests/achievement-scope.test.mjs
