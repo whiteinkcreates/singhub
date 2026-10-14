@@ -19,10 +19,10 @@ const VenueMapClient = dynamic(() => import("./VenueMapClient"), {
   ),
 });
 
-const venueShapeLegend = [
-  { label: "Live karaoke", shape: "circle" },
-  { label: "Private rooms", shape: "square" },
-  { label: "Event producer", shape: "triangle" },
+const venueTypeLegend = [
+  { label: "Live karaoke", tag: "LIVE" },
+  { label: "Private rooms", tag: "ROOM" },
+  { label: "Event producer", tag: "EVENT" },
 ];
 
 const statusLegend = [
@@ -30,24 +30,6 @@ const statusLegend = [
   { label: "Recently Updated", className: "bg-fuchsia-300" },
   { label: "On the Radar", className: "bg-violet-300" },
 ];
-
-function LegendMicShape({ shape }: { shape: "circle" | "square" | "triangle" }) {
-  const shapeClass =
-    shape === "circle"
-      ? "rounded-full"
-      : shape === "square"
-        ? "rounded-md"
-        : "[clip-path:polygon(50%_7%,94%_88%,6%_88%)]";
-
-  return (
-    <span
-      className={`inline-flex h-5 w-5 items-center justify-center bg-slate-100 text-[0.58rem] font-black text-slate-950 ${shapeClass}`}
-      aria-hidden="true"
-    >
-      🎤
-    </span>
-  );
-}
 
 export function VenueMap({ venues, userLocation = null, title }: VenueMapProps) {
   const mappableVenues = venues.filter(hasValidCoordinates);
@@ -64,15 +46,15 @@ export function VenueMap({ venues, userLocation = null, title }: VenueMapProps) 
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
             Showing {mappableVenues.length} mapped karaoke spot
-            {mappableVenues.length === 1 ? "" : "s"}{venues.length > mappableVenues.length ? ` of ${venues.length} results. The others do not yet have map coordinates` : ""}. Shape shows venue type. The small color line shows listing status.
+            {mappableVenues.length === 1 ? "" : "s"}{venues.length > mappableVenues.length ? ` of ${venues.length} results. The others do not yet have map coordinates` : ""}. SH pins label venue type. Their color stripe shows listing status.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-xs font-semibold text-slate-200">
           <div className="flex flex-wrap gap-3">
-            {venueShapeLegend.map((item) => (
+            {venueTypeLegend.map((item) => (
               <span key={item.label} className="inline-flex items-center gap-2">
-                <LegendMicShape shape={item.shape as "circle" | "square" | "triangle"} />
+                <span className="rounded border border-fuchsia-300/50 bg-slate-900 px-1 py-0.5 text-[9px] font-black text-fuchsia-100">{item.tag}</span>
                 {item.label}
               </span>
             ))}

@@ -71,7 +71,11 @@
 :is(.v2-account) .tour-map .tour-leaflet-map{height:100%;width:100%}
 :is(.v2-account) .tour-map .leaflet-tile{max-width:none!important;max-height:none!important}
 :is(.v2-account) .tour-map[data-map-theme="night"] .leaflet-tile{
- filter:grayscale(.15) invert(.92) hue-rotate(175deg) saturate(.62) brightness(.78) contrast(1.12);
+ filter:grayscale(.82) invert(.91) hue-rotate(212deg) saturate(.5) brightness(.78) contrast(1.12);
+}
+/* Subtle violet treatment on tile layer only; never tint SH pins, popups or controls. */
+:is(.v2-account) .tour-map[data-map-theme="night"] .leaflet-tile-pane::after{
+ content:"";position:absolute;inset:0;pointer-events:none;background:rgba(97,49,162,.14);mix-blend-mode:color;z-index:1;
 }
 :is(.v2-account) .tour-map-theme{
  position:absolute;z-index:800;top:10px;right:10px;display:flex;gap:3px;padding:4px;

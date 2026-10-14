@@ -1,0 +1,39 @@
+/* Discovery map shares the Tour Stop map's two modes and authentic SH venue pin. */
+.sh-discover-map .leaflet-container{height:100%;width:100%;background:#0b1020}
+.sh-discover-map .leaflet-tile{max-width:none!important;max-height:none!important}
+.sh-discover-map[data-map-theme="night"] .leaflet-tile{
+  filter:grayscale(.82) invert(.91) hue-rotate(212deg) saturate(.5) brightness(.78) contrast(1.12);
+}
+.sh-discover-map[data-map-theme="night"] .leaflet-tile-pane::after{
+  content:"";position:absolute;inset:0;pointer-events:none;background:rgba(97,49,162,.14);mix-blend-mode:color;z-index:1;
+}
+.sh-discover-map-mode{
+  position:absolute;z-index:800;top:12px;right:12px;display:flex;gap:3px;padding:4px;
+  border:1px solid rgba(0,200,255,.45);border-radius:9px;background:rgba(5,9,16,.92);
+  box-shadow:0 5px 18px rgba(0,0,0,.5);
+}
+.sh-discover-map-mode button{
+  min-height:34px;padding:5px 11px;border:1px solid transparent;border-radius:6px;
+  background:transparent;color:#d6e2ef;font:800 12px/1.1 Barlow,sans-serif;cursor:pointer;
+}
+.sh-discover-map-mode button[aria-pressed="true"]{
+  border-color:rgba(0,200,255,.5);background:rgba(0,200,255,.16);color:#63e9ff;
+}
+.sh-discover-map-mode button:focus-visible,.sh-discover-map-error button:focus-visible{
+  outline:3px solid #ff19a8;outline-offset:2px;
+}
+.sh-discover-map-error{
+  position:absolute;z-index:800;left:10px;bottom:28px;display:flex;align-items:center;gap:9px;
+  max-width:calc(100% - 20px);padding:8px 10px;border:1px solid rgba(255,25,168,.55);
+  border-radius:7px;background:rgba(5,9,15,.95);color:white;font:700 12px Barlow,sans-serif;
+}
+.sh-discover-map-error button{border:1px solid #00c8ff;border-radius:5px;padding:5px 9px;color:#8df2ff}
+.singhub-sh-marker{border:0!important;background:transparent!important}
+.sh-discover-pin{
+  position:relative;display:block;width:46px;height:62px;
+  filter:drop-shadow(0 0 8px rgba(255,25,168,.7)) drop-shadow(0 4px 9px rgba(0,0,0,.72));
+}
+.sh-discover-pin img{width:46px;height:56px;display:block;object-fit:contain}
+.sh-discover-pin-status{position:absolute;left:12px;right:12px;top:45px;height:4px;border-radius:4px;border:1px solid rgba(255,255,255,.7)}
+.sh-discover-pin-kind{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font:900 8px Barlow,sans-serif;letter-spacing:.04em;background:#07101b;color:#f2fbff;border:1px solid rgba(255,255,255,.65);border-radius:3px;padding:1px 2px;white-space:nowrap}
+@media(max-width:540px){.sh-discover-map-mode{top:8px;right:8px}}
