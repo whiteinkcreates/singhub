@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import {PositionedImage} from "@/components/media/PositionedImage";
+import { HeroScrollCue } from "@/components/layout/HeroScrollCue";
 import { SingBoard } from "@/components/singboard/SingBoard";
 import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
 import { SINGBOARD_STICKER_ART } from "@/lib/singboardStickerArt";
@@ -19,8 +20,8 @@ export default async function SingBoardPage() {
 
   return (
     <main data-scroll-page="singboard" className="min-h-[100dvh] bg-[#05060a] pb-24 text-white">
-      <section className="relative isolate overflow-hidden border-b border-white/10">
-        <div className="relative h-[48vh] min-h-[360px] max-h-[620px] sm:h-[54vh]">
+      <section data-page-hero="" className="relative isolate overflow-hidden border-b border-white/10">
+        <div data-board-hero-frame="" className="relative h-full w-full">
           <PositionedImage placement={hero?.heroPlacement} position={hero?.heroPosition}
             src={hero?.heroUrl||SINGBOARD_STICKER_ART}
             alt={hero?.heroAlt||"SingBOARD sticker wall"}
@@ -34,9 +35,10 @@ export default async function SingBoardPage() {
             </p>
           </div>
         </div>
+        <HeroScrollCue />
       </section>
 
-      <section className="mx-auto max-w-6xl px-3 pt-5 sm:px-6 sm:pt-7">
+      <section data-page-surface="" className="mx-auto max-w-6xl px-3 pt-5 sm:px-6 sm:pt-7">
         <div className="mb-3 flex items-end justify-between gap-4 px-1">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[.18em] text-fuchsia-300">What&apos;s pinned</p>
