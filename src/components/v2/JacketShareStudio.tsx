@@ -1,5 +1,5 @@
 "use client";
-import {useRef,useState} from "react";
+import {useRef,useState,type CSSProperties} from "react";
 import {toPng} from "html-to-image";
 import {MyJacket} from "./MyJacket";
 import type {Achievement} from "@/lib/v2/singerAccount";
@@ -11,7 +11,7 @@ function savePng(dataUrl:string,name:string){
  document.body.appendChild(link);link.click();link.remove();
 }
 function safeName(value:string){return value.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,55)||"singer";}
-const panelStyle:React.CSSProperties={
+const panelStyle:CSSProperties={
  width:1080,height:1350,overflow:"hidden",color:"#fff",boxSizing:"border-box",
  background:"radial-gradient(circle at 18% 15%,rgba(14,206,231,.24),transparent 38%), radial-gradient(circle at 85% 75%,rgba(255,42,163,.26),transparent 43%), #080b16",
  fontFamily:"Barlow,Arial,sans-serif",padding:"66px 96px",
