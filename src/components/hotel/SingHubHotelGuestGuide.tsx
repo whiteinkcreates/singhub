@@ -106,7 +106,12 @@ function TierSection({
   const [revealed, setRevealed] = useState(false);
   const [sectionImageFailed, setSectionImageFailed] = useState(false);
   const touchStart = useRef<number | null>(null);
-  useEffect(() => setSectionImageFailed(false), [imageUrl]);
+  // Reset a failed section image after the URL changes, without synchronous effect updates.
+  useEffect(() => {
+    let active = true;
+    queueMicrotask(() => { if (active) setSectionImageFailed(false); });
+    return () => { active = false; };
+  }, [imageUrl]);
   if (!venues.length) return null;
 
   const meta = TIER_META[tier];
