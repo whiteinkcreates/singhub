@@ -37,6 +37,8 @@ export function VenueMonthlyCalendar({
   const [month, setMonth] = useState(() => localToday().slice(0, 7));
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const [showMonth, setShowMonth] = useState(false);
+  const [weekOffset, setWeekOffset] = useState(0);
   const monthEvents = useMemo(
     () => [...events].filter(item => item.date.startsWith(month))
       .sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title)),
@@ -56,6 +58,20 @@ export function VenueMonthlyCalendar({
   const slots = Array.from({ length: Math.ceil((firstWeekday + daysInMonth) / 7) * 7 }, (_, i) => i - firstWeekday + 1);
   const monthLabel = new Intl.DateTimeFormat("en-US", { timeZone: "UTC", month: "long", year: "numeric" }).format(first);
 
+  // Calendar uses the venue's San Diego local date, then performs calendar arithmetic in UTC.
+  // "This week" means Sunday through Saturday in San Diego, never the viewer's timezone.
+  const weekStart = new Date(today + "T12:00:00Z");
+  weekStart.setUTCDate(weekStart.getUTCDate() - weekStart.getUTCDay() + weekOffset * 7);
+  const weekDays = Array.from({length:7},(_,index)=>{
+    const date=new Date(weekStart);
+    date.setUTCDate(weekStart.getUTCDate()+index);
+    return date.toISOString().slice(0,10);
+  });
+  const weekStartLabel=prettyDate(weekDays[0]);
+  const weekEndLabel=prettyDate(weekDays[6]);
+  const weeklyEvents=[...events].filter(event=>event.date>=weekDays[0]&&event.date<=weekDays[6])
+    .sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
+
   function moveMonth(delta: number) {
     const next = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + delta, 1));
     setMonth(`${next.getUTCFullYear()}-${String(next.getUTCMonth() + 1).padStart(2, "0")}`);
@@ -63,12 +79,42 @@ export function VenueMonthlyCalendar({
     setShowAll(false);
   }
 
-  return <section className="section partner-calendar" aria-label={venueName + " monthly events"}>
+  return <section className="section partner-calendar" aria-label={venueName + " upcoming event calendar"}>
     <div className="section-heading">
-      <h2>Full month lineup</h2>
-      {sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">Venue calendar ↗</a> : null}
+      <h2>{showMonth?"Full month lineup":"This week"}</h2>
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="button" aria-expanded={showMonth} onClick={()=>setShowMonth(value=>!value)}
+          className="rounded-lg border border-cyan-300/40 px-3 py-2 text-sm font-bold text-cyan-100">
+          {showMonth?"Show this week":"Open full month"}
+        </button>
+        {sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">Venue calendar ↗</a> : null}
+      </div>
     </div>
-    <div className="calendar-shell">
+    {!showMonth&&<div className="calendar-shell">
+      <div className="calendar-toolbar">
+        <button type="button" aria-label="Previous week" onClick={()=>setWeekOffset(value=>Math.max(0,value-1))} disabled={weekOffset===0}>‹</button>
+        <strong aria-live="polite">{weekStartLabel} – {weekEndLabel}</strong>
+        <button type="button" aria-label="Next week" onClick={()=>setWeekOffset(value=>value+1)}>›</button>
+      </div>
+      <div className="calendar-results">
+        <div className="calendar-results-heading"><strong>{weeklyEvents.length} event{weeklyEvents.length===1?"":"s"} this week</strong></div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {weekDays.map(day=><section key={day} className="rounded-xl border border-white/10 bg-white/[.025] p-3" aria-label={prettyDate(day)}>
+            <h3 className="mb-2 border-b border-white/10 pb-2 text-sm font-black text-cyan-100">
+              {prettyDate(day)}{day===today?" · Today":""}
+            </h3>
+            {events.filter(event=>event.date===day).map((event,index)=><article className="calendar-event" key={event.date+event.title+index}>
+              <div><strong>{event.title}</strong></div>
+              <span className={"calendar-kind kind-"+(event.category||"special")}>{CATEGORY_LABELS[event.category||"special"]||"Event"}</span>
+              <p>{[event.time,event.detail].filter(Boolean).join(" · ")}</p>
+              {event.sourceUrl&&<a href={event.sourceUrl} target="_blank" rel="noopener noreferrer">Event details ↗</a>}
+            </article>)}
+            {!events.some(event=>event.date===day)&&<p className="text-xs text-slate-500">No events posted</p>}
+          </section>)}
+        </div>
+      </div>
+    </div>}
+    {showMonth&&<div className="calendar-shell">
       <div className="calendar-toolbar">
         <button type="button" onClick={() => moveMonth(-1)} aria-label="Previous month">‹</button>
         <strong aria-live="polite">{monthLabel}</strong>
@@ -101,7 +147,7 @@ export function VenueMonthlyCalendar({
           {event.sourceUrl && event.sourceUrl !== sourceUrl ? <a href={event.sourceUrl} target="_blank" rel="noopener noreferrer">Event details ↗</a> : null}
         </article>)}
       </div>
-    </div>
+    </div>}
     <p className="calendar-disclaimer">Lineup and admission may change. Check with the venue before heading out.</p>
   </section>;
 }
