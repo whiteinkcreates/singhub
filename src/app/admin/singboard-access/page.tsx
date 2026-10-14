@@ -21,7 +21,7 @@ export default async function SingBoardAccessPage(){
         <label className="grid gap-1 text-xs font-bold uppercase tracking-wide text-slate-400">Access code<input name="accessCode" required minLength={8} placeholder="Regal-Sing-26" className="min-h-11 rounded-xl border border-white/15 bg-slate-950 px-3 text-sm normal-case text-white"/></label>
         <label className="grid gap-1 text-xs font-bold uppercase tracking-wide text-slate-400">Venue ID <span className="normal-case font-normal">optional</span><input name="venueId" placeholder="venue id" className="min-h-11 rounded-xl border border-white/15 bg-slate-950 px-3 text-sm normal-case text-white"/></label>
         <div className="flex items-end"><button className="min-h-11 w-full rounded-xl bg-fuchsia-400 px-4 py-2 text-sm font-black text-slate-950">Create access</button></div>
-        <input type="hidden" name="hostId" value=""/>
+        <label className="grid gap-1 text-xs font-bold uppercase tracking-wide text-slate-400">Host ID <span className="normal-case font-normal">for KJs</span><input name="hostId" placeholder="Canonical host ID" className="min-h-11 rounded-xl border border-white/15 bg-slate-950 px-3 text-sm normal-case text-white"/></label>
       </form>
     </section>
 
