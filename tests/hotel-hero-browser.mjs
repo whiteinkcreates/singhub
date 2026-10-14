@@ -13,13 +13,13 @@ const urls={
 };
 const review=url=>({heroImageUrl:url,heroApproved:true,rightsNote:'Isolated QA fixture approval, not a production grant',brandApproved:false,brandLogoUrl:'',brandNote:'',reviewedAt:'2026-10-14'});
 const media=(slug,approved=true)=>({heroImageUrl:urls[slug],heroAlt:slug+' exterior',heroPlacement:{desktop:{x:65,y:35,zoom:1},mobile:{x:19,y:50,zoom:1}},imageSource:'Isolated QA fixture',usageRights:'Isolated test only',...(approved?{packageReview:review(urls[slug])}:{})});
-let records={};let readFails=false;let defaultsFail=false;
+let records={};let readFails=false;let defaultsFail=false;let conflict=false;
 const mock=createServer(async(req,res)=>{
  const url=new URL(req.url,'http://127.0.0.1:3101');const slug=url.searchParams.get('slug')?.replace(/^eq\./,'');
- if(readFails||(defaultsFail&&slug==='guest-guide-defaults')){res.writeHead(503);return res.end('{"message":"Simulated read failure"}');}
+ if(readFails||(defaultsFail&&slug==='guest-guide-defaults')){res.writeHead(400);return res.end('{"message":"Simulated read failure"}');}
  let body='';for await(const chunk of req)body+=chunk;
  if(req.method==='POST'){const row=JSON.parse(body);records[row.slug]={media:row.media,updated_at:row.updated_at};res.writeHead(201);return res.end();}
- if(req.method==='PATCH'){const row=JSON.parse(body);records[slug]={...records[slug],...row};res.writeHead(200,{'Content-Type':'application/json'});return res.end(JSON.stringify([records[slug]]));}
+ if(req.method==='PATCH'){if(conflict){conflict=false;res.writeHead(200,{'Content-Type':'application/json'});return res.end('[]');}const row=JSON.parse(body);records[slug]={...records[slug],...row};res.writeHead(200,{'Content-Type':'application/json'});return res.end(JSON.stringify([records[slug]]));}
  res.writeHead(200,{'Content-Type':'application/json'});res.end(JSON.stringify(records[slug]?[records[slug]]:[]));
 });
 await new Promise(r=>mock.listen(3101,'127.0.0.1',r));
@@ -30,7 +30,7 @@ const auth='Basic '+Buffer.from('admin:isolated-qa-password').toString('base64')
 try{
  for(let i=0;i<60;i++){try{if((await fetch(base+'/hotelexperience/orli-la-jolla',{signal:AbortSignal.timeout(1500)})).ok)break;}catch{}await new Promise(r=>setTimeout(r,500));}
  const bundled=process.env.HOTEL_QA_CHROMIUM_MODULE ? (await import(process.env.HOTEL_QA_CHROMIUM_MODULE)).default : null;
- browser=await chromium.launch({args:bundled?bundled.args:['--no-sandbox'],...(bundled?{executablePath:process.env.HOTEL_QA_CHROMIUM_EXECUTABLE||await bundled.executablePath()}:{} )});
+ browser=await chromium.launch({args:bundled?bundled.args.filter(arg=>arg!=='--single-process'):['--no-sandbox'],...(bundled?{executablePath:process.env.HOTEL_QA_CHROMIUM_EXECUTABLE||await bundled.executablePath()}:{} )});
  for(const width of [360,390,1440]){
   const context=await browser.newContext({viewport:{width,height:width===1440?900:844},serviceWorkers:'block'});
   const image=readFileSync('public/images/og/singhub-og.png');
@@ -39,7 +39,7 @@ try{
    return route.abort();
   });
   const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  for(const slug of slugs)for(const scenario of ['approved','empty-override','pending','staged','broken','absent','read-failure','defaults-failure']){
+  for(const slug of slugs)for(const scenario of (process.env.HOTEL_QA_SCENARIOS?.split(',')||['approved','empty-override','pending','staged','broken','absent','read-failure','defaults-failure'])){
    readFails=scenario==='read-failure';defaultsFail=scenario==='defaults-failure';
    records={};
    let profile=media(slug);
@@ -62,6 +62,21 @@ try{
    if(scenario==='empty-override'&&expectsPhoto)assert.notEqual(await hero.locator('img').first().getAttribute('alt'),'Wrong staged alt');
    await page.getByRole('button',{name:'This Week',exact:true}).click();assert.equal(await page.getByRole('button',{name:'This Week',exact:true}).getAttribute('aria-pressed'),'true');
    await page.getByRole('button',{name:'Tonight',exact:true}).click();
+   if(scenario==='approved') {
+    await page.getByRole('button',{name:'This Week',exact:true}).click();
+    const reveals=page.locator('button[aria-expanded]');
+    for(let index=0;index<await reveals.count();index++) {
+     const button=reveals.nth(index);await button.click();assert.equal(await button.getAttribute('aria-expanded'),'true');
+     const section=button.locator('..');
+     await section.getByRole('button',{name:/^Close /}).click();assert.equal(await button.getAttribute('aria-expanded'),'false');
+     await section.evaluate(el=>{for(const [type,key,x] of [['touchstart','touches',250],['touchend','changedTouches',100]]) {const event=new Event(type,{bubbles:true});Object.defineProperty(event,key,{value:[{clientX:x}]});el.dispatchEvent(event);}});
+     await page.waitForFunction(el=>el.getAttribute('aria-expanded')==='true',await button.elementHandle());
+     assert.ok(await section.locator('a[href^="/venues/"]').count()>0);
+     await section.getByRole('button',{name:/^Close /}).click();
+    }
+    await page.getByRole('button',{name:'Tonight',exact:true}).click();
+    await page.evaluate(()=>window.scrollTo(0,0));
+   }
    const initial=await hero.boundingBox();await page.evaluate(()=>window.scrollTo(0,180));
    assert.ok(Math.abs((await hero.boundingBox()).y-initial.y)<2,'hero remains sticky');
    await page.evaluate(()=>window.scrollTo(0,0));
@@ -82,6 +97,7 @@ try{
  response=await fetch(base+'/api/admin/hotel-profiles',{method:'PUT',headers:{authorization:auth,'Content-Type':'application/json'},body:JSON.stringify({slug,profile:{...saved,packageReview:review(pending.heroImageUrl)}})});
  assert.equal(response.status,200);saved=(await response.json()).profile;assert.equal(saved.publishedHero.heroImageUrl,pending.heroImageUrl);
  response=await fetch(base+'/hotelexperience/'+slug);html=await response.text();assert.ok(html.includes(pending.heroImageUrl));
+ conflict=true;response=await fetch(base+'/api/admin/hotel-profiles',{method:'PUT',headers:{authorization:auth,'Content-Type':'application/json'},body:JSON.stringify({slug,profile:saved})});assert.equal(response.status,503);assert.match((await response.json()).error,/changed during this save/);
  for(const path of ['/admin/hotels','/api/admin/hotel-profiles?slug='+slug,'/admin/hotels/'+slug+'/demo','/admin/hotels/concepts/andaz-san-diego'])assert.equal((await fetch(base+path)).status,401);
  console.log(`Passed ${results.length} hotel/viewport/state checks and admin stage/approve/reload/auth checks.`);
  writeFileSync(out+'/results.json',JSON.stringify(results,null,2));
