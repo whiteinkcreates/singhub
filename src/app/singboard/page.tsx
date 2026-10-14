@@ -27,10 +27,10 @@ export default async function SingBoardPage() {
             alt={hero?.heroAlt||"SingBOARD sticker wall"}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          <div className="relative z-10 flex h-full w-full items-end px-5 pb-16 pt-6 sm:px-10 sm:pb-20">
+          <div className="relative z-10 flex h-full w-full items-end px-5 pb-28 pt-6 sm:px-10 sm:pb-20">
             <div data-hero-copy="" className="w-full">
               <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-fuchsia-300">SAN DIEGO KARAOKE COMMUNITY</p>
-              <h1 id="singboard-hero-title" className="m-0 font-['Barlow_Condensed',sans-serif] text-[clamp(3.5rem,8vw,6.8rem)] font-black uppercase leading-[0.84] tracking-[-0.025em]">SingBOARD</h1>
+              <h1 id="singboard-hero-title" className="m-0 text-[clamp(3.5rem,8vw,6.8rem)] font-black uppercase leading-[0.84] tracking-[-0.025em]" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>SingBOARD</h1>
               <p className="mt-4 max-w-xl text-sm font-semibold leading-relaxed text-slate-200 sm:text-base">
                 Karaoke event flyers, community updates and wanted posts from local venues and KJs.
               </p>
