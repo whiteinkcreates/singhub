@@ -188,3 +188,29 @@
 
 .v2-account .hero img.main-hero-override{position:absolute;inset:0;z-index:1;width:100%;height:100%;max-width:none;object-fit:cover}
 .v2-account .hero:has(.main-hero-override):before{z-index:2}
+
+/* Earned/locked patch case and real share exports (#352). */
+.v2-account .patch-case-content {min-width:0;display:flex;flex-direction:column;flex:1;}
+.v2-account .patch-case-intro {padding:12px 17px 7px;margin:0;color:#b9c9d8;font-size:.78rem;line-height:1.45;}
+.v2-account .patch-catalog-list {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));flex:0 1 auto;max-height:420px;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:#00c8ff #101720;}
+.v2-account .patch-catalog-item {display:flex;align-items:flex-start;flex-direction:column;gap:6px;min-width:0;min-height:138px;width:100%;border:0;border-bottom:1px solid rgba(255,255,255,.07);color:#f5f9ff;cursor:pointer;text-align:left;font-family:inherit;}
+.v2-account .patch-catalog-item.earned {background:linear-gradient(125deg,rgba(8,208,231,.17),rgba(249,35,165,.1)),#0c1016;border-left:3px solid #00c8ff;}
+.v2-account .patch-catalog-item.locked {opacity:.67;filter:grayscale(.8);background:#11131a;}
+.v2-account .patch-catalog-item .patch-case-icon {color:#ffcc4a;margin:0;font-size:1.15rem;line-height:1;}
+.v2-account .patch-catalog-item.locked .patch-case-icon {color:#a8afc0;}
+.v2-account .patch-catalog-item span,.v2-account .patch-catalog-item small {line-height:1.45;overflow-wrap:anywhere;}
+.v2-account .patch-catalog-item small {font-size:.71rem;color:#bed0e0;}
+.v2-account .patch-catalog-item:focus-visible,.v2-account .patch-catalog-item[aria-pressed="true"] {outline:2px solid #60efff;outline-offset:-3px;}
+.v2-account .patch-case-detail {margin:10px 14px 0;padding:12px;border:1px solid rgba(0,200,255,.4);border-radius:10px;background:#0d1b28;}
+.v2-account .patch-case-detail strong{display:block;font-weight:900;font-size:.86rem;}
+.v2-account .patch-case-detail p{margin:6px 0 0;font-size:.74rem;line-height:1.5;color:#c9d7e1;}
+.v2-account .jacket-share-studio {padding:18px;border-top:1px solid var(--line);}
+.v2-account .jacket-share-studio h3 {font-family:var(--display);text-transform:uppercase;font-size:1.4rem;margin:0 0 5px;}
+.v2-account .jacket-share-studio p {color:#b8c9d9;font-size:.75rem;line-height:1.5;margin:0 0 12px;}
+.v2-account .jacket-share-studio .button {margin:0;min-height:40px;white-space:normal;text-align:center;}
+.v2-account .jacket-share-awards {display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px;}
+.v2-account .jacket-share-error {color:#ff9bb0!important;}
+@media(max-width:640px){
+ .v2-account .patch-catalog-list{grid-template-columns:1fr 1fr;max-height:370px;}
+ .v2-account .patch-catalog-item{padding:11px;min-height:142px;}
+}
