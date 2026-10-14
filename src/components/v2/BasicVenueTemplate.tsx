@@ -6,6 +6,7 @@ import {SingHereMark} from '@/components/brand/SingHereMark';
 import Link from "next/link";
 import {TourStopCheckIn} from './TourStopCheckIn';
 import {VenueMonthlyCalendar} from '@/components/venue/VenueMonthlyCalendar';
+import type {VenueProgramEvent} from '@/lib/venueEnhancements';
 import {getMarketConfig} from '@/lib/markets';
 import { eventRunsOnNight, scheduleQualification } from '@/lib/eventOccurrence';
 import { useRef,useState } from 'react';
@@ -31,7 +32,18 @@ const partnerSpecials=isEnhanced?[...(enhancement?.weeklySpecials||[]),...(enhan
 const todayParts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
 const todayMap=Object.fromEntries(todayParts.map(part=>[part.type,part.value]));
 const localToday=`${todayMap.year}-${todayMap.month}-${todayMap.day}`;
-const venueEvents=(isEnhanced?(enhancement?.venueEvents||[]):[]).filter(event=>event.date>=localToday).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
+// Authorized SingBOARD event posts share their venue calendar record. Hiring notices stay in the feed.
+const calendarPosts:VenueProgramEvent[]=isEnhanced?posts.filter(post=>post.postType!=="wanted"&&post.eventDate>=localToday).map(post=>({
+  title:post.title,date:post.eventDate,time:post.startTime,detail:post.detail,
+  category:post.postType==="note"?"community":"special",sourceUrl:"/events/"+post.id,
+})):[];
+const seen=new Set<string>();
+const venueEvents=[...(isEnhanced?(enhancement?.venueEvents||[]):[]),...calendarPosts].filter(event=>{
+  if(event.date<localToday)return false;
+  const key=event.date+"|"+event.title.trim().toLowerCase();
+  if(seen.has(key))return false;
+  seen.add(key);return true;
+}).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
 
 return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <article className="app-view active">
