@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { HeroScrollCue } from "@/components/layout/HeroScrollCue";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PositionedImage } from "@/components/media/PositionedImage";
 import { useListReturn } from "@/components/v2/listReturn";
@@ -237,12 +238,12 @@ export function SingHubHotelGuestGuide(props: Props) {
   function setExperienceMode(next: "tonight" | "week") { setMode(next); trackEvent("hotel_guest_guide_toggle", { hotel_experience: experienceSlug, mode: next }); }
 
   return <main className="min-h-screen bg-[#020508] text-white" data-hotel-guest-guide="" data-hotel-slug={hotelSlug}>
-    <div className="mx-auto min-h-screen w-full max-w-[760px] overflow-hidden bg-[#020508] shadow-[0_24px_90px_rgba(0,0,0,.6)]">
-      <section className="relative isolate min-h-[52svh] overflow-hidden bg-[#07111c] sm:min-h-[580px]">
+    <div className="hotel-guest-scroll-stage mx-auto min-h-screen w-full max-w-[760px] bg-[#020508] shadow-[0_24px_90px_rgba(0,0,0,.6)]">
+      <section className="hotel-guest-scroll-hero relative isolate min-h-[52svh] overflow-hidden bg-[#07111c] sm:min-h-[580px]">
         {heroSource && heroVisible ? <PositionedImage placement={heroPlacement} position={heroPosition} src={heroSource} alt={heroAlt || hotelName + " exterior"} className="absolute inset-0 -z-20 h-full w-full object-cover" onError={() => { if (fallbackHeroImageUrl && heroSource !== fallbackHeroImageUrl) setHeroSource(fallbackHeroImageUrl); else setHeroVisible(false); }} /> : null}
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,6,14,.12)_0%,rgba(0,6,14,.08)_35%,rgba(2,5,8,.42)_68%,#020508_100%)]" />
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_10%_5%,rgba(255,42,163,.15),transparent_32%),radial-gradient(circle_at_90%_12%,rgba(34,211,238,.14),transparent_28%)]" />
-        <div className="flex min-h-[52svh] flex-col justify-between px-5 pb-8 pt-5 sm:min-h-[580px] sm:px-7 sm:pb-10 sm:pt-7">
+        <div data-hotel-hero-inner="" className="flex min-h-[52svh] flex-col justify-between px-5 pb-8 pt-5 sm:min-h-[580px] sm:px-7 sm:pb-10 sm:pt-7">
           <div className="flex items-start justify-between gap-4"><Link href="/" aria-label="SingHUB home"><img src={SITE_WORDMARK_SRC} alt="SingHUB" className="h-auto w-[178px] drop-shadow-[0_0_15px_rgba(34,211,238,.25)] sm:w-[205px]" /></Link>
             <details className="relative"><summary className="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-full border border-white/15 bg-black/30 backdrop-blur" aria-label="Open navigation"><span className="grid gap-1.5"><i className="block h-px w-5 bg-white" /><i className="block h-px w-5 bg-white" /><i className="block h-px w-5 bg-white" /></span></summary>
               <nav className="absolute right-0 top-13 z-30 w-44 rounded-2xl border border-white/10 bg-[#07111a]/95 p-2 text-sm shadow-2xl backdrop-blur-xl"><Link href="/" className="block rounded-xl px-3 py-2 hover:bg-white/5">Discover</Link><Link href="/find-karaoke" className="block rounded-xl px-3 py-2 hover:bg-white/5">Venue Index</Link><Link href="/account" className="block rounded-xl px-3 py-2 hover:bg-white/5">My SingHUB</Link></nav>
@@ -250,14 +251,11 @@ export function SingHubHotelGuestGuide(props: Props) {
           </div>
           <div className="max-w-[88%] pb-2"><p className="text-[11px] font-black uppercase tracking-[0.28em] text-white/80">For guests of</p><h1 className="mt-2 font-serif text-[2.55rem] font-semibold leading-[0.92] tracking-[-0.035em] text-white drop-shadow-lg sm:text-[3.5rem]">{hotelShortName}</h1><p className="mt-3 text-[11px] font-bold uppercase tracking-[0.24em] text-cyan-100/90">San Diego, California</p></div>
         </div>
-        <div className="pointer-events-none absolute bottom-[28%] right-4 z-10 flex flex-col items-center gap-1 text-cyan-100/75 sm:right-7" aria-hidden="true">
-          <DirectionCues direction="up" />
-          <span className="text-[9px] font-bold uppercase tracking-[0.12em] sm:hidden">Swipe up</span>
-          <span className="hidden text-[9px] font-bold uppercase tracking-[0.12em] sm:inline">Scroll</span>
-        </div>
+        <HeroScrollCue />
         {heroSource === heroImageUrl ? <HotelPhotoCredit credit={heroCredit} /> : null}
       </section>
 
+      <div className="hotel-guest-scroll-content">
       <section className="relative border-y border-cyan-300/10 bg-[#020508] px-5 py-7 text-center sm:px-7 sm:py-9">
         <span aria-hidden className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/50 to-transparent shadow-[0_0_14px_rgba(34,211,238,.35)]" />
         <h2 className="mx-auto max-w-xl font-serif text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.02em] text-white sm:text-[2.25rem]">Now that you’re all checked in,<br />let’s check out <span className="text-cyan-300 drop-shadow-[0_0_12px_rgba(34,211,238,.35)]">a mic.</span></h2>
@@ -279,6 +277,7 @@ export function SingHubHotelGuestGuide(props: Props) {
         <Link href={"/find-karaoke?source=" + encodeURIComponent(experienceSlug)} onClick={() => trackEvent("hotel_guest_guide_bottom_cta", { hotel_experience: experienceSlug, mode })} className="relative z-10 flex w-full items-center justify-center rounded-full border border-cyan-300/65 bg-cyan-300/[0.08] px-5 py-3.5 text-base font-black text-white shadow-[0_0_24px_rgba(34,211,238,.18)] transition hover:bg-cyan-300 hover:text-slate-950">See all nearby spots <span className="ml-2" aria-hidden>›</span></Link>
         <div className="relative z-10 mt-5 flex items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500"><span>Powered by</span><img src={SITE_WORDMARK_SRC} alt="SingHUB" className="h-auto w-[88px]" /></div>
       </footer>
+      </div>
     </div>
   </main>;
 }
