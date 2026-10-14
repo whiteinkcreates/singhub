@@ -94,7 +94,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
           ],
         }}
       />
-      <VenueProfile venue={venue} events={events} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venue.toLowerCase() === venue.venueName.toLowerCase())} />
+      <VenueProfile venue={venue} events={events} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venueId === venue.id || (!post.venueId && !post.hostId && post.venue.toLowerCase() === venue.venueName.toLowerCase()))} />
     </>
   );
 }
