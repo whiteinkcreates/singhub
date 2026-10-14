@@ -3,7 +3,7 @@ import { isExternalWebUrl } from "@/lib/navigation";
 import { accountClient } from "@/lib/v2/singerAccount";
 
 import { toJpeg } from "html-to-image";
-import { useMemo, useRef, useState } from "react";
+import { useEffect,useMemo, useRef, useState } from "react";
 import { isSingBoardSlotOccupied, SINGBOARD_SLOTS } from "@/lib/singboard/layout";
 
 type BoardRegion = "all" | "east-county" | "central" | "beach" | "downtown" | "south-bay" | "north-county";
@@ -112,6 +112,24 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
   const [lastPublished,setLastPublished]=useState<{id:string;title:string;postType:PostType;linkUrl?:string}|null>(null);
   const [status,setStatus]=useState("Choose an image post, note, or wanted poster.");
   const [showPostingTools,setShowPostingTools]=useState(false);
+  const [posterOptions,setPosterOptions]=useState<{id:string;name:string;posterType:string}[]>([]);
+  const [selectedPosterId,setSelectedPosterId]=useState("");
+  useEffect(()=>{
+    if(!showPostingTools)return;
+    let alive=true;
+    void (async()=>{
+      try{
+        const session=await accountClient().auth.getSession();
+        const token=session.data.session?.access_token;
+        if(!token)return;
+        const response=await fetch("/api/singboard/my-posters",{headers:{Authorization:"Bearer "+token},cache:"no-store"});
+        if(!response.ok)return;
+        const data=await response.json() as {posters?:{id:string;name:string;posterType:string}[]};
+        if(alive){setPosterOptions(data.posters||[]);setSelectedPosterId(p=>p||(data.posters?.[0]?.id||""));}
+      }catch{/* Legacy access-code input is still available. */}
+    })();
+    return()=>{alive=false;};
+  },[showPostingTools]);
   const [brokenImages,setBrokenImages]=useState<Set<string>>(new Set());
 
   const visible=useMemo(
@@ -146,6 +164,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
     try{
       const form=new FormData();
       form.append("accessCode",accessCode);
+      if(selectedPosterId)form.append("posterId",selectedPosterId);
       form.append("postType",type);
       form.append("category",type==="wanted"?"hiring":category);
       form.append("title",title.trim()||(type==="wanted"?"Join the crew":"Karaoke event"));
@@ -335,6 +354,11 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
         {type!=="wanted"&&<input aria-label="Host or KJ, optional" value={host} onChange={e=>{setHost(e.target.value);updateDraft({hostName:e.target.value});}} placeholder="Host / KJ (optional)" className="w-full rounded-xl border border-white/15 bg-white/[.06] p-3 outline-none focus:border-violet-300"/>}
         <textarea aria-label={type==="wanted"?"Full job ad copy":"Event details, optional"} value={detail} maxLength={1600} onChange={e=>{setDetail(e.target.value);updateDraft({detail:e.target.value});}} placeholder={type==="wanted"?"Full job ad copy / candidate pitch":"Event details for the SingHUB page (optional)"} className="min-h-24 w-full rounded-xl border border-white/15 bg-white/[.06] p-3 outline-none focus:border-violet-300"/>
         <input aria-label={type==="wanted"?"Full job ad URL":"Official event or ticket link, optional"} value={link} onChange={e=>{setLink(e.target.value);updateDraft({linkUrl:e.target.value});}} placeholder={type==="wanted"?"Full job ad URL (e.g. /jobs/barlando)":"Official event / ticket link (optional)"} className="w-full rounded-xl border border-white/15 bg-white/[.06] p-3 outline-none focus:border-cyan-300"/>
+        {posterOptions.length>0&&<label className="block text-xs font-bold uppercase text-cyan-200">Posting as
+          <select value={selectedPosterId} onChange={e=>setSelectedPosterId(e.target.value)} className="mt-1 w-full rounded-xl border border-cyan-300/30 bg-[#101724] p-3 text-white">
+            {posterOptions.map(p=><option value={p.id} key={p.id}>{p.name} · {p.posterType==="kj"?"KJ":p.posterType==="venue"?"Venue":"Admin"}</option>)}
+          </select>
+        </label>}
         <p className="text-xs text-cyan-100">Verified venue/KJ account? You can publish while signed in. During the transition, individual posting access codes still work.</p>
         <input aria-label="SingBOARD access code" autoComplete="off" type="password" value={accessCode} onChange={e=>setAccessCode(e.target.value)} placeholder="Individual access code (if not linked to account)" className="w-full rounded-xl border border-white/15 bg-white/[.06] p-3 outline-none focus:border-fuchsia-300"/>
         <button disabled={posting||!draft||!selectedSlotId} onClick={publish} className="w-full rounded-xl bg-cyan-300 px-4 py-3 font-black text-slate-950 shadow-[0_0_20px_rgba(34,211,238,.18)] disabled:opacity-40">{posting?"Publishing…":"Publish in selected space"}</button>
