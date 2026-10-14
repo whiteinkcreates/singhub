@@ -103,14 +103,14 @@ function TierSection({
   imageUrl?: string; imageAlt?: string; imagePlacement?: ResponsiveImagePlacement;
 }) {
   const [revealed, setRevealed] = useState(false);
+  const [sectionImageFailed, setSectionImageFailed] = useState(false);
   const touchStart = useRef<number | null>(null);
+  useEffect(() => setSectionImageFailed(false), [imageUrl]);
   if (!venues.length) return null;
 
   const meta = TIER_META[tier];
-  const fallbackImage = venues.find((venue) => Boolean(venue.imageUrl));
-  const resolvedImage = imageUrl || fallbackImage?.imageUrl;
-  const resolvedPlacement = imageUrl ? imagePlacement : fallbackImage?.imagePlacement;
-  const resolvedPosition = imageUrl ? undefined : fallbackImage?.imagePosition;
+  // Section heroes are curated lifestyle images, never an unrelated venue photo.
+  const resolvedImage = !sectionImageFailed ? imageUrl?.trim() : undefined;
   const opensLeft = meta.revealDirection === "left";
   const backArrow = opensLeft ? "→" : "←";
 
@@ -150,12 +150,12 @@ function TierSection({
       >
         {resolvedImage ? (
           <PositionedImage
-            placement={resolvedPlacement}
-            position={resolvedPosition}
+            placement={imagePlacement}
             src={resolvedImage}
             alt={imageAlt || ""}
             className="absolute inset-0 h-full w-full object-cover"
             loading="lazy"
+            onError={() => setSectionImageFailed(true)}
           />
         ) : (
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(34,211,238,.16),transparent_45%),linear-gradient(135deg,#08131d,#03070b)]" />
