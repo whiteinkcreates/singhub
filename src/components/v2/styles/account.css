@@ -108,7 +108,7 @@
     .v2-account .song-list { padding:0 19px 8px; }
     .v2-account .song-row { display:grid; grid-template-columns:38px minmax(0,1fr) auto; gap:13px; align-items:center; min-height:76px; border-bottom:1px solid var(--line); }
     .v2-account .song-row:last-child { border-bottom:0; }
-    .v2-account .song-star { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; width:34px; height:34px; border:1px solid rgba(255,25,168,.34); border-radius:50%; background:rgba(255,25,168,.07); color:var(--pink); font-size:14px; line-height:1; }
+    .v2-account .song-star { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; width:34px; height:34px; border:1px solid rgba(255,206,78,.43); border-radius:50%; background:rgba(255,206,78,.09); color:var(--gold); font-size:14px; line-height:1; }
     .v2-account .song-star abbr { margin-top:1px; color:#d9e1e9; font:900 8px/1 Barlow,sans-serif; text-decoration:none; }
     .v2-account .song-row strong { display:block; font-size:.9rem; }
     .v2-account .song-row p { margin:4px 0 0; color:var(--muted); font-size:.76rem; }
