@@ -43,8 +43,7 @@ export default async function SingBoardPage() {
       <section data-page-surface="" className="mx-auto max-w-6xl px-3 pt-5 sm:px-6 sm:pt-7">
         <div className="mb-3 flex items-end justify-between gap-4 px-1">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[.18em] text-fuchsia-300">What&apos;s pinned</p>
-            <h2 className="mt-1 text-xl font-black sm:text-2xl">SingBOARD</h2>
+            <h2 className="mt-1 text-xl font-black sm:text-2xl">What&apos;s pinned</h2>
           </div>
           <p className="max-w-52 text-right text-[10px] leading-snug text-slate-400 sm:max-w-xs sm:text-xs">
             Tap a flyer or note for the full event page.
