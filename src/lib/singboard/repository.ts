@@ -2,6 +2,8 @@ import "server-only";
 
 import { createHash } from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
+import {getVenueListings} from "@/lib/venueData";
+import {getActiveHosts} from "@/lib/hostData";
 
 export type SingBoardRegion = "east-county" | "central" | "beach" | "downtown" | "south-bay" | "north-county";
 export type SingBoardPostType = "image" | "note" | "wanted";
@@ -43,21 +45,45 @@ export async function getSingBoardEvent(id:string):Promise<SingBoardEvent|null>{
 export async function recordSingBoardEventMetric(flyerId:string,metricType:SingBoardMetricType){const supabase=createAdminClient();const{error}=await supabase.from("singboard_event_metrics").insert({flyer_id:flyerId,metric_type:metricType});if(error)console.error(`Failed to record SingBOARD metric ${metricType}:`,error.message)}
 
 export async function getAuthorizedSingBoardPoster(accessCode:string){const supabase=createAdminClient();const{data,error}=await supabase.from("singboard_posters").select("id,display_name,poster_type,venue_id,host_id").eq("access_code_hash",hashAccessCode(accessCode)).eq("active",true).maybeSingle();if(error)throw new Error(`Failed to verify SingBOARD access: ${error.message}`);return data}
-export async function getAuthorizedSingBoardPosterForToken(token:string){
+async function authenticatedPosterUser(token:string){
  const supabase=createAdminClient();
- const {data:identity,error:authError}=await supabase.auth.getUser(token);
- const user=identity.user;
- if(authError||!user?.id||!user.email_confirmed_at)return null;
- const {data,error}=await supabase.from("singboard_posters").select("id,display_name,poster_type,venue_id,host_id,user_id,verified_at").eq("user_id",user.id).eq("active",true).not("verified_at","is",null).maybeSingle();
+ const {data,error}=await supabase.auth.getUser(token);
+ return !error&&data.user?.email_confirmed_at?data.user:null;
+}
+export async function listAuthorizedSingBoardPostersForToken(token:string){
+ const user=await authenticatedPosterUser(token);
+ if(!user)return [];
+ const supabase=createAdminClient();
+ const {data,error}=await supabase.from("singboard_posters").select("id,display_name,poster_type,venue_id,host_id")
+  .eq("user_id",user.id).eq("active",true).not("verified_at","is",null).order("display_name");
+ if(error)throw new Error("Could not check verified posting identities.");
+ return(data||[]).map(p=>({id:p.id,name:p.display_name,posterType:p.poster_type,venueId:p.venue_id,hostId:p.host_id}));
+}
+export async function getAuthorizedSingBoardPosterForToken(token:string,selectedId?:string){
+ const user=await authenticatedPosterUser(token);
+ if(!user)return null;
+ const supabase=createAdminClient();
+ let query=supabase.from("singboard_posters").select("id,display_name,poster_type,venue_id,host_id")
+  .eq("user_id",user.id).eq("active",true).not("verified_at","is",null);
+ if(selectedId)query=query.eq("id",selectedId);
+ const {data,error}=await query.limit(2);
  if(error)throw new Error("Could not check verified posting access.");
- return data;
+ if((data||[]).length>1)throw new Error("Choose which verified venue or KJ account to post as.");
+ return data?.[0]||null;
 }
 export async function listSingBoardAccessMembers():Promise<SingBoardAccessMember[]>{const supabase=createAdminClient();const{data,error}=await supabase.from("singboard_posters").select("id,display_name,poster_type,venue_id,host_id,user_id,verified_at,active,created_at,updated_at").order("active",{ascending:false}).order("display_name",{ascending:true});if(error)throw new Error(`Failed to load SingBOARD access members: ${error.message}`);return(data||[]).map(row=>({linkedAccount:Boolean(row.user_id&&row.verified_at),id:row.id,displayName:row.display_name,posterType:row.poster_type as SingBoardPosterType,venueId:row.venue_id||undefined,hostId:row.host_id||undefined,active:Boolean(row.active),createdAt:row.created_at,updatedAt:row.updated_at}))}
 export async function linkSingBoardPosterToEmail(memberId:string,email:string){
  const supabase=createAdminClient();
  const {data:poster,error:posterError}=await supabase.from("singboard_posters").select("id,poster_type,venue_id,host_id").eq("id",memberId).maybeSingle();
  if(posterError||!poster)throw new Error("Poster not found.");
- if(poster.poster_type!=="admin"&&!poster.venue_id&&!poster.host_id)throw new Error("Associate the verified venue or KJ ID before linking an account.");
+ if(poster.poster_type==="venue"){
+   const venues=await getVenueListings();
+   if(!poster.venue_id||!venues.some(v=>v.id===poster.venue_id||v.slug===poster.venue_id))throw new Error("The poster must have a valid canonical venue ID.");
+ }
+ if(poster.poster_type==="kj"){
+   const hosts=await getActiveHosts();
+   if(!poster.host_id||!hosts.some(h=>h.hostId===poster.host_id))throw new Error("The poster must have a valid canonical KJ Host ID.");
+ }
  const target=email.trim().toLowerCase();
  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(target))throw new Error("A valid SingHUB account email is required.");
  let accountId:string|null=null;
