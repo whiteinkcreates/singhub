@@ -38,7 +38,9 @@ export async function POST(request: Request) {
     // Legacy single-poster access codes remain available during the transition.
     const bearer=request.headers.get("authorization")?.match(/^Bearer (.+)$/i)?.[1]||"";
     const code=String(form.get("accessCode")||"").trim();
-    const poster=(bearer ? await getAuthorizedSingBoardPosterForToken(bearer) : null)
+    const selectedPosterId=String(form.get("posterId")||"").trim();
+    if(selectedPosterId&&!/^[0-9a-f-]{36}$/i.test(selectedPosterId))return NextResponse.json({error:"Invalid contributor identity."},{status:400});
+    const poster=(bearer ? await getAuthorizedSingBoardPosterForToken(bearer,selectedPosterId||undefined) : null)
       || (code ? await getAuthorizedSingBoardPoster(code) : null);
     if (!poster) return NextResponse.json({ error: "Sign in with your verified venue/KJ account, or use your individual posting access code." }, { status: 403 });
 
