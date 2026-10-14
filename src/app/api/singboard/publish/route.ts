@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getVenueListings } from "@/lib/venueData";
+import { getActiveHosts } from "@/lib/hostData";
 import { uploadSingBoardImage } from "@/lib/singboard/cloudinary";
 import { findSingBoardSlot, isSingBoardSlotOccupied } from "@/lib/singboard/layout";
 import {
@@ -86,8 +87,16 @@ export async function POST(request: Request) {
     }
 
     // A venue poster cannot impersonate another venue by editing the public form.
-    const venues=poster.venue_id?await getVenueListings():[];
-    const boundVenue=poster.venue_id?venues.find(v=>v.id===poster.venue_id||v.slug===poster.venue_id):undefined;
+    const venueIndex=poster.venue_id||poster.host_id?await getVenueListings():[];
+    const hosts=poster.host_id?await getActiveHosts():[];
+    const verifiedHost=poster.host_id?hosts.find(h=>h.hostId===poster.host_id):undefined;
+    if(poster.poster_type==="kj"&&!verifiedHost)return NextResponse.json({error:"This KJ needs a confirmed Host ID before publishing."},{status:403});
+    const selectedVenue=String(form.get("venueName")||"").trim().toLowerCase();
+    const matchedHostVenue=verifiedHost?venueIndex.find(v=>
+      v.venueName.toLowerCase()===selectedVenue &&
+      Object.values(verifiedHost.schedule).some(gigs=>gigs.some(g=>g.venueId===v.slug||g.venueId===v.id))
+    ):undefined;
+    const boundVenue=poster.venue_id?venueIndex.find(v=>v.id===poster.venue_id||v.slug===poster.venue_id):matchedHostVenue;
     if(poster.poster_type==="venue"&&!boundVenue)return NextResponse.json({error:"This contributor's venue must be linked to a verified Venue Index ID before posting."},{status:403});
     const venueName=boundVenue?.venueName||requiredText(form,"venueName");
     const neighborhood=boundVenue?.neighborhood||requiredText(form,"neighborhood");
