@@ -11,6 +11,7 @@ import { trackEvent } from "@/lib/analytics";
 import { SITE_WORDMARK_SRC } from "@/lib/siteWordmark";
 import type { HotelGuideVenue } from "@/components/hotel/HotelGuideExperience";
 import { selectHotelStandouts } from "@/lib/v2/presentation";
+import "./hotelSwipeCues.css";
 
 type Props = {
   hotelSlug: string;
@@ -40,9 +41,22 @@ type Tier = "walkable" | "quick" | "standout";
 
 const TIER_META: Record<Tier, { label: string; helper: string; revealDirection: "left" | "right" }> = {
   walkable: { label: "Walkable", helper: "Karaoke spots near the hotel.", revealDirection: "left" },
-  quick: { label: "Quick Ride", helper: "A short ride to more great karaoke.", revealDirection: "right" },
+  quick: { label: "Quick Ride", helper: "A short ride to more great karaoke.", revealDirection: "left" },
   standout: { label: "Local Standouts", helper: "Top karaoke spots locals love.", revealDirection: "left" },
 };
+
+function DirectionCues({ direction }: { direction: "left" | "right" | "up" }) {
+  const glyph = direction === "up" ? "⌃" : direction === "left" ? "‹" : "›";
+  return <span className={"hotel-direction-cue hotel-direction-cue--" + direction} aria-hidden="true">
+    {[0, 1, 2].map((index) => (
+      <span
+        key={index}
+        className="hotel-direction-cue__chevron"
+        style={{ animationDelay: ((direction === "right" ? index : 2 - index) * 0.18) + "s" }}
+      >{glyph}</span>
+    ))}
+  </span>;
+}
 
 function splitByTier(venues: HotelGuideVenue[]) {
   return {
@@ -98,7 +112,6 @@ function TierSection({
   const resolvedPlacement = imageUrl ? imagePlacement : fallbackImage?.imagePlacement;
   const resolvedPosition = imageUrl ? undefined : fallbackImage?.imagePosition;
   const opensLeft = meta.revealDirection === "left";
-  const arrow = opensLeft ? "←" : "→";
   const backArrow = opensLeft ? "→" : "←";
 
   function setOpen(next: boolean) {
@@ -131,7 +144,7 @@ function TierSection({
   return (
     <section className="relative border-t border-cyan-300/10 bg-[#020508]">
       <div
-        className="relative h-[340px] overflow-hidden sm:h-[390px]"
+        className="relative h-[340px] touch-pan-y overflow-hidden sm:h-[390px]"
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -157,8 +170,8 @@ function TierSection({
           aria-expanded={revealed}
           className={"absolute bottom-5 z-20 flex max-w-[76%] items-end gap-3 text-left text-white " + (opensLeft ? "right-5 flex-row-reverse text-right" : "left-5")}
         >
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-cyan-300/55 bg-black/45 text-xl font-black text-cyan-200 shadow-[0_0_20px_rgba(34,211,238,.25)] backdrop-blur">
-            {revealed ? backArrow : arrow}
+          <span className="flex h-11 w-[66px] shrink-0 items-center justify-center rounded-full border border-cyan-300/45 bg-black/45 text-cyan-200 shadow-[0_0_20px_rgba(34,211,238,.20)] backdrop-blur">
+            <DirectionCues direction={revealed ? "right" : "left"} />
           </span>
           <span>
             <span className="block font-serif text-[2rem] font-semibold leading-none tracking-[-0.02em] drop-shadow-lg">{meta.label}</span>
@@ -237,13 +250,18 @@ export function SingHubHotelGuestGuide(props: Props) {
           </div>
           <div className="max-w-[88%] pb-2"><p className="text-[11px] font-black uppercase tracking-[0.28em] text-white/80">For guests of</p><h1 className="mt-2 font-serif text-[2.55rem] font-semibold leading-[0.92] tracking-[-0.035em] text-white drop-shadow-lg sm:text-[3.5rem]">{hotelShortName}</h1><p className="mt-3 text-[11px] font-bold uppercase tracking-[0.24em] text-cyan-100/90">San Diego, California</p></div>
         </div>
+        <div className="pointer-events-none absolute bottom-[28%] right-4 z-10 flex flex-col items-center gap-1 text-cyan-100/75 sm:right-7" aria-hidden="true">
+          <DirectionCues direction="up" />
+          <span className="text-[9px] font-bold uppercase tracking-[0.12em] sm:hidden">Swipe up</span>
+          <span className="hidden text-[9px] font-bold uppercase tracking-[0.12em] sm:inline">Scroll</span>
+        </div>
         {heroSource === heroImageUrl ? <HotelPhotoCredit credit={heroCredit} /> : null}
       </section>
 
       <section className="relative border-y border-cyan-300/10 bg-[#020508] px-5 py-7 text-center sm:px-7 sm:py-9">
         <span aria-hidden className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/50 to-transparent shadow-[0_0_14px_rgba(34,211,238,.35)]" />
         <h2 className="mx-auto max-w-xl font-serif text-[1.8rem] font-semibold leading-[1.08] tracking-[-0.02em] text-white sm:text-[2.25rem]">Now that you’re all checked in,<br />let’s check out <span className="text-cyan-300 drop-shadow-[0_0_12px_rgba(34,211,238,.35)]">a mic.</span></h2>
-        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-400">Find karaoke, nightlife and local favorites nearby tonight.</p>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-400">Find karaoke happening near your hotel tonight or later this week.</p>
         <div className="mx-auto mt-5 grid max-w-sm grid-cols-2 rounded-full border border-white/15 bg-white/[0.035] p-1">
           <button type="button" aria-pressed={mode === "tonight"} onClick={() => setExperienceMode("tonight")} className={"rounded-full px-4 py-2.5 text-sm font-black transition " + (mode === "tonight" ? "bg-cyan-300 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,.35)]" : "text-slate-400")}>Tonight</button>
           <button type="button" aria-pressed={mode === "week"} onClick={() => setExperienceMode("week")} className={"rounded-full px-4 py-2.5 text-sm font-black transition " + (mode === "week" ? "bg-cyan-300 text-slate-950 shadow-[0_0_20px_rgba(34,211,238,.35)]" : "text-slate-400")}>This Week</button>
