@@ -246,7 +246,7 @@ export function SingHubHotelGuestGuide(props: Props) {
     <div className="hotel-guest-scroll-stage mx-auto min-h-screen w-full max-w-[760px] bg-[#020508] shadow-[0_24px_90px_rgba(0,0,0,.6)]">
       <section data-hotel-photo={hasHeroPhoto ? "visible" : "none"} className="hotel-guest-scroll-hero relative isolate overflow-hidden bg-[#07111c]">
         {!hasHeroPhoto ? <div aria-hidden className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_75%_15%,rgba(34,211,238,.13),transparent_48%),radial-gradient(ellipse_at_10%_85%,rgba(236,72,153,.14),transparent_55%),linear-gradient(140deg,#091625,#040712_70%,#020508)]" /> : null}
-        {hasHeroPhoto ? <PositionedImage placement={heroPlacement} position={heroPosition} key={heroSource} src={heroSource} alt={heroAlt || hotelName + " exterior"} className="absolute inset-0 -z-20 h-full w-full object-cover" onError={() => setFailedHero(heroSource)} /> : null}
+        {hasHeroPhoto ? <PositionedImage placement={heroPlacement} position={heroPosition} key={heroSource} ref={image => { if (image?.complete && image.naturalWidth === 0) setFailedHero(heroSource); }} src={heroSource} alt={heroAlt || hotelName + " exterior"} className="absolute inset-0 -z-20 h-full w-full object-cover" onError={() => setFailedHero(heroSource)} /> : null}
         <div className="absolute inset-0 -z-10 bg-[rgba(2,5,8,.22)]" />
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_10%_5%,rgba(255,42,163,.15),transparent_32%),radial-gradient(circle_at_90%_12%,rgba(34,211,238,.14),transparent_28%)]" />
         <div data-hotel-hero-inner="" className="flex min-h-[52svh] flex-col justify-between px-5 pb-8 pt-5 sm:min-h-[580px] sm:px-7 sm:pb-10 sm:pt-7">

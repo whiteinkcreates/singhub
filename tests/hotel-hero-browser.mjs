@@ -51,6 +51,7 @@ try{
    const response=await page.goto(base+'/hotelexperience/'+slug+'?demo=1',{waitUntil:'networkidle'});assert.equal(response.status(),200);
    const hero=page.locator('[data-hotel-photo]');
    const expectsPhoto=['approved','staged','defaults-failure'].includes(scenario)||(scenario==='empty-override'&&slug!=='orli-la-jolla');
+   console.log(slug,width,scenario,'expected',expectsPhoto,'actual',await hero.getAttribute('data-hotel-photo'));
    await page.waitForFunction(expected=>document.querySelector('[data-hotel-photo]')?.dataset.hotelPhoto===expected,expectsPhoto?'visible':'none');
    const html=await page.content();
    assert.ok(!html.includes('unapproved-new.png'),'pending URL absent from public serialized output');
