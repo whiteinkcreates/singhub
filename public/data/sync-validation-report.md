@@ -3,7 +3,7 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 106.
+Exported venues: 108.
 Exported events: 203.
 
 ## Generated Venue Schedule Candidates (Review Only)
@@ -25,6 +25,7 @@ Exported events: 203.
 - venue-0128 La Estación
 - venue-0129 Barlando
 - venue-0132 Alpine VFW Post 9578
+- venue-0144 Barley & Sword Brewing Company - Escondido
 - venue-0145 Watra Night Club
 ## Public Venues Missing Schedule
 - venue-0051 #1 Fifth Avenue
@@ -133,6 +134,8 @@ Exported events: 203.
 - venue-0144 Barley & Sword Brewing Company - Escondido
 - venue-0145 Watra Night Club
 - venue-0139 El Viejon Seafood - Mira Mesa
+- venue-0146 El Sinaloense - Cardiff
+- venue-0147 Sugar Monkey Brewing & Social Club
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -175,6 +178,7 @@ Exported events: 203.
 - event row 120: event-mcguffies-karaoke-2026-09-02
 - event row 121: event-mcguffies-karaoke-2026-09-23
 - event row 122: event-mcguffies-karaoke-2026-09-30
+- event row 123: weekly-grand-comedy-club-monday
 - event row 151: weekly-richs-san-diego-thursday
 - event row 152: event-n-city-sports-lounge-thursday-karaoke-party
 - event row 153: weekly-docks-cocktail-lounge-friday
@@ -187,6 +191,7 @@ Exported events: 203.
 - event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
 - event row 180: weekly-barlando-friday
 - event row 184: weekly-alpine-vfw-post-9578-thursday
+- event row 210: event-barley-sword-escondido-2026-10-08
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -218,7 +223,6 @@ Exported events: 203.
 - event row 102: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
 - event row 104: event-0021 Tony’s Martini Bar
 - event row 118: weekly-de-oro-mine-co-monday De Oro Mine Co.
-- event row 123: weekly-grand-comedy-club-monday Grand Comedy Club and Pizzeria
 - event row 124: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
 - event row 132: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
 - event row 139: event-0046 Market on 8th
@@ -238,8 +242,9 @@ Exported events: 203.
 - event row 206: weekly-moonshine-beach-friday Moonshine Beach
 - event row 207: weekly-moonshine-beach-saturday Moonshine Beach
 - event row 208: weekly-mcguffies-live-wednesday McGuffie's Live
-- event row 210: event-barley-sword-escondido-2026-10-08 Barley & Sword Brewing Company - Escondido
 - event row 211: weekly-dirks-niteclub-friday Dirk's Niteclub
+- event row 212: weekly-el-sinaloense-cardiff-tuesday El Sinaloense - Cardiff
+- event row 213: event-sugar-monkey-el-segundo-2026-10-14 Sugar Monkey Brewing & Social Club
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
@@ -250,6 +255,7 @@ Exported events: 203.
 - venue: venue-0128 La Estación
 - venue: venue-0129 Barlando
 - venue: venue-0132 Alpine VFW Post 9578
+- venue: venue-0144 Barley & Sword Brewing Company - Escondido
 - venue: venue-0145 Watra Night Club
 ## Public Venues Missing Coordinates
 - venue-0102 Three Stags Irish Pub and Restaurant
@@ -271,14 +277,14 @@ Exported events: 203.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 106
+Public venues: 108
 Authoritative events: 203
 Legacy venue slug aliases: 0
 
-PASS Monday: 20 authoritative / 8 expected minimum
-PASS Tuesday: 33 authoritative / 8 expected minimum
-PASS Wednesday: 31 authoritative / 9 expected minimum
-PASS Thursday: 41 authoritative / 14 expected minimum
+PASS Monday: 19 authoritative / 8 expected minimum
+PASS Tuesday: 34 authoritative / 8 expected minimum
+PASS Wednesday: 32 authoritative / 9 expected minimum
+PASS Thursday: 40 authoritative / 14 expected minimum
 PASS Friday: 31 authoritative / 10 expected minimum
 PASS Saturday: 22 authoritative / 10 expected minimum
 PASS Sunday: 25 authoritative / 7 expected minimum
