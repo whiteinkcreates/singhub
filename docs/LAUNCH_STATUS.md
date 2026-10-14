@@ -115,3 +115,11 @@ VERIFIED LIVE Oct 5:
 | Oct 12, 2026 | McGuffie's enhanced profile, 54 source-backed dated events and monthly calendar/CSV-ICS import merged in PR #336 and Vercel production deployment `dpl_CKwBZCUvJnMDV6R278dup9w6oQCZ` reported READY at SHA `887f23d`. Host and karaoke conflicts need venue confirmation; rendered-page QA remains pending. |
 | Oct 12, 2026 | Corey verified an incorrect SingHUB Partner badge on McGuffie's prospective enhanced demo. Fix isolates `partnerConfirmed` from `enabled`; unconfirmed profiles retain enhanced content with no Partner claim, default false. See PR for production acceptance status. |
 | Oct 6, 2026 | Created shared launch checklist; main at creation: `c7169724988b11d170bf5bf4a774ab6944fffbd7`. |
+
+## October 14 hotel hero safety implementation
+
+Fresh branch `fix/hotel-hero-publication-safety` from main `500d6c7`; selectively replaces the missing protections in stale draft #334, following reconciliation #342. Public guest guides and social metadata now require exact-image approval or a recorded license; blank overrides retain eligible registry imagery as one asset. Missing/broken guest heroes use a compact dark background, preserving the sticky hero, light scrim and swipe sections. Admin replacements remain staged while the server retains the last approved image and crop. Explicit review promotes the replacement; concurrent saves fail rather than overwrite an intervening save.
+
+Corey explicitly authorized approval of the existing saved hotel hero images on October 14, stating that he made the images. Eleven exact saved URLs were approved and independently read back with matching review URLs. Existing URLs, focal positions, responsive placements and branding approvals were preserved. This is an owner approval record, not independent provenance research. No unsaved registry photo or future replacement was automatically approved.
+
+Local resolver/rights, package, analytics, plan-email and crop tests: 28 passed. Lint: zero errors, 34 existing warnings. Production build passes. Real-route isolated browser matrix and deployed-preview acceptance are tracked separately; do not infer live verification from these source checks. No production fixture writes.

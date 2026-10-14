@@ -4,13 +4,13 @@ import {hotelPackageScreenshot} from './hotelPackageScreenshots';
 import {getHotelExperienceConfig} from './hotelExperiences';
 import {getHotelMediaProfile} from './hotelProfiles.server';
 import {getHotelGuide} from './hotelGuides';
-import {applyHotelPhoto} from './hotelPhotoCandidates.server';
+import {resolveHotelPhoto} from './hotelPhotoCandidates.server';
 import {hotelPackageDestination,packageReadiness,HOTEL_PACKAGE_VERSION,type HotelPackageEdition,type HotelPackageFormat} from './hotelPackage';
 export async function getHotelPackage(slug:string){
  const config=getHotelExperienceConfig(slug);if(!config)return null;
  const registered=getHotelGuide(config.hotelGuideSlug);if(!registered)return null;
  const {profile,readFailed}=await getHotelMediaProfile(config.hotelGuideSlug).then(profile=>({profile,readFailed:false})).catch(()=>({profile:null,readFailed:true}));
- const hotel=applyHotelPhoto(profile?{...registered,heroImageUrl:profile.heroImageUrl,heroAlt:profile.heroAlt,heroPosition:profile.heroPosition,heroPlacement:profile.heroPlacement}:registered);
+ const hotel=resolveHotelPhoto(registered,profile,true);
  const screenshot=hotelPackageScreenshot(hotel.slug,hotel.heroImageUrl);
  const readiness=packageReadiness(hotel.heroImageUrl,config.brandLogoUrl,profile,hotel.heroCredit?.status==='licensed');
  return {hotel,config,profile,readFailed,screenshot,readiness:{...readiness,salesSheet:readiness.guest&&Boolean(screenshot)}};

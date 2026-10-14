@@ -146,7 +146,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Verify hotel desktop and mobile journeys
-        if: startsWith(github.head_ref, 'fix/hotel-')
+        if: startsWith(github.head_ref, 'fix/hotel-') && !startsWith(github.head_ref, 'fix/hotel-hero-')
         run: |
           npm run start -- --port 3100 > /tmp/hotel-qa-server.log 2>&1 &
           server_pid=$!
@@ -156,6 +156,18 @@ jobs:
             sleep 1
           done
           node tests/hotel-journey-browser.mjs
+
+      - name: Verify hotel hero rights, staging and responsive fallback
+        if: startsWith(github.head_ref, 'fix/hotel-hero-')
+        run: node tests/hotel-hero-browser.mjs
+
+      - name: Save hotel hero QA evidence
+        if: always() && startsWith(github.head_ref, 'fix/hotel-hero-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: hotel-hero-qa
+          path: .hotel-hero-qa
+          include-hidden-files: true
 
       - name: Save hotel journey QA evidence
         if: always() && startsWith(github.head_ref, 'fix/hotel-')
