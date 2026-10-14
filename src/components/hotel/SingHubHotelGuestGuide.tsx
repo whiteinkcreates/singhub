@@ -241,7 +241,7 @@ export function SingHubHotelGuestGuide(props: Props) {
     <div className="hotel-guest-scroll-stage mx-auto min-h-screen w-full max-w-[760px] bg-[#020508] shadow-[0_24px_90px_rgba(0,0,0,.6)]">
       <section className="hotel-guest-scroll-hero relative isolate min-h-[52svh] overflow-hidden bg-[#07111c] sm:min-h-[580px]">
         {heroSource && heroVisible ? <PositionedImage placement={heroPlacement} position={heroPosition} src={heroSource} alt={heroAlt || hotelName + " exterior"} className="absolute inset-0 -z-20 h-full w-full object-cover" onError={() => { if (fallbackHeroImageUrl && heroSource !== fallbackHeroImageUrl) setHeroSource(fallbackHeroImageUrl); else setHeroVisible(false); }} /> : null}
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(0,6,14,.12)_0%,rgba(0,6,14,.08)_35%,rgba(2,5,8,.42)_68%,#020508_100%)]" />
+        <div className="absolute inset-0 -z-10 bg-[rgba(2,5,8,.22)]" />
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_10%_5%,rgba(255,42,163,.15),transparent_32%),radial-gradient(circle_at_90%_12%,rgba(34,211,238,.14),transparent_28%)]" />
         <div data-hotel-hero-inner="" className="flex min-h-[52svh] flex-col justify-between px-5 pb-8 pt-5 sm:min-h-[580px] sm:px-7 sm:pb-10 sm:pt-7">
           <div className="flex items-start justify-between gap-4"><Link href="/" aria-label="SingHUB home"><img src={SITE_WORDMARK_SRC} alt="SingHUB" className="h-auto w-[178px] drop-shadow-[0_0_15px_rgba(34,211,238,.25)] sm:w-[205px]" /></Link>

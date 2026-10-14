@@ -20,19 +20,21 @@ export default async function SingBoardPage() {
 
   return (
     <main data-scroll-page="singboard" className="min-h-[100dvh] bg-[#05060a] pb-24 text-white">
-      <section data-page-hero="" className="relative isolate overflow-hidden border-b border-white/10">
+      <section data-page-hero="" className="relative isolate overflow-hidden border-b border-white/10" aria-labelledby="singboard-hero-title">
         <div data-board-hero-frame="" className="relative h-full w-full">
           <PositionedImage placement={hero?.heroPlacement} position={hero?.heroPosition}
             src={hero?.heroUrl||SINGBOARD_STICKER_ART}
             alt={hero?.heroAlt||"SingBOARD sticker wall"}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,6,10,.08)_0%,rgba(5,6,10,.18)_48%,rgba(5,6,10,.92)_100%)]" />
-          <div className="absolute inset-x-0 bottom-0 mx-auto max-w-6xl px-5 pb-7 sm:px-8 sm:pb-9">
-            <img src="/images/singboard-wordmark.webp" alt="SingBOARD" className="h-auto w-48 sm:w-64" />
-            <p className="mt-2 max-w-xl text-sm font-semibold text-slate-200 sm:text-base">
-              San Diego karaoke events, community posts, and the stuff worth knowing about.
-            </p>
+          <div className="relative z-10 flex h-full w-full items-end px-5 pb-28 pt-6 sm:px-10 sm:pb-20">
+            <div data-hero-copy="" className="w-full">
+              <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-fuchsia-300">SAN DIEGO KARAOKE COMMUNITY</p>
+              <h1 id="singboard-hero-title" className="m-0 text-[clamp(3.5rem,8vw,6.8rem)] font-black uppercase leading-[0.84] tracking-[-0.025em]" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>SingBOARD</h1>
+              <p className="mt-4 max-w-xl text-sm font-semibold leading-relaxed text-slate-200 sm:text-base">
+                Karaoke event flyers, community updates and wanted posts from local venues and KJs.
+              </p>
+            </div>
           </div>
         </div>
         <HeroScrollCue />
@@ -42,7 +44,7 @@ export default async function SingBoardPage() {
         <div className="mb-3 flex items-end justify-between gap-4 px-1">
           <div>
             <p className="text-[10px] font-black uppercase tracking-[.18em] text-fuchsia-300">What&apos;s pinned</p>
-            <h1 className="mt-1 text-xl font-black sm:text-2xl">SingBOARD</h1>
+            <h2 className="mt-1 text-xl font-black sm:text-2xl">SingBOARD</h2>
           </div>
           <p className="max-w-52 text-right text-[10px] leading-snug text-slate-400 sm:max-w-xs sm:text-xs">
             Tap a flyer or note for the full event page.
