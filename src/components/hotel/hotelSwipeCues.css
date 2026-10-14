@@ -93,3 +93,15 @@
   }
   .hotel-guest-scroll-content {margin-top:-30px;}
 }
+
+/* No photo should never leave a full-screen empty stage. */
+.hotel-guest-scroll-stage .hotel-guest-scroll-hero[data-hotel-photo="none"] {
+  height:390px;
+  min-height:390px;
+}
+@media(max-width:600px) {
+  .hotel-guest-scroll-stage .hotel-guest-scroll-hero[data-hotel-photo="none"] {
+    height:300px;
+    min-height:300px;
+  }
+}

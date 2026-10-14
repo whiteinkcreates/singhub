@@ -13,7 +13,7 @@ export default function HotelAdminPage() {
         <Link href="/admin/hotels/package-intake">Start hotel package from URL →</Link>
       </div>
       <GlobalGuestGuideMediaEditor />
-      <HotelMediaEditor hotels={hotelGuides.map(hotel => applyHotelPhoto(hotel))} />
+      <HotelMediaEditor hotels={hotelGuides.map(hotel => applyHotelPhoto(hotel,true))} />
     </>
   );
 }

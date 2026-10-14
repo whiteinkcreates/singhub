@@ -1,4 +1,6 @@
 import "server-only";
+import { selectHotelHero } from "./hotelHero";
+import type { HotelMediaProfile } from "./hotelProfiles";
 import type { HotelGuide } from "./hotelGuides";
 import type { HotelPhotoCredit } from "./hotelPhotoCredit";
 type Candidate = { imageUrl: string; alt?: string; credit: HotelPhotoCredit };
@@ -26,12 +28,21 @@ export const licensedHotelPhotos: Record<string, Candidate> = {
 "westin-gaslamp": {"imageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/9a/Westin_Gaslamp_Quarter_1.JPG", "credit": {"attribution": "\u00a9 BrokenSphere / Wikimedia Commons", "sourceUrl": "https://commons.wikimedia.org/wiki/File:Westin_Gaslamp_Quarter_1.JPG", "status": "licensed", "license": "CC BY-SA 3.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/", "note": "Original photograph; display cropped to fit. Historic photo, not a statement of current condition."}},
 "omni-san-diego": {"imageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/76/San_Diego%2C_Oct._2016_12.jpg", "credit": {"attribution": "Another Believer", "sourceUrl": "https://commons.wikimedia.org/wiki/File:San_Diego,_Oct._2016_12.jpg", "status": "licensed", "license": "CC BY-SA 4.0", "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/", "note": "Original photograph; display cropped to fit. Historic photo, not a statement of current condition."}},
 };
-export function applyHotelPhoto(hotel: HotelGuide, demo = false): HotelGuide & { heroCredit?: HotelPhotoCredit } {
+export function applyHotelPhoto(hotel: HotelGuide, demo = false, approved = false): HotelGuide & { heroCredit?: HotelPhotoCredit } {
+  const existing = hotel.heroImageUrl;
+  const known = Object.values(hotelDemoPhotos).find(photo => photo.imageUrl === existing);
+  const license = Object.values(licensedHotelPhotos).find(photo => photo.imageUrl === existing);
+  if (existing && (demo || (approved && known?.credit.status !== "illustrative") || license)) {
+    return { ...hotel, heroCredit: license?.credit || (demo ? known?.credit : undefined) };
+  }
   const candidate = (demo ? hotelDemoPhotos[hotel.slug] : undefined) || licensedHotelPhotos[hotel.slug];
-  const pending = Object.values(hotelDemoPhotos).some(photo => photo.imageUrl === hotel.heroImageUrl);
-  if (pending && !demo) hotel = { ...hotel, heroImageUrl: undefined };
-  if (!candidate) return hotel;
-  // Existing saved media always wins. Never attach someone else's credit to it.
-  if (hotel.heroImageUrl && hotel.heroImageUrl !== candidate.imageUrl) return hotel;
-  return { ...hotel, heroImageUrl: candidate.imageUrl, heroAlt: candidate.alt || hotel.heroAlt || `${hotel.name} property photograph`, heroCredit: candidate.credit };
+  // Strip rejected metadata too, including crops and credits from a different URL.
+  const clean = { ...hotel, heroImageUrl: undefined, heroAlt: undefined, heroPlacement: undefined, heroPosition: undefined };
+  if (!candidate) return clean;
+  return { ...clean, heroImageUrl: candidate.imageUrl, heroAlt: candidate.alt || `${hotel.name} property photograph`, heroCredit: candidate.credit };
+}
+
+export function resolveHotelPhoto(registered: HotelGuide, media: HotelMediaProfile | null, internal = false) {
+  const { hotel, approved } = selectHotelHero(registered, media, internal);
+  return applyHotelPhoto(hotel, internal, approved);
 }

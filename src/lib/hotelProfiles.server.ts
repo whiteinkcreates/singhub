@@ -1,5 +1,6 @@
 import "server-only";
-import { applyHotelPhoto } from "./hotelPhotoCandidates.server";
+import { retainPublishedHero } from "./hotelHero";
+import { resolveHotelPhoto } from "./hotelPhotoCandidates.server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getHotelGuide } from "@/lib/hotelGuides";
 import { GUEST_GUIDE_DEFAULTS_SLUG, parseGuestGuideLifestyleMedia, parseHotelMediaProfile, type GuestGuideLifestyleMedia, type HotelMediaProfile } from "@/lib/hotelProfiles";
@@ -46,13 +47,27 @@ function resolveLifestyle(defaults: GuestGuideLifestyleMedia, media: HotelMediaP
 export async function getHotelGuideMediaBundle(slug:string,demo=false){
   const hotel=getHotelGuide(slug);if(!hotel)return null;
   try{
-    const [media, defaults] = await Promise.all([getHotelMediaProfile(slug), getGuestGuideDefaults()]);
+    const [media, defaults] = await Promise.all([getHotelMediaProfile(slug), getGuestGuideDefaults().catch(error => { console.error("Guest Guide defaults unavailable", error); return {}; })]);
     const lifestyle = resolveLifestyle(defaults, media);
-    return {hotel:applyHotelPhoto(media?{...hotel,heroImageUrl:media.heroImageUrl,heroAlt:media.heroAlt,heroPosition:media.heroPosition,heroPlacement:media.heroPlacement}:hotel,demo),media:media ? {...media,...lifestyle} : {...lifestyle}};
-  }catch(error){console.error("Hotel media read failed; using registered guide",error);return {hotel:applyHotelPhoto(hotel,demo),media:resolveLifestyle({}, null)};}
+    return {hotel:resolveHotelPhoto(hotel,media,demo),media:media ? {...media,...lifestyle} : {...lifestyle}};
+  }catch(error){console.error("Hotel media read failed; using registered guide",error);return {hotel:resolveHotelPhoto(hotel,null,demo),media:resolveLifestyle({}, null)};}
 }
 export async function getHotelGuideWithMedia(slug: string, demo = false) { return (await getHotelGuideMediaBundle(slug,demo))?.hotel || null; }
 export async function saveHotelMediaProfile(slug: string, media: HotelMediaProfile) {
-  const { error } = await createAdminClient().from("hotel_profiles").upsert({ slug, media, updated_at: new Date().toISOString() });
-  if (error) throw new Error(`Hotel media was not saved: ${error.message}`);
+  const client = createAdminClient();
+  const { data: current, error: readError } = await client.from("hotel_profiles").select("media,updated_at").eq("slug", slug).maybeSingle();
+  if (readError) throw new Error(`Hotel media could not be read before saving: ${readError.message}`);
+  const previous = current ? parseHotelMediaProfile(current.media) : null;
+  const next = retainPublishedHero(media, previous, getHotelGuide(slug) || undefined);
+  const updated_at = new Date().toISOString();
+  if (current) {
+    // An overlapping save must not overwrite a newly approved photo or crop.
+    const { data, error } = await client.from("hotel_profiles").update({ media: next, updated_at }).eq("slug", slug).eq("updated_at", current.updated_at).select("slug").maybeSingle();
+    if (error) throw new Error(`Hotel media was not saved: ${error.message}`);
+    if (!data) throw new Error("Hotel media changed during this save. Reload and try again.");
+  } else {
+    const { error } = await client.from("hotel_profiles").insert({ slug, media: next, updated_at });
+    if (error) throw new Error(`Hotel media was not saved: ${error.message}`);
+  }
+  return next;
 }

@@ -24,7 +24,6 @@ type Props = {
   heroCredit?: Credit;
   heroAlt?: string;
   heroPosition?: string;
-  fallbackHeroImageUrl?: string;
   walkableImageUrl?: string;
   walkableImageAlt?: string;
   walkableImagePlacement?: ResponsiveImagePlacement;
@@ -228,12 +227,13 @@ function TierSection({
 }
 
 export function SingHubHotelGuestGuide(props: Props) {
-  const { hotelSlug, experienceSlug, hotelName, hotelShortName, heroImageUrl, heroPlacement, heroCredit, heroAlt, heroPosition, fallbackHeroImageUrl,
+  const { hotelSlug, experienceSlug, hotelName, hotelShortName, heroImageUrl, heroPlacement, heroCredit, heroAlt, heroPosition,
     walkableImageUrl, walkableImageAlt, walkableImagePlacement, quickRideImageUrl, quickRideImageAlt, quickRideImagePlacement, standoutImageUrl, standoutImageAlt, standoutImagePlacement,
     tonightVenues, weekVenues } = props;
   const [mode, setMode] = useState<"tonight" | "week">("tonight");
-  const [heroSource, setHeroSource] = useState(heroImageUrl || fallbackHeroImageUrl || "");
-  const [heroVisible, setHeroVisible] = useState(Boolean(heroImageUrl || fallbackHeroImageUrl));
+  const heroSource = heroImageUrl?.trim() || "";
+  const [failedHero, setFailedHero] = useState("");
+  const hasHeroPhoto = Boolean(heroSource && failedHero !== heroSource);
   useListReturn({ mode }, (saved) => { if (saved?.mode === "tonight" || saved?.mode === "week") setMode(saved.mode); });
   const active = mode === "tonight" ? tonightVenues : weekVenues;
   const grouped = useMemo(() => splitByTier(active), [active]);
@@ -244,8 +244,9 @@ export function SingHubHotelGuestGuide(props: Props) {
 
   return <main className="min-h-screen bg-[#020508] text-white" data-hotel-guest-guide="" data-hotel-slug={hotelSlug}>
     <div className="hotel-guest-scroll-stage mx-auto min-h-screen w-full max-w-[760px] bg-[#020508] shadow-[0_24px_90px_rgba(0,0,0,.6)]">
-      <section className="hotel-guest-scroll-hero relative isolate min-h-[52svh] overflow-hidden bg-[#07111c] sm:min-h-[580px]">
-        {heroSource && heroVisible ? <PositionedImage placement={heroPlacement} position={heroPosition} src={heroSource} alt={heroAlt || hotelName + " exterior"} className="absolute inset-0 -z-20 h-full w-full object-cover" onError={() => { if (fallbackHeroImageUrl && heroSource !== fallbackHeroImageUrl) setHeroSource(fallbackHeroImageUrl); else setHeroVisible(false); }} /> : null}
+      <section data-hotel-photo={hasHeroPhoto ? "visible" : "none"} className="hotel-guest-scroll-hero relative isolate overflow-hidden bg-[#07111c]">
+        {!hasHeroPhoto ? <div aria-hidden className="absolute inset-0 -z-20 bg-[radial-gradient(ellipse_at_75%_15%,rgba(34,211,238,.13),transparent_48%),radial-gradient(ellipse_at_10%_85%,rgba(236,72,153,.14),transparent_55%),linear-gradient(140deg,#091625,#040712_70%,#020508)]" /> : null}
+        {hasHeroPhoto ? <PositionedImage placement={heroPlacement} position={heroPosition} key={heroSource} ref={image => { if (image?.complete && image.naturalWidth === 0) setFailedHero(heroSource); }} src={heroSource} alt={heroAlt || hotelName + " exterior"} className="absolute inset-0 -z-20 h-full w-full object-cover" onError={() => setFailedHero(heroSource)} /> : null}
         <div className="absolute inset-0 -z-10 bg-[rgba(2,5,8,.22)]" />
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_10%_5%,rgba(255,42,163,.15),transparent_32%),radial-gradient(circle_at_90%_12%,rgba(34,211,238,.14),transparent_28%)]" />
         <div data-hotel-hero-inner="" className="flex min-h-[52svh] flex-col justify-between px-5 pb-8 pt-5 sm:min-h-[580px] sm:px-7 sm:pb-10 sm:pt-7">
@@ -257,7 +258,7 @@ export function SingHubHotelGuestGuide(props: Props) {
           <div className="max-w-[88%] pb-2"><p className="text-[11px] font-black uppercase tracking-[0.28em] text-white/80">For guests of</p><h1 className="mt-2 font-serif text-[2.55rem] font-semibold leading-[0.92] tracking-[-0.035em] text-white drop-shadow-lg sm:text-[3.5rem]">{hotelShortName}</h1><p className="mt-3 text-[11px] font-bold uppercase tracking-[0.24em] text-cyan-100/90">San Diego, California</p></div>
         </div>
         <HeroScrollCue />
-        {heroSource === heroImageUrl ? <HotelPhotoCredit credit={heroCredit} /> : null}
+        {hasHeroPhoto ? <HotelPhotoCredit credit={heroCredit} /> : null}
       </section>
 
       <div className="hotel-guest-scroll-content">
