@@ -10,7 +10,8 @@ export type SingBoardPosterType = "venue" | "kj" | "admin";
 export type PersistedSingBoardPost = {category?:"special"|"theme_karaoke"|"hiring"|"community"|"live_music"; venueId?:string;hostId?:string;verificationStatus?:"pending"|"verified"|"rejected"; id:string; postType:SingBoardPostType; title:string; venue:string; neighborhood:string; region:SingBoardRegion; detail:string; x:number; y:number; rotation:number; imageUrl?:string; noteText?:string; noteColor?:SingBoardNoteColor; pinned:true; eventDate:string; startTime?:string; hostName?:string; linkUrl?:string };
 export type SingBoardEvent = Omit<PersistedSingBoardPost,"pinned"> & { status:"active"|"archived" };
 export type SingBoardMetricType = "event_page_view" | "outbound_click";
-export type SingBoardAccessMember = { id:string; displayName:string; posterType:SingBoardPosterType; venueId?:string; hostId?:string; active:boolean; createdAt:string; updatedAt:string };
+export type SingBoardAccessMember = { linkedAccount:boolean;id:string; displayName:string; posterType:SingBoardPosterType; venueId?:string; hostId?:string; active:boolean; createdAt:string; updatedAt:string };
+export type SingBoardPendingReview = {id:string;title:string;venueName:string;category:string;postType:string;createdAt:string;posterId:string};
 type SingBoardPostRow = {
   category?:string|null; venue_id?:string|null;host_id?:string|null;verification_status?:string|null;
   id:string;
@@ -51,7 +52,42 @@ export async function getAuthorizedSingBoardPosterForToken(token:string){
  if(error)throw new Error("Could not check verified posting access.");
  return data;
 }
-export async function listSingBoardAccessMembers():Promise<SingBoardAccessMember[]>{const supabase=createAdminClient();const{data,error}=await supabase.from("singboard_posters").select("id,display_name,poster_type,venue_id,host_id,active,created_at,updated_at").order("active",{ascending:false}).order("display_name",{ascending:true});if(error)throw new Error(`Failed to load SingBOARD access members: ${error.message}`);return(data||[]).map(row=>({id:row.id,displayName:row.display_name,posterType:row.poster_type as SingBoardPosterType,venueId:row.venue_id||undefined,hostId:row.host_id||undefined,active:Boolean(row.active),createdAt:row.created_at,updatedAt:row.updated_at}))}
+export async function listSingBoardAccessMembers():Promise<SingBoardAccessMember[]>{const supabase=createAdminClient();const{data,error}=await supabase.from("singboard_posters").select("id,display_name,poster_type,venue_id,host_id,user_id,verified_at,active,created_at,updated_at").order("active",{ascending:false}).order("display_name",{ascending:true});if(error)throw new Error(`Failed to load SingBOARD access members: ${error.message}`);return(data||[]).map(row=>({linkedAccount:Boolean(row.user_id&&row.verified_at),id:row.id,displayName:row.display_name,posterType:row.poster_type as SingBoardPosterType,venueId:row.venue_id||undefined,hostId:row.host_id||undefined,active:Boolean(row.active),createdAt:row.created_at,updatedAt:row.updated_at}))}
+export async function linkSingBoardPosterToEmail(memberId:string,email:string){
+ const supabase=createAdminClient();
+ const {data:poster,error:posterError}=await supabase.from("singboard_posters").select("id,poster_type,venue_id,host_id").eq("id",memberId).maybeSingle();
+ if(posterError||!poster)throw new Error("Poster not found.");
+ if(poster.poster_type!=="admin"&&!poster.venue_id&&!poster.host_id)throw new Error("Associate the verified venue or KJ ID before linking an account.");
+ const target=email.trim().toLowerCase();
+ if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(target))throw new Error("A valid SingHUB account email is required.");
+ let accountId:string|null=null;
+ for(let page=1;page<=10;page++){
+  const {data,error}=await supabase.auth.admin.listUsers({page,perPage:1000});
+  if(error)throw new Error("Could not check SingHUB accounts.");
+  const user=data.users.find(user=>user.email?.toLowerCase()===target);
+  if(user){if(!user.email_confirmed_at)throw new Error("Ask this user to confirm their sign-in email first.");accountId=user.id;break;}
+  if(data.users.length<1000)break;
+ }
+ if(!accountId)throw new Error("No confirmed SingHUB account found with that email.");
+ const {error}=await supabase.from("singboard_posters").update({user_id:accountId,verified_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("id",memberId);
+ if(error)throw new Error("Could not link the SingHUB account to this posting identity.");
+}
+export async function listSingBoardPendingReviews():Promise<SingBoardPendingReview[]>{
+ const supabase=createAdminClient();
+ const {data,error}=await supabase.from("singboard_flyers")
+  .select("id,title,venue_name,category,post_type,created_at,poster_id")
+  .eq("status","active").eq("verification_status","pending").order("created_at",{ascending:false}).limit(250);
+ if(error)throw new Error("Could not load SingBOARD post review queue.");
+ return(data||[]).map(p=>({id:p.id,title:p.title,venueName:p.venue_name,category:p.category,postType:p.post_type,createdAt:p.created_at,posterId:p.poster_id}));
+}
+export async function reviewSingBoardPost(id:string,decision:"verify"|"unpublish"){
+ const supabase=createAdminClient();
+ const update=decision==="verify"
+  ?{verification_status:"verified",verified_at:new Date().toISOString(),updated_at:new Date().toISOString()}
+  :{verification_status:"rejected",status:"archived",archived_at:new Date().toISOString(),updated_at:new Date().toISOString()};
+ const {data,error}=await supabase.from("singboard_flyers").update(update).eq("id",id).eq("status","active").select("id").maybeSingle();
+ if(error||!data)throw new Error("Review failed. The post may already have been removed.");
+}
 export async function createSingBoardAccessMember(input:{displayName:string;posterType:SingBoardPosterType;accessCode:string;venueId?:string;hostId?:string}){const displayName=input.displayName.trim();const code=input.accessCode.trim();if(!displayName)throw new Error("Name is required.");if(code.length<8)throw new Error("Access code must be at least 8 characters.");const supabase=createAdminClient();const{error}=await supabase.from("singboard_posters").insert({display_name:displayName,poster_type:input.posterType,venue_id:input.venueId?.trim()||null,host_id:input.hostId?.trim()||null,access_code_hash:hashAccessCode(code),active:true});if(error)throw new Error(error.code==="23505"?"That access code is already assigned.":`Failed to create SingBOARD access: ${error.message}`)}
 export async function rotateSingBoardAccessCode(memberId:string,accessCode:string){const code=accessCode.trim();if(code.length<8)throw new Error("Access code must be at least 8 characters.");const supabase=createAdminClient();const{error}=await supabase.from("singboard_posters").update({access_code_hash:hashAccessCode(code),updated_at:new Date().toISOString()}).eq("id",memberId);if(error)throw new Error(error.code==="23505"?"That access code is already assigned.":`Failed to replace SingBOARD access code: ${error.message}`)}
 export async function setSingBoardAccessActive(memberId:string,active:boolean){const supabase=createAdminClient();const{error}=await supabase.from("singboard_posters").update({active,updated_at:new Date().toISOString()}).eq("id",memberId);if(error)throw new Error(`Failed to update SingBOARD access: ${error.message}`)}
