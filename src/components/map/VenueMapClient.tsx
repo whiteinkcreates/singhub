@@ -239,7 +239,7 @@ export default function VenueMapClient({
         <button type="button" aria-pressed={mapTheme==="street"} onClick={()=>setMapTheme("street")}>Street</button>
       </div>
       {tilesFailed&&<div className="sh-discover-map-error" role="status">
-        Some map tiles didn't load. <button type="button" onClick={()=>{setTilesFailed(false);setTileRefresh(n=>n+1);}}>Retry</button>
+        Some map tiles didn&apos;t load. <button type="button" onClick={()=>{setTilesFailed(false);setTileRefresh(n=>n+1);}}>Retry</button>
       </div>}
     </div>
   );
