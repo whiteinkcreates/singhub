@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HeroScrollCue } from "@/components/layout/HeroScrollCue";
 import { getHotelGuidesByArea } from "@/lib/hotelGuides";
 
 export const metadata = {
@@ -74,6 +75,7 @@ export default function HotelGuideIndexPage() {
               </p>
             </div>
           </div>
+          <HeroScrollCue />
         </section>
 
         <section data-page-surface="" className="hotel-index-shell">
