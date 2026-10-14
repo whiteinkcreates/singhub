@@ -1,4 +1,7 @@
 import { NextResponse } from "next/server";
+import {getVenueListings} from "@/lib/venueData";
+import {getActiveHosts} from "@/lib/hostData";
+import {SINGBOARD_CATEGORY_KEYS, getSingBoardCategory} from "@/lib/singboard/categories";
 import { uploadSingBoardImage } from "@/lib/singboard/cloudinary";
 import { findSingBoardSlot, isSingBoardSlotOccupied } from "@/lib/singboard/layout";
 import {
@@ -34,8 +37,42 @@ export async function POST(request: Request) {
     const poster = await getAuthorizedSingBoardPoster(accessCode);
     if (!poster) return NextResponse.json({ error: "Invalid or inactive SingBOARD access code." }, { status: 403 });
 
+    // Contributor authorization is verified server-side; form fields never supply an identity.
+    const claimedVenueName = requiredText(form,"venueName");
+    const posterType = poster.poster_type as "venue"|"kj"|"admin";
+    const [listedVenues,activeHosts] = await Promise.all([
+      poster.venue_id || posterType==="admin" ? getVenueListings() : Promise.resolve([]),
+      poster.host_id ? getActiveHosts() : Promise.resolve([]),
+    ]);
+    const ownedVenue = poster.venue_id
+      ? listedVenues.find(venue=>venue.id===poster.venue_id || venue.slug===poster.venue_id)
+      : undefined;
+    const ownedHost = poster.host_id
+      ? activeHosts.find(host=>host.hostId===poster.host_id || host.slug===poster.host_id)
+      : undefined;
+    if(poster.venue_id && !ownedVenue)
+      return NextResponse.json({error:"Posting identity is not linked to a valid venue. Ask SingHUB to reconnect your access."},{status:403});
+    if(poster.host_id && !ownedHost)
+      return NextResponse.json({error:"Posting identity is not linked to a valid KJ. Ask SingHUB to reconnect your access."},{status:403});
+    if(posterType==="venue" && !ownedVenue)
+      return NextResponse.json({error:"Please ask SingHUB to link your verified venue before self-publishing."},{status:403});
+
+    // Administrator-authored legacy posts may link an exact canonical venue.
+    // A KJ code that has not yet been bound to a host remains board-only.
+    const adminVenue = posterType==="admin"
+      ? listedVenues.find(venue=>venue.venueName.toLocaleLowerCase().trim()===claimedVenueName.toLocaleLowerCase().trim())
+      : undefined;
+    const venueSlug = ownedVenue?.slug || adminVenue?.slug;
+    const venueName = ownedVenue?.venueName || claimedVenueName;
+    const neighborhood = ownedVenue?.neighborhood || requiredText(form,"neighborhood");
+    const hostName = ownedHost?.publicDisplayName || String(form.get("hostName")||"").trim() || undefined;
+
     const postType = requiredText(form, "postType") as SingBoardPostType;
     if (!ALLOWED_TYPES.has(postType)) return NextResponse.json({ error: "Invalid post type." }, { status: 400 });
+    const rawCategory=String(form.get("category")||"");
+    if(rawCategory && !SINGBOARD_CATEGORY_KEYS.includes(rawCategory as typeof SINGBOARD_CATEGORY_KEYS[number]))
+      return NextResponse.json({error:"Invalid post category."},{status:400});
+    const category = postType==="wanted" ? "hiring" : getSingBoardCategory(rawCategory,postType);
     const region = requiredText(form, "region") as SingBoardRegion;
     if (!ALLOWED_REGIONS.has(region)) return NextResponse.json({ error: "Invalid SingBOARD region." }, { status: 400 });
     const eventDate = requiredText(form, "eventDate");
@@ -78,9 +115,12 @@ export async function POST(request: Request) {
     const id = await createSingBoardPost({
       posterId: poster.id,
       postType,
+      category,
+      venueSlug,
+      hostId:ownedHost?.hostId,
       title: requiredText(form, "title"),
-      venueName: requiredText(form, "venueName"),
-      neighborhood: requiredText(form, "neighborhood"),
+      venueName,
+      neighborhood,
       region,
       detail: String(form.get("detail") || "").trim(),
       imageUrl,
@@ -89,14 +129,14 @@ export async function POST(request: Request) {
       noteColor,
       eventDate,
       startTime: String(form.get("startTime") || "").trim() || undefined,
-      hostName: String(form.get("hostName") || "").trim() || undefined,
+      hostName,
       linkUrl: String(form.get("linkUrl") || "").trim() || undefined,
       x: placement.x,
       y: placement.y,
       rotation: placement.rotation,
     });
 
-    return NextResponse.json({ id, imageUrl });
+    return NextResponse.json({ id, imageUrl, category, reviewStatus:"pending", venueName, neighborhood, venueSlug, hostId:ownedHost?.hostId });
   } catch (error) {
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to publish post." }, { status: 400 });
   }
