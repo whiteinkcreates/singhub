@@ -15,6 +15,16 @@ const CATEGORY_LABELS: Record<string, string> = {
   special: "Special event",
 };
 
+/** A dot represents a dated event. Never infer calendar dots from evergreen amenities. */
+function eventCategory(event:VenueProgramEvent):string {
+  const label=event.title.toLowerCase();
+  if(event.category==="game"||event.category==="special"||!event.category){
+    if(/\btrivia\b/i.test(label))return "trivia";
+    if(/\bbingo\b/i.test(label))return "bingo";
+    if(/\b(football|ufc|fight night|basketball|watch party|sports screening)\b/i.test(label))return "sports";
+  }
+  return event.category||"special";
+}
 function localToday(): string {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit",
@@ -88,7 +98,7 @@ export function VenueMonthlyCalendar({
             aria-label={prettyDate(key) + (entries.length ? ", " + entries.length + " events" : ", no listed events")}
             aria-pressed={selected} onClick={() => { setSelectedDate(key); setShowAll(false); }}>
             <span>{date}</span>
-            {entries.length ? <span className="calendar-dots" aria-hidden="true">{entries.slice(0, 3).map((item, i) => <i className={"kind-" + (item.category || "special")} key={i} />)}</span> : null}
+            {entries.length ? <span className="calendar-dots" aria-hidden="true">{entries.slice(0, 3).map((item, i) => <i className={"kind-" + eventCategory(item)} key={i} />)}</span> : null}
           </button>;
         })}
       </div>
@@ -100,7 +110,7 @@ export function VenueMonthlyCalendar({
         </div>
         {!shown.length ? <p>No events listed for this selection. Check the venue calendar for changes.</p> : shown.map((event, index) => <article className="calendar-event" key={event.date + event.title + index}>
           <div><time dateTime={event.date}>{prettyDate(event.date)}</time><strong>{event.title}</strong></div>
-          <span className={"calendar-kind kind-" + (event.category || "special")}>{CATEGORY_LABELS[event.category || "special"] || "Event"}</span>
+          <span className={"calendar-kind kind-" + eventCategory(event)}>{CATEGORY_LABELS[eventCategory(event)] || "Event"}</span>
           <p>{[event.time, event.detail].filter(Boolean).join(" · ")}</p>
           {event.sourceUrl && event.sourceUrl !== sourceUrl ? <a href={event.sourceUrl} target="_blank" rel="noopener noreferrer">Event details ↗</a> : null}
         </article>)}
