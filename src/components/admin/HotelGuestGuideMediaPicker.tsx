@@ -24,6 +24,7 @@ async function fetchHotelMediaAssets(slug: string) {
 export function HotelGuestGuideMediaPicker({ slug, profile, onChange }: Props) {
   const [assets, setAssets] = useState<VenueMediaAsset[]>([]);
   const [loading, setLoading] = useState(false);
+  const [deletingPublicId, setDeletingPublicId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
   async function load() {
@@ -66,6 +67,31 @@ export function HotelGuestGuideMediaPicker({ slug, profile, onChange }: Props) {
 
   const selected = useMemo(() => new Set([profile.walkableImageUrl, profile.quickRideImageUrl, profile.standoutImageUrl].filter(Boolean)), [profile]);
 
+  async function deleteAsset(asset: VenueMediaAsset) {
+    if (selected.has(asset.url)) {
+      setMessage("First select Use global default for every section using this image, then save the hotel media.");
+      return;
+    }
+    if (!window.confirm("Permanently delete this hotel upload? This cannot be undone.")) return;
+    setDeletingPublicId(asset.publicId);
+    setMessage("Checking image usage and deleting upload…");
+    try {
+      const response = await fetch("/api/admin/hotel-media", {
+        method: "DELETE",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ slug, publicId: asset.publicId }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Could not delete the hotel image.");
+      setAssets(current => current.filter(item => item.publicId !== asset.publicId));
+      setMessage("Upload deleted. The server confirmed it was not in use.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not delete the hotel image.");
+    } finally {
+      setDeletingPublicId(null);
+    }
+  }
+
   function setSlot(slot: Slot, url: string) {
     const meta = META[slot];
     onChange({ [meta.urlKey]: url, [meta.altKey]: url ? meta.label.replace(" image", "") + " guest guide lifestyle photo" : "", [meta.placementKey]: undefined } as Partial<HotelMediaProfile>);
@@ -78,6 +104,6 @@ export function HotelGuestGuideMediaPicker({ slug, profile, onChange }: Props) {
       return <div key={slot} className="overflow-hidden rounded-2xl border border-white/10 bg-black/25">{url ? <><ImagePlacementEditor src={url} alt={alt || meta.label} label={meta.label} value={placement} onChange={(next) => onChange({ [meta.placementKey]: next } as Partial<HotelMediaProfile>)} /><div className="grid gap-2 p-3"><input value={alt} onChange={(event) => onChange({ [meta.altKey]: event.target.value } as Partial<HotelMediaProfile>)} className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-xs text-white" placeholder="Image description" /><button type="button" onClick={() => setSlot(slot, "")} className="rounded-xl border border-cyan-300/20 px-3 py-2 text-xs font-black text-cyan-200">Use global default</button></div></> : <div className="flex min-h-48 items-center justify-center px-4 text-center text-sm text-slate-500">No hotel override. This slot inherits the global Guest Guide image.</div>}</div>;
     })}</div>
     <p className="mt-4 text-xs font-semibold text-cyan-100" aria-live="polite">{message}</p>
-    {assets.length > 0 ? <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{assets.map((asset) => <div key={asset.publicId} className={"overflow-hidden rounded-2xl border bg-black/25 " + (selected.has(asset.url) ? "border-cyan-300/60" : "border-white/10")}><div className="aspect-square overflow-hidden bg-black/30"><MediaImagePreview src={asset.url} alt="Hotel media option" className="h-full w-full object-cover" /></div><div className="grid gap-1.5 p-2">{(Object.keys(META) as Slot[]).map((slot) => { const meta = META[slot]; const active = profile[meta.urlKey] === asset.url; return <button key={slot} type="button" onClick={() => setSlot(slot, asset.url)} className={"rounded-lg px-2 py-2 text-[11px] font-black " + (active ? "bg-cyan-300 text-slate-950" : "border border-white/15 text-white")}>{active ? "Selected: " : "Set: "}{meta.label.replace(" image", "")}</button>; })}</div></div>)}</div> : null}
+    {assets.length > 0 ? <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{assets.map((asset) => <div key={asset.publicId} className={"overflow-hidden rounded-2xl border bg-black/25 " + (selected.has(asset.url) ? "border-cyan-300/60" : "border-white/10")}><div className="aspect-square overflow-hidden bg-black/30"><MediaImagePreview src={asset.url} alt="Hotel media option" className="h-full w-full object-cover" /></div><div className="grid gap-1.5 p-2">{(Object.keys(META) as Slot[]).map((slot) => { const meta = META[slot]; const active = profile[meta.urlKey] === asset.url; return <button key={slot} type="button" onClick={() => setSlot(slot, asset.url)} className={"rounded-lg px-2 py-2 text-[11px] font-black " + (active ? "bg-cyan-300 text-slate-950" : "border border-white/15 text-white")}>{active ? "Selected: " : "Set: "}{meta.label.replace(" image", "")}</button>; })}<button type="button" onClick={() => void deleteAsset(asset)} disabled={deletingPublicId !== null || selected.has(asset.url)} title={selected.has(asset.url) ? "Clear section assignments and save the hotel before deleting." : "Permanently delete this upload if unused"} className="rounded-lg border border-rose-300/25 px-2 py-2 text-[11px] font-black text-rose-200 disabled:cursor-not-allowed disabled:opacity-40">{deletingPublicId === asset.publicId ? "Deleting…" : selected.has(asset.url) ? "Remove role first" : "Delete upload"}</button></div></div>)}</div> : null}
   </section>;
 }
