@@ -12,6 +12,32 @@ export type HotelRowData = {
 };
 export function usable(value?:string){return value && !/^(tbd|unknown|-|n\/a)$/i.test(value.trim())?value.trim():'';}
 export function compactTime(value?:string){return usable(value).replace(/(\d{1,2}):00(?=\s*[AP]M)/gi,'$1');}
+/** Parse a confirmed karaoke start time as San Diego-local minutes after midnight. */
+export function karaokeStartMinutes(value:string|undefined):number|null {
+  const raw=usable(value);
+  const twelve=raw.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)\b/i);
+  if(twelve){
+    const hour=Number(twelve[1]),minute=Number(twelve[2]||"0");
+    if(hour<1||hour>12||minute>59)return null;
+    return hour%12*60+minute+(twelve[3].toUpperCase()==="PM"?720:0);
+  }
+  const twentyFour=raw.match(/^(\d{1,2}):(\d{2})$/);
+  if(twentyFour){
+    const hour=Number(twentyFour[1]),minute=Number(twentyFour[2]);
+    return hour<24&&minute<60?hour*60+minute:null;
+  }
+  return null;
+}
+export type KaraokeStartFilter="any"|"before-8"|"8-to-9"|"9-to-10"|"10-plus";
+export function matchesKaraokeStart(value:string|undefined,window:KaraokeStartFilter):boolean {
+  if(window==="any")return true;
+  const minutes=karaokeStartMinutes(value);
+  if(minutes===null)return false;
+  if(window==="before-8")return minutes<20*60;
+  if(window==="8-to-9")return minutes>=20*60&&minutes<21*60;
+  if(window==="9-to-10")return minutes>=21*60&&minutes<22*60;
+  return minutes>=22*60||minutes<4*60;
+}
 export function verificationDate(events:KaraokeEventListing[], venue?:VenueListing){
   const dates=[venue?.lastVerified,...events.map(event=>event.lastVerified)].filter((value):value is string=>Boolean(value&&/^\d{4}-\d{2}-\d{2}/.test(value)&&!Number.isNaN(Date.parse(value))));
   return dates.sort().at(-1);
@@ -41,11 +67,12 @@ export function makeVenueRow(venue:VenueListing,events:KaraokeEventListing[],wee
     verificationDate:date,tonightTime:today[0]?usable(today[0].startTime)||'Time pending':venue.venueType==='private_room'?'Reserve a room':'No confirmed karaoke tonight',
     typicalStart:[...new Set(events.map(event=>usable(event.startTime)).filter(Boolean))].join(' / ')||'Time pending',liveBand,search};
 }
-export function filterRows(rows:VenueRowData[],query:string,filter:string,mode:'tonight'|'week'|'directory',position?:{latitude:number;longitude:number}|null){
+export function filterRows(rows:VenueRowData[],query:string,filter:string,mode:'tonight'|'week'|'directory',position?:{latitude:number;longitude:number}|null,startFilter:KaraokeStartFilter='any'){
   const term=query.trim().toLowerCase();const f=filter.toLowerCase();
   let visible=rows.filter(row=>row.search.includes(term));
   if(mode==='tonight')visible=visible.filter(row=>row.tonight||row.venue.venueType==='private_room');
   if(mode==='week')visible=visible.filter(row=>row.events.length||row.venue.venueType==='private_room');
+  if(startFilter!=='any')visible=visible.filter(row=>(mode==='tonight'?row.tonight?[row.tonight]:[]:row.events).some(event=>matchesKaraokeStart(event.startTime,startFilter)));
   if(f==='private rooms')visible=visible.filter(row=>row.venue.venueType==='private_room');
   if(f==='seven nights')visible=visible.filter(row=>row.nightCount===7);
   if(f==='near me'&&position)visible=visible.filter(row=>row.venue.latitude!==null&&row.venue.longitude!==null).sort((a,b)=>getDistanceInMiles(position,{latitude:a.venue.latitude!,longitude:a.venue.longitude!})-getDistanceInMiles(position,{latitude:b.venue.latitude!,longitude:b.venue.longitude!}));
