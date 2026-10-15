@@ -13,28 +13,33 @@ import { filterRows, type VenueRowData, type KaraokeStartFilter } from '@/lib/v2
 import {getEarlyOpening} from '@/lib/earlyOpeningVenues';
 import {OtherActivityRequest} from '@/components/backyard/OtherActivityRequest';
 import {backyardOfferBySlug} from '@/lib/backyardActivities';
+import {matchesPlusDay,PLUS_DAYS,type PlusDay} from '@/lib/karaokePlusSchedule';
+import {getSanDiegoNightlifeWeekday} from '@/lib/nightlifeTime';
 
 import "./styles/discovery.css";
 export function DiscoveryExperience({ rows, hotelName, heroUrl, heroAlt, heroPosition,heroPlacement }: { rows: VenueRowData[]; hotelName?:string; heroUrl?:string; heroAlt?:string; heroPosition?:string; heroPlacement?:ResponsiveImagePlacement }) {
 const root=useRef<HTMLDivElement>(null); const viewerInitials=useViewerInitials();
 const [mode,setMode]=useState<'tonight'|'week'>('tonight'); const [plus,setPlus]=useState(false);
+const [plusDay,setPlusDay]=useState<'all'|PlusDay>('all');
+const matchingDay=mode==='tonight'?getSanDiegoNightlifeWeekday():plusDay;
 const [startFilter,setStartFilter]=useState<KaraokeStartFilter>('any');const [earlyOnly,setEarlyOnly]=useState(false);const [query,setQuery]=useState('');
 const [filter,setFilter]=useState('All karaoke'); const [dismissedHotel,setDismissedHotel]=useState(false);
 const [position,setPosition]=useState<{latitude:number;longitude:number}|null>(null);
 const visible=(plus?filterRows(rows,'',filter,'directory',position).filter(row=>{
-  const offer=backyardOfferBySlug.get(row.venue.slug);
-  if(!offer||row.venue.slug==='winstons-beach-club')return false;
-  const term=query.trim().toLowerCase();
-  if(term&&![row.search,...offer.highlights,...offer.activities].join(' ').toLowerCase().includes(term))return false;
-  if(mode==='week')return true;
-  // Tonight never implies unverified scheduled activities are taking place.
-  return Boolean(row.tonight)||offer.activities.some(activity=>['pool-games','football','basketball','open-early'].includes(activity));
+ const offer=backyardOfferBySlug.get(row.venue.slug);
+ if(!offer||row.venue.slug==='winstons-beach-club')return false;
+ const matches=matchesPlusDay(offer,matchingDay);
+ // Plus is based on today's venue activities, NOT whether karaoke is running.
+ if(!matches.length)return false;
+ const term=query.trim().toLowerCase();
+ return !term||[row.venue.venueName,row.venue.neighborhood,row.venue.city,...matches.map(match=>match.title)].join(' ').toLowerCase().includes(term);
 }):filterRows(rows,query,filter,mode,position,startFilter)).filter(row=>!earlyOnly||Boolean(getEarlyOpening(row.venue.slug)));
 const actions=useV2Actions(root,{venues:visible.map(row=>row.venue),mapTitle:plus?'Karaoke+ venues in San Diego':mode==='tonight'?'Tonight’s karaoke in San Diego':'This week’s karaoke in San Diego',userLocation:position}); const selectFilter=(label:string)=>{setFilter(label);if(label==='Near me')navigator.geolocation?.getCurrentPosition(p=>setPosition({latitude:p.coords.latitude,longitude:p.coords.longitude}),()=>actions.toast('Location access is unavailable. Search by neighborhood.'));if(label==='Neighborhood')root.current?.querySelector<HTMLInputElement>('#venue-search')?.focus();};
-useListReturn({mode,plus,startFilter,earlyOnly,query,filter,position,dismissedHotel},saved=>{
+useListReturn({mode,plus,plusDay,startFilter,earlyOnly,query,filter,position,dismissedHotel},saved=>{
   if(typeof saved?.query==='string')setQuery(saved.query);
   if(saved?.mode==='tonight'||saved?.mode==='week')setMode(saved.mode);
   if(typeof saved?.plus==='boolean')setPlus(saved.plus);
+  if(saved?.plusDay==='all'||PLUS_DAYS.some(day=>day===saved?.plusDay))setPlusDay(saved.plusDay as 'all'|PlusDay);
   if(['any','before-8','8-to-9','9-to-10','10-plus'].includes(String(saved?.startFilter)))setStartFilter(saved?.startFilter as KaraokeStartFilter);
   if(typeof saved?.earlyOnly==='boolean')setEarlyOnly(saved.earlyOnly);
   if(typeof saved?.filter==='string')setFilter(saved.filter);
@@ -71,9 +76,11 @@ return <div className={"v2-discovery"+(mode==="week" ? " week-mode" : "")} data-
   {!plus&&<Link className="filter-chip" href="/find-karaoke">More filters</Link>}
 </div>
 </div>
-{plus&&<div className="plus-note"><p><strong>Beyond the mic.</strong> More to discover.</p><Link href="/backyard">Explore The Backyard <span aria-hidden="true">↗</span></Link></div>}
-<header className="results-head"><div><p className="eyebrow">{"LOCAL KARAOKE SCHEDULES"}</p><h2 id="results-title">{plus ? (mode==='tonight'?'Karaoke+ spots to explore tonight':'Beyond the mic this week') : mode === 'week' ? 'This week in San Diego' : 'Tonight in San Diego'}</h2></div><span className="result-count"><b id="result-count">{visible.length}</b>{" places"}</span></header>
-<div className="results-list" id="results-list">{visible.map(item => <DiscoveryRow key={item.venue.slug} item={item} mode={mode} karaokePlus={plus?backyardOfferBySlug.get(item.venue.slug)?.highlights:undefined} openEarly={Boolean(getEarlyOpening(item.venue.slug))} />)}</div>
+{plus&&<div className="plus-note"><p><strong>Beyond the mic.</strong> {mode==='tonight'?'What venues offer today, even without karaoke.':'Browse activities by day, even when karaoke is off.'}</p><div className="plus-day-tools">
+{mode==='week'&&<label className="plus-day-select">Day<select aria-label="Karaoke+ day" value={plusDay} onChange={event=>setPlusDay(event.target.value as 'all'|PlusDay)}><option value="all">Any day</option>{PLUS_DAYS.map(day=><option key={day} value={day}>{day}</option>)}</select></label>}
+<Link href="/backyard">The Backyard <span aria-hidden="true">↗</span></Link></div></div>}
+<header className="results-head"><div><p className="eyebrow">{plus?"OTHER REASONS TO GO OUT":"LOCAL KARAOKE SCHEDULES"}</p><h2 id="results-title">{plus ? (mode==='tonight'?'More to do tonight':'Beyond the mic this week') : mode === 'week' ? 'This week in San Diego' : 'Tonight in San Diego'}</h2></div><span className="result-count"><b id="result-count">{visible.length}</b>{" places"}</span></header>
+<div className="results-list" id="results-list">{visible.map(item => <DiscoveryRow key={item.venue.slug} item={item} mode={mode} karaokePlus={plus?matchesPlusDay(backyardOfferBySlug.get(item.venue.slug)!,matchingDay).map(match=>match.title):undefined} openEarly={Boolean(getEarlyOpening(item.venue.slug))} />)}</div>
 {plus&&<div className="other-request-slot"><OtherActivityRequest source="discover" compact /></div>}
 <div id="empty-state" className={'empty'+(visible.length ? '' : ' show')}><strong>{plus?"No matching activities yet.":"No matching rooms yet."}</strong><p>{"Try another time, activity, venue, neighborhood or host."}</p></div>
 <section className="install-panel" aria-labelledby="install-title"><img className="install-logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /><div className="install-copy"><p className="eyebrow">{"KEEP IT HANDY"}</p><h3 id="install-title">{"Karaoke stays one tap away."}</h3><p>{"Install SingHUB for faster access to tonight’s rooms and your saved places."}</p></div><button className="install-button" id="install-button">{"Install SingHUB"}</button></section>
