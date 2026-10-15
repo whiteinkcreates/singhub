@@ -34,7 +34,6 @@ const actions=useV2Actions(root,{venues:visible.map(row=>row.venue),mapTitle:plu
 useListReturn({mode,plus,startFilter,earlyOnly,query,filter,position,dismissedHotel},saved=>{
   if(typeof saved?.query==='string')setQuery(saved.query);
   if(saved?.mode==='tonight'||saved?.mode==='week')setMode(saved.mode);
-  if(saved?.mode==='plus'){setMode('week');setPlus(true);}
   if(typeof saved?.plus==='boolean')setPlus(saved.plus);
   if(['any','before-8','8-to-9','9-to-10','10-plus'].includes(String(saved?.startFilter)))setStartFilter(saved?.startFilter as KaraokeStartFilter);
   if(typeof saved?.earlyOnly==='boolean')setEarlyOnly(saved.earlyOnly);
