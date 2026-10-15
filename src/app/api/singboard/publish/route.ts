@@ -24,6 +24,16 @@ function requiredText(form: FormData, key: string) {
   if (!value) throw new Error(`${key} is required.`);
   return value;
 }
+function safeLink(raw:string):string|undefined {
+  const value=raw.trim();
+  if(!value)return undefined;
+  if(value.startsWith("/") && !value.startsWith("//") && !value.includes("\\\\"))return value;
+  try{
+    const url=new URL(value);
+    if((url.protocol==="https:"||url.protocol==="http:") && url.username==="" && url.password==="")return url.toString();
+  }catch{}
+  throw new Error("Link must be an https:// address or a safe SingHUB path.");
+}
 function numberField(form: FormData, key: string, min: number, max: number) {
   const value = Number(form.get(key));
   if (!Number.isFinite(value) || value < min || value > max) throw new Error(`${key} is invalid.`);
@@ -118,7 +128,7 @@ export async function POST(request: Request) {
       category,
       venueSlug,
       hostId:ownedHost?.hostId,
-      title: requiredText(form, "title"),
+      title: requiredText(form, "title").slice(0,160),
       venueName,
       neighborhood,
       region,
@@ -130,7 +140,7 @@ export async function POST(request: Request) {
       eventDate,
       startTime: String(form.get("startTime") || "").trim() || undefined,
       hostName,
-      linkUrl: String(form.get("linkUrl") || "").trim() || undefined,
+      linkUrl: safeLink(String(form.get("linkUrl") || "")),
       x: placement.x,
       y: placement.y,
       rotation: placement.rotation,
