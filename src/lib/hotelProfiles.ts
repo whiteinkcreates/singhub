@@ -48,6 +48,7 @@ export function parseGuestGuideLifestyleMedia(input: unknown): GuestGuideLifesty
 }
 export type HotelMediaProfile = {
   publishedHero?: PublishedHotelHero;
+  heroDisabled?: boolean;
   packageReview?: HotelPackageReview;
   heroImageUrl: string;
   heroAlt: string;
@@ -81,6 +82,7 @@ export function parseHotelMediaProfile(input: unknown): HotelMediaProfile {
     return result;
   };
   const heroImageUrl = urlText("heroImageUrl");
+  if (value.heroDisabled !== undefined && typeof value.heroDisabled !== "boolean") throw new Error("Invalid hero visibility.");
   const heroPosition = value.heroPosition;
   if (heroPosition !== undefined && !["center", "top", "bottom", "left", "right"].includes(String(heroPosition))) throw new Error("Invalid hero focal point.");
   let packageReview:HotelPackageReview|undefined;
@@ -99,7 +101,7 @@ export function parseHotelMediaProfile(input: unknown): HotelMediaProfile {
     publishedHero = { heroImageUrl: snapshot.heroImageUrl, heroAlt: snapshot.heroAlt, heroPlacement: snapshot.heroPlacement, heroPosition: snapshot.heroPosition, imageSource: snapshot.imageSource, usageRights: snapshot.usageRights, packageReview: snapshot.packageReview };
   }
   const profile:HotelMediaProfile = {
-    publishedHero,
+    publishedHero, heroDisabled: value.heroDisabled === true,
     packageReview, heroImageUrl, heroPlacement:parseImagePlacement(value.heroPlacement), ...(heroPosition === undefined ? {} : { heroPosition: heroPosition as HeroPosition }),
     heroAlt:text("heroAlt",300), imageSource:text("imageSource",2048), usageRights:text("usageRights",2000),
     walkableImageUrl:urlText("walkableImageUrl",true), walkableImageAlt:text("walkableImageAlt",300,true), walkableImagePlacement:parseImagePlacement(value.walkableImagePlacement),

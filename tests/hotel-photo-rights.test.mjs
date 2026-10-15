@@ -107,3 +107,14 @@ test('staging a new photo also retains approved registered media when the old ov
  assert.equal(resolveHotelPhoto(registered,staged).heroImageUrl,registered.heroImageUrl);
  assert.equal(resolveHotelPhoto(registered,staged).heroPosition,'left');
 });
+
+test('deliberate hero removal clears published history and suppresses registry/licensed fallback',()=>{
+ const old=profile('https://example.com/old.jpg',true);
+ const cleared=retainPublishedHero({...profile(''),heroDisabled:true},old,registered);
+ assert.equal(cleared.publishedHero,undefined);
+ const parsed=parseHotelMediaProfile(cleared);
+ for(const slug of ['grande-colonial','omni-san-diego'])assert.equal(resolveHotelPhoto({...registered,slug},parsed).heroImageUrl,undefined);
+ const reselected={...profile('https://example.com/new.jpg',true),heroDisabled:false};
+ assert.equal(resolveHotelPhoto(registered,reselected).heroImageUrl,reselected.heroImageUrl);
+ assert.throws(()=>parseHotelMediaProfile({...profile(''),heroDisabled:'yes'}));
+});

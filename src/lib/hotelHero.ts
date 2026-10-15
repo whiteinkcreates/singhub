@@ -16,6 +16,7 @@ export function heroSnapshot(profile: HotelMediaProfile): PublishedHotelHero | u
 // Keep all metadata attached to the selected image. A staged crop must never move
 // an older approved photo. Only the server may retain a published snapshot.
 export function selectHotelHero(registered: HotelGuide, media: HotelMediaProfile | null, internal = false) {
+  if (media?.heroDisabled) return { hotel: { ...registered, heroImageUrl: undefined, heroAlt: undefined, heroPlacement: undefined, heroPosition: undefined }, approved: false };
   const saved = media?.heroImageUrl.trim() ? media : undefined;
   const published = media?.publishedHero;
   const selected = internal && saved ? saved
@@ -30,6 +31,7 @@ export function selectHotelHero(registered: HotelGuide, media: HotelMediaProfile
 }
 
 export function retainPublishedHero(next: HotelMediaProfile, previous: HotelMediaProfile | null, registered?: HotelGuide): HotelMediaProfile {
+  if (next.heroDisabled) return { ...next, heroImageUrl: "", publishedHero: undefined };
   // Never trust a snapshot submitted by the editor. Retain only server-read approval.
   const registeredSnapshot = previous && registered && isHotelHeroApproved(registered.heroImageUrl, previous.packageReview)
     ? heroSnapshot({ ...previous, heroImageUrl: registered.heroImageUrl!, heroAlt: registered.heroAlt || registered.name + " exterior", heroPosition: registered.heroPosition, heroPlacement: registered.heroPlacement }) : undefined;
