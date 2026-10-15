@@ -59,7 +59,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
     <div>
      <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">YOUR BACKYARD PASS</p>
      <h2 className="mt-2 text-3xl font-black uppercase">What are you here for?</h2>
-     <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">Come for the game. Stay for the mic. Explore the other reasons people gather at San Diego karaoke spots.</p>
+     <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">Explore the activities, games and events at venues in SingHUB’s karaoke directory. Karaoke doesn’t have to be happening that day.</p>
     </div>
     <Link href="/find-karaoke" className="rounded-lg border border-cyan-300/50 px-4 py-2 text-sm font-bold text-cyan-200 hover:bg-cyan-300/10">Find karaoke →</Link>
    </header>
