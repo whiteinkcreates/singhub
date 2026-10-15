@@ -27,7 +27,7 @@ function requiredText(form: FormData, key: string) {
 function safeLink(raw:string):string|undefined {
   const value=raw.trim();
   if(!value)return undefined;
-  if(value.startsWith("/") && !value.startsWith("//") && !value.includes("\\\\"))return value;
+  if(value.startsWith("/") && !value.startsWith("//") && !value.includes(String.fromCharCode(92)))return value;
   try{
     const url=new URL(value);
     if((url.protocol==="https:"||url.protocol==="http:") && url.username==="" && url.password==="")return url.toString();
