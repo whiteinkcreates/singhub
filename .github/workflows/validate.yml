@@ -32,7 +32,7 @@ jobs:
         run: npm run test:data
 
       - name: Verify canonical reconciliation and nightlife behavior
-        run: node --test tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs tests/hotel-package.test.mjs tests/hotel-photo-rights.test.mjs
+        run: node --test tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs tests/hotel-package.test.mjs tests/hotel-photo-rights.test.mjs tests/hotel-media-delete.test.mjs
 
       - name: Verify TourStops and Partner offer redemption
         run: node --test tests/gig-stubs.test.mjs tests/venue-offers.test.mjs tests/venue-checkins.test.mjs tests/location-attempts.test.mjs
@@ -62,6 +62,10 @@ jobs:
       - name: Prepare isolated My Jacket earned patch export fixture
         if: startsWith(github.head_ref, 'feat/my-jacket-')
         run: node tests/jacket-share-browser.mjs --prepare
+
+      - name: Prepare isolated hotel media editor fixture
+        if: startsWith(github.head_ref, 'fix/hotel-media-')
+        run: node tests/hotel-media-delete-browser.mjs --prepare
 
       - name: Build
         env:
@@ -146,7 +150,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Verify hotel desktop and mobile journeys
-        if: startsWith(github.head_ref, 'fix/hotel-') && !startsWith(github.head_ref, 'fix/hotel-hero-')
+        if: startsWith(github.head_ref, 'fix/hotel-') && !startsWith(github.head_ref, 'fix/hotel-hero-') && !startsWith(github.head_ref, 'fix/hotel-media-')
         run: |
           npm run start -- --port 3100 > /tmp/hotel-qa-server.log 2>&1 &
           server_pid=$!
@@ -156,6 +160,18 @@ jobs:
             sleep 1
           done
           node tests/hotel-journey-browser.mjs
+
+      - name: Verify hotel media deletion and clear controls
+        if: startsWith(github.head_ref, 'fix/hotel-media-')
+        run: |
+          npm run start -- --port 3100 > /tmp/hotel-media-qa.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://localhost:3100/hotel-media-delete-qa > /dev/null; then break; fi
+            sleep 1
+          done
+          node tests/hotel-media-delete-browser.mjs
 
       - name: Verify hotel hero rights, staging and responsive fallback
         if: startsWith(github.head_ref, 'fix/hotel-hero-')

@@ -6,7 +6,7 @@ import { getHotelGuide } from "@/lib/hotelGuides";
 import { GUEST_GUIDE_DEFAULTS_SLUG, parseGuestGuideLifestyleMedia, parseHotelMediaProfile, type GuestGuideLifestyleMedia, type HotelMediaProfile } from "@/lib/hotelProfiles";
 // Last known curated guest-guide artwork, saved in SingHUB's media library.
 // Resilience fallback only: Supabase global defaults and hotel overrides always win.
-const CURATED_SECTION_FALLBACK: GuestGuideLifestyleMedia = {
+export const CURATED_SECTION_FALLBACK: GuestGuideLifestyleMedia = {
   walkableImageUrl: "https://res.cloudinary.com/dy3lyejkk/image/upload/v1791305205/singhub/hotels/guest-guide-defaults/jsh5q2jgzkrype6ym2bs.jpg",
   walkableImageAlt: "Walkable Guest Guide lifestyle image",
   quickRideImageUrl: "https://res.cloudinary.com/dy3lyejkk/image/upload/v1791408735/singhub/hotels/guest-guide-defaults/yss9szag98ydni4ykv4b.png",

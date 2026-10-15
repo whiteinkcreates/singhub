@@ -44,5 +44,6 @@ export function applyHotelPhoto(hotel: HotelGuide, demo = false, approved = fals
 
 export function resolveHotelPhoto(registered: HotelGuide, media: HotelMediaProfile | null, internal = false) {
   const { hotel, approved } = selectHotelHero(registered, media, internal);
+  if (media?.heroDisabled) return { ...hotel, heroCredit: undefined };
   return applyHotelPhoto(hotel, internal, approved);
 }

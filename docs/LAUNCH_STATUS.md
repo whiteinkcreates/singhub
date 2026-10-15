@@ -123,3 +123,9 @@ Fresh branch `fix/hotel-hero-publication-safety` from main `500d6c7`; selectivel
 Corey explicitly authorized approval of the existing saved hotel hero images on October 14, stating that he made the images. Eleven exact saved URLs were approved and independently read back with matching review URLs. Existing URLs, focal positions, responsive placements and branding approvals were preserved. This is an owner approval record, not independent provenance research. No unsaved registry photo or future replacement was automatically approved.
 
 Local resolver/rights, package, analytics, plan-email and crop tests: 28 passed. Lint: zero errors, 34 existing warnings. Production build passes. Real-route isolated browser matrix and deployed-preview acceptance are tracked separately; do not infer live verification from these source checks. No production fixture writes.
+
+## October 14 hotel media deletion follow-up
+
+PR #364 is merged at `db053a8` and production hero rendering was checked on mobile/desktop for Orli, Grande Colonial and Hard Rock. Grande Colonial does have a registered exterior photo; its absent saved profile previously prevented public approval. Following Corey's confirmation and prior approval instruction, that exact registry image was selected and approved without replacing another profile.
+
+Follow-up branch `fix/hotel-media-delete` adds hotel upload deletion with saved-usage checks across staged/published heroes and section imagery. Clear hero is an explicit no-photo choice; blank overrides without that choice retain earlier safety behavior. No real upload is deleted during testing. Merge/production checks are separate from source implementation.
