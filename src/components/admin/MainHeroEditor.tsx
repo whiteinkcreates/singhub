@@ -2,12 +2,13 @@
 import Link from "next/link";
 import {useEffect,useState} from "react";
 import {VenueMediaLibrary} from "@/components/admin/VenueMediaLibrary";
-import {SITE_DISCOVERY_HERO_KEY,SITE_VENUES_HERO_KEY,SITE_ACCOUNT_HERO_KEY,SITE_SINGBOARD_HERO_KEY,type HostMediaSettings} from "@/lib/hostMedia";
+import {SITE_DISCOVERY_HERO_KEY,SITE_VENUES_HERO_KEY,SITE_ACCOUNT_HERO_KEY,SITE_SINGBOARD_HERO_KEY,SITE_BACKYARD_HERO_KEY,type HostMediaSettings} from "@/lib/hostMedia";
 const targets=[
  {key:SITE_DISCOVERY_HERO_KEY,label:"Discover",path:"/",fallback:"/images/singhub-v2/singhub-city-discovery.webp"},
  {key:SITE_VENUES_HERO_KEY,label:"Venues",path:"/find-karaoke",fallback:"/images/singhub-v2/singhub-venues-alley.webp"},
  {key:SITE_ACCOUNT_HERO_KEY,label:"My SingHUB",path:"/account",fallback:"/images/singhub-v2/my-singhub-backstage-crowd-v2.png"},
- {key:SITE_SINGBOARD_HERO_KEY,label:"SingBOARD",path:"/singboard",fallback:"/images/singboard/singboard-sticker-wall.webp"}];
+ {key:SITE_SINGBOARD_HERO_KEY,label:"SingBOARD",path:"/singboard",fallback:"/images/singboard/singboard-sticker-wall.webp"},
+ {key:SITE_BACKYARD_HERO_KEY,label:"The Backyard",path:"/backyard",fallback:"/images/singhub-v2/singhub-venues-alley.webp"}];
 const input="block w-full rounded-lg border border-white/20 bg-slate-950 p-3 text-white";
 export function MainHeroEditor(){
  const [key,setKey]=useState<string>(SITE_DISCOVERY_HERO_KEY);
