@@ -4,6 +4,9 @@ import {PositionedImage} from "@/components/media/PositionedImage";
 import {HeroScrollCue} from "@/components/layout/HeroScrollCue";
 import {getHostMediaSettings} from "@/lib/hostMedia.server";
 import {SITE_BACKYARD_HERO_KEY} from "@/lib/hostMedia";
+import {backyardActivities,backyardVenueOffers} from "@/lib/backyardActivities";
+import {getVenueListings} from "@/lib/venueData";
+import {getSanDiegoPublicVenues} from "@/lib/sanDiegoMarket";
 
 export const dynamic="force-dynamic";
 export const metadata:Metadata={
@@ -12,21 +15,14 @@ export const metadata:Metadata={
  robots:{index:false,follow:true},
 };
 
-const stages=[
- {slug:"football",name:"Football",area:"Game Day Tent",description:"Find the game. Stay for the mic.",icon:"🏈"},
- {slug:"basketball",name:"Basketball",area:"Game Day Tent",description:"Catch the action at the bar.",icon:"🏀"},
- {slug:"ufc",name:"UFC",area:"Game Day Tent",description:"Find verified fight-night watch parties.",icon:"🥊"},
- {slug:"live-music",name:"Live Music",area:"Live Music Stage",description:"Bands, jam nights and open mics.",icon:"🎸"},
- {slug:"trivia",name:"Trivia",area:"Game Shack",description:"Team up for another kind of spotlight.",icon:"🧠"},
- {slug:"bingo",name:"Bingo",area:"Game Shack",description:"Your next lucky night out.",icon:"🎟️"},
- {slug:"pool-games",name:"Pool & Games",area:"Game Shack",description:"Pool, darts and more ways to play.",icon:"🎱"},
- {slug:"specials",name:"Food & Specials",area:"Concessions",description:"Something good before or after karaoke.",icon:"🍔"}
-] as const;
-
 export default async function BackyardPage({searchParams}:{searchParams:Promise<{activity?:string;q?:string}>}){
  const params=await searchParams;
- const hero=await getHostMediaSettings(SITE_BACKYARD_HERO_KEY).catch(()=>null);
+ const [hero,allVenues]=await Promise.all([getHostMediaSettings(SITE_BACKYARD_HERO_KEY).catch(()=>null),getVenueListings()]);
+ const venueBySlug=new Map(getSanDiegoPublicVenues(allVenues).map(venue=>[venue.slug,venue]));
+ const stages=backyardActivities;
  const current=stages.find(stage=>stage.slug===params.activity);
+ const search=(params.q||"").trim().toLowerCase();
+ const matches=backyardVenueOffers.filter(offer=>(!current||offer.activities.includes(current.slug))&&venueBySlug.has(offer.slug)&&offer.slug!=="winstons-beach-club").filter(offer=>{const venue=venueBySlug.get(offer.slug)!;return !search||[venue.venueName,venue.neighborhood,...offer.highlights,...offer.activities].join(" ").toLowerCase().includes(search)}).sort((a,b)=>venueBySlug.get(a.slug)!.venueName.localeCompare(venueBySlug.get(b.slug)!.venueName));
  return <main data-scroll-page="backyard" className="min-h-[100dvh] bg-[#050609] text-white">
   <section data-page-hero="" className="relative isolate overflow-hidden" aria-labelledby="backyard-title">
     <PositionedImage
@@ -70,13 +66,18 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
      </Link>
     )}
    </div>
-   {current&&<div className="rounded-2xl border border-cyan-300/30 bg-cyan-300/[.05] p-6">
-    <p className="text-xs font-black uppercase tracking-widest text-cyan-300">{current.area}</p>
-    <h2 className="mt-2 text-3xl font-black">{current.name}</h2>
-    <p className="mt-3 max-w-xl text-slate-300">We are verifying venue activities and event schedules before enabling live {current.name.toLowerCase()} results. No unconfirmed game screenings or event times will be presented as confirmed.</p>
-    <Link href="/find-karaoke" className="mt-4 inline-block font-bold text-cyan-300">Explore karaoke venues →</Link>
-   </div>}
-   <div className="border-t border-white/15 pt-6 text-sm text-slate-400">Karaoke+ is growing with our venue community. Searchable verified venue and event results are coming next.</div>
+   <div className="rounded-2xl border border-cyan-300/30 bg-cyan-300/[.05] p-6">
+    <p className="text-xs font-black uppercase tracking-widest text-cyan-300">{current?.area||"BEYOND THE MIC"}</p>
+    <h2 className="mt-2 text-3xl font-black">{current?current.name:"More to offer at karaoke venues"}</h2>
+    <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">{current?.description||"Browse established activities, then open the venue's SingHUB page for karaoke details."} {current&&(current.slug==="football"||current.slug==="basketball"||current.slug==="ufc")?"Sports-friendly doesn't guarantee a specific game or fight is being shown. Confirm with the venue before visiting.":""}</p>
+    <p role="status" className="mt-3 text-xs font-bold text-cyan-200">{matches.length} {matches.length===1?"venue":"venues"} to explore</p>
+    {matches.length?<div className="mt-5 grid gap-3 md:grid-cols-2">{matches.map(offer=>{const venue=venueBySlug.get(offer.slug)!;return <article key={offer.slug} className="rounded-xl border border-white/15 bg-slate-950/70 p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-widest text-fuchsia-300">Karaoke+</p><h3 className="mt-1 text-xl font-black text-white">{venue.venueName}</h3><p className="text-sm text-slate-400">{venue.neighborhood}</p></div><Link className="rounded-lg bg-cyan-300 px-3 py-2 text-xs font-black text-black" href={"/venues/"+venue.slug}>See venue →</Link></div>
+      <div className="mt-4 flex flex-wrap gap-2">{offer.highlights.slice(0,4).map(tag=><span key={tag} className="rounded-full border border-white/20 bg-white/[.06] px-3 py-1 text-xs text-slate-200">{tag}</span>)}</div>
+      <p className="mt-3 text-xs text-slate-400">Activities based on venue information. <a href={offer.source} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Check source ↗</a></p>
+    </article>})}</div>:<p className="mt-5 text-sm text-slate-300">No confirmed venue matches yet. Try another activity or clear your search.</p>}
+   </div>
+   <div className="border-t border-white/15 pt-6 text-sm text-slate-400">An activity listing is not confirmation of a specific game broadcast or event date. Event-by-event verification is coming next.</div>
   </section>
  </main>;
 }
