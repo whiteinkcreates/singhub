@@ -21,9 +21,11 @@ const [mode,setMode]=useState<'tonight'|'week'>('tonight'); const [plus,setPlus]
 const [startFilter,setStartFilter]=useState<KaraokeStartFilter>('any');const [earlyOnly,setEarlyOnly]=useState(false);const [query,setQuery]=useState('');
 const [filter,setFilter]=useState('All karaoke'); const [dismissedHotel,setDismissedHotel]=useState(false);
 const [position,setPosition]=useState<{latitude:number;longitude:number}|null>(null);
-const visible=(plus?filterRows(rows,query,filter,'directory',position).filter(row=>{
+const visible=(plus?filterRows(rows,'',filter,'directory',position).filter(row=>{
   const offer=backyardOfferBySlug.get(row.venue.slug);
   if(!offer||row.venue.slug==='winstons-beach-club')return false;
+  const term=query.trim().toLowerCase();
+  if(term&&![row.search,...offer.highlights,...offer.activities].join(' ').toLowerCase().includes(term))return false;
   if(mode==='week')return true;
   // Tonight never implies unverified scheduled activities are taking place.
   return Boolean(row.tonight)||offer.activities.some(activity=>['pool-games','football','basketball','open-early'].includes(activity));
@@ -59,10 +61,10 @@ return <div className={"v2-discovery"+((mode !== "tonight"||plus) ? " week-mode"
 </select></label>}
 </div><div className="filters" aria-label="Discovery filters"><button aria-pressed={filter === "All karaoke"} onClick={() => selectFilter("All karaoke")} className={'filter-chip'+(filter === "All karaoke" ? ' active' : '')}>{"All karaoke"}</button><button aria-pressed={filter === "Near me"} onClick={() => selectFilter("Near me")} className={'filter-chip'+(filter === "Near me" ? ' active' : '')}>{"Near me"}</button><button aria-pressed={filter === "Neighborhood"} onClick={() => selectFilter("Neighborhood")} className={'filter-chip'+(filter === "Neighborhood" ? ' active' : '')}>{"Neighborhood"}</button><button aria-pressed={filter === "Private rooms"} onClick={() => selectFilter("Private rooms")} className={'filter-chip'+(filter === "Private rooms" ? ' active' : '')}>{"Private rooms"}</button><button aria-pressed={earlyOnly} onClick={()=>setEarlyOnly(v=>!v)} className={'filter-chip'+(earlyOnly?' active':'')}>Open Early · 6 AM</button><a className="filter-chip" href="/find-karaoke">{"More filters"}</a></div></div>
 {plus&&<div className="my-4 rounded-xl border border-fuchsia-400/25 bg-fuchsia-400/[.06] px-4 py-4"><strong className="text-lg font-black">Beyond the mic, bars with more to offer.</strong><p className="mt-1 text-sm text-slate-300">Explore karaoke spots with games, live music, trivia, food specials and more. Tonight includes permanent amenities or venues with karaoke tonight, not confirmation of a separate event. <Link href="/backyard" className="font-bold text-cyan-300 underline">Explore The Backyard →</Link></p></div>}
+<div className="my-4"><OtherActivityRequest source="discover" /></div>
 <header className="results-head"><div><p className="eyebrow">{"LOCAL KARAOKE SCHEDULES"}</p><h2 id="results-title">{plus ? (mode==='tonight'?'Karaoke+ spots to explore tonight':'Beyond the mic this week') : mode === 'week' ? 'This week in San Diego' : 'Tonight in San Diego'}</h2></div><span className="result-count"><b id="result-count">{visible.length}</b>{" places"}</span></header>
 <div className="results-list" id="results-list">{visible.map(item => <DiscoveryRow key={item.venue.slug} item={item} mode={plus?'plus':mode} karaokePlus={plus?backyardOfferBySlug.get(item.venue.slug)?.highlights:undefined} openEarly={Boolean(getEarlyOpening(item.venue.slug))} />)}</div>
 <div id="empty-state" className={'empty'+(visible.length ? '' : ' show')}><strong>{plus?"No matching activities yet.":"No matching rooms yet."}</strong><p>{"Try another time, activity, venue, neighborhood or host."}</p></div>
-<div className="my-5"><OtherActivityRequest source="discover" /></div>
 <section className="install-panel" aria-labelledby="install-title"><img className="install-logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /><div className="install-copy"><p className="eyebrow">{"KEEP IT HANDY"}</p><h3 id="install-title">{"Karaoke stays one tap away."}</h3><p>{"Install SingHUB for faster access to tonight’s rooms and your saved places."}</p></div><button className="install-button" id="install-button">{"Install SingHUB"}</button></section>
 
 
