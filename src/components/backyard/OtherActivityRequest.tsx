@@ -1,7 +1,7 @@
 "use client";
 import {useState, type FormEvent} from "react";
 
-export function OtherActivityRequest({source}:{source:"discover"|"backyard"}) {
+export function OtherActivityRequest({source,compact=false}:{source:"discover"|"backyard";compact?:boolean}) {
   const [expanded,setExpanded]=useState(false);
   const [pending,setPending]=useState(false);
   const [error,setError]=useState("");
@@ -37,10 +37,10 @@ export function OtherActivityRequest({source}:{source:"discover"|"backyard"}) {
     } catch(err) {setError(err instanceof Error?err.message:"Please try again.");}
     finally {setPending(false);}
   }
-  return <div className="rounded-xl border border-cyan-300/25 bg-cyan-300/[.05] p-4 text-white">
+  return <div className={compact?"other-activity-compact":"rounded-xl border border-cyan-300/25 bg-cyan-300/[.05] p-4 text-white"}>
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div><strong className="text-base font-black">Something else in mind?</strong><p className="mt-1 text-sm text-slate-300">Bowling tonight? Cornhole this weekend? Tell us what we're missing.</p></div>
-      <button type="button" aria-expanded={expanded} onClick={()=>setExpanded(v=>!v)} className="rounded-lg border border-cyan-300 px-4 py-2 text-sm font-extrabold text-cyan-200">{expanded?"Close":"Other →"}</button>
+      <button type="button" aria-expanded={expanded} onClick={()=>setExpanded(v=>!v)} className="rounded-lg border border-cyan-300 px-4 py-2 text-sm font-extrabold text-cyan-200">{expanded?"Close":compact?"Request an activity →":"Other →"}</button>
     </div>
     {expanded&&<form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-2">
       <div className="hidden" aria-hidden="true"><label>Website<input name="company-website" tabIndex={-1} autoComplete="off"/></label></div>
