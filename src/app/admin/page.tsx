@@ -1,4 +1,6 @@
 import Link from "next/link";
+import {getSingBoardReviewQueue} from "@/lib/singboard/repository";
+import {requireAdminAuthorization} from "@/lib/adminAuthorization";
 
 export const metadata = {
   title: "Admin Tools | SingHUB",
@@ -71,7 +73,9 @@ const tools = [
   },
 ];
 
-export default function AdminHomePage() {
+export default async function AdminHomePage() {
+  await requireAdminAuthorization();
+  const unreviewed=await getSingBoardReviewQueue().then(posts=>posts.filter(post=>post.reviewStatus==="pending").length).catch(()=>0);
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 text-white">
       <section className="max-w-3xl">
@@ -79,6 +83,8 @@ export default function AdminHomePage() {
         <h1 className="mt-3 text-4xl font-black md:text-6xl">Admin Tools</h1>
         <p className="mt-4 text-slate-300">Backstage tools for keeping the Venue Index accurate, publishing content, and building venue partnerships.</p>
       </section>
+
+      {unreviewed>0&&<Link href="/admin/singboard-review" className="mt-6 flex items-center justify-between gap-3 rounded-xl border border-amber-300/40 bg-amber-300/10 p-4 font-bold text-amber-100"><span>{unreviewed} SingBOARD post{unreviewed===1?"":"s"} awaiting your verification</span><span>Review →</span></Link>}
 
       <section className="mt-8 grid gap-5 md:grid-cols-2">
         {tools.map((tool) => (
