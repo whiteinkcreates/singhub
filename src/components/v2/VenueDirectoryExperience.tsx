@@ -17,7 +17,7 @@ const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials()
 const [query,setQuery]=useState(initialQuery);const [quick,setQuick]=useState(initialType==='private_room'?'private rooms':'');const [selected,setSelected]=useState<string[]>([]);
 useListReturn({query,quick,selected},saved=>{if(typeof saved?.query==='string')setQuery(saved.query);if(typeof saved?.quick==='string')setQuick(saved.quick);if(Array.isArray(saved?.selected))setSelected(saved.selected.filter(term=>typeof term==='string'));});
 const tonightOnly=initialDay.toLowerCase()==='tonight';
-const visible=filterRows(rows,query,quick,tonightOnly?'tonight':'directory').filter(item=>selected.every(term=>item.search.includes(term)) && (!initialDay || tonightOnly || item.venue.venueType==='private_room' || item.events.some(event=>event.karaokeDay.toLowerCase().includes(initialDay.toLowerCase()))));
+const visible=filterRows(rows,query,quick,tonightOnly?'tonight':'directory').filter(item=>selected.every(term=>item.search.includes(term)) && (!initialDay || tonightOnly || item.venue.venueType==='private_room' || item.events.some(event=>event.karaokeDay.toLowerCase().includes(initialDay.toLowerCase()) || event.karaokeDay.toLowerCase().includes('daily')) || item.venue.karaokeDay.toLowerCase().includes(initialDay.toLowerCase()) || item.venue.karaokeDay.toLowerCase().includes('daily')));
 const actions=useV2Actions(root,{venues:visible.map(row=>row.venue),mapTitle:'Your filtered karaoke venues'});
 
 return <div data-scroll-page="venues" className="v2-directory" ref={root}>
