@@ -22,5 +22,5 @@ export default async function DayPage({ params }: Props) {
     getDiscoveryData(),
     getHostMediaSettings(SITE_DISCOVERY_HERO_KEY).catch(() => null),
   ]);
-  return <VenueDirectoryExperience rows={rows} initialDay=page.day heroUrl={hero?.heroUrl} heroAlt={hero?.heroAlt} heroPosition={hero?.heroPosition} heroPlacement={hero?.heroPlacement} />;
+  return <VenueDirectoryExperience rows={rows} initialDay={page.day} heroUrl={hero?.heroUrl} heroAlt={hero?.heroAlt} heroPosition={hero?.heroPosition} heroPlacement={hero?.heroPlacement} />;
 }
