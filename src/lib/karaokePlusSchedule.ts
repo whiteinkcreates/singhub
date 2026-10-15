@@ -17,7 +17,7 @@ const PLACE_AMENITIES=/\bpool tables?\b|\bpool and shuffleboard\b|^pool$|\bdarts
  * must never appear as "happening tonight".
  */
 export function classifyPlusHighlights(offer:BackyardOffer):PlusMatch[]{
- return offer.highlights.flatMap(title=>{
+ return offer.highlights.flatMap<PlusMatch>(title=>{
    if(/^opens?\s+at\s+/i.test(title))return [];
    const when=title.match(/^(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)\b/i);
    if(when)return [{title,kind:"scheduled" as const,day:when[1].toLowerCase()}];
