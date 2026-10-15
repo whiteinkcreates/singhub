@@ -76,7 +76,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
    </form>
    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     {stages.filter(s=>(!params.q||[s.name,s.area,s.description].join(" ").toLowerCase().includes(params.q.toLowerCase()))&&(!current||s.slug===current.slug)).map(stage=>
-     <Link key={stage.slug} href={`/backyard?activity=${stage.slug}`} className="group flex min-h-48 flex-col justify-between rounded-2xl border border-white/15 bg-gradient-to-br from-white/10 to-white/[.02] p-5 transition hover:border-fuchsia-300/60 hover:bg-white/10">
+     <Link key={stage.slug} href={`/backyard?activity=${stage.slug}${selectedDay==="all"?"":"&day="+selectedDay}`} className="group flex min-h-48 flex-col justify-between rounded-2xl border border-white/15 bg-gradient-to-br from-white/10 to-white/[.02] p-5 transition hover:border-fuchsia-300/60 hover:bg-white/10">
       <span className="text-4xl" aria-hidden="true">{stage.icon}</span>
       <div><p className="text-xs font-black uppercase tracking-widest text-fuchsia-300">{stage.area}</p><h3 className="mt-2 text-2xl font-black">{stage.name}</h3><p className="mt-2 text-sm text-slate-300">{stage.description}</p></div>
      </Link>
