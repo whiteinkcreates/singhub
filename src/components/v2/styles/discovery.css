@@ -151,3 +151,12 @@
   .v2-discovery .plus-note p { font-size:.79rem; }
   .v2-discovery .plus-note a { font-size:.77rem; }
 }
+
+/* One clear hand-off to non-karaoke-night activity discovery. */
+.v2-discovery .backyard-bridge { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px 16px; padding:11px 14px; border-left:3px solid var(--cyan); background:linear-gradient(90deg,rgba(0,200,255,.075),transparent); color:#b8c1cf; font-size:.84rem; }
+.v2-discovery .backyard-bridge a { color:var(--cyan); text-decoration:none; font-weight:850; white-space:nowrap; }
+.v2-discovery .backyard-bridge a:hover { text-decoration:underline; }
+.v2-discovery .plus-day-tools { display:flex; gap:12px; align-items:center; }
+.v2-discovery .plus-day-select { display:flex; gap:6px; align-items:center; color:#9ba5b3; font-family:var(--display); font-weight:850; text-transform:uppercase; font-size:.81rem; }
+.v2-discovery .plus-day-select select { border:1px solid var(--line-bright); background:#111720; color:#fff; padding:7px 9px; font:700 .81rem var(--sans); }
+@media(max-width:560px) {.v2-discovery .backyard-bridge { margin:2px 0; padding:10px 11px; font-size:.78rem; }.v2-discovery .plus-day-tools { flex-wrap:wrap; }}
