@@ -1,7 +1,8 @@
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HostProfileTemplate } from "@/components/host/HostProfileTemplate";
+import {getActiveSingBoardFlyers} from "@/lib/singboard/repository";
 import { getActiveHosts, getHostBySlug } from "@/lib/hostData";
 
 type HostProfilePageProps = {
@@ -48,5 +49,7 @@ export default async function HostProfilePage({ params }: HostProfilePageProps) 
   const { slug } = await params;
   const host = await getHostBySlug(slug);
   if (!host) notFound();
-  return <HostProfileTemplate host={host} />;
+  const allPosts=await getActiveSingBoardFlyers().catch(()=>[]);
+  const posts=allPosts.filter(post=>post.hostId===host.hostId || post.hostId===host.slug);
+  return <HostProfileTemplate host={host} posts={posts} />;
 }
