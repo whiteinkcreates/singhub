@@ -34,7 +34,7 @@ const localToday=`${todayMap.year}-${todayMap.month}-${todayMap.day}`;
 const boardCalendarEvents=posts.filter(post=>(post.category==="special_event" || post.category==="theme_karaoke") && post.eventDate>=localToday)
   .map(post=>({title:post.title,date:post.eventDate,time:post.startTime,detail:post.detail,category:post.category==="theme_karaoke"?"karaoke" as const:"special" as const,sourceUrl:"/events/"+post.id}));
 const venueEvents=(isEnhanced?[...(enhancement?.venueEvents||[]),...boardCalendarEvents]:[]).filter(event=>event.date>=localToday)
-  .filter((event,index,array)=>array.findIndex(item=>item.date===event.date&&item.title.toLowerCase()===event.title.toLowerCase())===index)
+  .filter((event,index,array)=>array.findIndex(item=>item.date===event.date&&item.title.toLowerCase()===event.title.toLowerCase()&&(item.time||"")===(event.time||""))===index)
   .sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
 
 return <div className="v2-basic" data-responsive-basic="" ref={root}>
