@@ -48,6 +48,9 @@ jobs:
       - name: Keep heavy media out of deployments
         run: npm run check:assets
 
+      - name: Verify SingBOARD contributor and review safeguards
+        run: node --test tests/singboard-v2.test.mjs
+
       - name: Lint
         run: npm run lint
 
