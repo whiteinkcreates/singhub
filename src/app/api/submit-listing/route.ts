@@ -110,7 +110,7 @@ export async function POST(request: Request) {
             body:JSON.stringify({
               from,to:to.split(",").map(value=>value.trim()).filter(Boolean),
               subject:"SingHUB: new Other activity request",
-              text:["A visitor asked SingHUB to research an activity.","",cleanString(payload.notes),"","Reply contact: "+(cleanString(payload.submitterContact)||"Not provided"),"Source: "+cleanString(payload.sourceLink),"Next step: research venues, verify sources, and consider a new Backyard category."].join("\\n")
+              text:["A visitor asked SingHUB to research an activity.","",cleanString(payload.notes),"","Reply contact: "+(cleanString(payload.submitterContact)||"Not provided"),"Source: "+cleanString(payload.sourceLink),"Next step: research venues, verify sources, and consider a new Backyard category."].join("\n")
             })
           });
           if(!sent.ok)console.error("Activity request email notification failed",sent.status);
