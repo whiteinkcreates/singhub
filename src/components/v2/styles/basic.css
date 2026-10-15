@@ -372,3 +372,16 @@
 .v2-basic .schedule-extra-copy { color:#f8bfdf!important; font-size:.76rem!important; line-height:1.4; }
 .v2-basic .schedule-row { grid-template-columns:minmax(112px,auto) minmax(0,1fr) auto; }
 @media(max-width:540px) { .v2-basic .schedule-row { grid-template-columns:minmax(115px,40%) minmax(0,1fr); } .v2-basic .schedule-row time { grid-column:2; } }
+
+/* Calendar dots are intentionally ONLY scheduled event records, never amenities. */
+.v2-basic .calendar-dots .kind-trivia, .v2-basic .calendar-legend .kind-trivia { background:#ff6fc2; }
+.v2-basic .calendar-dots .kind-bingo, .v2-basic .calendar-legend .kind-bingo { background:#69dfac; }
+.v2-basic .calendar-dots .kind-sports, .v2-basic .calendar-legend .kind-sports { background:#f6a64b; }
+.v2-basic .calendar-dots .kind-special, .v2-basic .calendar-legend .kind-special { background:#f9dc75; }
+.v2-basic .calendar-legend { display:flex; flex-wrap:wrap; gap:9px 13px; padding:12px 15px; border-top:1px solid var(--line); }
+.v2-basic .calendar-legend-item { display:inline-flex; align-items:center; gap:5px; font-size:.68rem; font-weight:700; color:#aebccc; }
+.v2-basic .calendar-legend-item i { display:block; width:7px; height:7px; border-radius:50%; background:#98a5bc; }
+.v2-basic .calendar-legend-item .kind-karaoke { background:var(--pink); }
+.v2-basic .calendar-legend-item .kind-live_music { background:var(--cyan); }
+.v2-basic .calendar-legend-item .kind-game { background:var(--amber); }
+.v2-basic .calendar-legend-item .kind-community { background:#b3a1ff; }
