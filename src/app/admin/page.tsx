@@ -42,6 +42,13 @@ const tools = [
       "Create and track intentional /go/ links for QR placements, social posts, partners, collabs, Reddit CTAs, hotels, and campaigns.",
   },
   {
+    href: "/admin/singboard-review",
+    eyebrow: "Community Publishing",
+    title: "SingBOARD Review",
+    description:
+      "Review newly published venue and KJ event flyers, verify accuracy, or unpublish problem posts in one click.",
+  },
+  {
     href: "/admin/singboard-access",
     eyebrow: "Community Access",
     title: "SingBOARD Access",
