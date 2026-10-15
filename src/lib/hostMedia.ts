@@ -6,7 +6,8 @@ export const SITE_DISCOVERY_HERO_KEY='singhub-discovery-hero';
 export const SITE_VENUES_HERO_KEY='singhub-venues-hero';
 export const SITE_ACCOUNT_HERO_KEY='singhub-account-hero';
 export const SITE_SINGBOARD_HERO_KEY='singhub-singboard-hero';
-export const SITE_HERO_KEYS=[SITE_DISCOVERY_HERO_KEY,SITE_VENUES_HERO_KEY,SITE_ACCOUNT_HERO_KEY,SITE_SINGBOARD_HERO_KEY] as const;
+export const SITE_BACKYARD_HERO_KEY='singhub-backyard-hero';
+export const SITE_HERO_KEYS=[SITE_DISCOVERY_HERO_KEY,SITE_VENUES_HERO_KEY,SITE_ACCOUNT_HERO_KEY,SITE_SINGBOARD_HERO_KEY,SITE_BACKYARD_HERO_KEY] as const;
 export type HostMediaSettings={heroPlacement?:ResponsiveImagePlacement;portraitPlacement?:ResponsiveImagePlacement;portraitUrl?:string;portraitPosition?:HeroPosition;heroUrl?:string;heroAlt?:string;heroPosition?:HeroPosition;imageSource?:string;usageRights?:string;houseRules?:string;rotationPolicy?:string};
 export function parseHostMediaSettings(input:unknown):HostMediaSettings{
  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('Host media settings are required.');
