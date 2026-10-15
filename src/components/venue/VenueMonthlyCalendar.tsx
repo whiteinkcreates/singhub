@@ -8,6 +8,9 @@ const CATEGORY_LABELS: Record<string, string> = {
   karaoke: "Karaoke",
   live_music: "Live music",
   game: "Games",
+  trivia: "Trivia",
+  bingo: "Bingo",
+  sports: "Sports",
   community: "Community",
   special: "Special event",
 };
@@ -89,6 +92,7 @@ export function VenueMonthlyCalendar({
           </button>;
         })}
       </div>
+      <div className="calendar-legend" aria-label="Calendar dot colors">{(["karaoke","trivia","bingo","live_music","sports","game","community","special"] as const).map(category=><span key={category} className="calendar-legend-item"><i className={"kind-"+category} aria-hidden="true"/>{CATEGORY_LABELS[category]}</span>)}</div>
       <div className="calendar-results">
         <div className="calendar-results-heading">
           <strong>{showAll ? "All " + monthEvents.length + " listed events" : currentSelection ? prettyDate(currentSelection) : "No listed events"}</strong>
