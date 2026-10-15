@@ -81,6 +81,7 @@ return <div className={"v2-discovery"+(mode==="week" ? " week-mode" : "")} data-
 {plus&&<div className="plus-note"><p><strong>Sing and more.</strong> {mode==='tonight'?'Something extra on tonight’s karaoke lineup.':'Something extra on the same karaoke night.'}</p><div className="plus-day-tools">
 {mode==='week'&&<label className="plus-day-select">Day<select aria-label="Karaoke+ day" value={plusDay} onChange={event=>setPlusDay(event.target.value as 'all'|PlusDay)}><option value="all">Any day</option>{PLUS_DAYS.map(day=><option key={day} value={day}>{day}</option>)}</select></label>}
 <Link href="/backyard">All other activities: The Backyard <span aria-hidden="true">↗</span></Link></div></div>}
+{!plus&&<div className="backyard-bridge"><span>More than karaoke? Explore games, live music, trivia and specials at karaoke venues.</span><Link href="/backyard">The Backyard ↗</Link></div>}
 <header className="results-head"><div><p className="eyebrow">{plus?"KARAOKE + MORE":"LOCAL KARAOKE SCHEDULES"}</p><h2 id="results-title">{plus ? (mode==='tonight'?'Karaoke+ tonight':'Karaoke+ this week') : mode === 'week' ? 'This week in San Diego' : 'Tonight in San Diego'}</h2></div><span className="result-count"><b id="result-count">{visible.length}</b>{" places"}</span></header>
 <div className="results-list" id="results-list">{visible.map(item => {
   const night=mode==='tonight'?plusNight(item.venue.slug,item.events,matchingDay,true):
