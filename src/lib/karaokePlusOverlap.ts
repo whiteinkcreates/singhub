@@ -37,7 +37,7 @@ export function scheduledExtrasOnDay(slug:string,day:string,datedEvents:VenuePro
  const official=PROGRAMMED_EXTRAS.filter(program=>program.venueSlug===slug&&program.day.toLowerCase()===day.toLowerCase());
  const recurring=classifyPlusHighlights(backyardOfferBySlug.get(slug)||{slug,activities:[],highlights:[],source:""})
   .filter(highlight=>highlight.kind==="scheduled"&&highlight.day===day.toLowerCase())
-  .filter(highlight=>!official.some(event=>event.title.toLowerCase().includes(highlight.title.toLowerCase().replace(/^(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\s+/,""))))
+  .filter(highlight=>!official.some(event=>{const phrase=highlight.title.replace(/^(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\s+/i,"");const kind=/(trivia|bingo|steak|band|football|sports|live music)/i.exec(phrase)?.[1];return Boolean(kind&&event.title.toLowerCase().includes(kind.toLowerCase()))||event.title.toLowerCase().includes(phrase.toLowerCase());}))
   .map(highlight=>({venueSlug:slug,day,title:highlight.title,category:/trivia/i.test(highlight.title)?"trivia" as const:/bingo/i.test(highlight.title)?"game" as const:"special" as const,status:"venue_published" as const,sourceUrl:backyardOfferBySlug.get(slug)?.source}));
  // Dated entries are used only for the current local calendar date, never projected across future weekdays.
  const now=new Date();
