@@ -9,7 +9,7 @@ const DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturda
 export type PlusDay=(typeof DAYS)[number];
 export const PLUS_DAYS=DAYS;
 
-const PLACE_AMENITIES=/(?:pool\s*(?:tables?|and\s+shuffleboard)?|darts?|shuffleboard|arcade|bowling|cornhole|foosball|jukebox|mechanical bull|sports\s*(?:on\s+tv|tv|viewing|screens?)|sports bar|game-day viewing)/i;
+const PLACE_AMENITIES=/\bpool tables?\b|\bpool and shuffleboard\b|^pool$|\bdarts?\b|\bshuffleboard\b|\barcade\b|\bbowling\b|\bcornhole\b|\bfoosball\b|\bjukebox\b|\bmechanical bull\b|\bsports (?:on (?:TV|TVs)|TVs?|screens?|viewing|bar)\b|\bgame-day viewing\b/i;
 
 /**
  * A weekday in a sourced highlight denotes a recurring *listing*, not confirmation
@@ -30,5 +30,19 @@ export function matchesPlusDay(offer:BackyardOffer,day?:string):PlusMatch[]{
  const all=classifyPlusHighlights(offer);
  if(!day||day==="all")return all;
  const key=day.toLowerCase();
- return all.filter(match=>match.kind==="amenity"||(match.kind==="scheduled"&&match.day===key));
+ return all.filter(match=>match.kind==="amenity"||(match.kind==="scheduled"&&match.day===key)).sort((a,b)=>Number(b.kind==="scheduled")-Number(a.kind==="scheduled"));
+}
+
+/** Match the actual activity, not another amenity at the same venue. */
+export function highlightIsCategory(title:string, category:string):boolean {
+ const label=title.toLowerCase();
+ if(category==="football"||category==="basketball")return /\bsports?\b|\bgame.day\b|\b49ers\b|\bfootball\b|\bbasketball\b/.test(label);
+ if(category==="ufc")return /\bufc\b|\bmma\b|\bfight night\b/.test(label);
+ if(category==="trivia")return /\btrivia\b/.test(label);
+ if(category==="bingo")return /\bbingo\b/.test(label);
+ if(category==="live-music")return /\blive music\b|\bbands?\b|\bblues jam\b|\bopen mic\b|\bDJs?\b|\bcountry music\b/.test(label);
+ if(category==="pool-games")return /\bpool\b|\bdarts?\b|\bshuffleboard\b|\bping pong\b|\bbeer pong\b|\bcup pong\b|\barcade\b|\bbowling\b|\bcornhole\b|\bfoosball\b|\bjukebox\b|\bbull\b/.test(label);
+ if(category==="specials")return /\bbrunch\b|\bBBQ\b|\bhappy hour\b|\bfood\b|\bwings\b|\bspecials?\b/i.test(title);
+ if(category==="open-early")return /opens? at\s*\d+/i.test(label);
+ return true;
 }
