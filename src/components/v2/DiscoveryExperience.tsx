@@ -54,7 +54,7 @@ return <div className={"v2-discovery"+(mode==="week" ? " week-mode" : "")} data-
     <button data-mode="tonight" aria-pressed={mode==='tonight'} className={mode==='tonight'?'active':''} onClick={()=>setMode('tonight')}>Tonight</button>
     <button data-mode="week" aria-pressed={mode==='week'} className={mode==='week'?'active':''} onClick={()=>setMode('week')}>This week</button>
   </div>
-  <button type="button" className={'karaoke-plus-toggle'+(plus?' active':'')} aria-pressed={plus} onClick={()=>{setPlus(value=>!value);setFilter('All karaoke')}}><span className="plus-spark" aria-hidden="true">✦</span>{plus?'Karaoke+ ON':'Karaoke+'}</button>
+  <button type="button" className={'karaoke-plus-toggle'+(plus?' active':'')} aria-pressed={plus} onClick={()=>{setPlus(value=>!value);setFilter('All karaoke')}}><span className="plus-spark" aria-hidden="true">✦</span>Karaoke+</button>
 </div>
 <div className="filters" aria-label="Discovery filters">
   {!plus&&<button aria-pressed={filter==='All karaoke'} onClick={()=>selectFilter('All karaoke')} className={'filter-chip'+(filter==='All karaoke'?' active':'')}>All karaoke</button>}
