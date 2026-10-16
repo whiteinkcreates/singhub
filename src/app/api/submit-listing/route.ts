@@ -113,7 +113,11 @@ export async function POST(request: Request) {
               text:["A visitor asked SingHUB to research an activity.","",cleanString(payload.notes),"","Reply contact: "+(cleanString(payload.submitterContact)||"Not provided"),"Source: "+cleanString(payload.sourceLink),"Next step: research venues, verify sources, and consider a new Backyard category."].join("\n")
             })
           });
-          if(!sent.ok)console.error("Activity request email notification failed",sent.status);
+          if(!sent.ok){
+            const failure=await sent.json().catch(()=>({})) as {name?:unknown;message?:unknown};
+            const detail=typeof failure.message==="string"?failure.message.slice(0,500).replace(/re_[A-Za-z0-9_]+/g,"[redacted]").replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,"[email]"):"No provider error detail";
+            console.error("Activity request email notification failed",sent.status,typeof failure.name==="string"?failure.name:"unknown",detail);
+          }
         }catch(error){console.error("Activity request notification transport failed",error);}
       } else console.error("Activity request notification lacks email configuration");
     }
