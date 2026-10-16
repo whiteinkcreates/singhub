@@ -140,7 +140,7 @@ export default async function PremiumVenuePage() {
         </section>
 
         <section className="venue-offers-end" aria-labelledby="venue-offers-end-title">
-          <p className="venue-offers-eyebrow">LET'S TALK KARAOKE</p>
+          <p className="venue-offers-eyebrow">LET&apos;S TALK KARAOKE</p>
           <h2 id="venue-offers-end-title">Your venue already has a story. <span>Let more singers find it.</span></h2>
           <p>Whether you just need your free details corrected or want to explore being a Partner, the first move is a conversation. No checkout required.</p>
           <div className="venue-offers-end-actions">
