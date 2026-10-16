@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { V2IndexHero } from "@/components/layout/V2IndexHero";
+import { getPublicIndexHero } from "@/lib/v2/indexHero.server";
+import { SITE_NEIGHBORHOODS_HERO_KEY } from "@/lib/hostMedia";
 import { getSanDiegoPublicVenues } from "@/lib/sanDiegoMarket";
 import { getVenueListings } from "@/lib/venueData";
 
@@ -19,7 +22,8 @@ function slugify(value: string) {
 }
 
 export default async function NeighborhoodsPage() {
-  const venues = getSanDiegoPublicVenues(await getVenueListings());
+  const [allVenues, hero] = await Promise.all([getVenueListings(), getPublicIndexHero(SITE_NEIGHBORHOODS_HERO_KEY)]);
+  const venues = getSanDiegoPublicVenues(allVenues);
   const counts = new Map<string, { market: string; count: number }>();
 
   for (const venue of venues) {
@@ -58,26 +62,10 @@ export default async function NeighborhoodsPage() {
   });
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
-      <section className="max-w-4xl">
-        <p className="text-sm font-black uppercase tracking-[0.3em] text-cyan-300">
-          Neighborhood Karaoke
-        </p>
-        <h1 className="mt-4 text-4xl font-black text-white md:text-6xl">
-          San Diego karaoke by neighborhood
-        </h1>
-        <p className="mt-5 text-lg leading-8 text-slate-300">
-          Browse the actual neighborhoods represented in the SingHUB Venue Index, grouped into larger San Diego markets so nearby scenes are easier to explore.
-        </p>
-        <Link
-          href="/find-karaoke"
-          className="mt-7 inline-block rounded-full bg-fuchsia-400 px-6 py-3 text-center text-sm font-black uppercase tracking-[0.18em] text-slate-950 shadow-lg shadow-fuchsia-950/40 transition hover:-translate-y-0.5 hover:bg-fuchsia-300"
-        >
-          Find Karaoke Near You
-        </Link>
-      </section>
+    <main className="min-h-screen bg-[#050609] text-white">
+      <V2IndexHero eyebrow="SAN DIEGO NEIGHBORHOODS" title="Find your karaoke neighborhood." description="Explore the local scenes in SingHUB's Venue Index, grouped by San Diego area so you can find your kind of room." heroUrl={hero?.heroUrl} heroAlt={hero?.heroAlt} heroPosition={hero?.heroPosition} heroPlacement={hero?.heroPlacement} primaryHref="/find-karaoke" primaryLabel="Open the venue finder" />
 
-      <div className="mt-14 space-y-12">
+      <div className="mx-auto max-w-7xl space-y-12 px-4 pb-20 pt-12">
         {markets.map((market) => (
           <section key={market}>
             <div className="mb-5 flex items-end justify-between gap-4">
