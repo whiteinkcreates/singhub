@@ -12,6 +12,7 @@ import { useRef,useState } from 'react';
 import { useV2Actions,useViewerInitials } from './actions';
 import { goBackToList } from './listReturn';
 import { makeVenueRow,usable,compactTime } from '@/lib/v2/presentation';
+import {scheduledExtrasOnDay,venueAmenities} from '@/lib/karaokePlusOverlap';
 import { VenueFeedback } from './VenueModules';
 import type { VenueTemplateProps } from './VenueModules';
 
@@ -62,8 +63,15 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 </section>
 <section className="section">
 <div className="section-heading"><h2>{"Regular schedule"}</h2></div>
-<div className="schedule-list">{!events.length&&<p className="subline">{venue.venueType==='private_room'?'Private-room sessions are booked directly with the venue.':'Regular karaoke nights are being confirmed. Contact the venue before heading out.'}</p>}{events.map(event=><div className={"schedule-row"+(eventRunsOnNight(event,weekday)?" tonight-row":"")} key={event.eventId}><strong>{event.karaokeDay}</strong><span>{[usable(event.hostName)||"Host pending",scheduleQualification(event)].filter(Boolean).join(" · ")}</span><time title={[usable(event.startTime),usable(event.endTime)].filter(Boolean).join(" to ")}>{[compactTime(event.startTime),compactTime(event.endTime)].filter(Boolean).join(" to ")||"Time pending"}</time></div>)}</div>
+<div className="schedule-list">{!events.length&&<p className="subline">{venue.venueType==='private_room'?'Private-room sessions are booked directly with the venue.':'Regular karaoke nights are being confirmed. Contact the venue before heading out.'}</p>}{events.map(event=>{
+ const scheduled=scheduledExtrasOnDay(venue.slug,event.karaokeDay,venueEvents);
+ return <div className={"schedule-row"+(eventRunsOnNight(event,weekday)?" tonight-row":"")} key={event.eventId}>
+ <div className="schedule-night-head"><strong>{event.karaokeDay}</strong>{scheduled.length>0&&<span className="karaoke-plus-day-tag">KARAOKE+</span>}</div>
+ <div className="schedule-host"><span>{[usable(event.hostName)||"Host pending",scheduleQualification(event)].filter(Boolean).join(" · ")}</span>{scheduled.length>0&&<span className="schedule-extra-copy">{scheduled.map(extra=>extra.title+(extra.status==='needs_confirmation'?' · confirm screening':'')).join(' · ')}</span>}</div>
+ <time title={[usable(event.startTime),usable(event.endTime)].filter(Boolean).join(" to ")}>{[compactTime(event.startTime),compactTime(event.endTime)].filter(Boolean).join(" to ")||"Time pending"}</time>
+ </div>})}</div>
 </section>
+{venueAmenities(venue.slug).length>0?<section className="section"><div className="section-heading"><h2>More at this venue</h2></div><div className="chips partner-amenities">{venueAmenities(venue.slug).map(item=><span className="chip" key={item}>{item}</span>)}</div><p className="subline">These are venue amenities, not additional scheduled events.</p></section>:null}
 {isEnhanced&&partnerSpecials.length?<section className="section"><div className="section-heading"><h2>Specials</h2></div><div className="enhanced-grid">{partnerSpecials.map((special,index)=><div className="enhanced-card" key={index}><span>★</span><strong>{'title' in special?special.title:'Special'}</strong><p>{['day' in special&&special.day,'price' in special&&special.price,'detail' in special&&special.detail].filter(Boolean).join(' · ')}</p></div>)}</div></section>:null}
 {isEnhanced&&venueEvents.length?<VenueMonthlyCalendar events={venueEvents} venueName={venue.venueName} sourceUrl={enhancement?.eventCalendarUrl}/>:null}
 {isEnhanced&&posts.length?<section className="section"><div className="section-heading"><h2>From the venue</h2></div><div className="detail-list">{posts.map(post=><button type="button" className="partner-post" key={post.id} onClick={()=>location.assign('/events/'+post.id)}><strong>{post.title}</strong><p>{post.detail}</p></button>)}</div></section>:null}

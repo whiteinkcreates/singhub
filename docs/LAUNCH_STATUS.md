@@ -129,3 +129,12 @@ Local resolver/rights, package, analytics, plan-email and crop tests: 28 passed.
 PR #364 is merged at `db053a8` and production hero rendering was checked on mobile/desktop for Orli, Grande Colonial and Hard Rock. Grande Colonial does have a registered exterior photo; its absent saved profile previously prevented public approval. Following Corey's confirmation and prior approval instruction, that exact registry image was selected and approved without replacing another profile.
 
 Follow-up branch `fix/hotel-media-delete` adds hotel upload deletion with saved-usage checks across staged/published heroes and section imagery. Clear hero is an explicit no-photo choice; blank overrides without that choice retain earlier safety behavior. No real upload is deleted during testing. Merge/production checks are separate from source implementation.
+
+
+## October 15 Backyard / V2 integration review
+
+Isolated integration branch `review/backyard-v2-integration-oct15` starts at main `8820de0` and combines #373 (`a72d807`), #378 (`3395d6b`), and #380 (`3421d9d`). Source branches and main are untouched. Resolve the three shared hero-editor conflicts by retaining all public index and Venue Offers keys, editor targets, and cache revalidation paths. Shopify #381 remains separate.
+
+Adds Backyard to desktop/mobile More navigation, fixes ordinary optional contact-email validation, and keeps midnight–3:59 AM starts exclusively in the late-night filter. Sixteen focused behavior/regression tests pass, including same-night Karaoke+ eligibility, programmed extras vs amenities, request inbox/owner-notification transport with mocked external calls, image placement, nightlife rollover, and existing Partner offer behavior. Production build passes; lint has zero errors and 33 existing warnings.
+
+Preview and visual/browser acceptance are still pending. Mocked notification tests prove request construction and failure behavior, not real inbox arrival. Vercel metadata confirms submission webhook, secret, Resend, sender and recipient variables exist for preview/production; actual delivery needs separate evidence. Do not merge on build success alone. Refresh main and all three source heads immediately before release.

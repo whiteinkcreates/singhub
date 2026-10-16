@@ -15,6 +15,7 @@ type LocalSeoPageViewProps = {
   venues: VenueListing[];
   listingEyebrow?: string;
   listingHeading?: string;
+  hideIntro?: boolean;
 };
 
 const dayLinks = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -32,6 +33,7 @@ export function LocalSeoPageView({
   venues,
   listingEyebrow = "Featured Karaoke Nights",
   listingHeading = "A few places to start",
+  hideIntro = false,
 }: LocalSeoPageViewProps) {
   const featuredVenues = venues.slice(0, 6);
   const neighborhoodCounts = new Map<string, number>();
@@ -72,6 +74,7 @@ export function LocalSeoPageView({
   return (
     <main className="mx-auto max-w-7xl px-4 py-14 md:py-20">
       <JsonLd data={structuredData} />
+      {!hideIntro && (
       <section className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
         <div>
           <p className="text-sm font-black uppercase tracking-[0.3em] text-cyan-300">{page.eyebrow}</p>
@@ -99,6 +102,7 @@ export function LocalSeoPageView({
           </div>
         </aside>
       </section>
+      )}
 
       <section className="mt-16 grid gap-4 md:grid-cols-3">
         {page.sections.map((section) => (

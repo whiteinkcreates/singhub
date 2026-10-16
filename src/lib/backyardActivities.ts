@@ -10,19 +10,21 @@ export const backyardActivities=[
  {slug:"trivia",name:"Trivia",area:"Game Shack",description:"Team up for a different kind of spotlight.",icon:"🧠"},
  {slug:"bingo",name:"Bingo",area:"Game Shack",description:"Find game nights beyond the mic.",icon:"🎟️"},
  {slug:"pool-games",name:"Pool & Games",area:"Game Shack",description:"Pool, darts, arcade games and more.",icon:"🎱"},
- {slug:"specials",name:"Food & Specials",area:"The Concessions",description:"A reason to arrive early or stay late.",icon:"🍔"}
+ {slug:"specials",name:"Food & Specials",area:"The Concessions",description:"A reason to arrive early or stay late.",icon:"🍔"},
+ {slug:"open-early",name:"Open Early",area:"Game Day Tent",description:"Some neighborhood bars open as early as 6 AM. Check hours before heading over.",icon:"🌅"}
 ] as const;
 export type BackyardActivity=typeof backyardActivities[number]["slug"];
 export type BackyardOffer={slug:string;activities:BackyardActivity[];highlights:string[];source:string};
 export const backyardVenueOffers:BackyardOffer[]=[
+ {slug:"norms",activities:["open-early","pool-games","football","basketball"],highlights:["Opens at 6 AM","Pool tables","Darts","Sports TVs"],source:"https://www.sandiegoreader.com/places/norms-cocktails/"},
  {slug:"cheers-bar-san-diego",activities:["football","basketball","trivia","pool-games","specials"],highlights:["Sports on TV","Thursday trivia","Pool table","Sunday BBQ"],source:"https://cheerssandiego.com/events"},
  {slug:"deanos-pub",activities:["football","basketball","bingo","pool-games","live-music","specials"],highlights:["Sports viewing","Dirty Bingo","Pool and shuffleboard","Live music"],source:"https://deanospub.com/"},
  {slug:"full-circle-saloon",activities:["football","basketball","live-music","pool-games","specials"],highlights:["Sports bar","Live music","Pool, darts and shuffleboard"],source:"https://fullcirclesaloon.com/"},
  {slug:"710-beach-club",activities:["trivia","live-music","specials"],highlights:["Trivia","Open mic","Saturday bands"],source:"https://www.710bc.com/events"},
  {slug:"mcguffies-live",activities:["live-music","bingo","pool-games"],highlights:["Live bands","Blues jams","Bingo tournaments"],source:"https://mcguffieslive.com/shows"},
- {slug:"camels-bar-grill",activities:["live-music","bingo","pool-games"],highlights:["Blues jam","Bingo","Darts and cornhole"],source:"https://camelsbarandgrill.com/"},
+ {slug:"camels-bar-grill",activities:["live-music","bingo","pool-games","football"],highlights:["Blues jam","Bingo","Pool table","Darts","Cornhole"],source:"https://camelsbarandgrill.com/"},
  {slug:"grand-comedy-club",activities:["trivia","bingo","live-music"],highlights:["Comedy and open mic","Trivia","Music bingo"],source:"https://www.grandcomedyclub.com/"},
- {slug:"hearth-house",activities:["trivia","live-music","pool-games","specials"],highlights:["Tuesday trivia","Sunday country music","Pool and darts"],source:"https://hearthhousebar.com/happenings"},
+ {slug:"hearth-house",activities:["trivia","live-music","pool-games","specials"],highlights:["Tuesday trivia","Thursday steak night","Sunday country music","Arcade games","Pool tables","Darts"],source:"https://hearthhousebar.com/happenings"},
  {slug:"urban-mos-bar-grill",activities:["bingo","trivia","live-music","specials"],highlights:["Drag brunch","Bingo","Trivia"],source:"https://urbanmos.com/events/"},
  {slug:"richs-san-diego",activities:["live-music"],highlights:["DJ events","Drag shows"],source:"https://richssandiego.com/calendar/"},
  {slug:"bns-brewing-distilling-co",activities:["trivia","live-music","pool-games"],highlights:["Trivia","Cornhole","Live bands"],source:"https://www.bnsbrewinganddistillingco.com/event-list"},
@@ -34,7 +36,7 @@ export const backyardVenueOffers:BackyardOffer[]=[
  {slug:"side-piece-bar",activities:["football","pool-games","specials"],highlights:["Football viewing","Pool","Happy hour"],source:"https://www.bemysidepiece.com/"},
  {slug:"jps-pub-tierrasanta",activities:["football","basketball","pool-games","live-music"],highlights:["Sports on TVs","Pool tables","Saturday bands"],source:"https://jpspubsd.com/"},
  {slug:"harbor-town-pub",activities:["football","basketball","trivia","bingo","pool-games"],highlights:["Sports watch parties","Trivia","Arcade","Bingo"],source:"https://harbortownpub.com/"},
- {slug:"pal-joeys",activities:["football","basketball","live-music","pool-games","specials"],highlights:["Sports on TVs","Live bands","Pool tables"],source:"https://paljoeys.net/"},
+ {slug:"pal-joeys",activities:["football","basketball","live-music","pool-games","specials","open-early"],highlights:["Opens at 6 AM","Sports on TVs","Live bands","Pool tables"],source:"https://paljoeys.net/"},
  {slug:"redwing-bar-grill",activities:["football","basketball","trivia","specials"],highlights:["Sports on TVs","Thursday trivia","Daily happy hour"],source:"https://redwingbar.com/"},
  {slug:"the-luau",activities:["bingo","specials"],highlights:["Monday bingo","Tiki specials"],source:"https://www.theluaubar.com/"},
  {slug:"the-mesa",activities:["football","basketball","pool-games","live-music","specials"],highlights:["Game-day viewing","Cup pong","DJs","Brunch"],source:"https://www.mesabargrill.com/"},

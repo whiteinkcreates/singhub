@@ -30,6 +30,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
+  const isActivityRequest=cleanString(payload.submissionType)==="activity_search_request";
+  if(isActivityRequest){
+    const notes=cleanString(payload.notes);
+    const email=cleanString(payload.submitterContact);
+    if(notes.length<15||notes.length>1000||email.length>200||(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)))
+      return NextResponse.json({error:"Enter a short request and a valid optional email address."},{status:400});
+  }
   const usefulValues = [
     cleanString(payload.venueName),
     cleanString(payload.sourceLink),
@@ -91,6 +98,25 @@ export async function POST(request: Request) {
       );
     }
 
+    if(isActivityRequest) {
+      const apiKey=process.env.RESEND_API_KEY;
+      const to=process.env.SINGHUB_SUBMISSIONS_TO;
+      const from=process.env.SINGHUB_SUBMISSIONS_FROM;
+      if(apiKey&&to&&from){
+        try{
+          const sent=await fetch("https://api.resend.com/emails",{
+            method:"POST",
+            headers:{"Authorization":"Bearer "+apiKey,"Content-Type":"application/json"},
+            body:JSON.stringify({
+              from,to:to.split(",").map(value=>value.trim()).filter(Boolean),
+              subject:"SingHUB: new Other activity request",
+              text:["A visitor asked SingHUB to research an activity.","",cleanString(payload.notes),"","Reply contact: "+(cleanString(payload.submitterContact)||"Not provided"),"Source: "+cleanString(payload.sourceLink),"Next step: research venues, verify sources, and consider a new Backyard category."].join("\n")
+            })
+          });
+          if(!sent.ok)console.error("Activity request email notification failed",sent.status);
+        }catch(error){console.error("Activity request notification transport failed",error);}
+      } else console.error("Activity request notification lacks email configuration");
+    }
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("SingHUB submission webhook failed", error);
