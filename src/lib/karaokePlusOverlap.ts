@@ -34,7 +34,7 @@ export function venueAmenities(slug:string):string[]{
 
 /** A scheduled badge means an event on that exact karaoke weekday. An amenity never produces the badge. */
 export function scheduledExtrasOnDay(slug:string,day:string,datedEvents:VenueProgramEvent[]=[]):PlusScheduledExtra[]{
- const official=PROGRAMMED_EXTRAS.filter(program=>program.venueSlug===slug&&program.day.toLowerCase()===day.toLowerCase());
+ const official=PROGRAMMED_EXTRAS.filter(program=>program.venueSlug===slug&&program.day.toLowerCase()===day.toLowerCase()&&program.status==="venue_published");
  const recurring=classifyPlusHighlights(backyardOfferBySlug.get(slug)||{slug,activities:[],highlights:[],source:""})
   .filter(highlight=>highlight.kind==="scheduled"&&highlight.day===day.toLowerCase())
   .filter(highlight=>!official.some(event=>{const phrase=highlight.title.replace(/^(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\s+/i,"");const kind=/(trivia|bingo|steak|band|football|sports|live music)/i.exec(phrase)?.[1];return Boolean(kind&&event.title.toLowerCase().includes(kind.toLowerCase()))||event.title.toLowerCase().includes(phrase.toLowerCase());}))
