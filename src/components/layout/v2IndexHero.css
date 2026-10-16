@@ -13,3 +13,20 @@
 @media(max-width:600px){.singhub-v2-index-hero,.singhub-v2-index-hero-content{min-height:min(660px,75svh)}.singhub-v2-index-hero-content{padding:76px 20px 58px}.singhub-v2-index-hero::before{background:linear-gradient(0deg,rgba(3,5,9,.96),rgba(3,5,9,.54) 64%,rgba(3,5,9,.3))}.singhub-v2-index-hero h1{font-size:clamp(3rem,13vw,5rem);line-height:.9}.singhub-v2-index-description{font-size:1rem;line-height:1.45}.singhub-v2-index-photo{object-position:center}}
 @media(max-width:380px){.singhub-v2-index-hero-content{padding:65px 16px 46px}.singhub-v2-index-hero h1{font-size:clamp(2.8rem,12vw,3.7rem)}}
 @media(prefers-reduced-motion:reduce){.singhub-v2-index-cta{transition:none}}
+
+/* V2 global scroll language: sticky image stage, opaque content sheet scrolling
+   freely over it. Avoid background-attachment:fixed (unreliable on iOS). */
+.singhub-v2-index-page{position:relative;isolation:isolate;overflow-x:clip;overflow-y:visible;background:#050609;}
+.singhub-v2-index-page .singhub-v2-index-hero{position:sticky;top:70px;z-index:0;height:min(680px,calc(100svh - 70px));min-height:min(680px,calc(100svh - 70px));border:0;}
+.singhub-v2-index-page .singhub-v2-index-hero-content{height:100%;min-height:0;padding-bottom:clamp(42px,7vw,80px);}
+.singhub-v2-index-page .singhub-v2-index-surface{position:relative;z-index:2;width:100%;margin:-28px 0 0;padding-top:1px;padding-bottom:56px;border-top:1px solid #ffffff24;background:#050609;}
+.singhub-v2-index-page .singhub-v2-index-surface :where(a,button):focus-visible{outline:3px solid #00c8ff;outline-offset:3px;}
+@media(max-width:860px){
+.singhub-v2-index-page .singhub-v2-index-hero{top:62px;height:calc(100svh - 62px - 64px);min-height:calc(100svh - 62px - 64px);}
+.singhub-v2-index-page .singhub-v2-index-hero-content{min-height:0;padding:36px 20px 54px;}
+.singhub-v2-index-page .singhub-v2-index-surface{padding-bottom:90px;}
+}
+@media(max-height:580px){
+.singhub-v2-index-page .singhub-v2-index-hero{height:auto;min-height:calc(100svh - 70px);}
+.singhub-v2-index-page .singhub-v2-index-hero-content{height:auto;min-height:calc(100svh - 70px);}
+}
