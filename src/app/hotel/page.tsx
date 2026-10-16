@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { HeroScrollCue } from "@/components/layout/HeroScrollCue";
 import { getHotelGuidesByArea } from "@/lib/hotelGuides";
+import { getHostMediaSettings } from "@/lib/hostMedia.server";
+import { SITE_HOTELS_INDEX_HERO_KEY } from "@/lib/hostMedia";
+import { PositionedImage } from "@/components/media/PositionedImage";
 
 export const metadata = {
   title: "Hotel Guest Guides | SingHUB",
@@ -41,7 +44,8 @@ function Group({
   );
 }
 
-export default function HotelGuideIndexPage() {
+export default async function HotelGuideIndexPage() {
+  const hero = await getHostMediaSettings(SITE_HOTELS_INDEX_HERO_KEY).catch(() => null);
   const downtown = getHotelGuidesByArea("downtown");
   const beach = getHotelGuidesByArea("beach");
   const laJolla = getHotelGuidesByArea("la-jolla");
@@ -65,7 +69,7 @@ export default function HotelGuideIndexPage() {
 
       <main>
         <section data-page-hero="" className="hotel-index-hero" aria-labelledby="hotel-index-title">
-          <img src="/images/singhub-v2/hotels-index-band-luggage-cart.jpg" alt="" aria-hidden="true" />
+          <PositionedImage src={hero?.heroUrl || "/images/singhub-v2/hotels-index-band-luggage-cart.jpg"} alt={hero?.heroAlt || "SingHUB hotels hero"} placement={hero?.heroPlacement} position={hero?.heroPosition} />
           <div className="hotel-index-hero-inner">
             <div data-hero-copy="" className="hotel-index-hero-copy">
               <p className="hotel-index-eyebrow">SINGHUB HOTELS</p>
