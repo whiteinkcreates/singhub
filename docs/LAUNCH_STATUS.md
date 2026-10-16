@@ -129,3 +129,13 @@ Local resolver/rights, package, analytics, plan-email and crop tests: 28 passed.
 PR #364 is merged at `db053a8` and production hero rendering was checked on mobile/desktop for Orli, Grande Colonial and Hard Rock. Grande Colonial does have a registered exterior photo; its absent saved profile previously prevented public approval. Following Corey's confirmation and prior approval instruction, that exact registry image was selected and approved without replacing another profile.
 
 Follow-up branch `fix/hotel-media-delete` adds hotel upload deletion with saved-usage checks across staged/published heroes and section imagery. Clear hero is an explicit no-photo choice; blank overrides without that choice retain earlier safety behavior. No real upload is deleted during testing. Merge/production checks are separate from source implementation.
+
+## October 16 recurring data workflow failures
+
+Diagnosed scheduled sync run 38967814752 from actual job logs: the canonical 1st Street Bar record (venue-0148, Venues_Canonical row 1017) was public but missing GPS coordinates. Added latitude 33.0439095 and longitude -117.2937621 from the venue homepage's official Google Maps link https://goo.gl/maps/sQhR2GNL4Y52 and recorded that evidence in source_notes. No schedule or host inference changed.
+
+The daily integrity audit additionally rejected the expired one-time Sugar Monkey event event-sugar-monkey-el-segundo-2026-10-14. Events_Canonical row 226 is now archived, app_visible FALSE, with a dated archive reason. The historical event and source evidence remain retained; no weekly recurrence was inferred.
+
+The scheduled sync rerun passed preflight, generation, check:data and test:data, then merged its normal automated PR #384 at c9ddbf1806a6ecb7769f16e8dcd59f1cbf4df864. The resulting full integrity audit run 38968955517 passed freshness, candidate validation and canonical drift checks. These are GitHub source/data checks, not a claim of rendered production deployment verification. Guardrails and alert settings were preserved.
+
+A separate Validate SingHUB run 38968946562 on the short-lived bot data PR had no jobs. Its GitHub annotation says: "This workflow run required approval but was not approved before it expired." GitHub rejects retrying that expired run. This approval-expiry issue is distinct from the repaired scheduled data failures and remains unresolved; do not report all workflows green.
