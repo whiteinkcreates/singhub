@@ -147,3 +147,6 @@ Prepared a workflow change using repository secret SINGHUB_AUTOMATION_TOKEN only
 
 
 Corey reported credential setup complete on October 16. PR #386 previously passed Validate SingHUB and canonical candidate validation. Added an authenticated repository-read step to verify the configured credential during publishing without fabricating canonical data; activation and live workflow results are tracked separately from the setup report.
+
+
+October 16 activation evidence: PR #386 merged at 99f4a37948762539e6169c233523094385a182cf after GitHub Validate SingHUB and candidate validation passed. After Corey saved the repository secret, sync run 38972370607 rerun passed the authenticated credential check, generated-data guardrails and all four data regression tests, finishing successfully. Main validation run 38972370656 and integrity audit 38972370853 also passed. No public-facing data changes were pending, so PR creation, exact-head validation waiting and merge were correctly skipped. The next real changed-data sync remains the end-to-end acceptance for those steps; do not report that path as already exercised.
