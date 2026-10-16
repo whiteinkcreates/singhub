@@ -30,3 +30,14 @@
 .singhub-v2-index-page .singhub-v2-index-hero{height:auto;min-height:calc(100svh - 70px);}
 .singhub-v2-index-page .singhub-v2-index-hero-content{height:auto;min-height:calc(100svh - 70px);}
 }
+
+/* Preserve the City Signal window around the rising card on desktop.
+   The central sheet scrolls freely; side gutters still reveal the pinned hero. */
+@media(min-width:681px){
+.singhub-v2-index-page .singhub-v2-index-surface{padding:0 clamp(14px,3.2vw,44px) 56px;background:transparent;border:0;box-shadow:none;}
+.singhub-v2-index-page .singhub-v2-index-surface > *{width:100%;max-width:1240px;margin-inline:auto;border-top:1px solid #ffffff24;background:#050609;box-shadow:0 15px 50px #0008;}
+}
+@media(max-width:680px){
+.singhub-v2-index-page .singhub-v2-index-surface{padding:0 0 84px;border:0;background:transparent}
+.singhub-v2-index-page .singhub-v2-index-surface > *{border-top:1px solid #ffffff24;background:#050609}
+}
