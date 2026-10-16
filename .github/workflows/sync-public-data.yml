@@ -122,6 +122,17 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Verify automation credential
+        env:
+          GH_TOKEN: ${{ secrets.SINGHUB_AUTOMATION_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Repository secret SINGHUB_AUTOMATION_TOKEN is missing. See docs/DATA_SYNC_AUTOMATION.md."
+            exit 1
+          fi
+          # An authenticated read verifies the credential without creating test data.
+          gh api "repos/$GITHUB_REPOSITORY" --jq '.full_name'
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:

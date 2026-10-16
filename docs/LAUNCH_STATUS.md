@@ -144,3 +144,6 @@ A separate Validate SingHUB run 38968946562 on the short-lived bot data PR had n
 ## October 16 bot PR approval follow-up
 
 Prepared a workflow change using repository secret SINGHUB_AUTOMATION_TOKEN only for PR creation, following GitHub's documented automation-token behavior. The publisher waits for Validate SingHUB on the exact generated commit and pins that head during merge. Missing credentials or failed validation leave public data unmodified by that attempt. Source preparation is not end-to-end verification: credential setup and a real changed-data sync remain required. See docs/DATA_SYNC_AUTOMATION.md.
+
+
+Corey reported credential setup complete on October 16. PR #386 previously passed Validate SingHUB and canonical candidate validation. Added an authenticated repository-read step to verify the configured credential during publishing without fabricating canonical data; activation and live workflow results are tracked separately from the setup report.
