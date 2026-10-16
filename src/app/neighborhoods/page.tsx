@@ -62,10 +62,10 @@ export default async function NeighborhoodsPage() {
   });
 
   return (
-    <main className="min-h-screen bg-[#050609] text-white">
+    <main className="singhub-v2-index-page min-h-screen bg-[#050609] text-white">
       <V2IndexHero eyebrow="SAN DIEGO NEIGHBORHOODS" title="Find your karaoke neighborhood." description="Explore the local scenes in SingHUB's Venue Index, grouped by San Diego area so you can find your kind of room." heroUrl={hero?.heroUrl} heroAlt={hero?.heroAlt} heroPosition={hero?.heroPosition} heroPlacement={hero?.heroPlacement} primaryHref="/find-karaoke" primaryLabel="Open the venue finder" />
 
-      <div className="mx-auto max-w-7xl space-y-12 px-4 pb-20 pt-12">
+      <div className="singhub-v2-index-surface"><div className="mx-auto max-w-7xl space-y-12 px-4 pb-20 pt-12">
         {markets.map((market) => (
           <section key={market}>
             <div className="mb-5 flex items-end justify-between gap-4">
@@ -105,7 +105,7 @@ export default async function NeighborhoodsPage() {
             </div>
           </section>
         ))}
-      </div>
+      </div></div>
     </main>
   );
 }
