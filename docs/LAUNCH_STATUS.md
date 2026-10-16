@@ -130,18 +130,31 @@ PR #364 is merged at `db053a8` and production hero rendering was checked on mobi
 
 Follow-up branch `fix/hotel-media-delete` adds hotel upload deletion with saved-usage checks across staged/published heroes and section imagery. Clear hero is an explicit no-photo choice; blank overrides without that choice retain earlier safety behavior. No real upload is deleted during testing. Merge/production checks are separate from source implementation.
 
+## October 16 recurring data workflow failures
 
-## October 15 Backyard / V2 integration review
+Diagnosed scheduled sync run 38967814752 from actual job logs: the canonical 1st Street Bar record (venue-0148, Venues_Canonical row 1017) was public but missing GPS coordinates. Added latitude 33.0439095 and longitude -117.2937621 from the venue homepage's official Google Maps link https://goo.gl/maps/sQhR2GNL4Y52 and recorded that evidence in source_notes. No schedule or host inference changed.
 
-Isolated integration branch `review/backyard-v2-integration-oct15` starts at main `8820de0` and combines #373 (`a72d807`), #378 (`3395d6b`), and #380 (`3421d9d`). Source branches and main are untouched. Resolve the three shared hero-editor conflicts by retaining all public index and Venue Offers keys, editor targets, and cache revalidation paths. Shopify #381 remains separate.
+The daily integrity audit additionally rejected the expired one-time Sugar Monkey event event-sugar-monkey-el-segundo-2026-10-14. Events_Canonical row 226 is now archived, app_visible FALSE, with a dated archive reason. The historical event and source evidence remain retained; no weekly recurrence was inferred.
 
-Adds Backyard to desktop/mobile More navigation, fixes ordinary optional contact-email validation, and keeps midnight–3:59 AM starts exclusively in the late-night filter. Sixteen focused behavior/regression tests pass, including same-night Karaoke+ eligibility, programmed extras vs amenities, request inbox/owner-notification transport with mocked external calls, image placement, nightlife rollover, and existing Partner offer behavior. Production build passes; lint has zero errors and 33 existing warnings.
+The scheduled sync rerun passed preflight, generation, check:data and test:data, then merged its normal automated PR #384 at c9ddbf1806a6ecb7769f16e8dcd59f1cbf4df864. The resulting full integrity audit run 38968955517 passed freshness, candidate validation and canonical drift checks. These are GitHub source/data checks, not a claim of rendered production deployment verification. Guardrails and alert settings were preserved.
 
-Preview and visual/browser acceptance are still pending. Mocked notification tests prove request construction and failure behavior, not real inbox arrival. Vercel metadata confirms submission webhook, secret, Resend, sender and recipient variables exist for preview/production; actual delivery needs separate evidence. Do not merge on build success alone. Refresh main and all three source heads immediately before release.
+A separate Validate SingHUB run 38968946562 on the short-lived bot data PR had no jobs. Its GitHub annotation says: "This workflow run required approval but was not approved before it expired." GitHub rejects retrying that expired run. This approval-expiry issue is distinct from the repaired scheduled data failures and remains unresolved; do not report all workflows green.
 
 
-### Combined preview acceptance, October 15
+## October 16 bot PR approval follow-up
 
-Draft #382 at `c8b5d73` passed GitHub validation run `38841377801`, including all 24 responsive route checks at 360/390/768/1440, sticky heroes, More navigation, same-night Karaoke+ results and mocked request submission. CI screenshots saved as `backyard-v2-integration-qa`; phone Backyard, Radar, Neighborhoods and Venue Offers screenshots inspected. Local 48 canonical/hotel/media preservation tests also passed. Vercel preview is READY. Live preview checks confirmed Camel's Thursday inclusion/Wednesday exclusion, Hearth House Tuesday trivia/Thursday steak night and Backyard navigation.
+Prepared a workflow change using repository secret SINGHUB_AUTOMATION_TOKEN only for PR creation, following GitHub's documented automation-token behavior. The publisher waits for Validate SingHUB on the exact generated commit and pins that head during merge. Missing credentials or failed validation leave public data unmodified by that attempt. Source preparation is not end-to-end verification: credential setup and a real changed-data sync remain required. See docs/DATA_SYNC_AUTOMATION.md.
 
-Actual request test `SH-V2-20261015-0244` returned Request received on the preview, but Vercel logged `Activity request email notification failed 400` for POST `/api/submit-listing`. No matching notification was found in either connected owner mailbox. This is an OPEN release gate, not a delivered notification. Sender/recipient values are sensitive and not readable through the Vercel metadata endpoint. Add bounded, redacted provider error diagnostics to identify the configuration/payload issue without exposing credentials, request notes, or recipient addresses. No production merge.
+
+Corey reported credential setup complete on October 16. PR #386 previously passed Validate SingHUB and canonical candidate validation. Added an authenticated repository-read step to verify the configured credential during publishing without fabricating canonical data; activation and live workflow results are tracked separately from the setup report.
+
+
+October 16 activation evidence: PR #386 merged at 99f4a37948762539e6169c233523094385a182cf after GitHub Validate SingHUB and candidate validation passed. After Corey saved the repository secret, sync run 38972370607 rerun passed the authenticated credential check, generated-data guardrails and all four data regression tests, finishing successfully. Main validation run 38972370656 and integrity audit 38972370853 also passed. No public-facing data changes were pending, so PR creation, exact-head validation waiting and merge were correctly skipped. The next real changed-data sync remains the end-to-end acceptance for those steps; do not report that path as already exercised.
+
+## October 15–16: Combined Backyard / V2 integration PR #382
+
+The combined PR reconciles Karaoke+ / Backyard (#373), public index heroes (#378), and Free / Partner offers (#380), excluding separate Shopify and SingBOARD work. Earlier preview run 38841377801 on c8b5d73 passed 24 responsive route checks, with sticky heroes and initial same-night checks. The initial live Other request email failed and was subsequently corrected: a preview Resend delivery was confirmed at 9462c5f, not production.
+
+October 16 fixes on the review branch exclude unconfirmed venue screenings from weekday KARAOKE+ badges, make karaoke start-time buckets apply to the same eligible Karaoke+ night, and refresh direct Backyard mobile navigation browser tests for 360/390/768/900/1440 widths. The latest validation and screenshot matrix must pass on the reconciled commit before production approval. Emoji category art remains deliberately unchanged pending approved assets. Partner Event Drop (#374), Shopify #381 and SingBOARD updates remain separate.
+
+This merge reconciliation preserves latest main data, canonical sync automation and its approval-expiry fix. Neither this documentation entry nor preview READY status proves production release.

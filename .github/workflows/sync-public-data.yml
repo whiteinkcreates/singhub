@@ -122,6 +122,17 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Verify automation credential
+        env:
+          GH_TOKEN: ${{ secrets.SINGHUB_AUTOMATION_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Repository secret SINGHUB_AUTOMATION_TOKEN is missing. See docs/DATA_SYNC_AUTOMATION.md."
+            exit 1
+          fi
+          # An authenticated read verifies the credential without creating test data.
+          gh api "repos/$GITHUB_REPOSITORY" --jq '.full_name'
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -149,7 +160,9 @@ jobs:
       - name: Create automated data pull request
         id: data_pr
         env:
-          GH_TOKEN: ${{ github.token }}
+          # PRs created with GITHUB_TOKEN require a human to approve their runs.
+          # Use a repository-scoped credential so normal PR validation starts.
+          GH_TOKEN: ${{ secrets.SINGHUB_AUTOMATION_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -162,6 +175,11 @@ jobs:
             echo "No public-facing data changes to publish."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
+          fi
+
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Add the repository secret SINGHUB_AUTOMATION_TOKEN before publishing canonical changes. See docs/DATA_SYNC_AUTOMATION.md."
+            exit 1
           fi
 
           git add \
@@ -188,13 +206,42 @@ jobs:
 
           echo "changed=true" >> "$GITHUB_OUTPUT"
           echo "pr_url=$PR_URL" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for automated PR validation
+        if: steps.data_pr.outputs.changed == 'true'
+        timeout-minutes: 20
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DATA_BRANCH: ${{ steps.data_pr.outputs.branch }}
+          DATA_SHA: ${{ steps.data_pr.outputs.head_sha }}
+        run: |
+          # Wait for this exact commit's app validation, including lint/build.
+          # Do not merge just because Vercel or a different check finished first.
+          RUN_ID=""
+          for attempt in $(seq 1 24); do
+            RUN_ID=$(gh run list --workflow validate.yml \
+              --branch "$DATA_BRANCH" --event pull_request --commit "$DATA_SHA" \
+              --json databaseId --jq '.[0].databaseId // empty')
+            if [ -n "$RUN_ID" ]; then break; fi
+            sleep 5
+          done
+          if [ -z "$RUN_ID" ]; then
+            echo "::error::PR validation did not start. Leave the PR open for investigation."
+            exit 1
+          fi
+          gh run watch "$RUN_ID" --exit-status --interval 10
 
       - name: Merge automated data pull request
         if: steps.data_pr.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          DATA_PR_URL: ${{ steps.data_pr.outputs.pr_url }}
+          DATA_SHA: ${{ steps.data_pr.outputs.head_sha }}
         run: |
-          gh pr merge "${{ steps.data_pr.outputs.pr_url }}" \
+          gh pr merge "$DATA_PR_URL" \
+            --match-head-commit "$DATA_SHA" \
             --squash \
             --delete-branch
 
