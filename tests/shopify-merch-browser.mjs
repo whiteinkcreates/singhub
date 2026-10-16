@@ -59,7 +59,7 @@ try{for(const width of [360,390,768,1440]){
  await page.goto(base+'/?entry=hosts',{waitUntil:'networkidle'});assert.equal(await page.locator('[data-entry-return]').getAttribute('href'),'https://singhub.app/hosts');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  assert.equal(await page.locator('.sh-hero-media img').count(),1);
  assert.equal(await page.locator('.sh-hero').evaluate(el=>getComputedStyle(el).position),'sticky');
- assert.equal(await page.locator('.sh-hero-media img').evaluate(el=>getComputedStyle(el).objectFit),'cover');
+ assert.equal(await page.locator('.sh-hero-media img').evaluate(el=>getComputedStyle(el).objectFit),width<=860?'contain':'cover');
  await page.evaluate(()=>window.scrollTo({behavior:'instant',top:150}));
  const heroTop=await page.locator('.sh-hero').evaluate(el=>el.getBoundingClientRect().top);
  const sheetTop=await page.locator('.sh-merch-content').evaluate(el=>el.getBoundingClientRect().top);
