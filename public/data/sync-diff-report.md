@@ -4,10 +4,10 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 107
-- Candidate non-empty lines: 109
-- Added/changed lines: 109
-- Removed/changed lines: 107
+- Previous non-empty lines: 109
+- Candidate non-empty lines: 111
+- Added/changed lines: 111
+- Removed/changed lines: 109
 
 ### Added or changed sample
 
@@ -61,25 +61,21 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 204
-- Candidate non-empty lines: 204
-- Added/changed lines: 3
-- Removed/changed lines: 3
+- Previous non-empty lines: 205
+- Candidate non-empty lines: 205
+- Added/changed lines: 1
+- Removed/changed lines: 1
 
 ### Added or changed sample
 
 ```text
-weekly-grand-comedy-club-wednesday	venue-0067	Grand Comedy Club and Pizzeria	grand-comedy-club	Wednesday	5:00 PM	9:00 PM		TBD	TBD	TRUE	active	Wednesday karaoke from 5 PM to 9 PM. Free with purchase.	100	Grand Comedy Club official October 2026 calendar	Current weekly flyer supplied by Corey 2026-10-13	2026-10-13	verified_official_current_schedule	FALSE
-weekly-el-sinaloense-cardiff-tuesday	venue-0146	El Sinaloense - Cardiff	el-sinaloense-cardiff	Tuesday	7:00 PM	2:00 AM				TRUE	active	Tuesday karaoke reported 7 PM-2 AM from a current flyer.	92	Current El Sinaloense Tuesday karaoke flyer supplied by Corey 2026-10-13	Official La Sinaloense Cardiff location page; current business listings	2026-10-13	current_flyer_needs_direct_venue_confirmation	FALSE
-event-sugar-monkey-el-segundo-2026-10-14	venue-0147	Sugar Monkey Brewing & Social Club	sugar-monkey-brewing-el-segundo	Wednesday	6:00 PM					One-time: 2026-10-14	active	Wednesday, Oct. 14 karaoke starts at 6 PM at Sugar Monkey Brewing in El Segundo.	100	Official @sugarmonkeybrewing Instagram post supplied by Corey 2026-10-13	Current El Segundo business listings; local El Segundo event coverage	2026-10-13	first_party_current_event_travel_radar	FALSE
+weekly-1st-street-bar-sunday	venue-0148	1st Street Bar	1st-street-bar-encinitas	Sunday	9:00 PM	TBD		TBD	TBD	TRUE	active	Weekly Sunday karaoke.	98	https://1ststreetbar.com/		2026-10-14	verified_official_current_schedule_needs_host_end_time	FALSE
 ```
 
 ### Removed or changed sample
 
 ```text
-weekly-grand-comedy-club-monday	venue-0067	Grand Comedy Club and Pizzeria	grand-comedy-club	Monday	5:00 PM	9:00 PM		TBD	TBD	TRUE	active	Monday karaoke at Grand Comedy Club and Pizzeria from 5 PM to 9 PM. Free with purchase.	96	Official Grand Comedy Club karaoke page	EscoLocos event listing	2026-08-18	web_verified_current_schedule	FALSE
-weekly-grand-comedy-club-wednesday	venue-0067	Grand Comedy Club and Pizzeria	grand-comedy-club	Wednesday	5:00 PM	9:00 PM		TBD	TBD	TRUE	active	Wednesday karaoke at Grand Comedy Club and Pizzeria from 5 PM to 9 PM. Free with purchase.	96	Official Grand Comedy Club karaoke page	EscoLocos event listing	2026-08-18	web_verified_current_schedule	FALSE
-event-barley-sword-escondido-2026-10-08	venue-0144	Barley & Sword Brewing Company - Escondido	barley-sword-brewing-escondido	Thursday	5:00 PM	8:00 PM				One-time: 2026-10-08	active	Thursday, Oct. 8 karaoke from 5 PM to 8 PM at Barley & Sword Brewing Company in Escondido.	100	Corey supplied event text 2026-10-08	Barley & Sword official venue site; current public event calendar	2026-10-08	verified_user_event_official_venue_identity	FALSE
+event-sugar-monkey-el-segundo-2026-10-14	venue-0147	Sugar Monkey Brewing & Social Club	sugar-monkey-brewing-el-segundo	Wednesday	6:00 PM					One-time: 2026-10-14	active	Wednesday, Oct. 14 karaoke starts at 6 PM at Sugar Monkey Brewing in El Segundo.	100	Official @sugarmonkeybrewing Instagram post supplied by Corey 2026-10-13	Current El Segundo business listings; local El Segundo event coverage	2026-10-13	first_party_current_event_travel_radar	FALSE
 ```
 
 ## generated_events_review.tsv
@@ -110,13 +106,13 @@ event-barley-sword-escondido-2026-10-08	venue-0144	Barley & Sword Brewing Compan
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-10-14T19:04:24.704Z",
-  "venues": 108,
+  "generatedAt": "2026-10-16T21:22:38.313Z",
+  "venues": 110,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-10-10T21:15:56.290Z",
-  "venues": 106,
+  "generatedAt": "2026-10-16T00:50:58.221Z",
+  "venues": 108,
 ```
