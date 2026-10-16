@@ -78,10 +78,19 @@
 .v2-venue-offers .venue-offers-sheet>section{margin-bottom:64px}
 .v2-venue-offers .venue-offers-compare-row{grid-template-columns:1fr 1fr;gap:7px 14px;padding:17px 12px}
 .v2-venue-offers .venue-offers-compare-row strong{grid-column:1/-1;font-size:.94rem}
-.v2-venue-offers .venue-offers-compare-row span:not(.venue-offers-compare-head span){font-size:.85rem}
+.v2-venue-offers .venue-offers-compare-row span[data-plan]{font-size:.85rem}
 .v2-venue-offers .venue-offers-compare-row span[data-plan]:before{content:attr(data-plan)": ";font-weight:900;font-size:.7rem;color:#9aafbf;display:block;margin-bottom:4px;text-transform:uppercase}
 .v2-venue-offers .venue-offers-compare-head{display:none}
 .v2-venue-offers .venue-offers-end-actions a{width:100%}
 }
 @media(max-width:380px){.v2-venue-offers [data-hero-copy].venue-offers-hero-copy{padding:14px}.v2-venue-offers .venue-offers-hero h1{font-size:2.6rem}}
 @media(prefers-reduced-motion:reduce){.v2-venue-offers *{scroll-behavior:auto}}
+
+/* The Partner sheet, like Discovery, slides freely over a pinned venue hero.
+   Leave the surrounding city image visible in desktop side gutters. */
+@media(min-width:861px){
+.v2-venue-offers[data-scroll-page] [data-page-surface].venue-offers-sheet{width:min(1260px,calc(100% - 70px));max-width:1260px;margin:-28px auto 0;padding:42px clamp(22px,4vw,54px) 96px;border-top:1px solid #ffffff30;background:#050609;box-shadow:0 10px 48px #0008}
+}
+@media(min-width:681px) and (max-width:860px){
+.v2-venue-offers[data-scroll-page] [data-page-surface].venue-offers-sheet{width:calc(100% - 30px);max-width:none;margin:-28px auto 0;padding:32px 20px 96px;background:#050609}
+}
