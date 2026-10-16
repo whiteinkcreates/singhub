@@ -9,7 +9,8 @@ import { useRef, useState } from 'react';
 import { useV2Actions, useViewerInitials } from './actions';
 import { useListReturn } from './listReturn';
 import { DiscoveryRow } from './VenueRows';
-import { filterRows, type VenueRowData, type KaraokeStartFilter } from '@/lib/v2/presentation';
+import { filterRows, matchesKaraokeStart, type VenueRowData, type KaraokeStartFilter } from '@/lib/v2/presentation';
+import {eventRunsOnNight} from '@/lib/eventOccurrence';
 import {getEarlyOpening} from '@/lib/earlyOpeningVenues';
 import {PLUS_DAYS,type PlusDay} from '@/lib/karaokePlusSchedule';
 import {plusNight,plusNightsForWeek} from '@/lib/karaokePlusOverlap';
@@ -28,8 +29,14 @@ const visible=(plus?filterRows(rows,'',filter,'directory',position).filter(row=>
   if(row.venue.slug==='winstons-beach-club')return false;
   const night=mode==='tonight'?plusNight(row.venue.slug,row.events,matchingDay,true):
     plusDay!=='all'?plusNight(row.venue.slug,row.events,plusDay):null;
-  const eligible=night?night.eligible:plusNightsForWeek(row.venue.slug,row.events).length>0;
-  if(!eligible)return false;
+  const eligibleNights=night?(night.eligible?[night]:[]):plusNightsForWeek(row.venue.slug,row.events);
+  if(!eligibleNights.length)return false;
+  // In Karaoke+ the start time must belong to a karaoke event on the very same eligible night.
+  if(startFilter!=='any'&&!eligibleNights.some(plusNight=>row.events.some(event=>
+    event.karaokeDay.toLowerCase().includes(plusNight.day.toLowerCase())&&
+    matchesKaraokeStart(event.startTime,startFilter)&&
+    (mode==='tonight'?eventRunsOnNight(event,plusNight.day):Boolean(event.recurring||/weekly|daily/i.test(event.recurrencePattern||"")))
+  )))return false;
   const extras=night?[...night.amenities,...night.scheduled.map(item=>item.title)]:
     plusNightsForWeek(row.venue.slug,row.events).flatMap(day=>[...day.amenities,...day.scheduled.map(item=>item.title),day.day]);
   const term=query.trim().toLowerCase();
@@ -67,12 +74,12 @@ return <div className={"v2-discovery"+(mode==="week" ? " week-mode" : "")} data-
   <button aria-pressed={filter==='Near me'} onClick={()=>selectFilter('Near me')} className={'filter-chip'+(filter==='Near me'?' active':'')}>Near me</button>
   <button aria-pressed={filter==='Neighborhood'} onClick={()=>selectFilter('Neighborhood')} className={'filter-chip'+(filter==='Neighborhood'?' active':'')}>Neighborhood</button>
   {!plus&&<button aria-pressed={filter==='Private rooms'} onClick={()=>selectFilter('Private rooms')} className={'filter-chip'+(filter==='Private rooms'?' active':'')}>Private rooms</button>}
-  {!plus&&<details className={'start-filter'+(startFilter!=='any'?' selected':'')}>
+  <details className={'start-filter'+(startFilter!=='any'?' selected':'')}>
     <summary className="filter-chip" aria-label="Filter karaoke start time"><span>Starts</span><strong>{({any:'Any time','before-8':'Before 8','8-to-9':'8–9 PM','9-to-10':'9–10 PM','10-plus':'10 PM+'} as const)[startFilter]}</strong><span className="start-chevron" aria-hidden="true">⌄</span></summary>
     <div className="start-filter-menu" role="group" aria-label="Karaoke start-time options">
       {([{value:'any',label:'Any time'},{value:'before-8',label:'Before 8 PM'},{value:'8-to-9',label:'8–9 PM'},{value:'9-to-10',label:'9–10 PM'},{value:'10-plus',label:'10 PM or later'}] as const).map(option=><button key={option.value} type="button" className={startFilter===option.value?'active':''} aria-pressed={startFilter===option.value} onClick={event=>{setStartFilter(option.value);event.currentTarget.closest('details')?.removeAttribute('open')}}>{option.label}</button>)}
     </div>
-  </details>}
+  </details>
   <button aria-pressed={earlyOnly} onClick={()=>setEarlyOnly(v=>!v)} className={'filter-chip'+(earlyOnly?' active':'')}>Open early</button>
   {!plus&&<Link className="filter-chip" href="/find-karaoke">More filters</Link>}
 </div>
