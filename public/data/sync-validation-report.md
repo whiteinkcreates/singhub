@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 108.
-Exported events: 203.
+Exported venues: 110.
+Exported events: 204.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -19,6 +19,7 @@ Exported events: 203.
 - venue-0048 Hive Karaoke
 - venue-0065 Jin Music Studios
 - venue-0066 North County - Larrys Beach Club
+- venue-0050 Saddle Bar
 - venue-0109 N City Sports Lounge
 - venue-0119 Rich's San Diego
 - venue-0127 Smitty's Downtown
@@ -27,6 +28,7 @@ Exported events: 203.
 - venue-0132 Alpine VFW Post 9578
 - venue-0144 Barley & Sword Brewing Company - Escondido
 - venue-0145 Watra Night Club
+- venue-0147 Sugar Monkey Brewing & Social Club
 ## Public Venues Missing Schedule
 - venue-0051 #1 Fifth Avenue
 - venue-0062 710 Beach Club
@@ -61,6 +63,7 @@ Exported events: 203.
 - venue-0017 Pal Joey's Cocktail Lounge
 - venue-0060 Punch Bowl Social San Diego
 - venue-0039 Redwing Bar & Grill
+- venue-0050 Saddle Bar
 - venue-0026 Shooters Cocktails
 - venue-0047 Star Bar
 - venue-0002 The Lamplighter
@@ -136,6 +139,7 @@ Exported events: 203.
 - venue-0139 El Viejon Seafood - Mira Mesa
 - venue-0146 El Sinaloense - Cardiff
 - venue-0147 Sugar Monkey Brewing & Social Club
+- venue-0148 1st Street Bar
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -153,7 +157,6 @@ Exported events: 203.
 - row 46: venue-0028 Parkys Saloon
 - row 47: venue-0038 Peter D's
 - row 50: venue-0023 Rock Out Karaoke
-- row 51: venue-0050 Saddle Bar
 - row 53: venue-0064 Spot KTV & Restaurant
 - row 55: venue-0016 The Cordova Bar
 - row 63: venue-0024 Tremont St. Bar & Grill
@@ -192,6 +195,7 @@ Exported events: 203.
 - event row 180: weekly-barlando-friday
 - event row 184: weekly-alpine-vfw-post-9578-thursday
 - event row 210: event-barley-sword-escondido-2026-10-08
+- event row 213: event-sugar-monkey-el-segundo-2026-10-14
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -205,7 +209,7 @@ Exported events: 203.
 ## Events Skipped Because Inactive
 - None
 ## Events Skipped Because Missing Day Or Start Time
-- None
+- event row 215: weekly-saddle-bar-wednesday Saddle Bar
 ## Public Rows With TBD Address/Time/Host
 - event row 4: weekly-the-search-bar-thursday The Search Bar
 - event row 45: weekly-gaslamplighter-tuesday Gaslamplighter Karaoke Cocktail Bar
@@ -244,11 +248,13 @@ Exported events: 203.
 - event row 208: weekly-mcguffies-live-wednesday McGuffie's Live
 - event row 211: weekly-dirks-niteclub-friday Dirk's Niteclub
 - event row 212: weekly-el-sinaloense-cardiff-tuesday El Sinaloense - Cardiff
-- event row 213: event-sugar-monkey-el-segundo-2026-10-14 Sugar Monkey Brewing & Social Club
+- event row 214: weekly-winstons-thursday Winstons Beach Club
+- event row 216: weekly-1st-street-bar-sunday 1st Street Bar
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
 - venue: venue-0066 North County - Larrys Beach Club
+- venue: venue-0050 Saddle Bar
 - venue: venue-0109 N City Sports Lounge
 - venue: venue-0119 Rich's San Diego
 - venue: venue-0127 Smitty's Downtown
@@ -257,6 +263,7 @@ Exported events: 203.
 - venue: venue-0132 Alpine VFW Post 9578
 - venue: venue-0144 Barley & Sword Brewing Company - Escondido
 - venue: venue-0145 Watra Night Club
+- venue: venue-0147 Sugar Monkey Brewing & Social Club
 ## Public Venues Missing Coordinates
 - venue-0102 Three Stags Irish Pub and Restaurant
 - venue-0103 Whiskey Republic
@@ -277,17 +284,17 @@ Exported events: 203.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 108
-Authoritative events: 203
+Public venues: 110
+Authoritative events: 204
 Legacy venue slug aliases: 0
 
 PASS Monday: 19 authoritative / 8 expected minimum
 PASS Tuesday: 34 authoritative / 8 expected minimum
-PASS Wednesday: 32 authoritative / 9 expected minimum
-PASS Thursday: 40 authoritative / 14 expected minimum
+PASS Wednesday: 31 authoritative / 9 expected minimum
+PASS Thursday: 41 authoritative / 14 expected minimum
 PASS Friday: 31 authoritative / 10 expected minimum
 PASS Saturday: 22 authoritative / 10 expected minimum
-PASS Sunday: 25 authoritative / 7 expected minimum
+PASS Sunday: 26 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
