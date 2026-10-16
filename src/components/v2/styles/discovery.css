@@ -160,3 +160,13 @@
 .v2-discovery .plus-day-select { display:flex; gap:6px; align-items:center; color:#9ba5b3; font-family:var(--display); font-weight:850; text-transform:uppercase; font-size:.81rem; }
 .v2-discovery .plus-day-select select { border:1px solid var(--line-bright); background:#111720; color:#fff; padding:7px 9px; font:700 .81rem var(--sans); }
 @media(max-width:560px) {.v2-discovery .backyard-bridge { margin:2px 0; padding:10px 11px; font-size:.78rem; }.v2-discovery .plus-day-tools { flex-wrap:wrap; }}
+
+/* The Backyard is a first-class destination without crowding the Discover controls. */
+.v2-discovery .primary-nav .backyard-nav-link { color:#88e7ff; font-weight:850; }
+.v2-discovery .primary-nav .backyard-nav-link:hover { color:white; box-shadow:inset 0 -2px var(--cyan); }
+@media(max-width:560px) {
+ .v2-discovery .mobile-nav { grid-template-columns:repeat(5,minmax(0,1fr)); gap:0; }
+ .v2-discovery .mobile-nav a { min-width:0; font-size:.59rem; white-space:nowrap; }
+ .v2-discovery .mobile-nav a.backyard-mobile-link { color:#88e7ff; }
+ .v2-discovery .mobile-nav a.backyard-mobile-link b { font-size:1.15rem; }
+}
