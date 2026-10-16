@@ -8,7 +8,11 @@ export const SITE_ACCOUNT_HERO_KEY='singhub-account-hero';
 export const SITE_SINGBOARD_HERO_KEY='singhub-singboard-hero';
 export const SITE_BACKYARD_HERO_KEY='singhub-backyard-hero';
 export const SITE_HOTELS_INDEX_HERO_KEY='singhub-hotels-index-hero';
-export const SITE_HERO_KEYS=[SITE_DISCOVERY_HERO_KEY,SITE_VENUES_HERO_KEY,SITE_ACCOUNT_HERO_KEY,SITE_SINGBOARD_HERO_KEY,SITE_BACKYARD_HERO_KEY,SITE_HOTELS_INDEX_HERO_KEY] as const;
+export const SITE_PARTNER_OFFERS_HERO_KEY='singhub-partner-offers-hero';
+export const SITE_RADAR_HERO_KEY='singhub-radar-hero';
+export const SITE_NEIGHBORHOODS_HERO_KEY='singhub-neighborhoods-hero';
+export const SITE_SAN_DIEGO_KARAOKE_HERO_KEY='singhub-san-diego-karaoke-hero';
+export const SITE_HERO_KEYS=[SITE_DISCOVERY_HERO_KEY,SITE_VENUES_HERO_KEY,SITE_ACCOUNT_HERO_KEY,SITE_SINGBOARD_HERO_KEY,SITE_BACKYARD_HERO_KEY,SITE_HOTELS_INDEX_HERO_KEY,SITE_RADAR_HERO_KEY,SITE_NEIGHBORHOODS_HERO_KEY,SITE_SAN_DIEGO_KARAOKE_HERO_KEY,SITE_PARTNER_OFFERS_HERO_KEY] as const;
 export type HostMediaSettings={heroPlacement?:ResponsiveImagePlacement;portraitPlacement?:ResponsiveImagePlacement;portraitUrl?:string;portraitPosition?:HeroPosition;heroUrl?:string;heroAlt?:string;heroPosition?:HeroPosition;imageSource?:string;usageRights?:string;houseRules?:string;rotationPolicy?:string};
 export function parseHostMediaSettings(input:unknown):HostMediaSettings{
  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('Host media settings are required.');

@@ -7,6 +7,10 @@ import {SITE_BACKYARD_HERO_KEY} from "@/lib/hostMedia";
 import {backyardActivities,backyardVenueOffers} from "@/lib/backyardActivities";
 import {getVenueListings} from "@/lib/venueData";
 import {getSanDiegoPublicVenues} from "@/lib/sanDiegoMarket";
+import {OtherActivityRequest} from "@/components/backyard/OtherActivityRequest";
+import {getEarlyOpening} from "@/lib/earlyOpeningVenues";
+import {highlightIsCategory,matchesPlusDay,PLUS_DAYS} from "@/lib/karaokePlusSchedule";
+import type {BackyardOffer} from "@/lib/backyardActivities";
 
 export const dynamic="force-dynamic";
 export const metadata:Metadata={
@@ -15,14 +19,22 @@ export const metadata:Metadata={
  robots:{index:false,follow:true},
 };
 
-export default async function BackyardPage({searchParams}:{searchParams:Promise<{activity?:string;q?:string}>}){
+export default async function BackyardPage({searchParams}:{searchParams:Promise<{activity?:string;q?:string;day?:string}>}){
  const params=await searchParams;
  const [hero,allVenues]=await Promise.all([getHostMediaSettings(SITE_BACKYARD_HERO_KEY).catch(()=>null),getVenueListings()]);
  const venueBySlug=new Map(getSanDiegoPublicVenues(allVenues).map(venue=>[venue.slug,venue]));
  const stages=backyardActivities;
  const current=stages.find(stage=>stage.slug===params.activity);
+ const selectedDay=PLUS_DAYS.find(day=>day.toLowerCase()===params.day?.toLowerCase())||"all";
  const search=(params.q||"").trim().toLowerCase();
- const matches=backyardVenueOffers.filter(offer=>(!current||offer.activities.includes(current.slug))&&venueBySlug.has(offer.slug)&&offer.slug!=="winstons-beach-club").filter(offer=>{const venue=venueBySlug.get(offer.slug)!;return !search||[venue.venueName,venue.neighborhood,...offer.highlights,...offer.activities].join(" ").toLowerCase().includes(search)}).sort((a,b)=>venueBySlug.get(a.slug)!.venueName.localeCompare(venueBySlug.get(b.slug)!.venueName));
+ const matchedHighlights=(offer:BackyardOffer)=>{
+   if(current?.slug==="open-early")return offer.highlights.filter(title=>highlightIsCategory(title,"open-early"));
+   return matchesPlusDay(offer,selectedDay).filter(match=>!current||highlightIsCategory(match.title,current.slug)).map(match=>match.title);
+ };
+ const matches=backyardVenueOffers.filter(offer=>(!current||offer.activities.includes(current.slug))&&venueBySlug.has(offer.slug)&&offer.slug!=="winstons-beach-club")
+ .filter(offer=>matchedHighlights(offer).length>0)
+ .filter(offer=>{const venue=venueBySlug.get(offer.slug)!;return !search||[venue.venueName,venue.neighborhood,...matchedHighlights(offer)].join(" ").toLowerCase().includes(search)})
+ .sort((a,b)=>venueBySlug.get(a.slug)!.venueName.localeCompare(venueBySlug.get(b.slug)!.venueName));
  return <main data-scroll-page="backyard" className="min-h-[100dvh] bg-[#050609] text-white">
   <section data-page-hero="" className="relative isolate overflow-hidden" aria-labelledby="backyard-title">
     <PositionedImage
@@ -47,7 +59,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
     <div>
      <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-300">YOUR BACKYARD PASS</p>
      <h2 className="mt-2 text-3xl font-black uppercase">What are you here for?</h2>
-     <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">Come for the game. Stay for the mic. Explore the other reasons people gather at San Diego karaoke spots.</p>
+     <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">Explore the activities, games and events at venues in SingHUB’s karaoke directory. Karaoke doesn’t have to be happening that day.</p>
     </div>
     <Link href="/find-karaoke" className="rounded-lg border border-cyan-300/50 px-4 py-2 text-sm font-bold text-cyan-200 hover:bg-cyan-300/10">Find karaoke →</Link>
    </header>
@@ -55,27 +67,33 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
     {current&&<input type="hidden" name="activity" value={current.slug}/>}
     <label htmlFor="backyard-search" className="sr-only">Search activities</label>
     <input id="backyard-search" name="q" defaultValue={params.q||""} placeholder="Find an activity..." className="min-w-56 flex-1 rounded-xl border border-white/20 bg-white/[.06] px-4 py-3 text-white placeholder:text-slate-400"/>
-    <button type="submit" className="rounded-xl bg-cyan-300 px-5 py-3 font-bold text-black">Search</button>
-    {(current||params.q)&&<Link href="/backyard" className="rounded-xl border border-white/20 px-4 py-3 text-sm">Clear</Link>}
+    <label htmlFor="backyard-day" className="sr-only">Day to explore</label>
+    <select id="backyard-day" name="day" defaultValue={selectedDay} className="rounded-xl border border-white/20 bg-slate-950 px-4 py-3 text-sm font-bold text-white">
+     <option value="all">Any day</option>{PLUS_DAYS.map(day=><option key={day} value={day}>{day}</option>)}
+    </select>
+    <button type="submit" className="rounded-xl bg-cyan-300 px-5 py-3 font-bold text-black">Explore</button>
+    {(current||params.q||selectedDay!=="all")&&<Link href="/backyard" className="rounded-xl border border-white/20 px-4 py-3 text-sm">Clear</Link>}
    </form>
    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     {stages.filter(s=>(!params.q||[s.name,s.area,s.description].join(" ").toLowerCase().includes(params.q.toLowerCase()))&&(!current||s.slug===current.slug)).map(stage=>
-     <Link key={stage.slug} href={`/backyard?activity=${stage.slug}`} className="group flex min-h-48 flex-col justify-between rounded-2xl border border-white/15 bg-gradient-to-br from-white/10 to-white/[.02] p-5 transition hover:border-fuchsia-300/60 hover:bg-white/10">
+     <Link key={stage.slug} href={`/backyard?activity=${stage.slug}${selectedDay==="all"?"":"&day="+selectedDay}`} className="group flex min-h-48 flex-col justify-between rounded-2xl border border-white/15 bg-gradient-to-br from-white/10 to-white/[.02] p-5 transition hover:border-fuchsia-300/60 hover:bg-white/10">
       <span className="text-4xl" aria-hidden="true">{stage.icon}</span>
       <div><p className="text-xs font-black uppercase tracking-widest text-fuchsia-300">{stage.area}</p><h3 className="mt-2 text-2xl font-black">{stage.name}</h3><p className="mt-2 text-sm text-slate-300">{stage.description}</p></div>
      </Link>
     )}
    </div>
+   <OtherActivityRequest source="backyard"/>
    <div className="rounded-2xl border border-cyan-300/30 bg-cyan-300/[.05] p-6">
     <p className="text-xs font-black uppercase tracking-widest text-cyan-300">{current?.area||"BEYOND THE MIC"}</p>
     <h2 className="mt-2 text-3xl font-black">{current?current.name:"More to offer at karaoke venues"}</h2>
     <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">{current?.description||"Browse established activities, then open the venue's SingHUB page for karaoke details."} {current&&(current.slug==="football"||current.slug==="basketball"||current.slug==="ufc")?"Sports-friendly doesn't guarantee a specific game or fight is being shown. Confirm with the venue before visiting.":""}</p>
+    <p className="mt-3 text-xs text-slate-400">{selectedDay==="all"?"Browse venue amenities and listed events.":"Showing permanent amenities and activities explicitly listed for "+selectedDay+". "} Check venue hours and confirm events before visiting.</p>
     <p role="status" className="mt-3 text-xs font-bold text-cyan-200">{matches.length} {matches.length===1?"venue":"venues"} to explore</p>
     {matches.length?<div className="mt-5 grid gap-3 md:grid-cols-2">{matches.map(offer=>{const venue=venueBySlug.get(offer.slug)!;return <article key={offer.slug} className="rounded-xl border border-white/15 bg-slate-950/70 p-4">
-      <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-widest text-fuchsia-300">Karaoke+</p><h3 className="mt-1 text-xl font-black text-white">{venue.venueName}</h3><p className="text-sm text-slate-400">{venue.neighborhood}</p></div><Link className="rounded-lg bg-cyan-300 px-3 py-2 text-xs font-black text-black" href={"/venues/"+venue.slug}>See venue →</Link></div>
-      <div className="mt-4 flex flex-wrap gap-2">{offer.highlights.slice(0,4).map(tag=><span key={tag} className="rounded-full border border-white/20 bg-white/[.06] px-3 py-1 text-xs text-slate-200">{tag}</span>)}</div>
+      <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-widest text-fuchsia-300">Karaoke+</p><h3 className="mt-1 text-xl font-black text-white">{venue.venueName}</h3>{getEarlyOpening(offer.slug)&&<p className="mt-1 text-xs font-extrabold text-cyan-200">OPEN EARLY · {getEarlyOpening(offer.slug)?.time}</p>}<p className="text-sm text-slate-400">{venue.neighborhood}</p></div><Link className="rounded-lg bg-cyan-300 px-3 py-2 text-xs font-black text-black" href={"/venues/"+venue.slug}>See venue →</Link></div>
+      <div className="mt-4 flex flex-wrap gap-2">{matchedHighlights(offer).slice(0,3).map(tag=><span key={tag} className="rounded-full border border-white/20 bg-white/[.06] px-3 py-1 text-xs text-slate-200">{tag}</span>)}</div>
       <p className="mt-3 text-xs text-slate-400">Activities based on venue information. <a href={offer.source} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Check source ↗</a></p>
-    </article>})}</div>:<p className="mt-5 text-sm text-slate-300">No confirmed venue matches yet. Try another activity or clear your search.</p>}
+    </article>})}</div>:<p className="mt-5 text-sm text-slate-300">No verified day-specific matches in our current listings. Try another day, activity, or clear your search.</p>}
    </div>
    <div className="border-t border-white/15 pt-6 text-sm text-slate-400">An activity listing is not confirmation of a specific game broadcast or event date. Event-by-event verification is coming next.</div>
   </section>

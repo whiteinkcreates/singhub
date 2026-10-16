@@ -150,3 +150,11 @@ Corey reported credential setup complete on October 16. PR #386 previously passe
 
 
 October 16 activation evidence: PR #386 merged at 99f4a37948762539e6169c233523094385a182cf after GitHub Validate SingHUB and candidate validation passed. After Corey saved the repository secret, sync run 38972370607 rerun passed the authenticated credential check, generated-data guardrails and all four data regression tests, finishing successfully. Main validation run 38972370656 and integrity audit 38972370853 also passed. No public-facing data changes were pending, so PR creation, exact-head validation waiting and merge were correctly skipped. The next real changed-data sync remains the end-to-end acceptance for those steps; do not report that path as already exercised.
+
+## October 15–16: Combined Backyard / V2 integration PR #382
+
+The combined PR reconciles Karaoke+ / Backyard (#373), public index heroes (#378), and Free / Partner offers (#380), excluding separate Shopify and SingBOARD work. Earlier preview run 38841377801 on c8b5d73 passed 24 responsive route checks, with sticky heroes and initial same-night checks. The initial live Other request email failed and was subsequently corrected: a preview Resend delivery was confirmed at 9462c5f, not production.
+
+October 16 fixes on the review branch exclude unconfirmed venue screenings from weekday KARAOKE+ badges, make karaoke start-time buckets apply to the same eligible Karaoke+ night, and refresh direct Backyard mobile navigation browser tests for 360/390/768/900/1440 widths. The latest validation and screenshot matrix must pass on the reconciled commit before production approval. Emoji category art remains deliberately unchanged pending approved assets. Partner Event Drop (#374), Shopify #381 and SingBOARD updates remain separate.
+
+This merge reconciliation preserves latest main data, canonical sync automation and its approval-expiry fix. Neither this documentation entry nor preview READY status proves production release.

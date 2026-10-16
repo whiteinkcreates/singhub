@@ -1,0 +1,43 @@
+/* Discovery-aligned, shared editorial hero for legacy public indexes.
+   Image source and phone/desktop crop are selected from Admin > Main Page Heroes. */
+.singhub-v2-index-hero{isolation:isolate;position:relative;min-height:clamp(440px,64svh,720px);overflow:hidden;background:#050609;color:#fff;border-bottom:1px solid #45505e}
+.singhub-v2-index-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:-2;filter:saturate(.9)}
+.singhub-v2-index-hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(3,5,9,.86) 0%,rgba(3,5,9,.56) 58%,rgba(3,5,9,.2) 100%),linear-gradient(0deg,rgba(3,5,9,.96),transparent 62%)}
+.singhub-v2-index-hero-content{position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:clamp(440px,64svh,720px);max-width:1260px;margin:0 auto;padding:80px 28px 88px;font-family:"Barlow",sans-serif}
+.singhub-v2-index-eyebrow{margin:0 0 12px;color:#00c8ff;font-size:.78rem;letter-spacing:.2em;font-weight:900;text-transform:uppercase}
+.singhub-v2-index-hero h1{margin:0;max-width:880px;font-family:"Barlow Condensed",sans-serif;font-size:clamp(3.5rem,8vw,7rem);line-height:.88;font-weight:900;letter-spacing:-.018em;text-wrap:balance;text-shadow:0 3px 24px #000}
+.singhub-v2-index-description{margin:22px 0 0;max-width:700px;color:#e3e7ed;font-size:clamp(1rem,1.6vw,1.16rem);line-height:1.55;text-shadow:0 2px 12px #000}
+.singhub-v2-index-cta{display:inline-flex;align-self:flex-start;align-items:center;justify-content:center;gap:12px;min-height:45px;margin-top:24px;padding:12px 22px;border:1px solid #ff19a8;background:#ff19a8;color:#080910!important;text-decoration:none;font-size:.9rem;font-weight:900}
+.singhub-v2-index-cta:hover{background:#ff60c5;border-color:#ff60c5}
+.singhub-v2-index-cta:focus-visible{outline:3px solid #00c8ff;outline-offset:3px}
+@media(max-width:600px){.singhub-v2-index-hero,.singhub-v2-index-hero-content{min-height:min(660px,75svh)}.singhub-v2-index-hero-content{padding:76px 20px 58px}.singhub-v2-index-hero::before{background:linear-gradient(0deg,rgba(3,5,9,.96),rgba(3,5,9,.54) 64%,rgba(3,5,9,.3))}.singhub-v2-index-hero h1{font-size:clamp(3rem,13vw,5rem);line-height:.9}.singhub-v2-index-description{font-size:1rem;line-height:1.45}.singhub-v2-index-photo{object-position:center}}
+@media(max-width:380px){.singhub-v2-index-hero-content{padding:65px 16px 46px}.singhub-v2-index-hero h1{font-size:clamp(2.8rem,12vw,3.7rem)}}
+@media(prefers-reduced-motion:reduce){.singhub-v2-index-cta{transition:none}}
+
+/* V2 global scroll language: sticky image stage, opaque content sheet scrolling
+   freely over it. Avoid background-attachment:fixed (unreliable on iOS). */
+.singhub-v2-index-page{position:relative;isolation:isolate;overflow-x:clip;overflow-y:visible;background:#050609;}
+.singhub-v2-index-page .singhub-v2-index-hero{position:sticky;top:70px;z-index:0;height:min(680px,calc(100svh - 70px));min-height:min(680px,calc(100svh - 70px));border:0;}
+.singhub-v2-index-page .singhub-v2-index-hero-content{height:100%;min-height:0;padding-bottom:clamp(42px,7vw,80px);}
+.singhub-v2-index-page .singhub-v2-index-surface{position:relative;z-index:2;width:100%;margin:-28px 0 0;padding-top:1px;padding-bottom:56px;border-top:1px solid #ffffff24;background:#050609;}
+.singhub-v2-index-page .singhub-v2-index-surface :where(a,button):focus-visible{outline:3px solid #00c8ff;outline-offset:3px;}
+@media(max-width:860px){
+.singhub-v2-index-page .singhub-v2-index-hero{top:62px;height:calc(100svh - 62px - 64px);min-height:calc(100svh - 62px - 64px);}
+.singhub-v2-index-page .singhub-v2-index-hero-content{min-height:0;padding:36px 20px 54px;}
+.singhub-v2-index-page .singhub-v2-index-surface{padding-bottom:90px;}
+}
+@media(max-height:580px){
+.singhub-v2-index-page .singhub-v2-index-hero{height:auto;min-height:calc(100svh - 70px);}
+.singhub-v2-index-page .singhub-v2-index-hero-content{height:auto;min-height:calc(100svh - 70px);}
+}
+
+/* Preserve the City Signal window around the rising card on desktop.
+   The central sheet scrolls freely; side gutters still reveal the pinned hero. */
+@media(min-width:681px){
+.singhub-v2-index-page .singhub-v2-index-surface{padding:0 clamp(14px,3.2vw,44px) 56px;background:transparent;border:0;box-shadow:none;}
+.singhub-v2-index-page .singhub-v2-index-surface > *{width:100%;max-width:1240px;margin-inline:auto;border-top:1px solid #ffffff24;background:#050609;box-shadow:0 15px 50px #0008;}
+}
+@media(max-width:680px){
+.singhub-v2-index-page .singhub-v2-index-surface{padding:0 0 84px;border:0;background:transparent}
+.singhub-v2-index-page .singhub-v2-index-surface > *{border-top:1px solid #ffffff24;background:#050609}
+}

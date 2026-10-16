@@ -67,6 +67,17 @@ Locked behavior:
 - Minimal font families.
 - Accurate SingHUB wordmark only.
 
+## Shared photo hero scroll system (October 2026)
+
+For every photo-backed public landing/index/offer page, use the approved City Signal composition:
+- A **sticky hero image stage** fixed under the main header while the user scrolls; no `background-attachment: fixed` on phones.
+- An **independently scrolling foreground sheet** that rises in front of the image in normal document flow. Card lists are never fixed to the hero.
+- On desktop, maintain **transparent side gutters** so the city's hero world remains visible around the central scrolling card. On mobile prioritize full-width readable content.
+- The hero must be **replaceable in Admin**, with image alt text and independent desktop/mobile positioning; do not hard-code an image that admins cannot override.
+- Keep the existing approved venue, hotel and account visual altitudes instead of applying pink City Signal styling indiscriminately.
+- Utility forms and simple dialogs without a photo hero do **not** need artificial full-screen image stages.
+- Validate a normal scroll, short viewport, 360px phone, tablet, desktop, keyboard actions, loaded image, missing image and long content before release.
+
 ## Hotel
 
 Purpose: a co-presented concierge doorway into SingHUB.
