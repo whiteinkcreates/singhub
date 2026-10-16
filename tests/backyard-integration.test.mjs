@@ -27,7 +27,8 @@ test('Karaoke+ requires karaoke on selected day; Backyard amenities stay indepen
  assert.equal(plus.plusNight('camels-bar-grill',events,'Wednesday').eligible,false);
  assert.ok(plus.venueAmenities('camels-bar-grill').includes('Cornhole'));
  assert.equal(plus.scheduledExtrasOnDay('camels-bar-grill','Wednesday').length,0);
- assert.equal(plus.scheduledExtrasOnDay('camels-bar-grill','Thursday')[0].status,'needs_confirmation');
+ assert.equal(plus.scheduledExtrasOnDay('camels-bar-grill','Thursday').length,0,'unconfirmed football cannot create a day badge');
+ assert.equal(plus.scheduledExtrasOnDay('camels-bar-grill','Saturday')[0].status,'venue_published');
 });
 test('programmed extras do not leak days or turn amenities into schedule badges',()=>{
  const events=['Tuesday','Wednesday','Thursday'].map(event);
