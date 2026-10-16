@@ -48,3 +48,9 @@
 }
 @media(max-width:380px){.sh-hero{padding-inline:14px}.sh-hero h1{font-size:clamp(2.15rem,10vw,3rem)}.sh-hero-copy .sh-intro{font-size:.92rem}}
 @media(max-height:650px) and (max-width:860px){.sh-hero{justify-content:flex-start;min-height:calc(100svh - var(--sh-header-height));padding-top:18px;padding-bottom:26px}.sh-hero h1{font-size:clamp(2.1rem,8vw,3.4rem)}.sh-hero .sh-entry-return{margin-bottom:8px}}
+
+/* Mobile storefront hero: full image by default, or optional cover crop from theme settings. */
+@media(max-width:860px){
+.sh-hero-media{background:#09111c}
+.sh-hero-media img{max-width:100%;max-height:100%;object-fit:var(--sh-hero-mobile-fit,contain);object-position:var(--sh-hero-mobile-x,50%) var(--sh-hero-mobile-y,50%)}
+}
