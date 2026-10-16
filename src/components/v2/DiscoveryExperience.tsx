@@ -11,9 +11,8 @@ import { useListReturn } from './listReturn';
 import { DiscoveryRow } from './VenueRows';
 import { filterRows, type VenueRowData, type KaraokeStartFilter } from '@/lib/v2/presentation';
 import {getEarlyOpening} from '@/lib/earlyOpeningVenues';
-import {backyardOfferBySlug} from '@/lib/backyardActivities';
 import {PLUS_DAYS,type PlusDay} from '@/lib/karaokePlusSchedule';
-import {plusNight,plusNightsForWeek,venueAmenities} from '@/lib/karaokePlusOverlap';
+import {plusNight,plusNightsForWeek} from '@/lib/karaokePlusOverlap';
 import {getSanDiegoNightlifeWeekday} from '@/lib/nightlifeTime';
 
 import "./styles/discovery.css";
