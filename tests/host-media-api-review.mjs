@@ -14,6 +14,9 @@ try{
  assert.equal((await put({slug:'singhub-hosts-directory',profile:{portraitUrl:'javascript:alert(1)'}})).status,400);
  assert.equal((await put({slug:'singhub-hosts-directory',profile:{heroUrl:'https://example.com/hero.jpg'}})).status,400);
  assert.equal((await put({slug:'singhub-hosts-directory',profile:{heroPosition:'banana'}})).status,400);
+ assert.equal((await fetch(base+'/api/admin/host-media',{method:'DELETE',headers:{'content-type':'application/json'},body:JSON.stringify({slug:'singhub-hosts-directory',publicId:'x'})})).status,401);
+ assert.equal((await fetch(base+'/api/admin/host-media',{method:'DELETE',headers:{authorization:auth,origin:'https://example.net','content-type':'application/json'},body:JSON.stringify({slug:'singhub-hosts-directory',publicId:'x'})})).status,403);
+ assert.equal((await fetch(base+'/api/admin/host-media',{method:'DELETE',headers:{authorization:auth,'content-type':'application/json'},body:JSON.stringify({slug:'singhub-hosts-directory',publicId:''})})).status,400);
  const form=new FormData();form.set('slug','singhub-hosts-directory');form.set('file',new File(['text'],'bad.txt',{type:'text/plain'}));
  assert.equal((await fetch(base+'/api/admin/host-media',{method:'POST',headers:{authorization:auth},body:form})).status,400);
  if(!process.env.SUPABASE_SERVICE_ROLE_KEY){assert.equal((await fetch(base+'/api/admin/host-profiles?slug=singhub-hosts-directory',{headers:{authorization:auth}})).status,503);}
