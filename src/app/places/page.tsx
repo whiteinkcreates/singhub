@@ -19,7 +19,7 @@ export default async function KaraokePlacesPage() {
   ]);
   const venues = getPublicVenues(allVenues);
   return (
-    <main className="min-h-screen bg-[#050609] text-white">
+    <main className="singhub-v2-index-page min-h-screen bg-[#050609] text-white">
       <V2IndexHero
         eyebrow="SINGHUB RADAR"
         title="Explore karaoke places worth knowing."
@@ -31,9 +31,9 @@ export default async function KaraokePlacesPage() {
         primaryHref="/find-karaoke"
         primaryLabel="Find San Diego karaoke"
       />
-      <div className="mx-auto max-w-7xl px-4 pb-20 pt-8">
+      <div className="singhub-v2-index-surface"><div className="mx-auto max-w-7xl px-4 pb-20 pt-8">
         <KaraokePlacesExperience venues={venues} />
-      </div>
+      </div></div>
     </main>
   );
 }
