@@ -23,7 +23,7 @@ export default async function SanDiegoKaraokePage() {
     getPublicIndexHero(SITE_SAN_DIEGO_KARAOKE_HERO_KEY),
   ]);
   return (
-    <div className="min-h-screen bg-[#050609] text-white">
+    <div className="singhub-v2-index-page min-h-screen bg-[#050609] text-white">
       <V2IndexHero
         eyebrow={page.eyebrow}
         title={page.headline}
@@ -35,7 +35,7 @@ export default async function SanDiegoKaraokePage() {
         primaryHref={page.primaryCtaHref}
         primaryLabel={page.primaryCtaLabel}
       />
-      <LocalSeoPageView page={page} venues={getSanDiegoPublicVenues(allVenues)} hideIntro />
+      <div className="singhub-v2-index-surface"><LocalSeoPageView page={page} venues={getSanDiegoPublicVenues(allVenues)} hideIntro /></div>
     </div>
   );
 }
