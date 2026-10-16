@@ -14,6 +14,6 @@ export async function PUT(request:Request){
  let slug:string;let profile;
  try{const body=await request.json();slug=body.slug;if(typeof slug!=='string'||!await validHostMediaTarget(slug))throw new Error('Choose a registered host.');profile=parseHostMediaSettings(body.profile);}
  catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Invalid host media.'},{status:400});}
- try{await saveHostMediaSettings(slug,profile);revalidatePath('/hosts');revalidatePath('/hosts/[slug]','page');revalidatePath('/find-karaoke');revalidatePath('/account');revalidatePath('/singboard');revalidatePath('/admin/main-heroes');revalidatePath('/admin/hosts');revalidatePath('/','page');return NextResponse.json({ok:true,profile});}
+ try{await saveHostMediaSettings(slug,profile);revalidatePath('/hosts');revalidatePath('/hosts/[slug]','page');revalidatePath('/find-karaoke');revalidatePath('/account');revalidatePath('/singboard');revalidatePath('/admin/main-heroes');revalidatePath('/places');revalidatePath('/neighborhoods');revalidatePath('/san-diego-karaoke');revalidatePath('/admin/hosts');revalidatePath('/','page');return NextResponse.json({ok:true,profile});}
  catch(error){return NextResponse.json({error:error instanceof Error?error.message:'Host media was not saved.'},{status:503});}
 }
