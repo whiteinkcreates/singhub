@@ -17,9 +17,9 @@ import {plusNight,plusNightsForWeek} from '@/lib/karaokePlusOverlap';
 import {getSanDiegoNightlifeWeekday} from '@/lib/nightlifeTime';
 
 import "./styles/discovery.css";
-export function DiscoveryExperience({ rows, hotelName, heroUrl, heroAlt, heroPosition,heroPlacement, initialQuery='' }: { rows: VenueRowData[]; initialQuery?:string; hotelName?:string; heroUrl?:string; heroAlt?:string; heroPosition?:string; heroPlacement?:ResponsiveImagePlacement }) {
+export function DiscoveryExperience({ rows, hotelName, heroUrl, heroAlt, heroPosition,heroPlacement, initialQuery='', initialPlus=false }: { rows: VenueRowData[]; initialQuery?:string; initialPlus?:boolean; hotelName?:string; heroUrl?:string; heroAlt?:string; heroPosition?:string; heroPlacement?:ResponsiveImagePlacement }) {
 const root=useRef<HTMLDivElement>(null); const viewerInitials=useViewerInitials();
-const [mode,setMode]=useState<'tonight'|'week'>('tonight'); const [plus,setPlus]=useState(false);
+const [mode,setMode]=useState<'tonight'|'week'>('tonight'); const [plus,setPlus]=useState(initialPlus);
 const [plusDay,setPlusDay]=useState<'all'|PlusDay>('all');
 const matchingDay=mode==='tonight'?getSanDiegoNightlifeWeekday():plusDay;
 const [startFilter,setStartFilter]=useState<KaraokeStartFilter>('any');const [earlyOnly,setEarlyOnly]=useState(false);const [query,setQuery]=useState(initialQuery);
