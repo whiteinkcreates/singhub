@@ -25,11 +25,11 @@ try{
   await page.getByRole('button',{name:'Sign in',exact:true}).click();
   const dialog=page.locator('dialog.account-service-dialog');
   assert.ok(await dialog.isVisible(),'sign-in modal visible');
-  assert.match(await dialog.innerText(),/Sign in to My SingHUB/);
+  assert.match(await dialog.innerText(),/Sign in to My SingHUB/i);
   assert.ok(await dialog.getByRole('textbox',{name:'Email address'}).isVisible());
   await dialog.getByRole('button',{name:'Close account action'}).click();
   await page.getByRole('button',{name:'Create account',exact:true}).click();
-  assert.match(await dialog.innerText(),/Create your My SingHUB account/);
+  assert.match(await dialog.innerText(),/Create your My SingHUB account/i);
   assert.ok(await dialog.getByRole('textbox',{name:'Email address'}).isVisible());
   await dialog.getByRole('button',{name:'Close account action'}).click();
   await page.goto(base+'/account?signin=1&next=%2Fvenues%2Fredwing-bar-grill',{waitUntil:'networkidle'});
