@@ -94,7 +94,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
      <Link href="/account" className="landing-tile landing-tile-jacket">
       <img src="/images/singhub-v2/jacket-denim-blank.png" alt="" className="landing-jacket-art"/>
       <div className="landing-tile-copy">
-       <span className="landing-tile-tag">MY SINGHUB</span>
+       <span className="landing-tile-tag">MY SINGHUB · MY TOUR</span>
        <h3>Your nights<br/>add up.</h3>
        <p>Save your favorite spots, log your songs, and make that jacket your own.</p>
        <span className="landing-tile-action">Explore My SingHUB <span aria-hidden="true">↗</span></span>
