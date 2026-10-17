@@ -47,7 +47,7 @@ try{
   await page.goto(base+"/jacket-qa",{waitUntil:"networkidle"});
   assert.equal(await page.getByRole("button",{name:"Download jacket portrait"}).isEnabled(),false,"export gated before account loads");
   assert.equal(await page.locator(".jacket-thumb .performance-star").count(),18);
-  assert.equal(await page.locator(".performance-star-overflow").innerText(),"+25");
+  assert.equal(await page.locator(".jacket-thumb .performance-star-overflow").innerText(),"+25");
   await page.getByRole("button",{name:"Load fixture account"}).click();
   assert.equal(await page.getByRole("button",{name:"Download jacket portrait"}).isEnabled(),true);
   assert.equal(await page.locator(".patch-catalog-item").count(),8);
