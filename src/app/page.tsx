@@ -76,8 +76,8 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
   <section data-page-surface className="landing-surface" aria-labelledby="landing-features-title">
    <div className="landing-inner">
     <header className="landing-section-heading">
-     <div><p className="landing-eyebrow">MORE THAN A KARAOKE FINDER</p><h2 id="landing-features-title">The night doesn't stop here.</h2></div>
-     <p>Pick your next mic, find the action, and make the nights part of your story.</p>
+     <div><p className="landing-eyebrow">THERE'S MORE TO SINGHUB</p><h2 id="landing-features-title">Karaoke's just the beginning.</h2></div>
+     <p>The places you go, the people you meet, and all the stuff happening around the mic.</p>
     </header>
     <div className="landing-collage">
      <Link href="/discover?plus=1" className="landing-tile landing-tile-plus">
@@ -95,9 +95,9 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
       <img src="/images/singhub-v2/jacket-denim-blank.png" alt="" className="landing-jacket-art"/>
       <div className="landing-tile-copy">
        <span className="landing-tile-tag">MY SINGHUB</span>
-       <h3>Your Tour.<br/>Your Jacket.</h3>
-       <p>Save your places and keep your karaoke story.</p>
-       <span className="landing-tile-action">My SingHUB <span aria-hidden="true">↗</span></span>
+       <h3>Your nights<br/>add up.</h3>
+       <p>Save your favorite spots, log your songs, and make that jacket your own.</p>
+       <span className="landing-tile-action">Explore My SingHUB <span aria-hidden="true">↗</span></span>
       </div>
      </Link>
      <Link href="/singboard" className="landing-tile landing-tile-board">
@@ -105,9 +105,9 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
       <span className="landing-image-shade"/>
       <div className="landing-tile-copy">
        <span className="landing-tile-tag">SINGBOARD</span>
-       <h3>What's happening?</h3>
-       <p>Flyers, local events and karaoke community notices.</p>
-       <span className="landing-tile-action">Visit SingBOARD <span aria-hidden="true">↗</span></span>
+       <h3>What's going on around here?</h3>
+       <p>Flyers, special events, community updates, and a few good reasons to get out of the house.</p>
+       <span className="landing-tile-action">Check the Board <span aria-hidden="true">↗</span></span>
       </div>
      </Link>
      <Link href="/hosts" className="landing-tile landing-tile-hosts">
@@ -128,13 +128,13 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
       <span className="landing-image-shade"/>
       <div className="landing-tile-copy">
        <span className="landing-tile-tag">A SIDE QUEST FROM SINGHUB</span>
-       <h3>The Backyard.</h3>
-       <p>Games, trivia, live music and the other reasons to stay out.</p>
-       <span className="landing-tile-action">Explore the experiment <span aria-hidden="true">↗</span></span>
+       <h3>Not everything needs a microphone.</h3>
+       <p>Games, trivia, live music, and whatever else is happening at your favorite karaoke spots.</p>
+       <span className="landing-tile-action">Wander into The Backyard <span aria-hidden="true">↗</span></span>
       </div>
      </Link>
     </div>
-    <div className="landing-outro"><p>Ready to find the mic?</p><Link href="/discover">See tonight's karaoke <span aria-hidden="true">↗</span></Link></div>
+    <div className="landing-outro"><p>Enough talking about karaoke. Go find some.</p><Link href="/discover">Find karaoke tonight <span aria-hidden="true">↗</span></Link></div>
    </div>
   </section>
  </main>;
