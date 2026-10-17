@@ -39,13 +39,13 @@ export function OtherActivityRequest({source,compact=false}:{source:"discover"|"
   }
   return <div className={compact?"other-activity-compact":"rounded-xl border border-cyan-300/25 bg-cyan-300/[.05] p-4 text-white"}>
     <div className="flex flex-wrap items-center justify-between gap-3">
-      <div>{compact?<span className="other-activity-prompt">Missing an activity?</span>:<><strong className="text-base font-black">Something else in mind?</strong><p className="mt-1 text-sm text-slate-300">Bowling tonight? Cornhole this weekend? Tell us what we&apos;re missing.</p></>}</div>
+      <div>{compact?<span className="other-activity-prompt">Missing an activity?</span>:<><strong className="text-base font-black">Something else in mind?</strong><p className="mt-1 text-sm text-slate-300">Can&apos;t find what you&apos;re looking for? Request an activity.</p></>}</div>
       <button type="button" aria-expanded={expanded} onClick={()=>setExpanded(v=>!v)} className="rounded-lg border border-cyan-300 px-4 py-2 text-sm font-extrabold text-cyan-200">{expanded?"Close":compact?"Request an activity →":"Other →"}</button>
     </div>
     {expanded&&<form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-2">
       <div className="hidden" aria-hidden="true"><label>Website<input name="company-website" tabIndex={-1} autoComplete="off"/></label></div>
       <label className="text-xs font-bold text-slate-200 sm:col-span-2">What are you looking for?
-        <input name="activity" required minLength={3} maxLength={180} placeholder="Bowling near me tonight" className="mt-1 block w-full rounded-lg border border-white/20 bg-slate-950 px-3 py-3 text-base text-white"/>
+        <input name="activity" required minLength={3} maxLength={180} placeholder="Tell us the activity you want to find" className="mt-1 block w-full rounded-lg border border-white/20 bg-slate-950 px-3 py-3 text-base text-white"/>
       </label>
       <label className="text-xs font-bold text-slate-200">When?
         <select name="when" defaultValue="Tonight" className="mt-1 block w-full rounded-lg border border-white/20 bg-slate-950 px-3 py-3 text-base text-white">

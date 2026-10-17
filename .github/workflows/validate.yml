@@ -77,6 +77,21 @@ jobs:
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-')) && 'qa-public-key' || '' }}
         run: npm run build
 
+      - name: Install browser for Backyard category artwork QA
+        if: startsWith(github.head_ref, 'feat/backyard-category-art-')
+        run: npx playwright install --with-deps chromium
+
+      - name: Check Backyard artwork and category filters on mobile and desktop
+        if: startsWith(github.head_ref, 'feat/backyard-category-art-')
+        run: node tests/backyard-art-browser.mjs
+
+      - name: Save Backyard artwork screenshots
+        if: always() && startsWith(github.head_ref, 'feat/backyard-category-art-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: backyard-art-qa
+          path: /tmp/backyard-art-qa
+
       - name: Install browser for combined Backyard and V2 QA
         if: startsWith(github.head_ref, 'review/backyard-v2-integration-')
         run: npx playwright install --with-deps chromium
