@@ -5,6 +5,7 @@ import {getPublicVenues} from '@/lib/publicVenueFilters';
 import {getKaraokeEventsByVenueSlug} from '@/lib/eventData';
 import {nightlifeDate} from '@/lib/tourStops';
 import {karaokeRunsOnDate} from '@/lib/engagement/chairDates';
+import {karaokeCalendarUrl} from '@/lib/engagement/calendarLinks';
 export const dynamic='force-dynamic';
 const headers={'Cache-Control':'private, no-store'};
 export async function GET(request:Request){
@@ -30,7 +31,7 @@ export async function GET(request:Request){
    if(!eligible.length)return null;
    return {venueSlug:venue.slug,venueName:venue.venueName,date:plan.nightlife_date,intent:plan.intent,
     visibility:plan.visibility,venueUrl:'/venues/'+venue.slug,
-    events:eligible.map(event=>({eventId:event.eventId,startTime:event.startTime,endTime:event.endTime,hostName:event.hostName||null}))};
+    events:eligible.map(event=>({eventId:event.eventId,startTime:event.startTime,endTime:event.endTime,hostName:event.hostName||null,calendarUrl:karaokeCalendarUrl({date:plan.nightlife_date,venueName:venue.venueName,startTime:event.startTime,endTime:event.endTime,hostName:event.hostName,venueUrl:'/venues/'+venue.slug})}))};
   }));
   return NextResponse.json({plans:upcoming.filter(p=>p!==null),timezone:'America/Los_Angeles',note:'Planned appearances are not confirmed attendance.'},{headers});
  }catch(error){console.error('My planned appearances lookup failed',error);return NextResponse.json({error:'Could not load your planned nights.'},{status:503,headers});}
