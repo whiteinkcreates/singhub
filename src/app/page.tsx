@@ -1,87 +1,139 @@
 import type {Metadata} from 'next';
 import Link from 'next/link';
+import {redirect} from 'next/navigation';
+import {PositionedImage} from '@/components/media/PositionedImage';
+import {HeroScrollCue} from '@/components/layout/HeroScrollCue';
 import {getDiscoveryData} from '@/lib/v2/data';
 import {getHostMediaSettings} from '@/lib/hostMedia.server';
 import {SITE_DISCOVERY_HERO_KEY,SITE_SINGBOARD_HERO_KEY} from '@/lib/hostMedia';
 import {SINGBOARD_STICKER_ART} from '@/lib/singboardStickerArt';
 import {getSanDiegoNightlifeWeekday} from '@/lib/nightlifeTime';
 import {plusNight} from '@/lib/karaokePlusOverlap';
+import './landing.css';
 
 export const dynamic='force-dynamic';
 export const metadata:Metadata={title:'SingHUB | Find Your Mic in San Diego',description:'Find karaoke tonight, discover local events, and make every night part of your SingHUB story.',alternates:{canonical:'/'}};
 
-export default async function Home(){
+type Highlight={name:string;title:string;image:string;count:number;description:string};
+export default async function Home({searchParams}:{searchParams:Promise<Record<string,string|string[]|undefined>>}){
+ const params=await searchParams;
+ // Keep previously issued hotel-source links in the guest-to-discovery handoff.
+ const source=typeof params.source==='string'?params.source:'';
+ if(source.startsWith('hotel-'))redirect('/discover?source='+encodeURIComponent(source));
  const [{rows},hero,boardHero]=await Promise.all([
   getDiscoveryData(),
   getHostMediaSettings(SITE_DISCOVERY_HERO_KEY).catch(()=>null),
   getHostMediaSettings(SITE_SINGBOARD_HERO_KEY).catch(()=>null)
  ]);
  const day=getSanDiegoNightlifeWeekday();
- const plusVenues=rows.filter(row=>row.venue.venueType!=='private_room'&&row.venue.slug!=='winstons-beach-club'&&plusNight(row.venue.slug,row.events,day,true)?.eligible);
- return <main className="min-h-screen bg-[#080b14] pb-24 text-white">
-  <header className="sticky top-0 z-30 flex items-center justify-between border-b border-white/10 bg-[#080b14]/95 px-4 py-3 backdrop-blur md:px-8">
-   <Link href="/" aria-label="SingHUB home"><img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" className="h-9 w-auto max-w-36 object-contain"/></Link>
-   <nav aria-label="Main navigation" className="flex items-center gap-3 text-xs font-bold sm:gap-6 sm:text-sm">
-    <Link className="text-cyan-300 hover:text-white" href="/discover">Discover</Link>
-    <Link className="hidden hover:text-fuchsia-300 sm:inline" href="/find-karaoke">Venues</Link>
-    <Link className="hidden hover:text-fuchsia-300 sm:inline" href="/hosts">Hosts</Link>
-    <Link className="hidden hover:text-fuchsia-300 sm:inline" href="/singboard">SingBOARD</Link>
-    <Link className="rounded-full border border-fuchsia-400/50 px-3 py-2 hover:bg-fuchsia-400/10" href="/account">My SingHUB</Link>
-   </nav>
-  </header>
-  <section className="relative isolate overflow-hidden border-b border-white/10">
-   <img src={hero?.heroUrl||'/images/singhub-v2/singhub-city-discovery.webp'} alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-55"/>
-   <div className="absolute inset-0 bg-gradient-to-r from-[#080b14] via-[#080b14]/70 to-[#080b14]/30"/>
-   <div className="relative mx-auto flex min-h-[480px] max-w-7xl flex-col justify-center px-5 py-20 sm:px-10 md:min-h-[570px]">
-    <p className="text-xs font-black uppercase tracking-[.3em] text-fuchsia-300">SAN DIEGO KARAOKE AND MORE</p>
-    <h1 className="mt-5 max-w-3xl text-[clamp(3.3rem,9vw,7.5rem)] font-black uppercase leading-[.88] tracking-tight">Your city.<br/><span className="text-cyan-300">Your stage.</span></h1>
-    <p className="mt-6 max-w-lg text-base leading-7 text-slate-200 sm:text-lg">Find the mic. Find your people. See what else is happening, and make the night yours.</p>
-    <form action="/discover" method="get" className="mt-8 flex w-full max-w-xl flex-col gap-2 rounded-2xl border border-white/20 bg-[#101727]/95 p-2 shadow-2xl sm:flex-row">
-     <label htmlFor="landing-search" className="sr-only">Search karaoke venues, hosts or neighborhoods</label>
-     <input id="landing-search" name="q" type="search" placeholder="Venue, neighborhood or host" className="min-w-0 flex-1 rounded-xl bg-transparent px-4 py-3 text-white outline-none placeholder:text-slate-400 focus-visible:ring-2 focus-visible:ring-cyan-300"/>
-     <button type="submit" className="rounded-xl bg-fuchsia-500 px-6 py-3 text-sm font-black text-white transition hover:bg-fuchsia-400">Find karaoke →</button>
-    </form>
-    <Link href="/discover" className="mt-4 w-fit text-sm font-bold text-cyan-200 underline decoration-cyan-400/50 underline-offset-4 hover:text-white">Browse tonight and this week →</Link>
+ const eligible=rows.filter(row=>row.venue.venueType!=='private_room'&&row.venue.slug!=='winstons-beach-club')
+  .map(row=>({row,night:plusNight(row.venue.slug,row.events,day,true)}))
+  .filter(result=>result.night.eligible);
+ const choices:Highlight[]=[
+  {name:'Game day',title:'The game and the mic.',image:'/images/backyard/football.webp',
+   count:eligible.filter(item=>item.night.scheduled.some(extra=>extra.category==='sports'&&extra.status==='venue_published')).length,
+   description:'Verified sports programming alongside karaoke on the same night.'},
+  {name:'Live music',title:'One night. More music.',image:'/images/backyard/live-music.webp',
+   count:eligible.filter(item=>item.night.scheduled.some(extra=>extra.category==='live_music'&&extra.status==='venue_published')).length,
+   description:'Karaoke and live music on the same nightly lineup.'},
+  {name:'Trivia night',title:'Brains and a mic.',image:'/images/backyard/trivia.webp',
+   count:eligible.filter(item=>item.night.scheduled.some(extra=>extra.category==='trivia'&&extra.status==='venue_published')).length,
+   description:'Trivia and karaoke scheduled for the same night.'},
+  {name:'Pool & games',title:'Play a round. Sing a song.',image:'/images/backyard/pool-games.webp',
+   count:eligible.filter(item=>item.night.amenities.some(value=>/pool|darts|arcade|bowling|cornhole|foosball|shuffleboard/i.test(value))).length,
+   description:'Karaoke venues with pool, arcade games or other extras.'}
+ ];
+ // Rotate only among qualified content. No unverified football screening claims.
+ const available=choices.filter(choice=>choice.count>0);
+ const index=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'].indexOf(day);
+ const spotlight=available.length?available[Math.max(index,0)%available.length]:null;
+ const featureImage=spotlight?.image||'/images/backyard/live-music.webp';
+
+ return <main data-scroll-page="landing" className="singhub-landing">
+  <section data-page-hero className="landing-hero" aria-labelledby="landing-title">
+   <PositionedImage src={hero?.heroUrl||'/images/singhub-v2/singhub-city-discovery.webp'} position={hero?.heroPosition} placement={hero?.heroPlacement} alt={hero?.heroAlt||'San Diego karaoke after dark'} className="landing-hero-image"/>
+   <div className="landing-hero-shade" aria-hidden="true"/>
+   <div className="landing-hero-layout">
+    <div data-hero-copy className="landing-hero-copy">
+     <p className="landing-eyebrow">SAN DIEGO KARAOKE AND MORE</p>
+     <h1 id="landing-title">Find your mic <span>tonight.</span></h1>
+     <p className="landing-deck">Your city. Your stage. Discover where to sing, what else is happening and where your next night might take you.</p>
+     <form action="/discover" method="get" className="landing-search">
+      <label htmlFor="landing-search-input" className="sr-only">Search karaoke venues, hosts or neighborhoods</label>
+      <span aria-hidden="true" className="landing-search-icon">⌕</span>
+      <input id="landing-search-input" name="q" type="search" placeholder="Venue, neighborhood or host"/>
+      <button type="submit">Find karaoke <span aria-hidden="true">↗</span></button>
+     </form>
+     <div className="landing-shortcuts">
+      <Link href="/discover">Tonight &amp; This Week <span aria-hidden="true">↗</span></Link>
+      <Link href="/discover?plus=1">Karaoke+ <span aria-hidden="true">✦</span></Link>
+     </div>
+    </div>
+   </div>
+   <HeroScrollCue/>
+  </section>
+
+  <section data-page-surface className="landing-surface" aria-labelledby="landing-features-title">
+   <div className="landing-inner">
+    <header className="landing-section-heading">
+     <div><p className="landing-eyebrow">MORE THAN A KARAOKE FINDER</p><h2 id="landing-features-title">The night doesn't stop here.</h2></div>
+     <p>Pick your next mic, find the action, and make the nights part of your story.</p>
+    </header>
+    <div className="landing-collage">
+     <Link href="/discover?plus=1" className="landing-tile landing-tile-plus">
+      <img src={featureImage} alt="" className="landing-tile-photo"/>
+      <span className="landing-image-shade"/>
+      <div className="landing-tile-copy">
+       <span className="landing-tile-tag">KARAOKE+ · {day.toUpperCase()}</span>
+       <h3>{spotlight?.title||'Karaoke and something extra.'}</h3>
+       <p>{spotlight?spotlight.count+' matching places · '+spotlight.description:'Explore karaoke with games, music and more.'}</p>
+       <span className="landing-tile-action">Explore Karaoke+ <span aria-hidden="true">↗</span></span>
+      </div>
+     </Link>
+     <Link href="/account" className="landing-tile landing-tile-jacket">
+      <img src="/images/singhub-v2/jacket-denim-blank.png" alt="" className="landing-jacket-art"/>
+      <div className="landing-tile-copy">
+       <span className="landing-tile-tag">MY SINGHUB</span>
+       <h3>Your Tour.<br/>Your Jacket.</h3>
+       <p>Save your places and keep your karaoke story.</p>
+       <span className="landing-tile-action">My SingHUB <span aria-hidden="true">↗</span></span>
+      </div>
+     </Link>
+     <Link href="/singboard" className="landing-tile landing-tile-board">
+      <img src={boardHero?.heroUrl||SINGBOARD_STICKER_ART} alt="" className="landing-tile-photo"/>
+      <span className="landing-image-shade"/>
+      <div className="landing-tile-copy">
+       <span className="landing-tile-tag">SINGBOARD</span>
+       <h3>What's happening?</h3>
+       <p>Flyers, local events and karaoke community notices.</p>
+       <span className="landing-tile-action">Visit SingBOARD <span aria-hidden="true">↗</span></span>
+      </div>
+     </Link>
+     <Link href="/account" className="landing-tile landing-tile-qr">
+      <img src="/images/home/singer-qr-scan.svg" alt="" className="landing-qr-art"/>
+      <div className="landing-tile-copy">
+       <span className="landing-tile-tag">MY SINGHUB · PERSONAL QR</span>
+       <h3>Your QR.<br/>Their camera.</h3>
+       <p>Share your SingHUB link. You choose whether your singer alias is visible.</p>
+       <span className="landing-tile-action">Open My SingHUB <span aria-hidden="true">↗</span></span>
+      </div>
+     </Link>
+     <Link href="/backyard" className="landing-tile landing-tile-backyard">
+      <div className="landing-backyard-photos" aria-hidden="true">
+       <img src="/images/backyard/bowling.webp" alt=""/>
+       <img src="/images/backyard/trivia.webp" alt=""/>
+      </div>
+      <span className="landing-image-shade"/>
+      <div className="landing-tile-copy">
+       <span className="landing-tile-tag">A SIDE QUEST FROM SINGHUB</span>
+       <h3>The Backyard.</h3>
+       <p>Games, trivia, live music and the other reasons to stay out.</p>
+       <span className="landing-tile-action">Explore the experiment <span aria-hidden="true">↗</span></span>
+      </div>
+     </Link>
+    </div>
+    <div className="landing-outro"><p>Ready to find the mic?</p><Link href="/discover">See tonight's karaoke <span aria-hidden="true">↗</span></Link></div>
    </div>
   </section>
-  <section aria-labelledby="more-title" className="mx-auto max-w-7xl px-4 py-12 sm:px-8 md:py-16">
-   <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
-    <div><p className="text-xs font-black uppercase tracking-[.25em] text-fuchsia-300">BEYOND THE MIC</p><h2 id="more-title" className="mt-2 text-3xl font-black tracking-tight md:text-5xl">There’s more to the night.</h2></div>
-    <p className="max-w-sm text-sm leading-6 text-slate-300">Karaoke is the beginning. Here’s what else you can do with SingHUB.</p>
-   </div>
-   <div className="grid auto-rows-[minmax(180px,auto)] grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:gap-4">
-    <Link href="/discover?plus=1" className="group relative isolate flex min-h-80 flex-col justify-end overflow-hidden rounded-3xl border border-cyan-300/30 bg-[#153444] p-6 sm:col-span-2 lg:col-span-7 lg:row-span-2">
-     <img src="/images/singhub-v2/singhub-venues-alley.webp" alt="" className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-500 group-hover:scale-105"/>
-     <div className="absolute inset-0 bg-gradient-to-t from-[#05131c] via-[#05131c]/50 to-transparent"/>
-     <div className="relative"><span className="rounded-full bg-cyan-300 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-[#06111b]">Karaoke+ · {day}</span>
-      <h3 className="mt-4 text-3xl font-black sm:text-4xl">Sing and something extra.</h3>
-      <p className="mt-2 max-w-md text-sm leading-6 text-slate-100">{plusVenues.length?plusVenues.length+' karaoke spots with something extra on the '+day+' lineup.':'Explore karaoke nights with games, live music and more when schedules overlap.'}</p>
-      <span className="mt-4 inline-block text-sm font-black text-cyan-200">Explore Karaoke+ →</span>
-     </div>
-    </Link>
-    <Link href="/account" className="group relative flex min-h-72 flex-col justify-end overflow-hidden rounded-3xl border border-fuchsia-300/25 bg-[#29162f] p-5 sm:col-span-1 lg:col-span-5">
-     <img src="/images/singhub-v2/jacket-denim-blank.png" alt="" className="absolute -right-8 -top-16 h-[125%] w-2/3 object-contain opacity-75 transition duration-500 group-hover:scale-105"/>
-     <div className="absolute inset-0 bg-gradient-to-r from-[#29162f] via-[#29162f]/85 to-transparent"/>
-     <div className="relative max-w-[65%]"><p className="text-xs font-black uppercase tracking-wider text-fuchsia-200">MY SINGHUB</p><h3 className="mt-2 text-2xl font-black">Your Tour. Your Jacket.</h3><p className="mt-2 text-sm text-slate-200">Save places, remember nights and collect your story.</p><span className="mt-4 inline-block text-sm font-black text-fuchsia-200">Step backstage →</span></div>
-    </Link>
-    <Link href="/singboard" className="group relative flex min-h-72 flex-col justify-end overflow-hidden rounded-3xl border border-white/20 bg-[#152332] p-5 sm:col-span-1 lg:col-span-5">
-     <img src={boardHero?.heroUrl||SINGBOARD_STICKER_ART} alt="" className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-500 group-hover:scale-105"/>
-     <div className="absolute inset-0 bg-gradient-to-t from-[#09121f] via-[#09121f]/60 to-transparent"/>
-     <div className="relative"><p className="text-xs font-black uppercase tracking-wider text-cyan-200">SINGBOARD</p><h3 className="mt-2 text-2xl font-black">See what’s happening.</h3><p className="mt-2 text-sm text-slate-100">Events, flyers and community notices.</p><span className="mt-4 inline-block text-sm font-black text-cyan-200">See the board →</span></div>
-    </Link>
-    <Link href="/account" className="group relative flex min-h-64 flex-col justify-center overflow-hidden rounded-3xl border border-violet-300/25 bg-gradient-to-br from-[#212144] to-[#0e172b] p-6 sm:col-span-1 lg:col-span-7">
-     <div className="relative z-10 max-w-[65%]"><p className="text-xs font-black uppercase tracking-wider text-violet-200">MY SINGHUB · PERSONAL QR</p><h3 className="mt-2 text-2xl font-black">Meet. Scan. Connect.</h3><p className="mt-2 text-sm leading-6 text-slate-200">Your personal SingHUB QR makes sharing your karaoke identity easy, with privacy in your hands.</p><span className="mt-4 inline-block text-sm font-black text-violet-200">Explore My SingHUB →</span></div>
-     <div aria-hidden="true" className="absolute -right-4 bottom-[-36px] flex rotate-[-9deg] items-center gap-2 opacity-90 sm:right-8">
-      <div className="relative h-36 w-24 rounded-[22px] border-[6px] border-[#090e18] bg-[#141e32] shadow-2xl"><div className="mx-auto mt-2 h-2 w-8 rounded-full bg-slate-700"/><div className="mx-3 mt-5 grid grid-cols-5 gap-1 rounded bg-white p-2">{Array.from({length:25},(_,i)=><span key={i} className={'aspect-square '+([0,1,2,5,7,10,11,12,14,15,17,20,21,22,24].includes(i)?'bg-[#111827]':'bg-white')}/>)}</div></div>
-      <div className="relative h-40 w-24 rotate-[16deg] rounded-[22px] border-[6px] border-[#090e18] bg-[#101b2c] shadow-2xl"><div className="mx-auto mt-2 h-2 w-8 rounded-full bg-slate-700"/><div className="absolute inset-x-3 top-9 bottom-5 rounded border-2 border-cyan-300/80"><div className="absolute left-1 top-1 h-4 w-4 border-l-2 border-t-2 border-cyan-300"/><div className="absolute bottom-1 right-1 h-4 w-4 border-b-2 border-r-2 border-cyan-300"/></div></div>
-     </div>
-    </Link>
-    <Link href="/backyard" className="group relative flex min-h-64 flex-col justify-end overflow-hidden rounded-3xl border border-amber-300/30 bg-[#27241d] p-6 sm:col-span-1 lg:col-span-5">
-     <img src="/images/singhub-v2/singhub-venues-alley.webp" alt="" className="absolute inset-0 h-full w-full object-cover opacity-25 grayscale transition duration-500 group-hover:scale-105"/>
-     <div className="relative"><p className="text-xs font-black uppercase tracking-wider text-amber-200">A SIDE QUEST FROM SINGHUB</p><h3 className="mt-2 text-3xl font-black">The Backyard.</h3><p className="mt-2 text-sm text-slate-100">Games, trivia, live music and the other reasons to stay out.</p><span className="mt-4 inline-block text-sm font-black text-amber-200">Take a detour ↗</span></div>
-    </Link>
-   </div>
-  </section>
-  <footer className="border-t border-white/10 px-4 py-8 text-center text-sm text-slate-400">Find your mic. Find your people. <Link href="/discover" className="font-bold text-cyan-300 hover:underline">Discover karaoke →</Link></footer>
  </main>;
 }
