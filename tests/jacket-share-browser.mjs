@@ -5,6 +5,8 @@ if(process.argv.includes("--prepare")){
  if(process.env.CI!=="true")throw new Error("Jacket browser fixture can only be prepared in CI.");
  await mkdir("src/app/jacket-qa",{recursive:true});
  await writeFile("src/app/jacket-qa/page.tsx",String.raw`"use client";
+import {useState} from "react";
+import {MyJacket} from "@/components/v2/MyJacket";
 import {JacketShareStudio} from "@/components/v2/JacketShareStudio";
 import {PatchCase} from "@/components/v2/PatchCase";
 import "@/components/v2/styles/account.css";
@@ -13,11 +15,16 @@ const awards=[
  {id:"a2",badge_key:"mic_crawl",badge_name:"Mic Crawl",awarded_at:"2026-10-13T19:30:00Z",award_note:"Earned"},
 ];
 export default function JacketQa(){
+ const [ready,setReady]=useState(false);
+ const [status,setStatus]=useState({busy:false,error:""});
  const patches=awards.map((a,i)=>({name:a.badge_name,className:"p"+(i+1)}));
  return <main className="v2-account" style={{maxWidth:700,margin:"auto",background:"#090d16",minHeight:"100vh",padding:12}}>
+  <button onClick={()=>setReady(true)}>Load fixture account</button>
+  <div className="jacket-thumb"><MyJacket skin="denim" patches={patches} performanceStars={43} onPatch={()=>{}}/></div>
+  <p role="status" data-export-status>{status.busy?"Export in progress":status.error}</p>
   <section className="panel"><header className="patch-top"><strong>Patch Case</strong></header>
    <PatchCase awards={awards}/>
-   <JacketShareStudio alias="MadHatter" awards={awards} patches={patches} skin="denim" performanceStars={2}/>
+   <JacketShareStudio ready={ready} onStatusChange={setStatus} alias="MadHatter" awards={awards} patches={patches} skin="denim" performanceStars={2}/>
   </section>
  </main>;
 }
@@ -34,6 +41,11 @@ try{
   const page=await context.newPage();
   const errors=[];page.on("pageerror",e=>errors.push(e.message));
   await page.goto(base+"/jacket-qa",{waitUntil:"networkidle"});
+  assert.equal(await page.getByRole("button",{name:"Download jacket portrait"}).isEnabled(),false,"export gated before account loads");
+  assert.equal(await page.locator(".jacket-thumb .performance-star").count(),18);
+  assert.equal(await page.locator(".performance-star-overflow").innerText(),"+25");
+  await page.getByRole("button",{name:"Load fixture account"}).click();
+  assert.equal(await page.getByRole("button",{name:"Download jacket portrait"}).isEnabled(),true);
   assert.equal(await page.locator(".patch-catalog-item").count(),8);
   assert.equal(await page.locator(".patch-catalog-item.earned").count(),2);
   assert.equal(await page.locator(".patch-catalog-item.locked").count(),6);
@@ -58,6 +70,11 @@ try{
   await card.saveAs(cfile);
   assert.ok((await stat(cfile)).size>15000,"Nonempty earned award PNG");
   assert.deepEqual(errors,[],"No browser JavaScript failures");
+  await page.route("**/images/singhub-v2/singhub-wordmark.png*",route=>route.abort());
+  await page.evaluate(()=>{const logo=document.querySelector('[aria-hidden="true"] img');logo.src='/images/singhub-v2/singhub-wordmark.png?failure-test';});
+  await page.getByRole("button",{name:"Download jacket portrait"}).click();
+  await page.locator("[data-export-status]").getByText(/Export wasn't available/).waitFor();
+  assert.equal(await page.getByRole("button",{name:"Download jacket portrait"}).isEnabled(),true,"failed export can retry");
   await page.screenshot({path:".jacket-qa/case-"+width+".png",fullPage:true});
   await context.close();
   console.log("Jacket catalog, earned/locked states, portrait PNG and award card passed at "+width+"px");
