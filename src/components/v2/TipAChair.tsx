@@ -22,7 +22,7 @@ export function TipAChair({venueSlug}:{venueSlug:string}){
   }catch(error){setMessage(error instanceof Error?error.message:'Plans unavailable.');}
   finally{setLoading(false);}
  },[venueSlug]);
- useEffect(()=>{void load();},[load]);
+ useEffect(()=>{queueMicrotask(()=>void load());},[load]);
  const current=nights.find(n=>n.date===selected);
  async function save(intent:'going'|'maybe'|'none'){
   setSaving(true);setMessage('');
