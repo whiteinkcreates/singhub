@@ -39,7 +39,7 @@ export function MySingerQR({alias}:{alias:string}){
   <dialog ref={dialog} className="my-qr-dialog" aria-label="My SingHUB QR" onClick={e=>{if(e.target===e.currentTarget)e.currentTarget.close();}}>
    <div className="my-qr-shell">
     <button type="button" className="my-qr-close" onClick={()=>dialog.current?.close()} aria-label="Close SingHUB QR">×</button>
-    <p className="my-qr-eyebrow">My SingHUB · SingHUB QR</p>
+    <p className="my-qr-eyebrow">YOUR SINGHUB QR</p>
     <h2>{alias||'My karaoke identity'}</h2>
     <p>Let another singer scan your QR to discover SingHUB. Your singer name only appears if you choose to share it.</p>
     {loading&&!qr?<p role="status">Preparing your QR…</p>:null}
