@@ -12,6 +12,39 @@ const EVENTS_DATA_PATH = path.join(
   "data",
   "events_by_night.tsv",
 );
+const DATE_OVERRIDES_PATH = path.join(process.cwd(), "public", "data", "event_date_overrides.tsv");
+
+function currentSanDiegoNightlifeDate(date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "numeric", hourCycle: "h23",
+  }).formatToParts(date);
+  const part = (name: string) => Number(parts.find((p) => p.type === name)?.value);
+  const day = new Date(Date.UTC(part("year"), part("month") - 1, part("day")));
+  if (part("hour") < 4) day.setUTCDate(day.getUTCDate() - 1);
+  return day.toISOString().slice(0, 10);
+}
+
+function applyNightOverrides(events: KaraokeEventListing[], date: string) {
+  if (!fs.existsSync(DATE_OVERRIDES_PATH)) return events;
+  const overrides = parseTsv(fs.readFileSync(DATE_OVERRIDES_PATH, "utf8"))
+    .filter((row) => row.date === date);
+  if (!overrides.length) return events;
+  return events.map((event) => {
+    const override = overrides.find((row) => row.venue_slug === event.venueSlug &&
+      event.karaokeDay.toLowerCase() === new Intl.DateTimeFormat("en-US", {
+        weekday: "long", timeZone: "UTC",
+      }).format(new Date(date + "T12:00:00Z")).toLowerCase());
+    if (!override) return event;
+    return {
+      ...event, startTime: override.start_time,
+      endTime: override.end_time || "", hostId: undefined,
+      hostName: override.host_name || undefined,
+      eventNotes: `Date-specific schedule for ${date}; end time unconfirmed.`,
+      source1: override.source_url || event.source1,
+    };
+  });
+}
 const SYNC_METADATA_PATH = path.join(
   process.cwd(),
   "public",
