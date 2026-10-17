@@ -17,12 +17,12 @@ import {plusNight,plusNightsForWeek} from '@/lib/karaokePlusOverlap';
 import {getSanDiegoNightlifeWeekday} from '@/lib/nightlifeTime';
 
 import "./styles/discovery.css";
-export function DiscoveryExperience({ rows, hotelName, heroUrl, heroAlt, heroPosition,heroPlacement }: { rows: VenueRowData[]; hotelName?:string; heroUrl?:string; heroAlt?:string; heroPosition?:string; heroPlacement?:ResponsiveImagePlacement }) {
+export function DiscoveryExperience({ rows, hotelName, heroUrl, heroAlt, heroPosition,heroPlacement, initialQuery='', initialPlus=false }: { rows: VenueRowData[]; initialQuery?:string; initialPlus?:boolean; hotelName?:string; heroUrl?:string; heroAlt?:string; heroPosition?:string; heroPlacement?:ResponsiveImagePlacement }) {
 const root=useRef<HTMLDivElement>(null); const viewerInitials=useViewerInitials();
-const [mode,setMode]=useState<'tonight'|'week'>('tonight'); const [plus,setPlus]=useState(false);
+const [mode,setMode]=useState<'tonight'|'week'>('tonight'); const [plus,setPlus]=useState(initialPlus);
 const [plusDay,setPlusDay]=useState<'all'|PlusDay>('all');
 const matchingDay=mode==='tonight'?getSanDiegoNightlifeWeekday():plusDay;
-const [startFilter,setStartFilter]=useState<KaraokeStartFilter>('any');const [earlyOnly,setEarlyOnly]=useState(false);const [query,setQuery]=useState('');
+const [startFilter,setStartFilter]=useState<KaraokeStartFilter>('any');const [earlyOnly,setEarlyOnly]=useState(false);const [query,setQuery]=useState(initialQuery);
 const [filter,setFilter]=useState('All karaoke'); const [dismissedHotel,setDismissedHotel]=useState(false);
 const [position,setPosition]=useState<{latitude:number;longitude:number}|null>(null);
 const visible=(plus?filterRows(rows,'',filter,'directory',position).filter(row=>{
@@ -44,9 +44,11 @@ const visible=(plus?filterRows(rows,'',filter,'directory',position).filter(row=>
 }):filterRows(rows,query,filter,mode,position,startFilter)).filter(row=>!earlyOnly||Boolean(getEarlyOpening(row.venue.slug)));
 const actions=useV2Actions(root,{venues:visible.map(row=>row.venue),mapTitle:plus?'Karaoke+ venues in San Diego':mode==='tonight'?'Tonight’s karaoke in San Diego':'This week’s karaoke in San Diego',userLocation:position}); const selectFilter=(label:string)=>{setFilter(label);if(label==='Near me')navigator.geolocation?.getCurrentPosition(p=>setPosition({latitude:p.coords.latitude,longitude:p.coords.longitude}),()=>actions.toast('Location access is unavailable. Search by neighborhood.'));if(label==='Neighborhood')root.current?.querySelector<HTMLInputElement>('#venue-search')?.focus();};
 useListReturn({mode,plus,plusDay,startFilter,earlyOnly,query,filter,position,dismissedHotel},saved=>{
-  if(typeof saved?.query==='string')setQuery(saved.query);
+  // A fresh landing-page search or Karaoke+ link must win over stale saved discovery filters.
+  if(initialQuery.trim()||initialPlus)return;
+  if(!initialQuery&&typeof saved?.query==='string')setQuery(saved.query);
   if(saved?.mode==='tonight'||saved?.mode==='week')setMode(saved.mode);
-  if(typeof saved?.plus==='boolean')setPlus(saved.plus);
+  if(!initialPlus&&typeof saved?.plus==='boolean')setPlus(saved.plus);
   if(saved?.plusDay==='all'||PLUS_DAYS.some(day=>day===saved?.plusDay))setPlusDay(saved.plusDay as 'all'|PlusDay);
   if(['any','before-8','8-to-9','9-to-10','10-plus'].includes(String(saved?.startFilter)))setStartFilter(saved?.startFilter as KaraokeStartFilter);
   if(typeof saved?.earlyOnly==='boolean')setEarlyOnly(saved.earlyOnly);
@@ -56,7 +58,7 @@ useListReturn({mode,plus,plusDay,startFilter,earlyOnly,query,filter,position,dis
 
 return <div className={"v2-discovery"+(mode==="week" ? " week-mode" : "")} data-scroll-page="discover" ref={root}>
 
-<header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link className="active" href="/">{"Discover"}</Link><a href="/find-karaoke">{"Venues"}</a><Link href="/hosts">{"Hosts"}</Link><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
+<header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link className="active" href="/discover">{"Discover"}</Link><a href="/find-karaoke">{"Venues"}</a><Link href="/hosts">{"Hosts"}</Link><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
 <main id="discovery">
 <section data-page-hero="" className="world-window" aria-labelledby="discovery-title"><PositionedImage placement={heroPlacement} position={heroPosition} className="world-photo" src={heroUrl||"/images/singhub-v2/singhub-city-discovery.webp"} alt={heroAlt||""} aria-hidden="true" /><div className="world-inner"><div data-hero-copy="" className="world-copy"><p className="eyebrow">{"SAN DIEGO KARAOKE"}</p><h1 id="discovery-title">{"Find your mic tonight."}</h1><p>{"Verified karaoke schedules, room types and local context without digging through three social feeds first."}</p></div></div><HeroScrollCue /></section>
 <section data-page-surface="" className="discovery" aria-label="Karaoke discovery">
@@ -103,7 +105,7 @@ return <div className={"v2-discovery"+(mode==="week" ? " week-mode" : "")} data-
 
 </section>
 </main>
-<nav className="mobile-nav" aria-label="Mobile navigation"><Link className="active" href="/"><b>{"⌕"}</b>{"Discover"}</Link><a href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><Link href="/hosts"><b>{"♪"}</b>{"Hosts"}</Link><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
+<nav className="mobile-nav" aria-label="Mobile navigation"><Link className="active" href="/discover"><b>{"⌕"}</b>{"Discover"}</Link><a href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><Link href="/hosts"><b>{"♪"}</b>{"Hosts"}</Link><a href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav>
 <div className="toast" role="status" aria-live="polite"></div>
 
 
