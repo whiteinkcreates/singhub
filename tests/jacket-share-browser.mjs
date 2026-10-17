@@ -24,7 +24,7 @@ export default function JacketQa(){
   <p role="status" data-export-status>{status.busy?"Export in progress":status.error}</p>
   <section className="panel"><header className="patch-top"><strong>Patch Case</strong></header>
    <PatchCase awards={awards}/>
-   <JacketShareStudio ready={ready} onStatusChange={setStatus} alias="MadHatter" awards={awards} patches={patches} skin="denim" performanceStars={2}/>
+   <JacketShareStudio ready={ready} onStatusChange={setStatus} alias="MadHatter" awards={awards} patches={patches} skin="denim" performanceStars={43}/>
   </section>
  </main>;
 }
@@ -73,7 +73,7 @@ try{
   await page.route("**/images/singhub-v2/singhub-wordmark.png*",route=>route.abort());
   await page.evaluate(()=>{const logo=document.querySelector('[aria-hidden="true"] img');logo.src='/images/singhub-v2/singhub-wordmark.png?failure-test';});
   await page.getByRole("button",{name:"Download jacket portrait"}).click();
-  await page.locator("[data-export-status]").getByText(/Export wasn't available/).waitFor();
+  await page.waitForFunction(()=>document.querySelector("[data-export-status]")?.textContent.includes("Export wasn't available"));
   assert.equal(await page.getByRole("button",{name:"Download jacket portrait"}).isEnabled(),true,"failed export can retry");
   await page.screenshot({path:".jacket-qa/case-"+width+".png",fullPage:true});
   await context.close();
