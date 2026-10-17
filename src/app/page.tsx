@@ -50,7 +50,7 @@ export default async function Home(){
     <p className="max-w-sm text-sm leading-6 text-slate-300">Karaoke is the beginning. Here’s what else you can do with SingHUB.</p>
    </div>
    <div className="grid auto-rows-[minmax(180px,auto)] grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:gap-4">
-    <Link href="/discover" className="group relative isolate flex min-h-80 flex-col justify-end overflow-hidden rounded-3xl border border-cyan-300/30 bg-[#153444] p-6 sm:col-span-2 lg:col-span-7 lg:row-span-2">
+    <Link href="/discover?plus=1" className="group relative isolate flex min-h-80 flex-col justify-end overflow-hidden rounded-3xl border border-cyan-300/30 bg-[#153444] p-6 sm:col-span-2 lg:col-span-7 lg:row-span-2">
      <img src="/images/singhub-v2/singhub-venues-alley.webp" alt="" className="absolute inset-0 h-full w-full object-cover opacity-55 transition duration-500 group-hover:scale-105"/>
      <div className="absolute inset-0 bg-gradient-to-t from-[#05131c] via-[#05131c]/50 to-transparent"/>
      <div className="relative"><span className="rounded-full bg-cyan-300 px-3 py-1 text-[11px] font-black uppercase tracking-wider text-[#06111b]">Karaoke+ · {day}</span>
