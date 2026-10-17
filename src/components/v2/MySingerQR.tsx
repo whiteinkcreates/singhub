@@ -1,9 +1,9 @@
 'use client';
-import {useEffect,useRef,useState} from 'react';
+import {useRef,useState} from 'react';
 import QRCode from 'qrcode';
 import {accountClient} from '@/lib/v2/singerAccount';
 
-export function MySingerQR({userId,alias}:{userId:string;alias:string}){
+export function MySingerQR({alias}:{alias:string}){
  const dialog=useRef<HTMLDialogElement>(null);
  const [qr,setQr]=useState('');
  const [url,setUrl]=useState('');
@@ -34,7 +34,6 @@ export function MySingerQR({userId,alias}:{userId:string;alias:string}){
   catch(err){setError(err instanceof Error?err.message:'Could not save your privacy setting.');}
   finally{setLoading(false);}
  }
- useEffect(()=>{setUrl('');setQr('');setVisible(false);},[userId]);
  return <>
   <button className="my-qr-tab" type="button" onClick={()=>void open()} aria-label="Show My QR"><span aria-hidden="true">▦</span> My QR</button>
   <dialog ref={dialog} className="my-qr-dialog" aria-label="My personal SingHUB QR" onClick={e=>{if(e.target===e.currentTarget)e.currentTarget.close();}}>
