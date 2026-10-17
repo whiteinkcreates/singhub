@@ -57,7 +57,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
     <div data-hero-copy className="landing-hero-copy">
      <p className="landing-eyebrow">SAN DIEGO KARAOKE AND MORE</p>
      <h1 id="landing-title">Find your mic <span>tonight.</span></h1>
-     <p className="landing-deck">Your city. Your stage. Discover where to sing, what else is happening and where your next night might take you.</p>
+     <p className="landing-deck">Find a place to sing, see what else is going on, and maybe discover your new favorite spot.</p>
      <form action="/discover" method="get" className="landing-search">
       <label htmlFor="landing-search-input" className="sr-only">Search karaoke venues, hosts or neighborhoods</label>
       <span aria-hidden="true" className="landing-search-icon">⌕</span>
@@ -86,7 +86,8 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
       <div className="landing-tile-copy">
        <span className="landing-tile-tag">KARAOKE+ · {day.toUpperCase()}</span>
        <h3>{spotlight?.title||'Karaoke and something extra.'}</h3>
-       <p>{spotlight?spotlight.count+' matching places · '+spotlight.description:'Explore karaoke with games, music and more.'}</p>
+       <p>Find karaoke venues with more to offer.</p>
+       <p className="landing-plus-detail">{spotlight?spotlight.count+' matching places today · '+spotlight.description:'Explore karaoke spots with games, music and more.'}</p>
        <span className="landing-tile-action">Explore Karaoke+ <span aria-hidden="true">↗</span></span>
       </div>
      </Link>
@@ -112,10 +113,10 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
      <Link href="/account" className="landing-tile landing-tile-qr">
       <img src="/images/home/singer-qr-scan.svg" alt="" className="landing-qr-art"/>
       <div className="landing-tile-copy">
-       <span className="landing-tile-tag">MY SINGHUB · PERSONAL QR</span>
-       <h3>Your QR.<br/>Their camera.</h3>
-       <p>Share your SingHUB link. You choose whether your singer alias is visible.</p>
-       <span className="landing-tile-action">Open My SingHUB <span aria-hidden="true">↗</span></span>
+       <span className="landing-tile-tag">SINGHUB QR</span>
+       <h3>Meet someone?<br/>Share a scan.</h3>
+       <p>Let another singer scan your SingHUB QR to discover the app, and see your singer name if you choose to share it.</p>
+       <span className="landing-tile-action">Find Your SingHUB QR <span aria-hidden="true">↗</span></span>
       </div>
      </Link>
      <Link href="/backyard" className="landing-tile landing-tile-backyard">
