@@ -1,7 +1,7 @@
 # SingHUB community foundation: staged rollout
 
 ## Scope of this PR
-Database schema and pure eligibility policy only. No SQL has been applied to production, no interface or QR endpoint has been shipped, and no referral badges or notifications are live.
+Additive schema, Crew eligibility policy, authenticated personal QR endpoint, opt-in alias visibility, and a SingHUB visitor landing page. The migration was successfully applied to the active `singhub-app` Supabase project (migration `singer_identity_attendance_crew_referral_foundation`, October 16, 2026). Five new tables were verified with RLS enabled. The app code is staged in PR #393 until merge; referral attribution, Tip a Chair interactions, Crew joining, badges, applause, and notifications are **not** live.
 
 Existing `singer_venue_checkins` (presence), `singer_venue_visits` (Tour Stop), and `singer_performances` (self-reported performances) remain separate. None automatically qualifies a Crew member.
 
@@ -15,11 +15,11 @@ Existing `singer_venue_checkins` (presence), `singer_venue_visits` (Tour Stop), 
 - Weekly streaks deferred until verified usage justifies them.
 - Saved Want to Sing / Recently Sang / KaraokeList free and premium singer tools are follow-on app work with explicit partnership and product checks.
 
-## Required follow-on gates before applying migration
-1. Verify current Supabase schema and migration ordering, then apply additive SQL in the designated deployment process.
-2. Authenticated server routes for personal QR identity, private plans, verified crew eligibility, and referral qualification, with role and rate-limit checks.
-3. Privacy UX for public singer profile and audience for plans. Never display identities in venue dashboards without consent.
-4. Browser QA on mobile and desktop; test logged out/new/returning singer, QR scan, account deletion, Crew eligibility, false attendance, and referral abuse.
-5. Confirm partner KaraokeList feature entitlements before free/premium gates.
+## Release status and remaining gates
+1. **Completed:** verified the current schema and applied the additive migration to active Supabase, with all five new tables protected by RLS.
+2. **This PR:** `/api/my-qr` authenticates existing Supabase singer sessions server-side; creates one stable opaque public ID; privacy changes require a verified user and same-origin PATCH. `/s/[id]` invites visitors to SingHUB and displays singer alias only when opted in. My SingHUB displays a compact floating My QR button to signed-in users.
+3. **Still required:** end-to-end actual-account sign-in and QR test on mobile and desktop, including opt-in/off, anonymous scan and logout. Automated CI does not prove real email delivery.
+4. **Future:** private plans API, Tip a Chair rollup and opt-in venue notices, Crew application based on KJ/venue-verified singing on three distinct dates, fraud-resistant referral tracking, nomination and applause flows.
+5. **Partner gate:** confirm KaraokeList exact free and premium tool entitlements before integration.
 
-This PR intentionally does not deploy a misleading static QR or invented attendance totals.
+QR scanning never verifies attendance, enrolls a Crew member, grants a referral badge, or records a performance. No attendance totals are invented.
