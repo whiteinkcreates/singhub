@@ -12,5 +12,5 @@ export default async function Discover({searchParams}:{searchParams:Promise<Reco
  const source=typeof params.source==='string'?params.source:'';
  const q=typeof params.q==='string'?params.q:'';
  const hotel=getHotelGuide(source.replace(/^hotel-/,''));
- return <DiscoveryExperience rows={rows} initialQuery={q} heroUrl={hero?.heroUrl} heroAlt={hero?.heroAlt} heroPosition={hero?.heroPosition} heroPlacement={hero?.heroPlacement} hotelName={source.startsWith('hotel-')?hotel?.shortName:undefined}/>;
+ return <DiscoveryExperience rows={rows} initialQuery={q} initialPlus={params.plus==='1'} heroUrl={hero?.heroUrl} heroAlt={hero?.heroAlt} heroPosition={hero?.heroPosition} heroPlacement={hero?.heroPlacement} hotelName={source.startsWith('hotel-')?hotel?.shortName:undefined}/>;
 }
