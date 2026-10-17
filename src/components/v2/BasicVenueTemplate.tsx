@@ -5,6 +5,8 @@ import {PositionedImage} from '@/components/media/PositionedImage';
 import {SingHereMark} from '@/components/brand/SingHereMark';
 import Link from "next/link";
 import {TourStopCheckIn} from './TourStopCheckIn';
+import {TipAChair} from './TipAChair';
+import './tipChair.css';
 import {VenueMonthlyCalendar} from '@/components/venue/VenueMonthlyCalendar';
 import {getMarketConfig} from '@/lib/markets';
 import { eventRunsOnNight, scheduleQualification } from '@/lib/eventOccurrence';
@@ -59,6 +61,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <button className="primary-action singhere-brand-action" aria-label={venue.venueType==='private_room'?'SingHERE private rooms':row.tonight?'SingHERE tonight':'SingHERE signup information'} data-toast="SingHERE flow would open here"><SingHereMark alt="" className="singhere-wordmark" /></button>
 </div>
 {getMarketConfig(venue.metro)?.status==='live'&&<TourStopCheckIn venueSlug={venue.slug} venueName={venue.venueName} offer={activeOffer} />}
+{getMarketConfig(venue.metro)?.status==='live'&&events.length>0?<TipAChair venueSlug={venue.slug}/>:null}
 <div className="secondary-actions"><button data-toast="Directions opened">{"Directions"}</button><button data-toast="Venue saved">{"Save"}</button><button data-toast="Share sheet opened">{"Share"}</button></div>
 </section>
 <section className="section">
