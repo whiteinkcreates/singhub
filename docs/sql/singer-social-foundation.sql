@@ -52,7 +52,7 @@ create table if not exists public.singer_crew_qualifications (
  venue_id text not null,
  venue_slug text not null,
  nightlife_date date not null,
- verification_source text not null check (verification_source in ('kj_confirmed','venue_confirmed','verified_event')),
+ verification_source text not null check (verification_source in ('kj_confirmed_performance','venue_confirmed_performance')),
  verification_reference text not null,
  verified_at timestamptz not null default now(),
  unique(user_id,venue_id,nightlife_date),
