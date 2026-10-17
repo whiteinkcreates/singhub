@@ -228,3 +228,23 @@
 .v2-account .account-signout:disabled{opacity:.65;cursor:wait}
 .v2-account .account-auth-explainer{margin:0;color:#d3deec;font-size:.83rem;line-height:1.5}
 @media(max-width:600px){.v2-account .account-welcome{padding:12px 13px;margin-top:15px}.v2-account .account-welcome p{font-size:.79rem}.v2-account .account-auth-actions .button{flex:1;min-width:120px;padding:0 10px}.v2-account .account-settings{gap:6px}.v2-account .account-settings .alias{margin-top:14px}.v2-account .account-signout{margin-top:14px}}
+
+/* Personal QR: discreet utility pill inspired by the compact check-in tab. */
+.v2-account .my-qr-tab{position:fixed;right:24px;bottom:92px;z-index:75;display:flex;gap:10px;align-items:center;min-height:52px;padding:10px 21px;border:1px solid #ff83d3;border-radius:100px;background:#da0b83;color:#fff;font-family:Barlow,sans-serif;font-weight:850;box-shadow:0 5px 24px #ed179c4d;cursor:pointer}
+.v2-account .my-qr-tab span{font-size:25px;line-height:1}
+.v2-account .my-qr-tab:hover{background:#f1199c}
+.v2-account .my-qr-dialog{position:fixed;inset:0;margin:auto;width:min(420px,calc(100% - 24px));height:auto;max-height:calc(100dvh - 32px);border:1px solid #00c8ff88;border-radius:18px;background:#101924;color:#f5f8ff;box-shadow:0 24px 90px #000d;padding:0;overflow:auto}
+.v2-account .my-qr-dialog::backdrop{background:#050609db;backdrop-filter:blur(8px)}
+.v2-account .my-qr-shell{display:flex;flex-direction:column;align-items:center;gap:13px;padding:26px 24px 30px;text-align:center}
+.v2-account .my-qr-shell h2{font:900 2.2rem/1 Barlow Condensed,sans-serif;margin:0;text-transform:uppercase}
+.v2-account .my-qr-shell p{font-size:.85rem;line-height:1.5;color:#c8d4e2;margin:0}
+.v2-account .my-qr-eyebrow{color:#ff6dc1!important;font-size:.72rem!important;font-weight:900;letter-spacing:.16em;text-transform:uppercase}
+.v2-account .my-qr-shell img{display:block;width:min(240px,100%);height:auto;padding:8px;border-radius:14px;background:#fff}
+.v2-account .my-qr-url{font-size:.72rem!important;overflow-wrap:anywhere}
+.v2-account .my-qr-privacy{display:flex;gap:10px;align-items:center;text-align:left;font-size:.81rem;line-height:1.4}
+.v2-account .my-qr-privacy input{accent-color:#ff19a8;width:18px;height:18px;flex-shrink:0}
+.v2-account .my-qr-copy{min-height:42px;border:1px solid #00c8ff;color:#9aedff;background:#092431;border-radius:24px;padding:8px 20px;cursor:pointer}
+.v2-account .my-qr-error{color:#ff98b6!important}
+.v2-account .my-qr-close{align-self:flex-end;border:0;background:transparent;color:#fff;font-size:26px;cursor:pointer}
+@media(min-width:951px){.v2-account .my-qr-tab{bottom:28px}}
+@media(max-width:600px){.v2-account .my-qr-tab{right:14px;bottom:90px;min-height:49px;padding:9px 17px}}
