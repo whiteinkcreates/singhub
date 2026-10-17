@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 630" role="img" aria-labelledby="title desc">
+<title id="title">Two singers sharing a SingHUB personal QR</title>
+<desc id="desc">Stylized neon illustration of one phone displaying a QR code while another phone's camera scans it</desc>
+<defs>
+ <radialGradient id="glow"><stop stop-color="#6228a1" stop-opacity=".8"/><stop offset=".52" stop-color="#111c3d" stop-opacity=".55"/><stop offset="1" stop-color="#040b17" stop-opacity="0"/></radialGradient>
+ <linearGradient id="phone" x2=".8" y2="1"><stop stop-color="#304665"/><stop offset=".45" stop-color="#111727"/><stop offset="1" stop-color="#02070f"/></linearGradient>
+ <linearGradient id="glass" x2=".8" y2="1"><stop stop-color="#172a48"/><stop offset=".55" stop-color="#101325"/><stop offset="1" stop-color="#2c133c"/></linearGradient>
+ <linearGradient id="hand" x2=".9" y2="1"><stop stop-color="#e3a18d"/><stop offset=".48" stop-color="#b35c7b"/><stop offset="1" stop-color="#5a3669"/></linearGradient>
+ <linearGradient id="cyan" x2="1" y2="1"><stop stop-color="#00dcf5"/><stop offset="1" stop-color="#905aff"/></linearGradient>
+ <filter id="blueglow"><feGaussianBlur stdDeviation="12"/></filter>
+ <filter id="shadow"><feDropShadow dx="0" dy="22" stdDeviation="24" flood-color="#000" flood-opacity=".7"/></filter>
+ <pattern id="modules" width="19" height="19" patternUnits="userSpaceOnUse"><rect x="1" y="1" width="7" height="7" fill="#081524"/><rect x="11" y="7" width="6" height="9" fill="#081524"/><rect x="3" y="13" width="5" height="5" fill="#081524"/></pattern>
+</defs>
+<rect width="900" height="630" fill="#080e21"/>
+<rect width="900" height="630" fill="url(#glow)"/>
+<g opacity=".45" fill="none" stroke="#a438cb"><circle cx="452" cy="290" r="290"/><circle cx="452" cy="290" r="226"/><circle cx="452" cy="290" r="169"/></g>
+<path d="M-20 480 190 367 385 630H-20Z" fill="#251b4b" opacity=".8"/>
+<path d="M620 630 820 319 920 379V650Z" fill="#0f3654" opacity=".7"/>
+<g opacity=".35" fill="#ff3fae"><circle cx="135" cy="75" r="5"/><circle cx="790" cy="124" r="5"/><circle cx="734" cy="502" r="8"/><circle cx="293" cy="552" r="4"/></g>
+<g transform="translate(408 120) rotate(12 145 229)" filter="url(#shadow)">
+ <path d="M40 318Q10 320 5 356L-4 455 64 522 146 523 155 417 120 337Z" fill="url(#hand)" stroke="#ffbad6" stroke-opacity=".18" stroke-width="3"/>
+ <path d="M42 335 30 257Q27 229 45 223Q66 219 69 246L83 304Q70 332 42 335Z" fill="url(#hand)"/>
+ <path d="M55 345 46 271Q42 246 61 241Q84 243 85 262L101 323Z" fill="#d88796"/>
+ <rect x="44" y="0" width="243" height="444" rx="41" fill="#01030a" stroke="#977ab8" stroke-width="4"/>
+ <rect x="54" y="10" width="222" height="424" rx="33" fill="url(#glass)" stroke="#55dcff" stroke-opacity=".75" stroke-width="2"/>
+ <rect x="126" y="21" width="78" height="17" rx="9" fill="#01040b"/>
+ <text x="165" y="73" fill="#84e8ff" font-family="Arial,sans-serif" text-anchor="middle" font-weight="700" font-size="15" letter-spacing="1.2">MY SINGHUB</text>
+ <circle cx="164" cy="119" r="28" fill="#d31b94" opacity=".35" stroke="#ff77bf" stroke-width="2"/>
+ <path d="M150 129v-13q14-17 28 0v13M142 140q22-20 44 0" fill="none" stroke="#fbd4eb" stroke-width="5" stroke-linecap="round"/>
+ <text x="164" y="171" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-weight="700" font-size="16">Share your karaoke story</text>
+ <rect x="94" y="193" width="143" height="143" rx="6" fill="#fff"/>
+ <rect x="101" y="200" width="129" height="129" fill="url(#modules)"/>
+ <g fill="#081524">
+ <rect x="103" y="202" width="36" height="36"/><rect x="110" y="209" width="22" height="22" fill="white"/><rect x="117" y="216" width="8" height="8"/>
+ <rect x="192" y="202" width="36" height="36"/><rect x="199" y="209" width="22" height="22" fill="white"/><rect x="206" y="216" width="8" height="8"/>
+ <rect x="103" y="291" width="36" height="36"/><rect x="110" y="298" width="22" height="22" fill="white"/><rect x="117" y="305" width="8" height="8"/>
+ <rect x="145" y="246" width="16" height="16"/><rect x="167" y="267" width="18" height="18"/><rect x="195" y="277" width="13" height="13"/><rect x="164" y="304" width="15" height="15"/>
+ </g>
+ <text x="164" y="361" fill="#e9e9ff" text-anchor="middle" font-family="Arial,sans-serif" font-size="14">SCAN TO CONNECT</text>
+ <path d="M103 392h123" stroke="#ff42b8" stroke-width="4" stroke-linecap="round"/>
+ <rect x="139" y="410" width="51" height="5" rx="2.5" fill="#8994aa"/>
+</g>
+<g transform="translate(145 120) rotate(-14 125 224)" filter="url(#shadow)">
+ <path d="M178 344q74-65 102 12l34 170-124 30-92-89 45-100Z" fill="url(#hand)" stroke="#ffa6b5" stroke-opacity=".3" stroke-width="3"/>
+ <path d="M191 347 250 280q18-24 34-10t-5 40l-55 76" fill="#d48d91"/>
+ <rect x="12" y="16" width="238" height="437" rx="40" fill="#020811" stroke="#319dc4" stroke-width="4"/>
+ <rect x="23" y="27" width="216" height="414" rx="31" fill="url(#glass)" stroke="#76e9ff" stroke-opacity=".45" stroke-width="2"/>
+ <rect x="94" y="37" width="72" height="16" rx="8" fill="#020713"/>
+ <text x="131" y="91" text-anchor="middle" fill="#f3eaff" font-family="Arial,sans-serif" font-size="15" font-weight="700">SCAN A SINGER</text>
+ <rect x="48" y="136" width="166" height="206" rx="16" fill="#071f32" fill-opacity=".55" stroke="#00cfff" stroke-opacity=".6"/>
+ <rect x="69" y="166" width="124" height="146" fill="none" stroke="#00dafa" stroke-width="3" stroke-dasharray="19 13" rx="12"/>
+ <path d="M70 191v-25h25M167 166h26v25M70 281v31h25M168 312h25v-31" stroke="#00ebff" stroke-width="9" fill="none" stroke-linecap="round"/>
+ <path d="M55 247h155" stroke="#fc46bd" stroke-width="3" opacity=".9"/>
+ <rect x="81" y="371" width="102" height="32" rx="16" fill="#db2d9c"/>
+ <text x="132" y="392" fill="#fff" text-anchor="middle" font-family="Arial,sans-serif" font-size="13" font-weight="700">CONNECTING</text>
+</g>
+<path d="M320 314C408 252 472 281 536 319" fill="none" stroke="#10e5ff" stroke-width="12" opacity=".25" filter="url(#blueglow)"/>
+<path d="M320 314C408 252 472 281 536 319" fill="none" stroke="url(#cyan)" stroke-width="2.5" stroke-dasharray="9 12" stroke-linecap="round"/>
+<circle cx="427" cy="287" r="8" fill="#00e5ff" stroke="#b7fcff" stroke-width="3"/>
+</svg>
