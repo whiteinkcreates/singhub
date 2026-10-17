@@ -164,4 +164,13 @@ This merge reconciliation preserves latest main data, canonical sync automation 
 - Branch `feat/backyard-category-art-oct16`, based on current main `936b88d`.
 - Loaded Corey's approved 11 photographic category tiles as 960px WebP assets. Football uses the corrected version with the paper removed. Labels remain HTML below the square artwork.
 - Added Comedy and Bowling category filters using existing source-backed Grand Comedy Club and Punch Bowl highlights. Bowling remains an amenity across day filters. Other now uses generic activity-request copy rather than already-covered bowling/cornhole examples.
-- Local focused lint and seven existing Backyard integration tests passed. Production build passed. CI includes mobile/desktop image loading, overflow, category results and day-filter checks. Deployment acceptance remains pending until the actual release is inspected.
+- Local focused lint and seven existing Backyard integration tests passed. Production build passed. CI phone/desktop image loading, square framing, overflow, category results and day-filter checks passed in run 39002841240. Merged via #396 at 910e13a; Vercel production dpl_6tcFWAWYRn5SUDMGkUUDsJCV2ZSD is READY, assigned to singhub.app. Production browser acceptance is being completed.
+
+## My SingHUB jacket/account completion, October 16, 2026
+
+- Clean branch `fix/my-jacket-account-completion-oct16` from main `936b88d`; existing sign-in and personal QR implementations retained.
+- Exports gated until the signed-in account is fully loaded. Export failures/busy state surface in the open jacket dialog. Incomplete image decoding prevents a broken download.
+- The first 18 sleeve stars retain their existing positions; a gold +N counter preserves the exact overflow count, including exports.
+- Account refresh clears previous data; auth changes invalidate in-flight reads so another member's alias/awards cannot return after sign-out/switching accounts.
+- Automated checks cover delayed account data, sign-out races, account switch, read failure, export gating, 43 performances, real portrait/award PNG downloads and surfaced export failure. No achievement data or migrations changed. Browser fixtures use explicitly synthetic awards; live member acceptance remains distinct.
+- The existing award artwork remains the existing design reference; no new patch art is approved by this code pass. #395 planned-appearances API remains a separate handoff.

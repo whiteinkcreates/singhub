@@ -248,3 +248,9 @@
 .v2-account .my-qr-close{align-self:flex-end;border:0;background:transparent;color:#fff;font-size:26px;cursor:pointer}
 @media(min-width:951px){.v2-account .my-qr-tab{bottom:28px}}
 @media(max-width:600px){.v2-account .my-qr-tab{right:14px;bottom:90px;min-height:49px;padding:9px 17px}}
+
+.v2-account .performance-star-overflow {position:absolute;left:85%;top:95%;transform:translate(-50%,-50%);border:1px solid var(--gold);border-radius:99px;padding:2px 5px;background:#0b1019;color:var(--gold);font:900 clamp(8px,1vw,14px)/1.2 Barlow,sans-serif;white-space:nowrap;}
+.v2-account .button:disabled {opacity:.5;cursor:not-allowed;}
+.v2-account .modal-foot .jacket-share-error {flex-basis:100%;margin:0;color:#ff9bb0;font-size:.8rem;}
+
+.v2-account .modal-foot:has(.jacket-share-error) {flex-wrap:wrap;}

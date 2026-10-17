@@ -1,5 +1,5 @@
 "use client";
-import {useRef,useState,type CSSProperties} from "react";
+import {useEffect,useRef,useState,type CSSProperties} from "react";
 import {toPng} from "html-to-image";
 import {MyJacket} from "./MyJacket";
 import type {Achievement} from "@/lib/v2/singerAccount";
@@ -17,24 +17,28 @@ const panelStyle:CSSProperties={
  fontFamily:"Barlow,Arial,sans-serif",padding:"66px 96px",
 };
 const logo="/images/singhub-v2/singhub-wordmark.png";
-export function JacketShareStudio({alias,awards,skin,patches,performanceStars}:{
- alias:string;awards:Achievement[];skin:"denim"|"neon";patches:DisplayPatch[];performanceStars:number;
+export function JacketShareStudio({alias,awards,skin,patches,performanceStars,ready=false,unavailableMessage="Sign in and load your account to export your jacket.",onStatusChange}:{
+ alias:string;awards:Achievement[];skin:"denim"|"neon";patches:DisplayPatch[];performanceStars:number;ready?:boolean;unavailableMessage?:string;onStatusChange?:(status:{busy:boolean;error:string})=>void;
 }){
+ const allowed=useRef(ready);
+ useEffect(()=>{allowed.current=ready;return()=>{allowed.current=false;};},[ready]);
  const portrait=useRef<HTMLDivElement>(null);
  const cards=useRef<Record<string,HTMLDivElement|null>>({});
  const [busy,setBusy]=useState<string|null>(null);
  const [error,setError]=useState("");
  async function exportNode(node:HTMLElement|null,file:string,key:string){
-   if(!node||busy)return;
-   setError("");setBusy(key);
+   if(!node||busy||!ready)return;
+   setError("");setBusy(key);onStatusChange?.({busy:true,error:""});
+   let failure="";
    try{
      await document.fonts.ready;
+     await Promise.all(Array.from(node.querySelectorAll("img")).map(image=>image.decode()));
      const url=await toPng(node,{pixelRatio:1,cacheBust:true,backgroundColor:"#080b16"});
-     savePng(url,file);
+     if(allowed.current)savePng(url,file);
    }catch(e){
      console.error("SingHUB Jacket share export",e);
-     setError("Export wasn't available in this browser. Please try again.");
-   }finally{setBusy(null);}
+     failure="Export wasn't available in this browser. Please try again.";setError(failure);
+   }finally{setBusy(null);onStatusChange?.({busy:false,error:failure});}
  }
  const owner=alias.trim()||"SingHUB singer";
  const safeOwner=safeName(owner);
@@ -42,12 +46,13 @@ export function JacketShareStudio({alias,awards,skin,patches,performanceStars}:{
  return <section className="jacket-share-studio" aria-label="Share My Jacket and earned badges">
    <h3>Share your karaoke story</h3>
    <p>Download a portrait with your jacket and close-ups of every earned patch. Each earned award also has its own share card for a carousel.</p>
-   <button id="jacket-export-portrait" className="button primary" type="button" disabled={Boolean(busy)}
+   <button id="jacket-export-portrait" className="button primary" type="button" disabled={!ready||Boolean(busy)}
      onClick={()=>void exportNode(portrait.current,"singhub-"+safeOwner+"-jacket-portrait.png","portrait")}>
      {busy==="portrait"?"Preparing portrait…":"Download jacket portrait"}
    </button>
+   {!ready&&<p className="jacket-share-note" role="status">{unavailableMessage}</p>}
    {n>0&&<div className="jacket-share-awards">
-     {awards.map(award=><button type="button" className="button" key={award.id} disabled={Boolean(busy)}
+     {awards.map(award=><button type="button" className="button" key={award.id} disabled={!ready||Boolean(busy)}
        onClick={()=>void exportNode(cards.current[award.id],"singhub-"+safeOwner+"-"+safeName(award.badge_name)+".png",award.id)}>
        {busy===award.id?"Preparing…":"Award card: "+award.badge_name}
      </button>)}
