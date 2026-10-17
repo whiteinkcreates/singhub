@@ -44,6 +44,8 @@ const visible=(plus?filterRows(rows,'',filter,'directory',position).filter(row=>
 }):filterRows(rows,query,filter,mode,position,startFilter)).filter(row=>!earlyOnly||Boolean(getEarlyOpening(row.venue.slug)));
 const actions=useV2Actions(root,{venues:visible.map(row=>row.venue),mapTitle:plus?'Karaoke+ venues in San Diego':mode==='tonight'?'Tonight’s karaoke in San Diego':'This week’s karaoke in San Diego',userLocation:position}); const selectFilter=(label:string)=>{setFilter(label);if(label==='Near me')navigator.geolocation?.getCurrentPosition(p=>setPosition({latitude:p.coords.latitude,longitude:p.coords.longitude}),()=>actions.toast('Location access is unavailable. Search by neighborhood.'));if(label==='Neighborhood')root.current?.querySelector<HTMLInputElement>('#venue-search')?.focus();};
 useListReturn({mode,plus,plusDay,startFilter,earlyOnly,query,filter,position,dismissedHotel},saved=>{
+  // A fresh landing-page search or Karaoke+ link must win over stale saved discovery filters.
+  if(initialQuery.trim()||initialPlus)return;
   if(!initialQuery&&typeof saved?.query==='string')setQuery(saved.query);
   if(saved?.mode==='tonight'||saved?.mode==='week')setMode(saved.mode);
   if(!initialPlus&&typeof saved?.plus==='boolean')setPlus(saved.plus);
