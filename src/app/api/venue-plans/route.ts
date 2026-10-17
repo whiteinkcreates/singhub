@@ -3,9 +3,8 @@ import {createAdminClient} from '@/lib/supabase/admin';
 import {getVenueListings} from '@/lib/venueData';
 import {getPublicVenues} from '@/lib/publicVenueFilters';
 import {getKaraokeEventsByVenueSlug} from '@/lib/eventData';
-import {eventRunsOnNight} from '@/lib/eventOccurrence';
 import {getMarketConfig} from '@/lib/markets';
-import {upcomingNightlifeDates,validChairDate} from '@/lib/engagement/chairDates';
+import {upcomingNightlifeDates,validChairDate,karaokeRunsOnDate} from '@/lib/engagement/chairDates';
 export const dynamic='force-dynamic';
 const noStore={'Cache-Control':'private, no-store'};
 async function venueBySlug(slug:string){
@@ -31,7 +30,7 @@ export async function GET(request:Request){
    auth.db.from('singer_venue_plans').select('nightlife_date,intent,visibility').eq('user_id',auth.user.id).eq('venue_id',venue.id).gte('nightlife_date',dates[0]).lte('nightlife_date',dates.at(-1)!)
   ]);
   if(plans.error)throw plans.error;
-  const nights=dates.filter(day=>events.some(event=>eventRunsOnNight(event,day)));
+  const nights=dates.filter(day=>events.some(event=>karaokeRunsOnDate(event,day)));
   const {data:rollups,error}=await auth.db.from('singer_venue_plans').select('nightlife_date,intent').eq('venue_id',venue.id).eq('intent','going').gte('nightlife_date',dates[0]).lte('nightlife_date',dates.at(-1)!);
   if(error)throw error;
   const counts=new Map<string,number>();
@@ -52,7 +51,7 @@ export async function PUT(request:Request){
   if(typeof slug!=='string'||!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)||typeof date!=='string'||!validChairDate(date,upcomingNightlifeDates())||!['going','maybe','none'].includes(String(intent)))return toResponse({error:'Choose an upcoming karaoke night and attendance intent.'},400);
   const venue=await venueBySlug(slug);if(!venue)return toResponse({error:'Venue unavailable.'},404);
   const events=await getKaraokeEventsByVenueSlug(slug);
-  if(!events.some(event=>eventRunsOnNight(event,date)))return toResponse({error:'This date has no published karaoke night.'},422);
+  if(!events.some(event=>karaokeRunsOnDate(event,date)))return toResponse({error:'This date has no published karaoke night.'},422);
   if(intent==='none'){
    const {error}=await auth.db.from('singer_venue_plans').delete().eq('user_id',auth.user.id).eq('venue_id',venue.id).eq('nightlife_date',date);
    if(error)throw error;return toResponse({saved:true,intent:'none'});
