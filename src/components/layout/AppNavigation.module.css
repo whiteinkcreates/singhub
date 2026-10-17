@@ -54,3 +54,8 @@
  .mobile a,.mobileMore summary { font-size:9px; }
  .mobile i,.mobileMore summary i { font-size:20px; }
 }
+
+/* Return singers can find sign-in from any screen, including the six-slot mobile bar. */
+.account[aria-label="Sign in to My SingHUB"]{color:#a7eefe}
+.account[aria-label="Sign in to My SingHUB"] i{border-color:rgba(0,200,255,.65);color:#8be9ff}
+.mobile a[href="/account?signin=1"]{color:#93e8fb}

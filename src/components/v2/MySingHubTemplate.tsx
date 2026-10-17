@@ -11,7 +11,7 @@ import {PatchCase} from './PatchCase';
 import {JacketShareStudio} from './JacketShareStudio';
 import {TourStopCollection} from './TourStopCollection';
 
-import {countSavedPicks} from '@/lib/v2/singerAccount';
+import {accountClient,countSavedPicks} from '@/lib/v2/singerAccount';
 import {useSingerAccount} from './useSingerAccount';
 import {performanceCaption} from './SingHereDialog';
 import {AccountServiceDialog} from './AccountServiceDialog';
@@ -19,8 +19,15 @@ import type {VenueListing} from '@/types';
 import "./styles/account.css";
 export function MySingHubTemplate({venues,heroUrl,heroAlt,heroPosition,heroPlacement}:{venues:VenueListing[];heroUrl?:string;heroAlt?:string;heroPosition?:string;heroPlacement?:ResponsiveImagePlacement}) {
 const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();const viewerName=useViewerName();const actions=useV2Actions(root);
-const state=useSingerAccount();const account=state.account;const [request,setRequest]=useState<'alias'|'signin'|'performance'|null>(null);
-useEffect(()=>{const params=new URLSearchParams(location.search);if(params.get('perform'))queueMicrotask(()=>setRequest('performance'));else if((params.get('save')||params.get('signin')||params.get('followHost')||params.get('authError'))&&!state.user)queueMicrotask(()=>setRequest('signin'));},[state.user]);
+const state=useSingerAccount();const account=state.account;const [request,setRequest]=useState<'alias'|'signin'|'signup'|'performance'|null>(null);
+const [signoutBusy,setSignoutBusy]=useState(false);
+async function signOut(){setSignoutBusy(true);try{const {error}=await accountClient().auth.signOut();if(error)throw error;await state.refresh();setRequest(null);actions.toast('Signed out of My SingHUB.');}catch(error){actions.toast(error instanceof Error?error.message:'Could not sign out.');}finally{setSignoutBusy(false);}}
+useEffect(()=>{if(!state.ready)return;const params=new URLSearchParams(location.search);
+ if(state.user){queueMicrotask(()=>setRequest(current=>current==='signin'||current==='signup'?null:current));return;}
+ if(params.get('perform'))queueMicrotask(()=>setRequest('performance'));
+ else if(params.has('signup'))queueMicrotask(()=>setRequest('signup'));
+ else if(params.has('save')||params.has('signin')||params.has('followHost')||params.has('authError'))queueMicrotask(()=>setRequest('signin'));
+},[state.ready,state.user]);
 const patches=(account?.achievements||[]).map((award,index)=>({name:award.badge_name,className:'p'+(index%6+1)}));
 const [allRecent,setAllRecent]=useState(false);const [shareVenueSlug,setShareVenueSlug]=useState('');
 const shareVenue=venues.find(venue=>venue.slug===(shareVenueSlug||account?.performances[0]?.venue_slug));
@@ -30,7 +37,9 @@ const openPatch=(value:{name:string;className:string})=>{setPatch(value);root.cu
 return <div data-scroll-page="account" className="v2-account" ref={root}>
 
 <header className="appbar"><Link href="/"><img className="logo" src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /></Link><nav className="primary-nav" aria-label="Primary"><Link href="/">{"Discover"}</Link><a href="/find-karaoke">{"Venues"}</a><Link href="/hosts">{"Hosts"}</Link><a href="/singboard">{"SingBOARD"}</a></nav><a className="account" href="/account"><span>{"My SingHUB"}</span><i className="avatar">{viewerInitials}</i></a></header>
-<section data-page-hero="" className="hero" aria-labelledby="page-title" >{heroUrl?<PositionedImage className="main-hero-override" placement={heroPlacement} position={heroPosition} src={heroUrl} alt={heroAlt||""} aria-hidden="true" />:null}<div data-hero-copy="" className="hero-inner"><p className="eyebrow">{"MY SINGHUB"}</p><h1 id="page-title">{"Your nights."}<br />{"Your story."}</h1><p className="hero-sub">{"Your karaoke history lives backstage. Build your jacket, build My Tour, collect performance stars and keep the songs and rooms worth coming back to."}</p><div className="alias"><span>{"Karaoke alias"}</span><strong>{account?.alias||'Not set yet'}</strong><button data-account-action="alias" onClick={()=>setRequest('alias')}>{state.user?'Add yours':'Sign in / Set alias'}</button></div><div className="hero-actions"><button className="button primary" data-open-jacket="" onClick={()=>root.current?.querySelector<HTMLDialogElement>('#jacket-modal')?.showModal()}>{"Open My Jacket"}</button><button className="button" data-scroll="share" onClick={()=>root.current?.querySelector('#share')?.scrollIntoView({behavior:'smooth',block:'start'})}>{"Share your performance"}</button></div></div><span className="scroll-note">{"Scroll backstage"}</span></section>
+<section data-page-hero="" className="hero" aria-labelledby="page-title" >{heroUrl?<PositionedImage className="main-hero-override" placement={heroPlacement} position={heroPosition} src={heroUrl} alt={heroAlt||""} aria-hidden="true" />:null}<div data-hero-copy="" className="hero-inner"><p className="eyebrow">{"MY SINGHUB"}</p><h1 id="page-title">{"Your nights."}<br />{"Your story."}</h1><p className="hero-sub">{"Your karaoke history lives backstage. Build your jacket, build My Tour, collect performance stars and keep the songs and rooms worth coming back to."}</p>{state.ready&&!state.user?<section className="account-welcome" aria-label="Sign in or join My SingHUB"><strong>Already sing with us?</strong><p>Sign back in to see your saved venues, performances and My Jacket. New here? Your account is free.</p><div className="account-auth-actions"><button type="button" className="button primary" onClick={()=>setRequest('signin')}>Sign in</button><button type="button" className="button" onClick={()=>setRequest('signup')}>Create account</button></div></section>:null}
+{state.user?<div className="account-settings" aria-label="Account settings"><div className="alias"><span>Karaoke alias</span><strong>{account?.alias||'Not set yet'}</strong><button data-account-action="alias" onClick={()=>setRequest('alias')}>{account?.alias?'Edit alias':'Set alias'}</button></div><button type="button" className="account-signout" disabled={signoutBusy} onClick={()=>void signOut()}>{signoutBusy?'Signing out…':'Sign out'}</button></div>:null}
+<div className="hero-actions"><button className="button primary" data-open-jacket="" onClick={()=>root.current?.querySelector<HTMLDialogElement>('#jacket-modal')?.showModal()}>{"Open My Jacket"}</button><button className="button" data-scroll="share" onClick={()=>root.current?.querySelector('#share')?.scrollIntoView({behavior:'smooth',block:'start'})}>{"Share your performance"}</button></div></div><span className="scroll-note">{"Scroll backstage"}</span></section>
 <main data-page-surface="" className="surface">
 <TourStopCollection venues={venues} />
 <section className="career-strip" aria-label="Singer progress"><div className="career-name"><strong>{viewerName}</strong><span>{'My SingHUB · San Diego'}</span></div><div className="metric star"><strong>{account?account.performanceCount:'—'}</strong><span>{"Performance stars"}</span></div><div className="metric"><strong>{account?account.achievements.length:'—'}</strong><span>{"Patches earned"}</span></div><div className="metric"><strong>{account?account.performances.length:'—'}</strong><span>{"Recent songs"}</span></div><div className="metric"><strong>{account?countSavedPicks(account):'—'}</strong><span>{"Saved picks"}</span></div></section>

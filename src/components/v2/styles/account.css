@@ -214,3 +214,17 @@
  .v2-account .patch-catalog-list{grid-template-columns:1fr 1fr;max-height:370px;}
  .v2-account .patch-catalog-item{padding:11px;min-height:142px;}
 }
+
+/* Prominent signed-out account entry, while preserving the existing backstage hero. */
+.v2-account .account-welcome{width:min(440px,100%);margin-top:22px;padding:16px 18px;border:1px solid rgba(0,200,255,.44);background:rgba(5,9,16,.86);backdrop-filter:blur(12px)}
+.v2-account .account-welcome strong{font:800 1.13rem/1.2 "Barlow Condensed",sans-serif;text-transform:uppercase;letter-spacing:.035em}
+.v2-account .account-welcome p{margin:7px 0 12px;color:#d0dae6;font-size:.84rem;line-height:1.45}
+.v2-account .account-auth-actions{display:flex;flex-wrap:wrap;gap:9px}
+.v2-account .account-auth-actions .button{min-width:130px}
+.v2-account .account-settings{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.v2-account .account-settings .alias{margin-top:23px}
+.v2-account .account-signout{margin-top:23px;min-height:42px;padding:0 14px;border:1px solid rgba(255,255,255,.37);background:rgba(9,13,20,.82);color:#ecf3fa;cursor:pointer;font-size:.78rem;font-weight:750}
+.v2-account .account-signout:hover{border-color:var(--cyan)}
+.v2-account .account-signout:disabled{opacity:.65;cursor:wait}
+.v2-account .account-auth-explainer{margin:0;color:#d3deec;font-size:.83rem;line-height:1.5}
+@media(max-width:600px){.v2-account .account-welcome{padding:12px 13px;margin-top:15px}.v2-account .account-welcome p{font-size:.79rem}.v2-account .account-auth-actions .button{flex:1;min-width:120px;padding:0 10px}.v2-account .account-settings{gap:6px}.v2-account .account-settings .alias{margin-top:14px}.v2-account .account-signout{margin-top:14px}}
