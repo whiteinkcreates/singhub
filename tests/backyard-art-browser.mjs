@@ -17,8 +17,9 @@ try {
  for(const width of [390,1440]) {
   const page=await browser.newPage({viewport:{width,height:900}});
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  assert.equal((await page.goto(base+'/backyard',{waitUntil:'networkidle'})).status(),200);
+  assert.equal((await page.goto(base+'/backyard',{waitUntil:'domcontentloaded'})).status(),200);
   const tiles=page.locator('a[href^="/backyard?activity="]');
+  await tiles.last().waitFor();
   assert.equal(await tiles.count(),11);
   for(const tile of await tiles.all()) {
    await tile.scrollIntoViewIfNeeded();
@@ -29,7 +30,7 @@ try {
   }
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'no horizontal overflow');
   await Promise.all([
-   page.waitForURL('**/backyard?activity=bowling',{waitUntil:'networkidle'}),
+   page.waitForURL('**/backyard?activity=bowling',{waitUntil:'domcontentloaded'}),
    tiles.filter({has:page.getByRole('heading',{name:'Bowling',exact:true})}).click(),
   ]);
   await page.getByRole('heading',{name:'Punch Bowl Social San Diego',exact:true}).waitFor();
@@ -39,16 +40,16 @@ try {
   assert.doesNotMatch(await results.innerText(),/Shuffleboard|Arcade/,'bowling results show the relevant activity');
   await page.getByRole('combobox',{name:'Day to explore'}).selectOption('Monday');
   await Promise.all([
-   page.waitForURL(url=>url.searchParams.get('activity')==='bowling'&&url.searchParams.get('day')==='Monday',{waitUntil:'networkidle'}),
+   page.waitForURL(url=>url.searchParams.get('activity')==='bowling'&&url.searchParams.get('day')==='Monday',{waitUntil:'domcontentloaded'}),
    page.getByRole('button',{name:'Explore',exact:true}).click(),
   ]);
   await page.getByRole('heading',{name:'Punch Bowl Social San Diego',exact:true}).waitFor();
   await page.screenshot({path:`/tmp/backyard-art-qa/bowling-${width}.png`,fullPage:true});
-  await page.goto(base+'/backyard?activity=comedy',{waitUntil:'networkidle'});
+  await page.goto(base+'/backyard?activity=comedy',{waitUntil:'domcontentloaded'});
   await page.getByRole('heading',{name:'Grand Comedy Club and Pizzeria',exact:true}).waitFor();
   assert.equal(await page.locator('article').count(),1);
   assert.match(await page.locator('article').innerText(),/Comedy and open mic/);
-  await page.goto(base+'/backyard',{waitUntil:'networkidle'});
+  await page.goto(base+'/backyard',{waitUntil:'domcontentloaded'});
   await page.getByRole('heading',{name:'What are you here for?'}).scrollIntoViewIfNeeded();
   await page.screenshot({path:`/tmp/backyard-art-qa/tiles-${width}.png`,fullPage:true});
   assert.deepEqual(errors,[]);await page.close();
