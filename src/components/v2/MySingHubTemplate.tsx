@@ -9,6 +9,7 @@ import { useV2Actions,useViewerInitials,useViewerName } from './actions';
 import { MyJacket } from './MyJacket';
 import {PatchCase} from './PatchCase';
 import {JacketShareStudio} from './JacketShareStudio';
+import {MySingerQR} from './MySingerQR';
 import {TourStopCollection} from './TourStopCollection';
 
 import {accountClient,countSavedPicks} from '@/lib/v2/singerAccount';
@@ -52,6 +53,7 @@ return <div data-scroll-page="account" className="v2-account" ref={root}>
 <nav className="mobile-nav" aria-label="Mobile navigation"><Link href="/"><b>{"⌕"}</b>{"Discover"}</Link><a href="/find-karaoke"><b>{"●"}</b>{"Venues"}</a><Link href="/hosts"><b>{"♪"}</b>{"Hosts"}</Link><a className="active" href="/account"><b>{"◎"}</b>{"My SingHUB"}</a></nav><div className="toast" role="status" aria-live="polite"></div>
 
 
+{state.user?<MySingerQR alias={account?.alias||'Singer'}/>:null}
 <AccountServiceDialog state={state} venues={venues} request={request} onClose={()=>setRequest(null)} onMessage={actions.toast} />
 {actions.overlay}
 </div>;
