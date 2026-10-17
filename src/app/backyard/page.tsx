@@ -28,6 +28,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
  const current=stages.find(stage=>stage.slug===params.activity);
  const selectedDay=PLUS_DAYS.find(day=>day.toLowerCase()===params.day?.toLowerCase())||"all";
  const search=(params.q||"").trim().toLowerCase();
+ const showResults=Boolean(current||search||selectedDay!=="all");
  const matchedHighlights=(offer:BackyardOffer)=>{
    if(current?.slug==="open-early")return offer.highlights.filter(title=>highlightIsCategory(title,"open-early"));
    return matchesPlusDay(offer,selectedDay).filter(match=>!current||highlightIsCategory(match.title,current.slug)).map(match=>match.title);
@@ -64,7 +65,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
     </div>
     <Link href="/find-karaoke" className="rounded-lg border border-cyan-300/50 px-4 py-2 text-sm font-bold text-cyan-200 hover:bg-cyan-300/10">Find karaoke →</Link>
    </header>
-   <form method="get" action="/backyard" className="flex flex-wrap gap-2" role="search">
+   <form method="get" action="/backyard#backyard-results" className="flex flex-wrap gap-2" role="search">
     {current&&<input type="hidden" name="activity" value={current.slug}/>}
     <label htmlFor="backyard-search" className="sr-only">Search activities</label>
     <input id="backyard-search" name="q" defaultValue={params.q||""} placeholder="Find an activity..." className="min-w-56 flex-1 rounded-xl border border-white/20 bg-white/[.06] px-4 py-3 text-white placeholder:text-slate-400"/>
@@ -77,7 +78,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
    </form>
    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     {stages.filter(s=>(!params.q||[s.name,s.area,s.description].join(" ").toLowerCase().includes(params.q.toLowerCase()))&&(!current||s.slug===current.slug)).map(stage=>
-     <Link key={stage.slug} href={`/backyard?activity=${stage.slug}${selectedDay==="all"?"":"&day="+selectedDay}`} aria-current={current?.slug===stage.slug?"page":undefined} className="group overflow-hidden rounded-2xl border border-white/15 bg-[#101116] transition hover:border-fuchsia-300/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300">
+     <Link key={stage.slug} href={`/backyard?activity=${stage.slug}${selectedDay==="all"?"":"&day="+selectedDay}#backyard-results`} aria-current={current?.slug===stage.slug?"page":undefined} className="group overflow-hidden rounded-2xl border border-white/15 bg-[#101116] transition hover:border-fuchsia-300/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300">
       <div className="relative aspect-square overflow-hidden">
        <Image src={stage.image} alt="" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"/>
       </div>
@@ -85,10 +86,9 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
      </Link>
     )}
    </div>
-   <OtherActivityRequest source="backyard"/>
-   <div className="rounded-2xl border border-cyan-300/30 bg-cyan-300/[.05] p-6">
+   {showResults?<section id="backyard-results" aria-labelledby="backyard-results-title" className="scroll-mt-24 rounded-2xl border border-cyan-300/30 bg-cyan-300/[.05] p-6">
     <p className="text-xs font-black uppercase tracking-widest text-cyan-300">{current?.area||"BEYOND THE MIC"}</p>
-    <h2 className="mt-2 text-3xl font-black">{current?current.name:"More to offer at karaoke venues"}</h2>
+    <h2 id="backyard-results-title" className="mt-2 text-3xl font-black">{current?current.name+" spots":"Your activity matches"}</h2>
     <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">{current?.description||"Browse established activities, then open the venue's SingHUB page for karaoke details."} {current&&(current.slug==="football"||current.slug==="basketball"||current.slug==="ufc")?"Sports-friendly doesn't guarantee a specific game or fight is being shown. Confirm with the venue before visiting.":""}</p>
     <p className="mt-3 text-xs text-slate-400">{selectedDay==="all"?"Browse venue amenities and listed events.":"Showing permanent amenities and activities explicitly listed for "+selectedDay+". "} Check venue hours and confirm events before visiting.</p>
     <p role="status" className="mt-3 text-xs font-bold text-cyan-200">{matches.length} {matches.length===1?"venue":"venues"} to explore</p>
@@ -97,7 +97,8 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
       <div className="mt-4 flex flex-wrap gap-2">{matchedHighlights(offer).slice(0,3).map(tag=><span key={tag} className="rounded-full border border-white/20 bg-white/[.06] px-3 py-1 text-xs text-slate-200">{tag}</span>)}</div>
       <p className="mt-3 text-xs text-slate-400">Activities based on venue information. <a href={offer.source} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Check source ↗</a></p>
     </article>})}</div>:<p className="mt-5 text-sm text-slate-300">No verified day-specific matches in our current listings. Try another day, activity, or clear your search.</p>}
-   </div>
+   </section>:<p className="text-sm text-slate-300">Choose an activity above to see matching venues.</p>}
+   <OtherActivityRequest source="backyard"/>
    <div className="border-t border-white/15 pt-6 text-sm text-slate-400">An activity listing is not confirmation of a specific game broadcast or event date. Event-by-event verification is coming next.</div>
   </section>
  </main>;
