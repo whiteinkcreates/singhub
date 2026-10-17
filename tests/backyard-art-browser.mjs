@@ -21,6 +21,8 @@ try {
   const tiles=page.locator('a[href^="/backyard?activity="]');
   await tiles.last().waitFor();
   assert.equal(await tiles.count(),11);
+  assert.equal(await page.locator("article").count(),0,"venue cards wait for an activity choice");
+  assert.equal(await page.locator("#backyard-results").count(),0);
   for(const tile of await tiles.all()) {
    await tile.scrollIntoViewIfNeeded();
    const img=tile.locator('img');
@@ -30,11 +32,13 @@ try {
   }
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'no horizontal overflow');
   await Promise.all([
-   page.waitForURL('**/backyard?activity=bowling',{waitUntil:'domcontentloaded'}),
+   page.waitForURL(url=>url.searchParams.get('activity')==='bowling',{waitUntil:'domcontentloaded'}),
    tiles.filter({has:page.getByRole('heading',{name:'Bowling',exact:true})}).click(),
   ]);
   await page.getByRole('heading',{name:'Punch Bowl Social San Diego',exact:true}).waitFor();
   await page.waitForFunction(()=>document.querySelectorAll('article').length===1);
+  assert.equal(new URL(page.url()).hash,'#backyard-results');
+  await page.getByRole('heading',{name:'Bowling spots',exact:true}).waitFor();
   const results=page.locator('article');assert.equal(await results.count(),1);
   assert.match(await results.innerText(),/Bowling/);
   assert.doesNotMatch(await results.innerText(),/Shuffleboard|Arcade/,'bowling results show the relevant activity');

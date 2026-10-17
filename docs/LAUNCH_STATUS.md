@@ -174,3 +174,7 @@ This merge reconciliation preserves latest main data, canonical sync automation 
 - Account refresh clears previous data; auth changes invalidate in-flight reads so another member's alias/awards cannot return after sign-out/switching accounts.
 - Automated checks cover delayed account data, sign-out races, account switch, read failure, export gating, 43 performances, real portrait/award PNG downloads and surfaced export failure. No achievement data or migrations changed. Browser fixtures use explicitly synthetic awards; live member acceptance remains distinct.
 - The existing award artwork remains the existing design reference; no new patch art is approved by this code pass. #395 planned-appearances API remains a separate handoff.
+
+## Backyard activity-to-results flow, October 16, 2026
+
+Corey reported an abrupt transition from category artwork into venue cards. The initial Backyard landing now ends with the activity choices and request control, without the unfiltered venue list. Choosing an activity reveals its matching venues under an explicit category heading and scrolls to the results; submitted search/day filters also reveal results. Other stays after results rather than interrupting the category-to-venue transition. Existing activity/source/day safeguards are retained. Focused browser checks cover initial absence of venue cards, selected Bowling result and result anchor on phone/desktop. Release acceptance pending CI and deployment.
