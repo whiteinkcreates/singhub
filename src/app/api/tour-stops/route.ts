@@ -30,7 +30,13 @@ export async function GET(request:Request){
    return NextResponse.json({visit:data||null,offerUnlock,eligibility},{headers:{'Cache-Control':'private, no-store'}});
   }
   const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('status','confirmed').order('created_at',{ascending:true});if(error)throw error;
-  const stops=collectTourStops((data||[]) as TourStopVisit[]);return NextResponse.json({stops,stubs:stops},{headers:{'Cache-Control':'private, no-store'}});
+  const stops=collectTourStops((data||[]) as TourStopVisit[]);
+  const {data:performances,error:performanceError}=await auth.client.from('singer_performances').select('performed_on').eq('user_id',auth.user.id);
+  if(performanceError)throw performanceError;
+  const confirmedVisits=(data||[]) as TourStopVisit[];
+  const karaokeNights=new Set(confirmedVisits.map(visit=>visit.nightlife_date)).size;
+  const nightsPerformed=new Set((performances||[]).map(item=>item.performed_on)).size;
+  return NextResponse.json({stops,stubs:stops,karaokeNights,nightsPerformed},{headers:{'Cache-Control':'private, no-store'}});
  }catch{return NextResponse.json({error:'TourStops could not load. Try again.'},{status:503});}
 }
 
