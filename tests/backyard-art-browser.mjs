@@ -38,7 +38,7 @@ try {
   await page.getByRole('heading',{name:'Punch Bowl Social San Diego',exact:true}).waitFor();
   await page.screenshot({path:`/tmp/backyard-art-qa/bowling-${width}.png`,fullPage:true});
   await page.goto(base+'/backyard?activity=comedy',{waitUntil:'networkidle'});
-  await page.getByRole('heading',{name:'Grand Comedy Club',exact:true}).waitFor();
+  await page.getByRole('heading',{name:'Grand Comedy Club and Pizzeria',exact:true}).waitFor();
   assert.equal(await page.locator('article').count(),1);
   assert.match(await page.locator('article').innerText(),/Comedy and open mic/);
   await page.goto(base+'/backyard',{waitUntil:'networkidle'});
