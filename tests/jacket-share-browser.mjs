@@ -75,12 +75,20 @@ try{
   assert.ok((await stat(cfile)).size>15000,"Nonempty earned award PNG");
   assert.equal(downloads.length,2,"one portrait plus one award, without the legacy duplicate export");
   assert.deepEqual(errors,[],"No browser JavaScript failures");
-  await page.route("**/images/singhub-v2/singhub-wordmark.png*",route=>route.abort());
-  await page.evaluate(()=>{const logo=document.querySelector('[aria-hidden="true"] img');logo.src='/images/singhub-v2/singhub-wordmark.png?failure-test';});
+  await page.evaluate(()=>{
+   window.qaOriginalDecode=HTMLImageElement.prototype.decode;
+   HTMLImageElement.prototype.decode=()=>Promise.reject(new Error("Simulated image decode failure"));
+  });
   await page.getByRole("button",{name:"Download jacket portrait"}).click();
   await page.waitForFunction(()=>document.querySelector("[data-export-status]")?.textContent.includes("Export wasn't available"));
   assert.equal(await page.getByRole("button",{name:"Download jacket portrait"}).isEnabled(),true,"failed export can retry");
   await page.screenshot({path:".jacket-qa/case-"+width+".png",fullPage:true});
+  await page.evaluate(()=>{HTMLImageElement.prototype.decode=window.qaOriginalDecode;});
+  const [retry]=await Promise.all([
+   page.waitForEvent("download",{timeout:30000}),
+   page.getByRole("button",{name:"Download jacket portrait"}).click(),
+  ]);
+  assert.match(retry.suggestedFilename(),/jacket-portrait\.png/);
   await context.close();
   console.log("Jacket catalog, earned/locked states, portrait PNG and award card passed at "+width+"px");
  }
