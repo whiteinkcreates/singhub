@@ -33,12 +33,13 @@ try {
    tiles.filter({has:page.getByRole('heading',{name:'Bowling',exact:true})}).click(),
   ]);
   await page.getByRole('heading',{name:'Punch Bowl Social San Diego',exact:true}).waitFor();
+  await page.waitForFunction(()=>document.querySelectorAll('article').length===1);
   const results=page.locator('article');assert.equal(await results.count(),1);
   assert.match(await results.innerText(),/Bowling/);
   assert.doesNotMatch(await results.innerText(),/Shuffleboard|Arcade/,'bowling results show the relevant activity');
   await page.getByRole('combobox',{name:'Day to explore'}).selectOption('Monday');
   await Promise.all([
-   page.waitForURL('**/backyard?activity=bowling&day=Monday',{waitUntil:'networkidle'}),
+   page.waitForURL(url=>url.searchParams.get('activity')==='bowling'&&url.searchParams.get('day')==='Monday',{waitUntil:'networkidle'}),
    page.getByRole('button',{name:'Explore',exact:true}).click(),
   ]);
   await page.getByRole('heading',{name:'Punch Bowl Social San Diego',exact:true}).waitFor();
