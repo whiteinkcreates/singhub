@@ -28,13 +28,19 @@ try {
    const box=await img.boundingBox();assert.ok(Math.abs(box.width-box.height)<2,'art remains square');
   }
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'no horizontal overflow');
-  await tiles.filter({has:page.getByRole('heading',{name:'Bowling',exact:true})}).click();
+  await Promise.all([
+   page.waitForURL('**/backyard?activity=bowling',{waitUntil:'networkidle'}),
+   tiles.filter({has:page.getByRole('heading',{name:'Bowling',exact:true})}).click(),
+  ]);
   await page.getByRole('heading',{name:'Punch Bowl Social San Diego',exact:true}).waitFor();
   const results=page.locator('article');assert.equal(await results.count(),1);
   assert.match(await results.innerText(),/Bowling/);
   assert.doesNotMatch(await results.innerText(),/Shuffleboard|Arcade/,'bowling results show the relevant activity');
   await page.getByRole('combobox',{name:'Day to explore'}).selectOption('Monday');
-  await page.getByRole('button',{name:'Explore',exact:true}).click();
+  await Promise.all([
+   page.waitForURL('**/backyard?activity=bowling&day=Monday',{waitUntil:'networkidle'}),
+   page.getByRole('button',{name:'Explore',exact:true}).click(),
+  ]);
   await page.getByRole('heading',{name:'Punch Bowl Social San Diego',exact:true}).waitFor();
   await page.screenshot({path:`/tmp/backyard-art-qa/bowling-${width}.png`,fullPage:true});
   await page.goto(base+'/backyard?activity=comedy',{waitUntil:'networkidle'});
