@@ -25,7 +25,6 @@ try{
   await page.getByRole('button',{name:'Sign in',exact:true}).click();
   const dialog=page.locator('dialog.account-service-dialog');
   assert.ok(await dialog.isVisible(),'sign-in modal visible');
-  await dialog.getByRole('heading',{name:'Sign in to My SingHUB'}).count().then(()=>{}); // Modal title is a strong element, not a heading
   assert.match(await dialog.innerText(),/Sign in to My SingHUB/);
   assert.ok(await dialog.getByRole('textbox',{name:'Email address'}).isVisible());
   await dialog.getByRole('button',{name:'Close account action'}).click();
