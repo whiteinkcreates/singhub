@@ -465,3 +465,8 @@
   .v2-basic .schedule-row { grid-template-columns: 86px minmax(0, 1fr); }
   .v2-basic .schedule-row time { grid-column: 2; white-space: normal; }
 }
+
+/* Venue-specific KJ notes only; absent for unconfirmed or empty policies. */
+.singhere-rotation{padding:12px 14px;margin:12px 0;border:1px solid rgba(34,211,238,.25);border-radius:12px;background:rgba(18,33,46,.7)}
+.singhere-rotation strong{display:block;color:#83e8fa;font-size:.88rem}
+.singhere-rotation p{margin:5px 0 0;white-space:pre-line;font-size:.91rem;overflow-wrap:anywhere}
