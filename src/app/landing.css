@@ -48,11 +48,12 @@
 .singhub-landing .landing-tile-jacket h3 {font-size:clamp(2.2rem,3vw,3.1rem);}
 .singhub-landing .landing-tile-board {grid-column:span 5;min-height:248px;border-color:#ff48b88a;background:#2b0730;}
 .singhub-landing .landing-tile-board .landing-tile-tag,.singhub-landing .landing-tile-board .landing-tile-action {color:#ff99e2;}
-.singhub-landing .landing-tile-qr {grid-column:span 7;min-height:325px;background:radial-gradient(circle at 73% 50%,#372a73 0,#141530 50%,#0b1126 100%);border-color:#8e8aff99;}
-.singhub-landing .landing-qr-art {position:absolute;z-index:-1;right:-5%;top:-22%;width:76%;height:146%;object-fit:contain;opacity:.96;}
-.singhub-landing .landing-tile-qr:after {content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(13,14,39,1),rgba(13,14,39,.96) 31%,rgba(13,14,39,.26) 67%,transparent 85%);}
-.singhub-landing .landing-tile-qr .landing-tile-copy {width:52%;padding:25px;}
-.singhub-landing .landing-tile-qr .landing-tile-tag,.singhub-landing .landing-tile-qr .landing-tile-action {color:#c4b7ff;}
+.singhub-landing .landing-tile-hosts {grid-column:span 7;min-height:325px;background:#0a1e2e;border-color:#00c8ff99;}
+.singhub-landing .landing-hosts-art {position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;object-position:center 52%;transition:transform .5s ease;}
+.singhub-landing .landing-tile-hosts:hover .landing-hosts-art {transform:scale(1.04);}
+.singhub-landing .landing-tile-hosts .landing-image-shade {background:linear-gradient(90deg,rgba(3,10,19,.96),rgba(3,10,19,.8) 48%,rgba(3,10,19,.16) 100%),linear-gradient(0deg,rgba(3,10,19,.6),transparent 72%);}
+.singhub-landing .landing-tile-hosts .landing-tile-copy {width:72%;padding:25px;}
+.singhub-landing .landing-tile-hosts .landing-tile-tag,.singhub-landing .landing-tile-hosts .landing-tile-action {color:#80e6fa;}
 .singhub-landing .landing-tile-backyard {grid-column:span 5;min-height:285px;border-color:#e7ad438a;background:#42270b;}
 .singhub-landing .landing-backyard-photos {position:absolute;inset:0;z-index:-2;display:grid;grid-template-columns:1fr 1fr;gap:4px;transform:scale(1.02);}
 .singhub-landing .landing-backyard-photos img {width:100%;height:100%;object-fit:cover;filter:sepia(.16) saturate(1.12);}
@@ -65,9 +66,9 @@
 @media(max-width:980px) {
  .singhub-landing .landing-collage {grid-template-columns:repeat(2,minmax(0,1fr));}
  .singhub-landing .landing-tile-plus {grid-column:span 2;grid-row:auto;min-height:370px;}
- .singhub-landing .landing-tile-jacket,.singhub-landing .landing-tile-board,.singhub-landing .landing-tile-qr,.singhub-landing .landing-tile-backyard {grid-column:span 1;min-height:285px;}
- .singhub-landing .landing-tile-qr .landing-qr-art {width:91%;right:-18%;opacity:.68;}
- .singhub-landing .landing-tile-qr .landing-tile-copy {width:83%;}
+ .singhub-landing .landing-tile-jacket,.singhub-landing .landing-tile-board,.singhub-landing .landing-tile-hosts,.singhub-landing .landing-tile-backyard {grid-column:span 1;min-height:285px;}
+ .singhub-landing .landing-tile-hosts .landing-hosts-art {object-position:65% center;}
+ .singhub-landing .landing-tile-hosts .landing-tile-copy {width:95%;}
  .singhub-landing .landing-tile-jacket .landing-tile-copy {width:84%;}
  .singhub-landing .landing-tile h3 {font-size:clamp(2.1rem,3.5vw,3rem);}
 }
@@ -84,11 +85,11 @@
  .singhub-landing .landing-section-heading {display:block;}
  .singhub-landing .landing-section-heading>p {margin-top:12px;}
  .singhub-landing .landing-collage {grid-template-columns:1fr;gap:12px;}
- .singhub-landing .landing-tile-plus,.singhub-landing .landing-tile-jacket,.singhub-landing .landing-tile-board,.singhub-landing .landing-tile-qr,.singhub-landing .landing-tile-backyard {grid-column:1;min-height:285px;}
+ .singhub-landing .landing-tile-plus,.singhub-landing .landing-tile-jacket,.singhub-landing .landing-tile-board,.singhub-landing .landing-tile-hosts,.singhub-landing .landing-tile-backyard {grid-column:1;min-height:285px;}
  .singhub-landing .landing-tile-plus {min-height:360px;}
  .singhub-landing .landing-tile h3 {font-size:2.8rem;}
- .singhub-landing .landing-tile-qr .landing-tile-copy {width:65%;}
- .singhub-landing .landing-tile-qr .landing-qr-art {right:-7%;width:76%;opacity:.85;}
+ .singhub-landing .landing-tile-hosts .landing-tile-copy {width:87%;}
+ .singhub-landing .landing-tile-hosts .landing-hosts-art {object-position:60% center;}
  .singhub-landing .landing-tile-jacket .landing-tile-copy {width:70%;}
  .singhub-landing .landing-outro {align-items:stretch;flex-direction:column;}
  .singhub-landing .landing-outro a {justify-content:center;}
