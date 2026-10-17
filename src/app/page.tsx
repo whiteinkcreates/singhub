@@ -76,7 +76,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
   <section data-page-surface className="landing-surface" aria-labelledby="landing-features-title">
    <div className="landing-inner">
     <header className="landing-section-heading">
-     <div><p className="landing-eyebrow">THERE'S MORE TO SINGHUB</p><h2 id="landing-features-title">Karaoke's just the beginning.</h2></div>
+     <div><p className="landing-eyebrow">THERE&apos;S MORE TO SINGHUB</p><h2 id="landing-features-title">Karaoke&apos;s just the beginning.</h2></div>
      <p>The places you go, the people you meet, and all the stuff happening around the mic.</p>
     </header>
     <div className="landing-collage">
@@ -105,7 +105,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
       <span className="landing-image-shade"/>
       <div className="landing-tile-copy">
        <span className="landing-tile-tag">SINGBOARD</span>
-       <h3>What's going on around here?</h3>
+       <h3>What&apos;s going on around here?</h3>
        <p>Flyers, special events, community updates, and a few good reasons to get out of the house.</p>
        <span className="landing-tile-action">Check the Board <span aria-hidden="true">↗</span></span>
       </div>
@@ -116,7 +116,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
       <div className="landing-tile-copy">
        <span className="landing-tile-tag">BEHIND THE MIC</span>
        <h3>Meet the people<br/>running the room.</h3>
-       <p>Find the KJs behind San Diego's karaoke nights, and see where they're hosting.</p>
+       <p>Find the KJs behind San Diego&apos;s karaoke nights, and see where they&apos;re hosting.</p>
        <span className="landing-tile-action">Meet the Hosts <span aria-hidden="true">↗</span></span>
       </div>
      </Link>
