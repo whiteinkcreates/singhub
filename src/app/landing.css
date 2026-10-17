@@ -37,6 +37,7 @@
 .singhub-landing .landing-tile-action {display:inline-flex;align-items:center;gap:9px;margin-top:18px;padding:8px 12px;border:1px solid currentColor;border-radius:50px;color:#7febff;background:#07111ec7;font:800 .78rem/1.2 "Barlow",sans-serif;}
 .singhub-landing .landing-tile-plus {grid-column:span 7;grid-row:span 2;min-height:510px;border-color:#13caff78;background:#053849;}
 .singhub-landing .landing-tile-plus .landing-tile-photo {object-position:center;}
+.singhub-landing .landing-tile-plus .landing-plus-detail {margin-top:7px;max-width:480px;color:#b4eaf1;font-size:.78rem;line-height:1.4;}
 .singhub-landing .landing-tile-plus .landing-tile-copy {padding:30px;}
 .singhub-landing .landing-tile-plus h3 {font-size:clamp(3.2rem,5vw,5.2rem);max-width:530px;}
 .singhub-landing .landing-tile-jacket {grid-column:span 5;min-height:248px;background:radial-gradient(circle at 90% 40%,#733a8d 0,#29122e 50%,#150d1d 100%);border-color:#fc7af371;}
@@ -47,7 +48,7 @@
 .singhub-landing .landing-tile-jacket h3 {font-size:clamp(2.2rem,3vw,3.1rem);}
 .singhub-landing .landing-tile-board {grid-column:span 5;min-height:248px;border-color:#ff48b88a;background:#2b0730;}
 .singhub-landing .landing-tile-board .landing-tile-tag,.singhub-landing .landing-tile-board .landing-tile-action {color:#ff99e2;}
-.singhub-landing .landing-tile-qr {grid-column:span 7;min-height:285px;background:radial-gradient(circle at 73% 50%,#372a73 0,#141530 50%,#0b1126 100%);border-color:#8e8aff99;}
+.singhub-landing .landing-tile-qr {grid-column:span 7;min-height:325px;background:radial-gradient(circle at 73% 50%,#372a73 0,#141530 50%,#0b1126 100%);border-color:#8e8aff99;}
 .singhub-landing .landing-qr-art {position:absolute;z-index:-1;right:-5%;top:-22%;width:76%;height:146%;object-fit:contain;opacity:.96;}
 .singhub-landing .landing-tile-qr:after {content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(13,14,39,1),rgba(13,14,39,.96) 31%,rgba(13,14,39,.26) 67%,transparent 85%);}
 .singhub-landing .landing-tile-qr .landing-tile-copy {width:52%;padding:25px;}
