@@ -45,7 +45,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
         </div>
         <div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-white/10 pt-6">
           <p className="text-sm font-semibold text-white">Run a venue, host karaoke, or welcome guests?</p>
-          <Link href="/contact" className="text-sm font-bold text-cyan-300 underline-offset-4 hover:underline">Connect with SingHUB →</Link>
+          <Link href="mailto:hello@singhub.app?subject=SingHUB%20Partnership" className="text-sm font-bold text-cyan-300 underline-offset-4 hover:underline">Connect with SingHUB →</Link>
         </div>
       </div>
     </section>
