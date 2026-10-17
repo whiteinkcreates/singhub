@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { HostProfileTemplate } from "@/components/host/HostProfileTemplate";
 import { getActiveHosts, getHostBySlug } from "@/lib/hostData";
+import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
 
 type HostProfilePageProps = {
   params: Promise<{ slug: string }>;
@@ -46,7 +47,7 @@ export async function generateMetadata({ params }: HostProfilePageProps): Promis
 
 export default async function HostProfilePage({ params }: HostProfilePageProps) {
   const { slug } = await params;
-  const host = await getHostBySlug(slug);
+  const [host,posts] = await Promise.all([getHostBySlug(slug),getActiveSingBoardFlyers().catch(()=>[])]);
   if (!host) notFound();
-  return <HostProfileTemplate host={host} />;
+  return <HostProfileTemplate host={host} posts={posts.filter(post=>post.hostId===host.hostId)} />;
 }

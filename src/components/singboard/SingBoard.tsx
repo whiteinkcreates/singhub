@@ -1,15 +1,24 @@
 "use client";
 import { isExternalWebUrl } from "@/lib/navigation";
+import { accountClient } from "@/lib/v2/singerAccount";
 
 import { toJpeg } from "html-to-image";
-import { useMemo, useRef, useState } from "react";
+import { useEffect,useMemo, useRef, useState } from "react";
 import { isSingBoardSlotOccupied, SINGBOARD_SLOTS } from "@/lib/singboard/layout";
 
 type BoardRegion = "all" | "east-county" | "central" | "beach" | "downtown" | "south-bay" | "north-county";
 type PersistedRegion = Exclude<BoardRegion, "all">;
 type PostType = "image" | "note" | "wanted";
+type PostCategory = "special"|"theme_karaoke"|"hiring"|"community"|"live_music";
+const categories:Record<PostCategory,{label:string;tone:string}>={
+ special:{label:"Special event",tone:"bg-fuchsia-400 text-slate-950"},
+ theme_karaoke:{label:"Theme karaoke",tone:"bg-violet-400 text-slate-950"},
+ hiring:{label:"Hiring / Jobs",tone:"bg-amber-300 text-slate-950"},
+ community:{label:"Community",tone:"bg-cyan-300 text-slate-950"},
+ live_music:{label:"Live music",tone:"bg-emerald-300 text-slate-950"},
+};
 type NoteColor = "yellow" | "pink" | "blue" | "green" | "white";
-type BoardPost = { id:string; postType:PostType; title:string; venue:string; neighborhood:string; region:PersistedRegion; detail:string; x:number; y:number; rotation:number; imageUrl?:string; noteText?:string; noteColor?:NoteColor; pinned:boolean; eventDate:string; startTime?:string; hostName?:string; linkUrl?:string };
+type BoardPost = { category?:PostCategory;id:string; postType:PostType; title:string; venue:string; neighborhood:string; region:PersistedRegion; detail:string; x:number; y:number; rotation:number; imageUrl?:string; noteText?:string; noteColor?:NoteColor; pinned:boolean; eventDate:string; startTime?:string; hostName?:string; linkUrl?:string };
 
 const regions:{id:BoardRegion;label:string}[]=[
   {id:"all",label:"All San Diego"},
@@ -83,6 +92,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
   const [posts,setPosts]=useState<BoardPost[]>(initialFlyers);
   const [draft,setDraft]=useState<BoardPost|null>(null);
   const [type,setType]=useState<PostType>("image");
+  const [category,setCategory]=useState<PostCategory>("special");
   const [region,setRegion]=useState<BoardRegion>("all");
   const [accessCode,setAccessCode]=useState("");
   const [venue,setVenue]=useState("");
@@ -102,6 +112,24 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
   const [lastPublished,setLastPublished]=useState<{id:string;title:string;postType:PostType;linkUrl?:string}|null>(null);
   const [status,setStatus]=useState("Choose an image post, note, or wanted poster.");
   const [showPostingTools,setShowPostingTools]=useState(false);
+  const [posterOptions,setPosterOptions]=useState<{id:string;name:string;posterType:string}[]>([]);
+  const [selectedPosterId,setSelectedPosterId]=useState("");
+  useEffect(()=>{
+    if(!showPostingTools)return;
+    let alive=true;
+    void (async()=>{
+      try{
+        const session=await accountClient().auth.getSession();
+        const token=session.data.session?.access_token;
+        if(!token)return;
+        const response=await fetch("/api/singboard/my-posters",{headers:{Authorization:"Bearer "+token},cache:"no-store"});
+        if(!response.ok)return;
+        const data=await response.json() as {posters?:{id:string;name:string;posterType:string}[]};
+        if(alive){setPosterOptions(data.posters||[]);setSelectedPosterId(p=>p||(data.posters?.[0]?.id||""));}
+      }catch{/* Legacy access-code input is still available. */}
+    })();
+    return()=>{alive=false;};
+  },[showPostingTools]);
   const [brokenImages,setBrokenImages]=useState<Set<string>>(new Set());
 
   const visible=useMemo(
@@ -128,7 +156,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
   async function publish(){
     if(!draft)return setStatus(type==="image"?"Upload an image first.":type==="wanted"?"Create your wanted poster first.":"Create your note first.");
     if(!selectedSlotId)return setStatus("Choose one of the dotted spaces on the board.");
-    if(!accessCode.trim()||!venue.trim()||!neighborhood.trim()||!date)return setStatus("Access code, venue, neighborhood and event date are required.");
+    if(!venue.trim()||!neighborhood.trim()||!date)return setStatus("Venue, neighborhood and event date are required.");
     if(type==="image"&&!fileRef.current)return setStatus("Upload an image first.");
     if((type==="note"||type==="wanted")&&!noteText.trim())return setStatus(type==="wanted"?"Add the roles or people you are looking for.":"Write something on the note.");
     setPosting(true);
@@ -136,7 +164,9 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
     try{
       const form=new FormData();
       form.append("accessCode",accessCode);
+      if(selectedPosterId)form.append("posterId",selectedPosterId);
       form.append("postType",type);
+      form.append("category",type==="wanted"?"hiring":category);
       form.append("title",title.trim()||(type==="wanted"?"Join the crew":"Karaoke event"));
       form.append("venueName",venue.trim());
       form.append("neighborhood",neighborhood.trim());
@@ -152,16 +182,18 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
       if(type==="image"&&fileRef.current)form.append("file",fileRef.current);
       else if(type==="note"){form.append("noteText",noteText.trim());form.append("noteColor",noteColor);}
       else form.append("noteText",noteText.trim());
-      const response=await fetch("/api/singboard/publish",{method:"POST",body:form});
-      const result=await response.json() as {id?:string;imageUrl?:string;error?:string};
+      let token="";
+      try{const session=await accountClient().auth.getSession();token=session.data.session?.access_token||"";}catch{/* access-code fallback */}
+      const response=await fetch("/api/singboard/publish",{method:"POST",body:form,headers:token?{Authorization:"Bearer "+token}:undefined});
+      const result=await response.json() as {id?:string;imageUrl?:string;venueName?:string;neighborhood?:string;category?:PostCategory;error?:string};
       if(!response.ok||!result.id)throw new Error(result.error||"Publish failed.");
-      setPosts(p=>[...p,{...draft,id:result.id!,title:title.trim()||(type==="wanted"?"Join the crew":"Karaoke event"),venue:venue.trim(),neighborhood:neighborhood.trim(),detail:detail.trim(),eventDate:date,startTime:type==="wanted"?undefined:time||undefined,hostName:type==="wanted"?undefined:host||undefined,linkUrl:link||undefined,imageUrl:result.imageUrl||draft.imageUrl,noteText:type==="note"||type==="wanted"?noteText.trim():undefined,noteColor:type==="note"?noteColor:undefined,pinned:true}]);
+      setPosts(p=>[...p,{...draft,id:result.id!,category:result.category||category,title:title.trim()||(type==="wanted"?"Join the crew":"Karaoke event"),venue:result.venueName||venue.trim(),neighborhood:result.neighborhood||neighborhood.trim(),detail:detail.trim(),eventDate:date,startTime:type==="wanted"?undefined:time||undefined,hostName:type==="wanted"?undefined:host||undefined,linkUrl:link||undefined,imageUrl:result.imageUrl||draft.imageUrl,noteText:type==="note"||type==="wanted"?noteText.trim():undefined,noteColor:type==="note"?noteColor:undefined,pinned:true}]);
       setLastPublished({id:result.id,title:title.trim()||(type==="wanted"?"Join the crew":"Karaoke event"),postType:type,linkUrl:link||undefined});
       if(draft.imageUrl?.startsWith("blob:"))URL.revokeObjectURL(draft.imageUrl);
       fileRef.current=null;
       setDraft(null);
       setSelectedSlotId(null);
-      setStatus("Pinned and saved. Download the current board or copy the direct event link below.");
+      setStatus("Post is live and queued for verification. Download the current board or copy its link.");
     }catch(error){
       setStatus(error instanceof Error?error.message:"Publish failed.");
     }finally{
@@ -222,6 +254,7 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
             className={`absolute ${post.postType==="wanted"?"w-[18%]":post.postType==="note"||brokenImages.has(post.id)?"w-[12%]":"w-[23%]"} select-none text-left shadow-[0_12px_20px_rgba(0,0,0,.48)] ${!post.pinned?"pointer-events-none":"cursor-pointer transition duration-200 hover:scale-[1.025] hover:shadow-[0_20px_34px_rgba(0,0,0,.65)] focus-visible:outline focus-visible:outline-4 focus-visible:outline-cyan-300"}`}
             style={{left:`${post.x}%`,top:`${post.y}%`,transform:`rotate(${post.rotation}deg)`,zIndex:post.pinned?10:35}}
           >
+            {post.pinned&&post.category&&<span aria-label={categories[post.category].label} className={"pointer-events-none absolute bottom-0 right-0 z-20 rounded-tl px-1 py-0.5 text-[5px] font-black uppercase sm:text-[7px] "+categories[post.category].tone}>{categories[post.category].label}</span>}
             {post.pinned&&<span className={`absolute left-1/2 top-1 z-20 h-3 w-3 -translate-x-1/2 rounded-full sm:h-4 sm:w-4 ${pinClass(post.id)}`}/>} 
             {post.postType==="image"&&post.imageUrl&&!brokenImages.has(post.id)
               ?<img
@@ -293,8 +326,13 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
         <div className="grid grid-cols-3 gap-2">
           <button onClick={()=>{setType("image");setDraft(null);setSelectedSlotId(null);}} className={`rounded-xl border p-3 text-xs font-black transition sm:text-sm ${type==="image"?"border-fuchsia-300 bg-fuchsia-300/15 shadow-[0_0_16px_rgba(236,72,153,.12)]":"border-white/10 hover:border-white/20"}`}>Image</button>
           <button onClick={()=>{setType("note");fileRef.current=null;createDraft("note");}} className={`rounded-xl border p-3 text-xs font-black transition sm:text-sm ${type==="note"?"border-violet-300 bg-violet-300/15 shadow-[0_0_16px_rgba(139,92,246,.12)]":"border-white/10 hover:border-white/20"}`}>Note</button>
-          <button onClick={()=>{setType("wanted");fileRef.current=null;createDraft("wanted");}} className={`rounded-xl border p-3 text-xs font-black transition sm:text-sm ${type==="wanted"?"border-orange-300 bg-orange-300/15 shadow-[0_0_16px_rgba(251,146,60,.12)]":"border-white/10 hover:border-white/20"}`}>Wanted</button>
+          <button onClick={()=>{setType("wanted");setCategory("hiring");fileRef.current=null;createDraft("wanted");}} className={`rounded-xl border p-3 text-xs font-black transition sm:text-sm ${type==="wanted"?"border-orange-300 bg-orange-300/15 shadow-[0_0_16px_rgba(251,146,60,.12)]":"border-white/10 hover:border-white/20"}`}>Wanted</button>
         </div>
+        <label className="block text-xs font-bold uppercase tracking-wide text-slate-300">Post category
+          <select aria-label="SingBOARD post category" value={type==="wanted"?"hiring":category} disabled={type==="wanted"} onChange={e=>setCategory(e.target.value as PostCategory)} className="mt-1 w-full rounded-xl border border-white/20 bg-[#121625] p-3 text-white">
+            {(Object.keys(categories) as PostCategory[]).map(key=><option key={key} value={key}>{categories[key].label}</option>)}
+          </select>
+        </label>
         {type==="image"
           ?<label className="block cursor-pointer rounded-xl bg-fuchsia-500 p-3 text-center font-black shadow-[0_0_22px_rgba(236,72,153,.18)] transition hover:bg-fuchsia-400">Choose image<input type="file" accept="image/*" className="sr-only" onChange={e=>handleFile(e.target.files?.[0])}/></label>
           :type==="note"
@@ -316,7 +354,13 @@ export function SingBoard({initialFlyers}:{initialFlyers:BoardPost[]}){
         {type!=="wanted"&&<input aria-label="Host or KJ, optional" value={host} onChange={e=>{setHost(e.target.value);updateDraft({hostName:e.target.value});}} placeholder="Host / KJ (optional)" className="w-full rounded-xl border border-white/15 bg-white/[.06] p-3 outline-none focus:border-violet-300"/>}
         <textarea aria-label={type==="wanted"?"Full job ad copy":"Event details, optional"} value={detail} maxLength={1600} onChange={e=>{setDetail(e.target.value);updateDraft({detail:e.target.value});}} placeholder={type==="wanted"?"Full job ad copy / candidate pitch":"Event details for the SingHUB page (optional)"} className="min-h-24 w-full rounded-xl border border-white/15 bg-white/[.06] p-3 outline-none focus:border-violet-300"/>
         <input aria-label={type==="wanted"?"Full job ad URL":"Official event or ticket link, optional"} value={link} onChange={e=>{setLink(e.target.value);updateDraft({linkUrl:e.target.value});}} placeholder={type==="wanted"?"Full job ad URL (e.g. /jobs/barlando)":"Official event / ticket link (optional)"} className="w-full rounded-xl border border-white/15 bg-white/[.06] p-3 outline-none focus:border-cyan-300"/>
-        <input aria-label="SingBOARD access code" autoComplete="off" type="password" value={accessCode} onChange={e=>setAccessCode(e.target.value)} placeholder="SingBOARD access code" className="w-full rounded-xl border border-white/15 bg-white/[.06] p-3 outline-none focus:border-fuchsia-300"/>
+        {posterOptions.length>0&&<label className="block text-xs font-bold uppercase text-cyan-200">Posting as
+          <select value={selectedPosterId} onChange={e=>setSelectedPosterId(e.target.value)} className="mt-1 w-full rounded-xl border border-cyan-300/30 bg-[#101724] p-3 text-white">
+            {posterOptions.map(p=><option value={p.id} key={p.id}>{p.name} · {p.posterType==="kj"?"KJ":p.posterType==="venue"?"Venue":"Admin"}</option>)}
+          </select>
+        </label>}
+        <p className="text-xs text-cyan-100">Verified venue/KJ account? You can publish while signed in. During the transition, individual posting access codes still work.</p>
+        <input aria-label="SingBOARD access code" autoComplete="off" type="password" value={accessCode} onChange={e=>setAccessCode(e.target.value)} placeholder="Individual access code (if not linked to account)" className="w-full rounded-xl border border-white/15 bg-white/[.06] p-3 outline-none focus:border-fuchsia-300"/>
         <button disabled={posting||!draft||!selectedSlotId} onClick={publish} className="w-full rounded-xl bg-cyan-300 px-4 py-3 font-black text-slate-950 shadow-[0_0_20px_rgba(34,211,238,.18)] disabled:opacity-40">{posting?"Publishing…":"Publish in selected space"}</button>
         <p className="text-xs leading-5 text-slate-300" aria-live="polite">{status}</p>
         <p className="text-[11px] text-slate-500">Event posts open their event page. Wanted posters can point to a full job ad and use the date as an automatic cleanup date.</p>
