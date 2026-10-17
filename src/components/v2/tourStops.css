@@ -67,11 +67,11 @@
 :is(.v2-account) .tour-map{position:relative;height:360px;margin:0 20px 20px;overflow:hidden;border:1px solid rgba(0,200,255,.28);border-radius:16px;background:#061018}
 :is(.v2-account) .tour-map .leaflet-container{height:100%;width:100%;background:#061018}
 /* Use the existing OpenStreetMap tiles in either original street colors or a
-   SingHUB night treatment. Filters only affect raster tiles, never neon pins. */
+   SingHUB purple-black night treatment. Filters only affect raster tiles, never neon pins. */
 :is(.v2-account) .tour-map .tour-leaflet-map{height:100%;width:100%}
 :is(.v2-account) .tour-map .leaflet-tile{max-width:none!important;max-height:none!important}
 :is(.v2-account) .tour-map[data-map-theme="night"] .leaflet-tile{
- filter:grayscale(.15) invert(.92) hue-rotate(175deg) saturate(.62) brightness(.78) contrast(1.12);
+ filter:grayscale(.35) invert(.92) hue-rotate(215deg) saturate(.5) brightness(.72) contrast(1.13);
 }
 :is(.v2-account) .tour-map-theme{
  position:absolute;z-index:800;top:10px;right:10px;display:flex;gap:3px;padding:4px;
