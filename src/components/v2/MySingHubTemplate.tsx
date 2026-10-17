@@ -29,8 +29,8 @@ const [exportStatus,setExportStatus]=useState({busy:false,error:""});
 const exportReady=Boolean(state.ready&&state.user&&account&&!state.error);
 async function signOut(){setSignoutBusy(true);try{const {error}=await accountClient().auth.signOut();if(error)throw error;await state.refresh();setRequest(null);actions.toast('Signed out of My SingHUB.');}catch(error){actions.toast(error instanceof Error?error.message:'Could not sign out.');}finally{setSignoutBusy(false);}}
 useEffect(()=>{if(!state.ready)return;const params=new URLSearchParams(location.search);
+ if(params.get('perform')){queueMicrotask(()=>setRequest('performance'));return;}
  if(state.user){queueMicrotask(()=>setRequest(current=>current==='signin'||current==='signup'?null:current));return;}
- if(params.get('perform'))queueMicrotask(()=>setRequest('performance'));
  else if(params.has('signup'))queueMicrotask(()=>setRequest('signup'));
  else if(params.has('save')||params.has('signin')||params.has('followHost')||params.has('authError'))queueMicrotask(()=>setRequest('signin'));
 },[state.ready,state.user]);
