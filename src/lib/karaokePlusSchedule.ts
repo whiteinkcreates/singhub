@@ -38,6 +38,8 @@ export function highlightIsCategory(title:string, category:string):boolean {
  const label=title.toLowerCase();
  if(category==="football"||category==="basketball")return /\bsports?\b|\bgame.day\b|\b49ers\b|\bfootball\b|\bbasketball\b/.test(label);
  if(category==="ufc")return /\bufc\b|\bmma\b|\bfight night\b/.test(label);
+ if(category==="comedy")return /\bcomedy\b|\bstand[ -]?up\b/.test(label);
+ if(category==="bowling")return /\bbowling\b/.test(label);
  if(category==="trivia")return /\btrivia\b/.test(label);
  if(category==="bingo")return /\bbingo\b/.test(label);
  if(category==="live-music")return /\blive music\b|\bbands?\b|\bblues jam\b|\bopen mic\b|\bDJs?\b|\bcountry music\b/.test(label);

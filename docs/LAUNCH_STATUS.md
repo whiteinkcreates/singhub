@@ -158,3 +158,10 @@ The combined PR reconciles Karaoke+ / Backyard (#373), public index heroes (#378
 October 16 fixes on the review branch exclude unconfirmed venue screenings from weekday KARAOKE+ badges, make karaoke start-time buckets apply to the same eligible Karaoke+ night, and refresh direct Backyard mobile navigation browser tests for 360/390/768/900/1440 widths. The latest validation and screenshot matrix must pass on the reconciled commit before production approval. Emoji category art remains deliberately unchanged pending approved assets. Partner Event Drop (#374), Shopify #381 and SingBOARD updates remain separate.
 
 This merge reconciliation preserves latest main data, canonical sync automation and its approval-expiry fix. Neither this documentation entry nor preview READY status proves production release.
+
+## Backyard category artwork, October 16, 2026
+
+- Branch `feat/backyard-category-art-oct16`, based on current main `936b88d`.
+- Loaded Corey's approved 11 photographic category tiles as 960px WebP assets. Football uses the corrected version with the paper removed. Labels remain HTML below the square artwork.
+- Added Comedy and Bowling category filters using existing source-backed Grand Comedy Club and Punch Bowl highlights. Bowling remains an amenity across day filters. Other now uses generic activity-request copy rather than already-covered bowling/cornhole examples.
+- Local focused lint and seven existing Backyard integration tests passed. Production build passed. CI includes mobile/desktop image loading, overflow, category results and day-filter checks. Deployment acceptance remains pending until the actual release is inspected.
