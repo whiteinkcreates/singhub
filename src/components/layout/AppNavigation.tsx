@@ -7,7 +7,7 @@ import {accountClient} from "@/lib/v2/singerAccount";
 import styles from "./AppNavigation.module.css";
 
 const destinations = [
-  { href: "/", label: "Discover", icon: "search" },
+  { href: "/discover", label: "Discover", icon: "search" },
   { href: "/find-karaoke", label: "Venues", icon: "location_on" },
   { href: "/backyard", label: "The Backyard", icon: "local_activity" },
   { href: "/hosts", label: "Hosts", icon: "mic" },
