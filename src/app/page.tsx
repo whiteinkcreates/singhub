@@ -110,13 +110,14 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
        <span className="landing-tile-action">Visit SingBOARD <span aria-hidden="true">↗</span></span>
       </div>
      </Link>
-     <Link href="/account" className="landing-tile landing-tile-qr">
-      <img src="/images/home/singer-qr-scan.svg" alt="" className="landing-qr-art"/>
+     <Link href="/hosts" className="landing-tile landing-tile-hosts">
+      <img src="/images/hosts/hosts-booth.webp" alt="" className="landing-hosts-art"/>
+      <span className="landing-image-shade"/>
       <div className="landing-tile-copy">
-       <span className="landing-tile-tag">SINGHUB QR</span>
-       <h3>Meet someone?<br/>Share a scan.</h3>
-       <p>Let another singer scan your SingHUB QR to discover the app, and see your singer name if you choose to share it.</p>
-       <span className="landing-tile-action">Find Your SingHUB QR <span aria-hidden="true">↗</span></span>
+       <span className="landing-tile-tag">BEHIND THE MIC</span>
+       <h3>Meet the people<br/>running the room.</h3>
+       <p>Find the KJs behind San Diego's karaoke nights, and see where they're hosting.</p>
+       <span className="landing-tile-action">Meet the Hosts <span aria-hidden="true">↗</span></span>
       </div>
      </Link>
      <Link href="/backyard" className="landing-tile landing-tile-backyard">
