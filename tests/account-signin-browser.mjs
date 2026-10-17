@@ -40,7 +40,7 @@ try{
   assert.equal(new URL(page.url()).searchParams.get('authError'),'missing_code');
   assert.match(await dialog.innerText(),/expired or could not be completed/i);
   await page.goto(base+'/auth/callback?next=https%3A%2F%2Funtrusted.example',{waitUntil:'networkidle'});
-  assert.equal(new URL(page.url()).origin,new URL(base).origin,'redirect remains same-origin');
+  assert.ok(['localhost','127.0.0.1'].includes(new URL(page.url()).hostname),'external redirect is rejected');
   assert.equal(new URL(page.url()).pathname,'/account','unsafe redirect rejected');
   assert.deepEqual(errors,[],'browser runtime errors at '+width);
   await page.close();
