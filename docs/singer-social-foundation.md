@@ -6,7 +6,7 @@ Database schema and pure eligibility policy only. No SQL has been applied to pro
 Existing `singer_venue_checkins` (presence), `singer_venue_visits` (Tour Stop), and `singer_performances` (self-reported performances) remain separate. None automatically qualifies a Crew member.
 
 ## Decisions locked
-- A venue follow is immediate; Crew access requires 3 **verified karaoke nights on distinct venue-local dates** at the same venue.
+- A venue follow is immediate; Crew access requires 3 **verified sung performances on distinct venue-local dates** at the same venue.
 - Personal QR maps to an opaque, permanent public identifier, never a raw auth token or email. Public profile discoverability is opt-in, default off.
 - Tip a Chair: Going/Maybe, editable or removable; private by default. Aggregate Going counts are platform signals, NOT a reservation, total crowd forecast, or proof of attendance.
 - Referrals count only when a new account completes a server-defined qualifying action and passes anti-abuse controls. Milestones proposed at 1/5/10/25 and awards withheld until server rules are implemented.
