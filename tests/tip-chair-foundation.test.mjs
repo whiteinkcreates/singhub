@@ -6,7 +6,7 @@ const dates=readFileSync(new URL('../src/lib/engagement/chairDates.ts',import.me
 const ui=readFileSync(new URL('../src/components/v2/TipAChair.tsx',import.meta.url),'utf8');
 test('plans require a verified identity, published karaoke and a future date',()=>{
  assert.match(route,/auth.getUser\(token\)/);
- assert.match(route,/eventRunsOnNight\(event,date\)/);
+ assert.match(route,/karaokeRunsOnDate\(event,date\)/);
  assert.match(route,/validChairDate\(date,upcomingNightlifeDates\(\)\)/);
  assert.match(route,/origin!==new URL\(request.url\).origin/);
 });
