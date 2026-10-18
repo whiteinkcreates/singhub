@@ -24,6 +24,15 @@ export function SingHubBasemap({theme='night'}:{theme?:'night'|'street'}){
    layer=maplibreGL({style:styles[theme],attributionControl:{customAttribution:attribution}});
    layer.addTo(map);
    const renderer=layer.getMaplibreMap();
+   renderer.on('style.load',()=>{
+    if(theme!=='night')return;
+    // Brighter native text paint keeps street and neighborhood names readable.
+    for(const item of renderer.getStyle().layers){if(item.type==='symbol'&&item.layout?.['text-field']){
+     renderer.setPaintProperty(item.id,'text-color','#b7c4cd');
+     renderer.setPaintProperty(item.id,'text-halo-color','#101214');
+     renderer.setPaintProperty(item.id,'text-halo-width',1.25);
+    }}
+   });
    renderer.on('idle',()=>{if(renderer.isStyleLoaded()&&renderer.areTilesLoaded()){ready=true;clearTimeout(timer);update('ready');}});
    renderer.on('error',()=>update('error'));
   }catch{queueMicrotask(()=>update('error'));}

@@ -65,7 +65,7 @@ export default function TourMapClient({venues}:{venues:MappableVenue[]}){
    <Bounds venues={venues}/>
    <SingHubBasemap theme={mapTheme}/>
    {venues.map(venue=><Marker key={venue.id} position={[venue.latitude,venue.longitude]} icon={tourStopIcon(venue.venueName)}>
-    <Popup><div className="tour-stop-popup"><strong>{venue.venueName}</strong><span>{venue.neighborhood||venue.city}</span><Link href={'/venues/'+venue.slug}>Open venue</Link></div></Popup>
+    <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}><div className="tour-stop-popup"><strong>{venue.venueName}</strong><span>{venue.neighborhood||venue.city}</span><Link href={'/venues/'+venue.slug}>Open venue</Link></div></Popup>
    </Marker>)}
   </MapContainer>
   <MapThemeControl theme={mapTheme} onChange={setMapTheme}/>

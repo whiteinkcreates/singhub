@@ -128,7 +128,7 @@ export default function KaraokePlacesMapClient({ venues }: { venues: MappableVen
               position={[venue.latitude, venue.longitude]}
               icon={getIcon(venue)}
             >
-              <Popup>
+              <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}>
                 <div className="space-y-2 text-slate-900">
                   <p className="text-base font-black text-slate-950">{venue.venueName}</p>
                   <p className="text-sm font-semibold text-slate-700">

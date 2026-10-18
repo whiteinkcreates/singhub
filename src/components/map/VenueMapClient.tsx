@@ -255,7 +255,7 @@ export default function VenueMapClient({
             title="Your location"
             alt="Your location"
           >
-            <Popup>
+            <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}>
               <div className="space-y-1 text-slate-900">
                 <p className="text-base font-black text-slate-950">
                   You are here
@@ -276,7 +276,7 @@ export default function VenueMapClient({
             title={venue.venueName}
             alt={venue.venueName}
           >
-            <Popup>
+            <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}>
               <div className="space-y-2 text-slate-900">
                 <p className="text-base font-black text-slate-950">
                   {venue.venueName}

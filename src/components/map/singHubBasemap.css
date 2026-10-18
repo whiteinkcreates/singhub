@@ -7,3 +7,7 @@
 .singhub-map-theme{position:absolute;z-index:800;top:10px;right:10px;display:flex;gap:3px;padding:4px;border:1px solid #00c8ff66;border-radius:9px;background:#05090fe8;box-shadow:0 5px 18px #0008}
 .singhub-map-theme button{min-height:40px;padding:6px 12px;border:1px solid transparent;border-radius:6px;background:transparent;color:#d6e2ef;font:700 12px/1.1 Arial,sans-serif;cursor:pointer}
 .singhub-map-theme button[aria-pressed="true"]{border-color:#00c8ff;background:#063344;color:#e8fbff}
+
+.leaflet-container[data-map-style="night"] .leaflet-control-attribution{background:#101820e8;color:#b7c4cd}
+.leaflet-container[data-map-style="night"] .leaflet-control-attribution a{color:#81dcf1}
+.leaflet-container[data-map-style="night"] .leaflet-control-zoom a{background:#111b24;color:#e0f4fc;border-color:#3b4c5a}
