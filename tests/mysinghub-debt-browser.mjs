@@ -31,6 +31,8 @@ try{for(const width of [390,1440]){
  await page.locator('#recent').getByText('Second Fixture Song',{exact:true}).waitFor();await page.waitForFunction(()=>document.querySelector('.tour-counts')?.textContent.includes('1 Nights performed'));
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  await page.locator('#tour-stops').screenshot({path:'.mysinghub-qa/tour-'+width+'.png'});
+ // The established sticky hero sits behind the content sheet while scrolled. Return to its controls normally.
+ await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
  await page.getByRole('button',{name:'Sign out',exact:true}).click();await page.getByRole('button',{name:'Sign in',exact:true}).waitFor();
  await page.waitForFunction(()=>document.querySelector('.tour-counts')?.textContent.includes('— Nights performed'));
  assert.equal(await page.locator('.tour-stop').count(),0);assert.equal(await page.locator('#recent').getByText('Fixture Song',{exact:true}).count(),0);
@@ -38,7 +40,7 @@ try{for(const width of [390,1440]){
  }
  const context=await browser.newContext();const page=await context.newPage();
  await page.goto(base+'/account?perform=the-lamplighter',{waitUntil:'networkidle'});await page.getByLabel('Email address',{exact:true}).waitFor();
- let redirect='';await page.route('**/auth/v1/otp',async route=>{redirect=decodeURIComponent(new URL(route.request().url()).searchParams.get('redirect_to')||'');await route.fulfill({contentType:'application/json',body:'{}'});});
+ let redirect='';page.on('request',request=>{if(request.method()==='POST'&&request.url().includes('/auth/v1/otp'))redirect=decodeURIComponent(new URL(request.url()).searchParams.get('redirect_to')||'');});
  await page.getByLabel('Email address',{exact:true}).fill('qa@example.invalid');await page.getByRole('button',{name:'Email my sign-in link',exact:true}).click();await page.getByRole('button',{name:'Link sent · Check your email',exact:true}).waitFor();
  assert.ok(redirect.includes('/account?perform=the-lamplighter'),'sign-in return preserves the selected venue');
  assert.equal((await context.request.get(base+'/api/tour-stops')).status(),401);await page.screenshot({path:'.mysinghub-qa/signed-out.png'});await context.close();
