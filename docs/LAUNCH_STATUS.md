@@ -178,3 +178,15 @@ This merge reconciliation preserves latest main data, canonical sync automation 
 ## Backyard activity-to-results flow, October 16, 2026
 
 Corey reported an abrupt transition from category artwork into venue cards. The initial Backyard landing now ends with the activity choices and request control, without the unfiltered venue list. Choosing an activity reveals its matching venues under an explicit category heading and scrolls to the results; submitted search/day filters also reveal results. Other stays after results rather than interrupting the category-to-venue transition. Existing activity/source/day safeguards are retained. Focused browser checks cover initial absence of venue cards, selected Bowling result and result anchor on phone/desktop. Release acceptance pending CI and deployment.
+
+
+## My SingHUB remaining debt, October 17–18, 2026
+
+Coordinated against main bd14ea6 after the homepage hero parity fix #412 merged. That process owns `src/app/page.tsx` and `src/app/landing.css`; this work changes neither. Upcoming Gigs #403, Karaoke Radar #404, private plans and the personal QR remain in place. The QR stays inside My SingHUB. Existing drafts #405 and #406 are reconciled in this combined branch rather than merged from their older bases.
+
+- SingHERE's “I just sang” goes directly to the selected venue's song form, including for an already signed-in member. Signed-out email returns preserve the venue. Optional performance sharing remains available separately.
+- New song forms default to the existing Los Angeles karaoke-night date, which rolls at 4 AM. Singers can still choose an earlier date. Existing saved performance dates are used as recorded, never inferred from the later logging timestamp.
+- My Tour adds distinct confirmed check-in nights and distinct performance dates. Multiple songs or venues on one date count once. Songs do not create check-ins. Both owner-scoped histories paginate beyond 1,000 rows; pending and other members' visits remain excluded.
+- Totals refresh after a save. Auth changes invalidate outstanding Tour reads and clear private results; unavailable totals display a dash rather than a fabricated zero.
+- Local lint/build and 11 focused API/account regression tests passed. Phone/desktop isolated full-account browser acceptance and deployment evidence are tracked in [PR #413](https://github.com/whiteinkcreates/singhub/pull/413). Browser fixtures never write production member data.
+- Final patch artwork still needs approval. Synthetic browser awards establish export behavior, not acceptance of a real member's earned artwork. Real-member badge/export acceptance remains separate.

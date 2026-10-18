@@ -71,8 +71,8 @@ try{
   await page.getByRole('button',{name:'Night',exact:true}).click();
   await page.locator('#tour-stops').screenshot({path:'.my-tour-qa/my-tour-'+width+'.png'});
   await page.getByRole('button',{name:'Open SingHERE QA'}).click();
-  await page.getByRole('button',{name:'I just sang',exact:true}).click();
-  const songLink=page.getByRole('link',{name:/Log a song I sang/});
+
+  const songLink=page.getByRole('link',{name:'I just sang',exact:true});
   await songLink.waitFor();
   assert.match(await songLink.getAttribute('href'),/^\/account\?perform=deanos-pub$/);
   assert.ok(Number.parseFloat(await songLink.evaluate(el=>getComputedStyle(el).borderTopWidth))>=1,'Log song link must be visibly boxed');
