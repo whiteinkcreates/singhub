@@ -83,7 +83,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
       <span className="landing-image-shade"/>
       <div className="landing-tile-copy">
        <span className="landing-tile-tag">KARAOKE<span aria-hidden="true">➕</span><span className="sr-only"> plus</span> · {day.toUpperCase()}</span>
-       <h3>{spotlight?.title||'Karaoke and something extra.'}</h3>
+       <h3>Karaoke with a little extra.</h3>
        <p>Find karaoke venues with more to offer.</p>
        <p className="landing-plus-detail">{spotlight?spotlight.count+' matching places today · '+spotlight.description:'Explore karaoke spots with games, music and more.'}</p>
        <span className="landing-tile-action">Explore Karaoke<span aria-hidden="true">➕</span><span className="sr-only"> plus</span> <span aria-hidden="true">↗</span></span>
