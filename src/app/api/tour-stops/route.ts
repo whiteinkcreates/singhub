@@ -29,8 +29,22 @@ export async function GET(request:Request){
    const offerUnlock=venue?await getVenueOfferUnlock(auth.user.id,venue.id,night):undefined;
    return NextResponse.json({visit:data||null,offerUnlock,eligibility},{headers:{'Cache-Control':'private, no-store'}});
   }
-  const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('status','confirmed').order('created_at',{ascending:true});if(error)throw error;
-  const stops=collectTourStops((data||[]) as TourStopVisit[]);return NextResponse.json({stops,stubs:stops},{headers:{'Cache-Control':'private, no-store'}});
+  // Page both owner-scoped histories so totals remain exact beyond the API row limit.
+  const visits:TourStopVisit[]=[];const performances:{performed_on:string}[]=[];
+  await Promise.all([
+   (async()=>{for(let offset=0;;offset+=1000){
+    const {data,error}=await auth.client.from('singer_venue_visits').select(columns).eq('user_id',auth.user.id).eq('status','confirmed').order('created_at',{ascending:true}).order('id',{ascending:true}).range(offset,offset+999);
+    if(error)throw error;const page=(data||[]) as TourStopVisit[];visits.push(...page);if(page.length<1000)break;
+   }})(),
+   (async()=>{for(let offset=0;;offset+=1000){
+    const {data,error}=await auth.client.from('singer_performances').select('performed_on').eq('user_id',auth.user.id).order('created_at',{ascending:true}).order('id',{ascending:true}).range(offset,offset+999);
+    if(error)throw error;const page=(data||[]) as {performed_on:string}[];performances.push(...page);if(page.length<1000)break;
+   }})(),
+  ]);
+  const stops=collectTourStops(visits);
+  const karaokeNights=new Set(visits.map(visit=>visit.nightlife_date)).size;
+  const nightsPerformed=new Set(performances.map(song=>song.performed_on).filter(Boolean)).size;
+  return NextResponse.json({stops,stubs:stops,karaokeNights,nightsPerformed},{headers:{'Cache-Control':'private, no-store'}});
  }catch{return NextResponse.json({error:'TourStops could not load. Try again.'},{status:503});}
 }
 

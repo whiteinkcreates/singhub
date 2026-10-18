@@ -48,16 +48,18 @@ test('TourStop timing distinguishes early arrival, open karaoke and the 4am roll
 });
 
 function apiFixture(){
- const rows=[];let phase='open';
- function from(){
+ const rows=[];const performances=[];let phase='open';
+ function from(table){
+  const source=table==='singer_performances'?performances:rows;
   return {
    select(){
-    const filters={};
+    const filters={};let first=0,last=999;
     const q={
      eq(key,value){filters[key]=value;return q;},
      order(){return q;},
-     maybeSingle(){const matches=rows.filter(row=>Object.entries(filters).every(([k,v])=>row[k]===v));return Promise.resolve({data:matches[0]||null,error:null});},
-     then(resolve){const matches=rows.filter(row=>Object.entries(filters).every(([k,v])=>row[k]===v));return Promise.resolve({data:matches,count:matches.length,error:null}).then(resolve);}
+     range(start,end){first=start;last=end;return q;},
+     maybeSingle(){const matches=source.filter(row=>Object.entries(filters).every(([k,v])=>row[k]===v));return Promise.resolve({data:matches[0]||null,error:null});},
+     then(resolve){const matches=source.filter(row=>Object.entries(filters).every(([k,v])=>row[k]===v));return Promise.resolve({data:matches.slice(first,last+1),count:matches.length,error:null}).then(resolve);}
     };return q;
    },
    insert(row){
@@ -86,7 +88,7 @@ function apiFixture(){
   '@/lib/venueOffers.server':{getVenueOfferUnlock:async()=>undefined,unlockVenueOffer:async()=>({title:'$1 off drinks',code:'123456'})},
  };
  vm.runInNewContext(ts.transpileModule(readFileSync('src/app/api/tour-stops/route.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports:api,require:id=>imports[id],URL,JSON,Response});
- return {api,rows,setPhase:value=>{phase=value;}};
+ return {api,rows,performances,setPhase:value=>{phase=value;}};
 }
 
 test('API authenticates, validates canonical venue, prevents duplicates and retains no GPS',async()=>{
@@ -128,4 +130,24 @@ test('Pal Joey’s official map position is near the canonical pin for reliable 
  const distance=6371000*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
  assert.ok(distance<75,'Pal Joey’s pin is displaced '+Math.round(distance)+'m from the venue’s embedded map');
  assert.equal(helpers.locationMatch({...officialMap,accuracy:30},venue),true);
+});
+
+
+test('collection counts distinct owner nights, excludes pending/foreign rows, and pages beyond 1000 songs and visits',async()=>{
+ const {api,rows,performances}=apiFixture();
+ const visit={user_id:'test-user',venue_id:'one',venue_slug:'one',venue_name:'One',nightlife_date:'2026-10-03',created_at:'2026-10-04T06:00:00Z',status:'confirmed',method:'self_reported'};
+ for(let i=0;i<1001;i++)rows.push({...visit,id:'visit-'+i,venue_id:'venue-'+i});
+ rows.push({...visit,id:'later',nightlife_date:'2026-10-04'});
+ rows.push({...visit,id:'pending',status:'pending',nightlife_date:'2026-10-05'});
+ rows.push({...visit,id:'foreign',user_id:'someone-else',nightlife_date:'2026-10-06'});
+ for(let i=0;i<1001;i++)performances.push({id:'song-'+i,user_id:'test-user',performed_on:'2026-10-03'});
+ performances.push({id:'retrospective',user_id:'test-user',performed_on:'2026-09-01',created_at:'2026-10-04T06:00:00Z'});
+ performances.push({id:'foreign',user_id:'someone-else',performed_on:'2026-10-06'});
+ const response=await api.GET(new Request('https://singhub.app/api/tour-stops',{headers:{Authorization:'Bearer test-token'}}));
+ assert.equal(response.status,200);assert.equal(response.headers.get('cache-control'),'private, no-store');
+ const collection=await response.json();assert.equal(collection.karaokeNights,2);assert.equal(collection.nightsPerformed,2);assert.equal(collection.stops.length,1002);
+ assert.equal(collection.stops.some(stop=>stop.id==='pending'||stop.id==='foreign'),false);
+ performances.push({id:'same-night',user_id:'test-user',performed_on:'2026-10-03'});
+ const repeat=await (await api.GET(new Request('https://singhub.app/api/tour-stops',{headers:{Authorization:'Bearer test-token'}}))).json();
+ assert.equal(repeat.nightsPerformed,2);
 });

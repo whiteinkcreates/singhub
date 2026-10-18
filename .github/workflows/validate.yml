@@ -77,9 +77,36 @@ jobs:
 
       - name: Build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-')) && 'http://127.0.0.1:3101' || '' }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-')) && 'qa-public-key' || '' }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-')) && 'http://127.0.0.1:3101' || '' }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-')) && 'qa-public-key' || '' }}
         run: npm run build
+
+      - name: Install browser for My SingHUB acceptance
+        if: startsWith(github.head_ref, 'fix/mysinghub-')
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify My SingHUB entry, totals, export and auth on phone and desktop
+        if: startsWith(github.head_ref, 'fix/mysinghub-')
+        run: |
+          node tests/mysinghub-debt-fixture.mjs > /tmp/mysinghub-fixture.log 2>&1 &
+          fixture_pid=$!
+          NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:3101 SUPABASE_SERVICE_ROLE_KEY=isolated-mysinghub-fixture npm run start -- --port 3100 > /tmp/mysinghub-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" "$fixture_pid"; cp /tmp/mysinghub-server.log .mysinghub-qa/server.log' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://localhost:3100/account > /dev/null; then break; fi
+            sleep 1
+          done
+          node --test tests/singer-account-loading.test.mjs
+          node tests/mysinghub-debt-browser.mjs
+
+      - name: Save My SingHUB acceptance evidence
+        if: always() && startsWith(github.head_ref, 'fix/mysinghub-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: mysinghub-acceptance-qa
+          path: .mysinghub-qa
+          include-hidden-files: true
 
       - name: Install browser for Backyard category artwork QA
         if: (startsWith(github.head_ref, 'feat/backyard-category-art-') || startsWith(github.head_ref, 'fix/backyard-activity-results-'))
