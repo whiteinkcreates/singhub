@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import Link from "next/link";
 import L from "leaflet";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import {createVenueMapPin} from "@/components/map/venuePin";
+import { MapContainer, Marker, Popup, useMap } from "react-leaflet";
+import {SingHubBasemap,MapThemeControl} from '@/components/map/SingHubBasemap';
 import type { VenueListing } from "@/types";
 import {
   getVenueSignalData,
@@ -40,30 +42,6 @@ function getSignal(venue: VenueListing) {
   }
 
   return { icon: "✦", label: "Karaoke Place", color: "#fda4af", glow: "rgba(253,164,175,.66)" };
-}
-
-function getIcon(venue: VenueListing) {
-  const signal = getSignal(venue);
-
-  return L.divIcon({
-    className: "singhub-place-marker",
-    html: `
-      <span style="
-        align-items:center;
-        background:linear-gradient(145deg,#0f172a,#020617);
-        border:2px solid ${signal.color};
-        border-radius:9999px;
-        box-shadow:0 0 0 4px rgba(2,6,23,.88),0 0 24px ${signal.glow};
-        display:flex;
-        font-size:19px;
-        height:42px;
-        justify-content:center;
-        width:42px;
-      " title="${signal.label}">${signal.icon}</span>
-    `,
-    iconAnchor: [21, 21],
-    popupAnchor: [0, -20],
-  });
 }
 
 function BoundsController({ venues }: { venues: MappableVenue[] }) {
@@ -104,6 +82,7 @@ function getCenter(venues: MappableVenue[]): Coordinate {
 }
 
 export default function KaraokePlacesMapClient({ venues }: { venues: MappableVenue[] }) {
+  const [mapTheme,setMapTheme]=useState<'night'|'street'>('night');
   if (venues.length === 0) {
     return (
       <div className="flex h-[28rem] items-center justify-center bg-slate-950/70 p-6 text-center text-sm text-slate-300">
@@ -113,13 +92,10 @@ export default function KaraokePlacesMapClient({ venues }: { venues: MappableVen
   }
 
   return (
-    <div className="h-[28rem] overflow-hidden bg-slate-950 md:h-[34rem]">
-      <MapContainer center={getCenter(venues)} zoom={10} scrollWheelZoom={false} className="h-full w-full">
+    <div className="relative h-[28rem] overflow-hidden bg-slate-950 md:h-[34rem]">
+      <MapContainer center={getCenter(venues)} zoom={10} scrollWheelZoom={false} minZoom={2} className="h-full w-full">
         <BoundsController venues={venues} />
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <SingHubBasemap theme={mapTheme} />
 
         {venues.map((venue) => {
           const signal = getSignal(venue);
@@ -127,9 +103,9 @@ export default function KaraokePlacesMapClient({ venues }: { venues: MappableVen
             <Marker
               key={venue.id}
               position={[venue.latitude, venue.longitude]}
-              icon={getIcon(venue)}
+              icon={createVenueMapPin(venue.venueName,signal.label,venue.venueType==="private_room")} title={venue.venueName} alt={venue.venueName}
             >
-              <Popup>
+              <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}>
                 <div className="space-y-2 text-slate-900">
                   <p className="text-base font-black text-slate-950">{venue.venueName}</p>
                   <p className="text-sm font-semibold text-slate-700">
@@ -150,6 +126,7 @@ export default function KaraokePlacesMapClient({ venues }: { venues: MappableVen
           );
         })}
       </MapContainer>
+      <MapThemeControl theme={mapTheme} onChange={setMapTheme}/>
     </div>
   );
 }

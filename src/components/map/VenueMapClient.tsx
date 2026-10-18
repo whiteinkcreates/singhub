@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import Link from "next/link";
 import L from "leaflet";
+import {createVenueMapPin} from "./venuePin";
 import {
   MapContainer,
   Marker,
   Popup,
-  TileLayer,
   useMap,
 } from "react-leaflet";
+import {SingHubBasemap,MapThemeControl} from '@/components/map/SingHubBasemap';
 import type { ListingStatus, VenueListing } from "@/types";
 import type { Coordinates } from "@/utils/distance";
 
@@ -57,89 +58,6 @@ const markerStyles = {
     glow: "rgba(167, 139, 250, 0.65)",
   },
 } as Record<ListingStatus, MarkerStyle>;
-
-function handheldMicSvg(size = 28) {
-  return `
-    <svg width="${size}" height="${size}" viewBox="0 0 64 64" aria-hidden="true" focusable="false" style="display:block;filter:drop-shadow(0 2px 5px rgba(0,0,0,0.35));">
-      <g transform="rotate(-38 32 32)">
-        <circle cx="25" cy="20" r="13" fill="white"/>
-        <path d="M16 20h18M18 14c5 4 10 4 15 0M18 26c5-4 10-4 15 0" stroke="#0f172a" stroke-width="3.4" stroke-linecap="round" opacity="0.58"/>
-        <path d="M34 29l19 19" stroke="white" stroke-width="10" stroke-linecap="round"/>
-        <path d="M41 36l-7 7" stroke="#0f172a" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
-        <path d="M49 44l-7 7" stroke="#0f172a" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
-      </g>
-    </svg>
-  `;
-}
-
-function getShapeStyle(venue: VenueListing) {
-  if (venue.venueType === "private_room") {
-    return {
-      className: "singhub-room-marker",
-      width: 48,
-      height: 48,
-      anchor: 24,
-      css: "border-radius: 13px;",
-      title: "Private karaoke room",
-    };
-  }
-
-  if (venue.venueType === "event_producer") {
-    return {
-      className: "singhub-event-marker",
-      width: 50,
-      height: 48,
-      anchor: 24,
-      css: "clip-path: polygon(50% 4%, 96% 88%, 4% 88%); padding-top: 4px;",
-      title: "Karaoke event producer",
-    };
-  }
-
-  return {
-    className: "singhub-live-marker",
-    width: 46,
-    height: 46,
-    anchor: 23,
-    css: "border-radius: 9999px;",
-    title: "Live karaoke venue",
-  };
-}
-
-function getVenueIcon(venue: VenueListing) {
-  const accessibleName = venue.venueName.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]!));
-  const statusStyle = markerStyles[venue.listingStatus];
-  const shape = getShapeStyle(venue);
-
-  return L.divIcon({
-    className: shape.className,
-    html: `
-      <span
-        style="
-          align-items: center;
-          background: radial-gradient(circle at 32% 24%, rgba(255,255,255,0.42), transparent 17px), linear-gradient(135deg, #111827, #334155 52%, #0f172a);
-          border: 2px solid rgba(255, 255, 255, 0.92);
-          box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.9), 0 0 28px ${statusStyle.glow};
-          color: white;
-          display: flex;
-          height: ${shape.height}px;
-          justify-content: center;
-          line-height: 1;
-          overflow: hidden;
-          position: relative;
-          width: ${shape.width}px;
-          ${shape.css}
-        "
-        title="${shape.title} • ${statusStyle.label}"
-      >
-        <span style="position:absolute;left:7px;right:7px;bottom:5px;height:4px;border-radius:999px;background:${statusStyle.stripe};box-shadow:0 0 10px ${statusStyle.glow};"></span>
-        <span class="sr-only">${accessibleName}</span>
-        ${handheldMicSvg(30)}
-      </span>
-    `,
-    iconAnchor: [shape.anchor, shape.anchor],
-    popupAnchor: [0, -20],
-  });
-}
 
 function getUserIcon() {
   return L.divIcon({
@@ -222,6 +140,7 @@ export default function VenueMapClient({
   venues,
   userLocation = null,
 }: VenueMapClientProps) {
+  const [mapTheme,setMapTheme]=useState<'night'|'street'>('night');
   const center = userLocation
     ? ([userLocation.latitude, userLocation.longitude] as Coordinate)
     : SAN_DIEGO_CENTER;
@@ -240,15 +159,12 @@ export default function VenueMapClient({
       <MapContainer
         center={center}
         zoom={userLocation ? 12 : DEFAULT_ZOOM}
-        scrollWheelZoom={false}
+        scrollWheelZoom={false} minZoom={2}
         className="h-full w-full"
       >
         <MapBoundsController venues={venues} userLocation={userLocation} />
 
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <SingHubBasemap theme={mapTheme} />
 
         {userLocation && (
           <Marker
@@ -257,7 +173,7 @@ export default function VenueMapClient({
             title="Your location"
             alt="Your location"
           >
-            <Popup>
+            <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}>
               <div className="space-y-1 text-slate-900">
                 <p className="text-base font-black text-slate-950">
                   You are here
@@ -274,11 +190,11 @@ export default function VenueMapClient({
           <Marker
             key={venue.id}
             position={[venue.latitude, venue.longitude]}
-            icon={getVenueIcon(venue)}
+            icon={createVenueMapPin(venue.venueName,getStatusLabel(venue.listingStatus),venue.venueType==="private_room")}
             title={venue.venueName}
             alt={venue.venueName}
           >
-            <Popup>
+            <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}>
               <div className="space-y-2 text-slate-900">
                 <p className="text-base font-black text-slate-950">
                   {venue.venueName}
@@ -298,6 +214,7 @@ export default function VenueMapClient({
           </Marker>
         ))}
       </MapContainer>
+      <MapThemeControl theme={mapTheme} onChange={setMapTheme}/>
     </div>
   );
 }

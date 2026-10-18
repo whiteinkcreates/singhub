@@ -2,17 +2,15 @@
 import {useEffect,useState} from "react";
 import Link from "next/link";
 import L from "leaflet";
-import {MapContainer,Marker,Popup,TileLayer,useMap} from "react-leaflet";
+import {createVenueMapPin} from "@/components/map/venuePin";
+import {MapContainer,Marker,Popup,useMap} from "react-leaflet";
+import {SingHubBasemap,MapThemeControl} from '@/components/map/SingHubBasemap';
 import type {VenueListing} from "@/types";
 
 type MappableVenue=VenueListing&{latitude:number;longitude:number};
 type Coordinate=[number,number];
 const DEFAULT_CENTER:Coordinate=[32.7157,-117.1611];
 
-function tourStopIcon(venueName:string){
- const safe=venueName.replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]!));
- return L.divIcon({className:"tour-stop-map-marker",html:`<span class="tour-stop-pin-wrap" title="${safe} TourStop"><img src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" /></span>`,iconSize:[48,58],iconAnchor:[24,55],popupAnchor:[0,-52]});
-}
 /* Leaflet needs its size recalculated after the account panel mounts or changes width.
    Without it, mobile layouts can show blank quadrants instead of tile coverage. */
 function MapSizeSync(){
@@ -57,30 +55,17 @@ function Bounds({venues}:{venues:MappableVenue[]}){
 }
 export default function TourMapClient({venues}:{venues:MappableVenue[]}){
  const [mapTheme,setMapTheme]=useState<'night'|'street'>('night');
- const [tilesFailed,setTilesFailed]=useState(false);
- const [tileRefresh,setTileRefresh]=useState(0);
  if(!venues.length)return <div className="tour-map-empty">Your Tour Map fills in as you collect mapped TourStops.</div>;
  return <div className="tour-map" data-map-theme={mapTheme} aria-label="Map of collected Tour Stops">
-  <MapContainer center={DEFAULT_CENTER} zoom={10} scrollWheelZoom={false} className="tour-leaflet-map">
+  <MapContainer center={DEFAULT_CENTER} zoom={10} scrollWheelZoom={false} minZoom={2} className="tour-leaflet-map">
    <MapSizeSync/>
    <Bounds venues={venues}/>
-   <TileLayer
-    key={tileRefresh}
-    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-    eventHandlers={{tileerror:()=>setTilesFailed(true)}}
-   />
-   {venues.map(venue=><Marker key={venue.id} position={[venue.latitude,venue.longitude]} icon={tourStopIcon(venue.venueName)}>
-    <Popup><div className="tour-stop-popup"><strong>{venue.venueName}</strong><span>{venue.neighborhood||venue.city}</span><Link href={'/venues/'+venue.slug}>Open venue</Link></div></Popup>
+   <SingHubBasemap theme={mapTheme}/>
+   {venues.map(venue=><Marker key={venue.id} position={[venue.latitude,venue.longitude]} icon={createVenueMapPin(venue.venueName,"TourStop",venue.venueType==="private_room")} title={venue.venueName} alt={venue.venueName}>
+    <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}><div className="tour-stop-popup"><strong>{venue.venueName}</strong><span>{venue.neighborhood||venue.city}</span><Link href={'/venues/'+venue.slug}>Open venue</Link></div></Popup>
    </Marker>)}
   </MapContainer>
-  <div className="tour-map-theme" role="group" aria-label="Map color scheme">
-   <button type="button" aria-pressed={mapTheme==='night'} onClick={()=>setMapTheme('night')}>Night</button>
-   <button type="button" aria-pressed={mapTheme==='street'} onClick={()=>setMapTheme('street')}>Street</button>
-  </div>
-  {tilesFailed&&<div className="tour-map-error" role="status">
-   Some map tiles didn’t load.
-   <button type="button" onClick={()=>{setTilesFailed(false);setTileRefresh(value=>value+1);}}>Retry map</button>
-  </div>}
+  <MapThemeControl theme={mapTheme} onChange={setMapTheme}/>
+
  </div>;
 }
