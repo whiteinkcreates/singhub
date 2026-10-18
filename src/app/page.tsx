@@ -66,7 +66,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
      </form>
      <div className="landing-shortcuts">
       <Link href="/discover">Tonight &amp; This Week <span aria-hidden="true">↗</span></Link>
-      <Link href="/discover?plus=1">Karaoke+ <span aria-hidden="true">✦</span></Link>
+      <Link href="/discover?plus=1">Karaoke<span aria-hidden="true">➕</span><span className="sr-only"> plus</span> <span aria-hidden="true">✦</span></Link>
      </div>
     </div>
    </div>
@@ -84,11 +84,11 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
       <img src={featureImage} alt="" className="landing-tile-photo"/>
       <span className="landing-image-shade"/>
       <div className="landing-tile-copy">
-       <span className="landing-tile-tag">KARAOKE+ · {day.toUpperCase()}</span>
+       <span className="landing-tile-tag">KARAOKE<span aria-hidden="true">➕</span><span className="sr-only"> plus</span> · {day.toUpperCase()}</span>
        <h3>{spotlight?.title||'Karaoke and something extra.'}</h3>
        <p>Find karaoke venues with more to offer.</p>
        <p className="landing-plus-detail">{spotlight?spotlight.count+' matching places today · '+spotlight.description:'Explore karaoke spots with games, music and more.'}</p>
-       <span className="landing-tile-action">Explore Karaoke+ <span aria-hidden="true">↗</span></span>
+       <span className="landing-tile-action">Explore Karaoke<span aria-hidden="true">➕</span><span className="sr-only"> plus</span> <span aria-hidden="true">↗</span></span>
       </div>
      </Link>
      <Link href="/account" className="landing-tile landing-tile-jacket">
