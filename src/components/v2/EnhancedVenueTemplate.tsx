@@ -3,6 +3,7 @@
 "use client";
 import {PositionedImage} from '@/components/media/PositionedImage';
 import {SingHereMark} from '@/components/brand/SingHereMark';
+import {singHereForHostNight} from '@/lib/singHereHostNight';
 import Link from "next/link";
 import {TourStopCheckIn} from './TourStopCheckIn';
 import {getMarketConfig} from '@/lib/markets';
@@ -20,7 +21,7 @@ const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials()
 const heroUrl=enhancement?.heroImageUrl||venue.bannerImageUrl;
 const photos=heroUrl ? [{url:heroUrl,placement:enhancement?.heroPlacement||venue.bannerImagePlacement,alt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName},...(enhancement?.gallery||[]).filter(item=>item.url!==heroUrl)] : enhancement?.gallery||[];
 const [photoIndex,setPhotoIndex]=useState(0);const photo=photos[Math.min(photoIndex,Math.max(0,photos.length-1))];
-const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:enhancement?.singHere});
+const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:singHereForHostNight(venue.slug,events,weekday,enhancement?.singHere)});
 const activeOffer=enhancement?.enabled&&enhancement.partnerConfirmed===true&&enhancement.singhubOffer?.enabled&&(!enhancement.singhubOffer.days?.length||enhancement.singhubOffer.days.some(day=>day.toLowerCase()===weekday.toLowerCase()))?enhancement.singhubOffer:undefined;
 const selectPhoto=(index:number)=>{const images=root.current?.querySelectorAll<HTMLElement>('#hero-image,#gallery-main');images?.forEach(image=>image.style.opacity='.25');setTimeout(()=>{setPhotoIndex(index);images?.forEach(image=>image.style.opacity='1');},120);};
 void actions;
