@@ -160,3 +160,40 @@
 .v2-discovery .plus-day-select { display:flex; gap:6px; align-items:center; color:#9ba5b3; font-family:var(--display); font-weight:850; text-transform:uppercase; font-size:.81rem; }
 .v2-discovery .plus-day-select select { border:1px solid var(--line-bright); background:#111720; color:#fff; padding:7px 9px; font:700 .81rem var(--sans); }
 @media(max-width:560px) {.v2-discovery .backyard-bridge { margin:2px 0; padding:10px 11px; font-size:.78rem; }.v2-discovery .plus-day-tools { flex-wrap:wrap; }}
+
+
+/* Canonical Discovery image frame. A tall original must never determine card height.
+   PositionedImage keeps the admin/media-picker focal point and zoom inside this crop. */
+.v2-discovery .venue-result.has-photo {
+  min-height:0;
+  grid-template-columns:minmax(0,1fr) minmax(210px,33%);
+}
+.v2-discovery .venue-result.has-photo .feature-media {
+  position:relative;
+  display:block;
+  width:100%;
+  height:220px;
+  min-height:0;
+  align-self:start;
+  overflow:hidden;
+}
+.v2-discovery .venue-result.has-photo .feature-media > img {
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+@media(max-width:800px) {
+  .v2-discovery .venue-result.has-photo {
+    grid-template-columns:minmax(0,1fr);
+  }
+  .v2-discovery .venue-result.has-photo .feature-media {
+    grid-row:1;
+    width:100%;
+    height:auto;
+    min-height:0;
+    aspect-ratio:16/9;
+  }
+}
