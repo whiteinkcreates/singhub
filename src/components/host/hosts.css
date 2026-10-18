@@ -32,3 +32,12 @@
 @media(max-width:600px){.host-directory-hero .host-custom-directory-photo{height:100%;top:0;bottom:0}}
 
 .host-follow-control{display:inline-flex}.host-follow-button{padding:10px 16px;border:1px solid #00c8ef;border-radius:999px;background:#003343;color:white;font-weight:800;cursor:pointer}.host-follow-button[aria-pressed='true']{border-color:#ff19a8;background:#4e0c39}.host-follow-button:disabled{opacity:.6}
+
+/* Directory-only approved KJ equipment hero. Keep individual host profiles unchanged. */
+.host-directory-hero .host-hero-photo {object-position:right center!important;}
+.host-directory-hero::before {content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(3,7,15,.8),rgba(3,7,15,.4) 45%,transparent 78%);pointer-events:none;}
+.host-directory-hero::after {content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse at 78% 53%,rgba(12,211,250,.08),transparent 49%),radial-gradient(ellipse at 82% 70%,rgba(255,30,168,.11),transparent 52%);mix-blend-mode:screen;}
+@media(max-width:600px){
+ .host-directory-hero .host-hero-photo{object-position:77% center!important;}
+ .host-directory-hero::before{background:linear-gradient(90deg,rgba(2,5,12,.82),rgba(2,5,12,.2) 78%),linear-gradient(0deg,rgba(2,5,12,.6),transparent 55%);}
+}
