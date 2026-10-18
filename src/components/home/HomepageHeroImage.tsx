@@ -44,7 +44,8 @@ export function HomepageHeroImage(){
   const hero=HOME_HEROES.find(item=>item.id===id)||INITIAL;
   const [failed,setFailed]=useState(false);
 
-  return <picture className="landing-hero-picture" style={{'--hero-photo':`url("${failed?FALLBACK_SRC:hero.src}")`} as CSSProperties}>
+  return <picture className="landing-hero-picture" style={{'--hero-photo':`url("${failed?FALLBACK_SRC:hero.src}")`,'--hero-photo-mobile':`url("${failed?FALLBACK_SRC:hero.mobileSrc}")`} as CSSProperties}>
+    {!failed&&<source media="(max-width: 620px)" srcSet={hero.mobileSrc} type="image/webp"/>}
     {/* eslint-disable-next-line @next/next/no-img-element */}
     <img
       className="landing-hero-image"
