@@ -8,6 +8,7 @@ export type HomeHero = {
   alt: string;
   position: string;
   mobilePosition: string;
+  mobileSrc: string;
 };
 export const HOME_HEROES: readonly HomeHero[] = [
   {
@@ -16,6 +17,7 @@ export const HOME_HEROES: readonly HomeHero[] = [
     alt: 'A smiling nightclub singer reaches out with a microphone to invite someone in the crowd to sing.',
     position: 'center center',
     mobilePosition: '88% center',
+    mobileSrc: 'https://cdn.shopify.com/s/files/1/0560/5228/5537/files/singhub-mobile-nightclub-v2.webp?v=1792303126',
   },
   {
     id: 'country',
@@ -23,6 +25,7 @@ export const HOME_HEROES: readonly HomeHero[] = [
     alt: 'A country singer in a cowboy hat hands a microphone toward the audience in a lively honky-tonk.',
     position: 'center center',
     mobilePosition: '88% center',
+    mobileSrc: 'https://cdn.shopify.com/s/files/1/0560/5228/5537/files/singhub-mobile-country-v2.webp?v=1792303130',
   },
   {
     id: 'glam',
@@ -30,6 +33,7 @@ export const HOME_HEROES: readonly HomeHero[] = [
     alt: 'A glamorous rock performer invites someone onstage with a microphone as a concert crowd cheers.',
     position: 'center center',
     mobilePosition: '88% center',
+    mobileSrc: 'https://cdn.shopify.com/s/files/1/0560/5228/5537/files/singhub-mobile-glam-v2.webp?v=1792303134',
   },
   {
     id: 'rnb',
@@ -37,5 +41,6 @@ export const HOME_HEROES: readonly HomeHero[] = [
     alt: 'An R&B vocalist reaches into the audience with a microphone beneath vibrant purple and blue lights.',
     position: 'center center',
     mobilePosition: '88% center',
+    mobileSrc: 'https://cdn.shopify.com/s/files/1/0560/5228/5537/files/singhub-mobile-rnb-v2.webp?v=1792303139',
   },
 ];
