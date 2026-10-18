@@ -42,7 +42,7 @@ jobs:
         run: node --test tests/gig-stubs.test.mjs tests/venue-offers.test.mjs tests/venue-checkins.test.mjs tests/location-attempts.test.mjs
 
       - name: Prepare isolated My Tour map and song-log UI fixture
-        if: startsWith(github.head_ref, 'fix/my-tour-')
+        if: (startsWith(github.head_ref, 'fix/my-tour-') || startsWith(github.head_ref, 'fix/dark-maps-'))
         run: node tests/my-tour-ui-browser.mjs --prepare
 
       - name: Prepare isolated GPS recovery browser fixture
@@ -163,11 +163,11 @@ jobs:
           include-hidden-files: true
 
       - name: Install browser for My Tour mobile QA
-        if: startsWith(github.head_ref, 'fix/my-tour-')
+        if: (startsWith(github.head_ref, 'fix/my-tour-') || startsWith(github.head_ref, 'fix/dark-maps-'))
         run: npx playwright install --with-deps chromium
 
       - name: Verify My Tour tile grid, map themes, counter and song CTA
-        if: startsWith(github.head_ref, 'fix/my-tour-')
+        if: (startsWith(github.head_ref, 'fix/my-tour-') || startsWith(github.head_ref, 'fix/dark-maps-'))
         run: |
           npm run start -- --port 3100 > /tmp/my-tour-qa-server.log 2>&1 &
           server_pid=$!
@@ -179,7 +179,7 @@ jobs:
           node tests/my-tour-ui-browser.mjs
 
       - name: Save My Tour mobile QA evidence
-        if: always() && startsWith(github.head_ref, 'fix/my-tour-')
+        if: always() && (startsWith(github.head_ref, 'fix/my-tour-') || startsWith(github.head_ref, 'fix/dark-maps-'))
         uses: actions/upload-artifact@v4
         with:
           name: my-tour-map-and-song-log-qa

@@ -7,9 +7,9 @@ import {
   MapContainer,
   Marker,
   Popup,
-  TileLayer,
   useMap,
 } from "react-leaflet";
+import {SingHubBasemap} from '@/components/map/SingHubBasemap';
 import type { ListingStatus, VenueListing } from "@/types";
 import type { Coordinates } from "@/utils/distance";
 
@@ -240,15 +240,12 @@ export default function VenueMapClient({
       <MapContainer
         center={center}
         zoom={userLocation ? 12 : DEFAULT_ZOOM}
-        scrollWheelZoom={false}
+        scrollWheelZoom={false} minZoom={2}
         className="h-full w-full"
       >
         <MapBoundsController venues={venues} userLocation={userLocation} />
 
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <SingHubBasemap />
 
         {userLocation && (
           <Marker

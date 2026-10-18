@@ -3,7 +3,8 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import L from "leaflet";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, useMap } from "react-leaflet";
+import {SingHubBasemap} from '@/components/map/SingHubBasemap';
 import type { VenueListing } from "@/types";
 import {
   getVenueSignalData,
@@ -114,12 +115,9 @@ export default function KaraokePlacesMapClient({ venues }: { venues: MappableVen
 
   return (
     <div className="h-[28rem] overflow-hidden bg-slate-950 md:h-[34rem]">
-      <MapContainer center={getCenter(venues)} zoom={10} scrollWheelZoom={false} className="h-full w-full">
+      <MapContainer center={getCenter(venues)} zoom={10} scrollWheelZoom={false} minZoom={2} className="h-full w-full">
         <BoundsController venues={venues} />
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        <SingHubBasemap />
 
         {venues.map((venue) => {
           const signal = getSignal(venue);

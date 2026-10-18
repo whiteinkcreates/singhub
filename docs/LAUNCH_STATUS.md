@@ -190,3 +190,10 @@ Coordinated against main bd14ea6 after the homepage hero parity fix #412 merged.
 - Totals refresh after a save. Auth changes invalidate outstanding Tour reads and clear private results; unavailable totals display a dash rather than a fabricated zero.
 - Local lint/build and 11 focused API/account regression tests passed. Phone/desktop isolated full-account browser acceptance and deployment evidence are tracked in [PR #413](https://github.com/whiteinkcreates/singhub/pull/413). Browser fixtures never write production member data.
 - Final patch artwork still needs approval. Synthetic browser awards establish export behavior, not acceptance of a real member's earned artwork. Real-member badge/export acceptance remains separate.
+
+
+## Consistent native dark maps, October 17, 2026
+
+Corey flagged Discovery's white map and My Tour's muddy inverted colors. This branch starts after merged #413 and preserves homepage hero files, account flows and canonical coordinates. A shared MapLibre/Leaflet basemap uses OpenFreeMap's native Dark vector style across Discovery's shared venue map, My Tour and the places map. Street mode uses native Positron styling. The old raster color-inversion filter is removed. Existing markers, popups, bounds, zoom and My Tour resize recovery stay in Leaflet; style/render failures have an explicit retry control. Provider attribution remains visible. OpenFreeMap documents commercial use without registration or API keys.
+
+Validation and production evidence are tracked in the map-style release PR. Phone/desktop browser acceptance must render real vector tiles and labels, exercise theme switching, venue popups, Discovery reopen and zoom, and inspect screenshots. A successful build alone does not establish visual acceptance.

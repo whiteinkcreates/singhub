@@ -1,0 +1,6 @@
+/* The basemap has its own deliberate road, water, land and label colors. */
+.leaflet-container[data-map-style]{background:#101214}
+.leaflet-container[data-map-style="street"]{background:#e8e9e7}
+.leaflet-container[data-map-style] .maplibregl-canvas{filter:none;max-width:none}
+.singhub-map-status{position:absolute;z-index:800;left:10px;bottom:30px;max-width:calc(100% - 20px);padding:9px 12px;border:1px solid #ffffff40;border-radius:8px;background:#09111aeb;color:#eef7fc;font:600 13px/1.4 Arial,sans-serif}
+.singhub-map-status button{margin-left:8px;min-height:36px;padding:5px 10px;border:1px solid #00c8ff;border-radius:6px;background:#07151e;color:#e5faff;cursor:pointer}

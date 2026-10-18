@@ -2,7 +2,8 @@
 import {useEffect,useState} from "react";
 import Link from "next/link";
 import L from "leaflet";
-import {MapContainer,Marker,Popup,TileLayer,useMap} from "react-leaflet";
+import {MapContainer,Marker,Popup,useMap} from "react-leaflet";
+import {SingHubBasemap} from '@/components/map/SingHubBasemap';
 import type {VenueListing} from "@/types";
 
 type MappableVenue=VenueListing&{latitude:number;longitude:number};
@@ -57,19 +58,12 @@ function Bounds({venues}:{venues:MappableVenue[]}){
 }
 export default function TourMapClient({venues}:{venues:MappableVenue[]}){
  const [mapTheme,setMapTheme]=useState<'night'|'street'>('night');
- const [tilesFailed,setTilesFailed]=useState(false);
- const [tileRefresh,setTileRefresh]=useState(0);
  if(!venues.length)return <div className="tour-map-empty">Your Tour Map fills in as you collect mapped TourStops.</div>;
  return <div className="tour-map" data-map-theme={mapTheme} aria-label="Map of collected Tour Stops">
-  <MapContainer center={DEFAULT_CENTER} zoom={10} scrollWheelZoom={false} className="tour-leaflet-map">
+  <MapContainer center={DEFAULT_CENTER} zoom={10} scrollWheelZoom={false} minZoom={2} className="tour-leaflet-map">
    <MapSizeSync/>
    <Bounds venues={venues}/>
-   <TileLayer
-    key={tileRefresh}
-    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-    eventHandlers={{tileerror:()=>setTilesFailed(true)}}
-   />
+   <SingHubBasemap theme={mapTheme}/>
    {venues.map(venue=><Marker key={venue.id} position={[venue.latitude,venue.longitude]} icon={tourStopIcon(venue.venueName)}>
     <Popup><div className="tour-stop-popup"><strong>{venue.venueName}</strong><span>{venue.neighborhood||venue.city}</span><Link href={'/venues/'+venue.slug}>Open venue</Link></div></Popup>
    </Marker>)}
@@ -78,9 +72,6 @@ export default function TourMapClient({venues}:{venues:MappableVenue[]}){
    <button type="button" aria-pressed={mapTheme==='night'} onClick={()=>setMapTheme('night')}>Night</button>
    <button type="button" aria-pressed={mapTheme==='street'} onClick={()=>setMapTheme('street')}>Street</button>
   </div>
-  {tilesFailed&&<div className="tour-map-error" role="status">
-   Some map tiles didn’t load.
-   <button type="button" onClick={()=>{setTilesFailed(false);setTileRefresh(value=>value+1);}}>Retry map</button>
-  </div>}
+
  </div>;
 }
