@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import Link from "next/link";
 import L from "leaflet";
 import { MapContainer, Marker, Popup, useMap } from "react-leaflet";
-import {SingHubBasemap} from '@/components/map/SingHubBasemap';
+import {SingHubBasemap,MapThemeControl} from '@/components/map/SingHubBasemap';
 import type { VenueListing } from "@/types";
 import {
   getVenueSignalData,
@@ -105,6 +105,7 @@ function getCenter(venues: MappableVenue[]): Coordinate {
 }
 
 export default function KaraokePlacesMapClient({ venues }: { venues: MappableVenue[] }) {
+  const [mapTheme,setMapTheme]=useState<'night'|'street'>('night');
   if (venues.length === 0) {
     return (
       <div className="flex h-[28rem] items-center justify-center bg-slate-950/70 p-6 text-center text-sm text-slate-300">
@@ -114,10 +115,10 @@ export default function KaraokePlacesMapClient({ venues }: { venues: MappableVen
   }
 
   return (
-    <div className="h-[28rem] overflow-hidden bg-slate-950 md:h-[34rem]">
+    <div className="relative h-[28rem] overflow-hidden bg-slate-950 md:h-[34rem]">
       <MapContainer center={getCenter(venues)} zoom={10} scrollWheelZoom={false} minZoom={2} className="h-full w-full">
         <BoundsController venues={venues} />
-        <SingHubBasemap />
+        <SingHubBasemap theme={mapTheme} />
 
         {venues.map((venue) => {
           const signal = getSignal(venue);
@@ -148,6 +149,7 @@ export default function KaraokePlacesMapClient({ venues }: { venues: MappableVen
           );
         })}
       </MapContainer>
+      <MapThemeControl theme={mapTheme} onChange={setMapTheme}/>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect,useState } from "react";
 import Link from "next/link";
 import L from "leaflet";
 import {
@@ -9,7 +9,7 @@ import {
   Popup,
   useMap,
 } from "react-leaflet";
-import {SingHubBasemap} from '@/components/map/SingHubBasemap';
+import {SingHubBasemap,MapThemeControl} from '@/components/map/SingHubBasemap';
 import type { ListingStatus, VenueListing } from "@/types";
 import type { Coordinates } from "@/utils/distance";
 
@@ -222,6 +222,7 @@ export default function VenueMapClient({
   venues,
   userLocation = null,
 }: VenueMapClientProps) {
+  const [mapTheme,setMapTheme]=useState<'night'|'street'>('night');
   const center = userLocation
     ? ([userLocation.latitude, userLocation.longitude] as Coordinate)
     : SAN_DIEGO_CENTER;
@@ -245,7 +246,7 @@ export default function VenueMapClient({
       >
         <MapBoundsController venues={venues} userLocation={userLocation} />
 
-        <SingHubBasemap />
+        <SingHubBasemap theme={mapTheme} />
 
         {userLocation && (
           <Marker
@@ -295,6 +296,7 @@ export default function VenueMapClient({
           </Marker>
         ))}
       </MapContainer>
+      <MapThemeControl theme={mapTheme} onChange={setMapTheme}/>
     </div>
   );
 }

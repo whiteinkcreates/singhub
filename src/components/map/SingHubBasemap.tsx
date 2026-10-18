@@ -31,3 +31,7 @@ export function SingHubBasemap({theme='night'}:{theme?:'night'|'street'}){
  },[map,theme,retry]);
  return status==='ready'?null:<div className="singhub-map-status" role="status">{status==='loading'?'Loading map…':<>The map could not finish loading. <button type="button" onClick={()=>setRetry(value=>value+1)}>Retry map</button></>}</div>;
 }
+
+export function MapThemeControl({theme,onChange}:{theme:'night'|'street';onChange:(theme:'night'|'street')=>void}){
+ return <div className="singhub-map-theme" role="group" aria-label="Map color scheme"><button type="button" aria-pressed={theme==='night'} onClick={()=>onChange('night')}>Night</button><button type="button" aria-pressed={theme==='street'} onClick={()=>onChange('street')}>Street</button></div>;
+}

@@ -16,7 +16,7 @@ const venues=[
 ] as VenueListing[];
 export default function MyTourQa(){
  const [showSingHere,setShowSingHere]=useState(false);
- return <div className="v2-account" style={{padding:'24px 12px',minHeight:'100vh'}}>
+ return <div className="v2-account" style={{padding:'90px 12px 24px',minHeight:'100vh'}}>
   <section className="panel tour-collection" id="tour-stops">
    <header className="panel-head"><div><p className="gig-eyebrow">Your karaoke map</p><h2>My Tour</h2><p>Collect a TourStop when you show up for karaoke.</p></div>
    <div className="tour-count" aria-label="4 Tour Stops"><strong>4</strong><span>Tour<br/>Stops</span></div></header>
@@ -70,6 +70,11 @@ try{
   await page.getByRole('button',{name:'Map view',exact:true}).click();
   await page.locator('.leaflet-container[data-map-state="ready"][data-map-style="night"]').waitFor({timeout:60000});
   assert.ok(await page.locator('.leaflet-marker-icon').count()>0,'Discovery retains venue markers');
+  await page.getByRole('button',{name:'Street',exact:true}).click();
+  await page.locator('.leaflet-container[data-map-state="ready"][data-map-style="street"]').waitFor({timeout:60000});
+  await page.screenshot({path:'.my-tour-qa/discovery-street-'+width+'.png'});
+  await page.getByRole('button',{name:'Night',exact:true}).click();
+  await page.locator('.leaflet-container[data-map-state="ready"][data-map-style="night"]').waitFor({timeout:60000});
   assert.equal(await page.locator('.leaflet-container canvas').evaluate(el=>getComputedStyle(el).filter),'none');
   await page.locator('.leaflet-control-zoom-in').click();
   await page.waitForTimeout(700);

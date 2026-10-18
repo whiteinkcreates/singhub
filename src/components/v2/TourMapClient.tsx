@@ -3,7 +3,7 @@ import {useEffect,useState} from "react";
 import Link from "next/link";
 import L from "leaflet";
 import {MapContainer,Marker,Popup,useMap} from "react-leaflet";
-import {SingHubBasemap} from '@/components/map/SingHubBasemap';
+import {SingHubBasemap,MapThemeControl} from '@/components/map/SingHubBasemap';
 import type {VenueListing} from "@/types";
 
 type MappableVenue=VenueListing&{latitude:number;longitude:number};
@@ -68,10 +68,7 @@ export default function TourMapClient({venues}:{venues:MappableVenue[]}){
     <Popup><div className="tour-stop-popup"><strong>{venue.venueName}</strong><span>{venue.neighborhood||venue.city}</span><Link href={'/venues/'+venue.slug}>Open venue</Link></div></Popup>
    </Marker>)}
   </MapContainer>
-  <div className="tour-map-theme" role="group" aria-label="Map color scheme">
-   <button type="button" aria-pressed={mapTheme==='night'} onClick={()=>setMapTheme('night')}>Night</button>
-   <button type="button" aria-pressed={mapTheme==='street'} onClick={()=>setMapTheme('street')}>Street</button>
-  </div>
+  <MapThemeControl theme={mapTheme} onChange={setMapTheme}/>
 
  </div>;
 }
