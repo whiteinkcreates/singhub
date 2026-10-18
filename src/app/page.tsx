@@ -1,11 +1,11 @@
 import type {Metadata} from 'next';
 import Link from 'next/link';
 import {redirect} from 'next/navigation';
-import {PositionedImage} from '@/components/media/PositionedImage';
+import {HomepageHeroImage} from '@/components/home/HomepageHeroImage';
 import {HeroScrollCue} from '@/components/layout/HeroScrollCue';
 import {getDiscoveryData} from '@/lib/v2/data';
 import {getHostMediaSettings} from '@/lib/hostMedia.server';
-import {SITE_DISCOVERY_HERO_KEY,SITE_SINGBOARD_HERO_KEY} from '@/lib/hostMedia';
+import {SITE_SINGBOARD_HERO_KEY} from '@/lib/hostMedia';
 import {SINGBOARD_STICKER_ART} from '@/lib/singboardStickerArt';
 import {getSanDiegoNightlifeWeekday} from '@/lib/nightlifeTime';
 import {plusNight} from '@/lib/karaokePlusOverlap';
@@ -20,9 +20,8 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
  // Keep previously issued hotel-source links in the guest-to-discovery handoff.
  const source=typeof params.source==='string'?params.source:'';
  if(source.startsWith('hotel-'))redirect('/discover?source='+encodeURIComponent(source));
- const [{rows},hero,boardHero]=await Promise.all([
+ const [{rows},boardHero]=await Promise.all([
   getDiscoveryData(),
-  getHostMediaSettings(SITE_DISCOVERY_HERO_KEY).catch(()=>null),
   getHostMediaSettings(SITE_SINGBOARD_HERO_KEY).catch(()=>null)
  ]);
  const day=getSanDiegoNightlifeWeekday();
@@ -51,7 +50,7 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
 
  return <main data-scroll-page="landing" className="singhub-landing">
   <section data-page-hero className="landing-hero" aria-labelledby="landing-title">
-   <PositionedImage src={hero?.heroUrl||'/images/singhub-v2/singhub-city-discovery.webp'} position={hero?.heroPosition} placement={hero?.heroPlacement} alt={hero?.heroAlt||'San Diego karaoke after dark'} className="landing-hero-image"/>
+   <HomepageHeroImage/>
    <div className="landing-hero-layout">
     <div data-hero-copy className="landing-hero-copy">
      <p className="landing-eyebrow">SAN DIEGO KARAOKE AND MORE</p>
