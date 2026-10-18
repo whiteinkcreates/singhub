@@ -4,7 +4,7 @@ const user={id:'isolated-singer',email:'qa@example.invalid',email_confirmed_at:'
 let songs=[];
 const visits=[1,2].map(n=>({id:'visit-'+n,user_id:user.id,venue_id:'venue-'+n,venue_slug:n===1?'the-lamplighter':'deanos-pub',venue_name:n===1?'The Lamplighter':"Deano’s Pub",nightlife_date:'2026-10-17',created_at:'2026-10-18T06:00:00Z',method:'self_reported',status:'confirmed'}));
 createServer(async(req,res)=>{
- res.setHeader('Access-Control-Allow-Origin','http://localhost:3100');res.setHeader('Access-Control-Allow-Headers','authorization, apikey, content-type, x-client-info, prefer, range, range-unit');res.setHeader('Access-Control-Allow-Methods','GET, POST, PATCH, HEAD, DELETE, OPTIONS');res.setHeader('Access-Control-Expose-Headers','Content-Range');res.setHeader('Content-Type','application/json');
+ res.setHeader('Access-Control-Allow-Origin','http://localhost:3100');res.setHeader('Access-Control-Allow-Headers',req.headers['access-control-request-headers']||'authorization, apikey, content-type, x-client-info, prefer, range, range-unit, x-supabase-api-version');res.setHeader('Access-Control-Allow-Methods','GET, POST, PATCH, HEAD, DELETE, OPTIONS');res.setHeader('Access-Control-Expose-Headers','Content-Range');res.setHeader('Content-Type','application/json');
  if(req.method==='OPTIONS'){res.writeHead(204);res.end();return;}
  const url=new URL(req.url,'http://127.0.0.1:3101');
  if(url.pathname==='/reset'){songs=[];res.end('{}');return;}
