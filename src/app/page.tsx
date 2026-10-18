@@ -52,7 +52,6 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
  return <main data-scroll-page="landing" className="singhub-landing">
   <section data-page-hero className="landing-hero" aria-labelledby="landing-title">
    <PositionedImage src={hero?.heroUrl||'/images/singhub-v2/singhub-city-discovery.webp'} position={hero?.heroPosition} placement={hero?.heroPlacement} alt={hero?.heroAlt||'San Diego karaoke after dark'} className="landing-hero-image"/>
-   <div className="landing-hero-shade" aria-hidden="true"/>
    <div className="landing-hero-layout">
     <div data-hero-copy className="landing-hero-copy">
      <p className="landing-eyebrow">SAN DIEGO KARAOKE AND MORE</p>
