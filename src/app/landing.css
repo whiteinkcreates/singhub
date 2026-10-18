@@ -2,10 +2,12 @@
 .singhub-landing { --landing-cyan:#00c8ff;--landing-pink:#ff19a8; background:#050609; color:#f7f8fb; font-family:"Barlow",sans-serif; }
 .singhub-landing :is(a,button,input):focus-visible {outline:3px solid var(--landing-cyan);outline-offset:4px}
 [data-scroll-page="landing"] [data-page-hero].landing-hero {position:sticky;top:var(--main-header-height);z-index:0;display:flex;align-items:center;justify-content:center;padding:0;isolation:isolate;background:#050811;}
-.singhub-landing .landing-hero-picture {position:absolute;inset:0;z-index:0;display:block;overflow:hidden;}
-.singhub-landing .landing-hero-image {display:block;position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;filter:none;}
+.singhub-landing .landing-hero-picture {position:absolute;inset:0;z-index:0;display:block;overflow:hidden;background:#0b1020;}
+.singhub-landing .landing-hero-picture::before {content:"";position:absolute;inset:-24px;background-image:var(--hero-photo);background-size:cover;background-position:center;filter:blur(21px) brightness(.45) saturate(.85);transform:scale(1.06);}
+.singhub-landing .landing-hero-picture::after {content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,6,12,.32) 0%,rgba(4,6,12,.1) 43%,transparent 73%);pointer-events:none;}
+.singhub-landing .landing-hero-image {display:block;position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:contain;object-position:right center!important;filter:none;}
 .singhub-landing .landing-hero-layout {display:flex;align-items:center;width:min(1240px,calc(100% - 56px));height:100%;min-height:0;margin:0 auto;padding:32px 0 56px;}
-[data-scroll-page="landing"] [data-page-hero] [data-hero-copy].landing-hero-copy {position:relative;z-index:2;width:min(740px,100%);max-width:740px;min-height:0;margin:0;padding:22px;border:1px solid #ffffff24;background:rgba(3,5,9,.76);box-shadow:none;text-align:left;}
+[data-scroll-page="landing"] [data-page-hero] [data-hero-copy].landing-hero-copy {position:relative;z-index:2;width:min(595px,100%);max-width:595px;min-height:0;margin:0;padding:10px 6px;border:0;background:transparent;box-shadow:none;text-align:left;text-shadow:0 2px 18px rgba(0,0,0,.95);}
 .singhub-landing .landing-eyebrow {margin:0;color:#ff89ce;font:900 .75rem/1.3 "Barlow",sans-serif;letter-spacing:.22em;text-transform:uppercase;}
 .singhub-landing .landing-hero-copy h1 {margin:13px 0 0;max-width:740px;font:900 clamp(4.25rem,8vw,7.1rem)/.84 "Barlow Condensed",sans-serif!important;text-transform:uppercase;letter-spacing:-.035em;color:#fff;text-shadow:0 5px 24px #0009;}
 .singhub-landing .landing-hero-copy h1>span {display:block;margin-top:.08em;padding:0;color:#ff47b8;font:inherit;line-height:.9!important;text-shadow:0 8px 30px #000;}
@@ -73,9 +75,11 @@
  .singhub-landing .landing-tile h3 {font-size:clamp(2.1rem,3.5vw,3rem);}
 }
 @media(max-width:620px){
- .singhub-landing .landing-hero-layout {width:calc(100% - 36px);padding:18px 0 45px;}
- .singhub-landing .landing-hero-image {object-position:var(--mobile-hero-position,70% center)!important;}
- [data-scroll-page="landing"] [data-page-hero] [data-hero-copy].landing-hero-copy {padding:18px;}
+ .singhub-landing .landing-hero-layout {width:calc(100% - 36px);padding:16px 0 36px;align-items:flex-end;}
+ .singhub-landing .landing-hero-picture::before {filter:blur(20px) brightness(.42) saturate(.82);}
+ .singhub-landing .landing-hero-picture::after {background:linear-gradient(180deg,transparent 0%,rgba(3,5,10,.08) 38%,rgba(3,5,10,.55) 68%,rgba(3,5,10,.78) 100%);}
+ .singhub-landing .landing-hero-image {top:0;bottom:auto;height:48%;object-fit:contain;object-position:var(--mobile-hero-position,88% center)!important;}
+ [data-scroll-page="landing"] [data-page-hero] [data-hero-copy].landing-hero-copy {padding:8px 0;max-width:calc(100vw - 36px);}
  [data-scroll-page="landing"] [data-page-hero].landing-hero {--main-hero-height:calc(100svh - 126px);min-height:max(510px,var(--main-hero-height));}
  .singhub-landing .landing-hero-copy h1 {font-size:clamp(3.65rem,13vw,5.4rem)!important;}
  .singhub-landing .landing-deck {font-size:.94rem;line-height:1.42;margin-top:15px;}
