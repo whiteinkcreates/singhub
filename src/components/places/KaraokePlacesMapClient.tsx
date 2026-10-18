@@ -103,7 +103,7 @@ export default function KaraokePlacesMapClient({ venues }: { venues: MappableVen
             <Marker
               key={venue.id}
               position={[venue.latitude, venue.longitude]}
-              icon={createVenueMapPin(venue.venueName,signal.label)} title={venue.venueName} alt={venue.venueName}
+              icon={createVenueMapPin(venue.venueName,signal.label,venue.venueType==="private_room")} title={venue.venueName} alt={venue.venueName}
             >
               <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}>
                 <div className="space-y-2 text-slate-900">

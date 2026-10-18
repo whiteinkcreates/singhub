@@ -35,13 +35,13 @@ export function VenueMap({ venues, userLocation = null, title }: VenueMapProps) 
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
             Showing {mappableVenues.length} mapped karaoke spot
-            {mappableVenues.length === 1 ? "" : "s"}{venues.length > mappableVenues.length ? ` of ${venues.length} results. The others do not yet have map coordinates` : ""}. Tap an SH pin for venue type, listing status and karaoke details.
+            {mappableVenues.length === 1 ? "" : "s"}{venues.length > mappableVenues.length ? ` of ${venues.length} results. The others do not yet have map coordinates` : ""}. Tap an SH pin for venue type, listing status and karaoke details. Cyan PRIVATE tags mark private karaoke rooms.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-xs font-semibold text-slate-200">
-          <Image src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" width={28} height={34} />
-          <span>SH pin · Karaoke venue</span>
+        <div className="flex flex-wrap items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-xs font-semibold text-slate-200">
+          <span className="inline-flex items-center gap-2"><Image src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" width={28} height={34} /><span>Karaoke venue</span></span>
+          <span className="inline-flex items-center gap-2"><span className="rounded border border-cyan-300 bg-cyan-950 px-1 py-0.5 text-[9px] font-extrabold text-cyan-100">PRIVATE</span><span>Private rooms</span></span>
         </div>
       </div>
 

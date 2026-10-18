@@ -12,7 +12,8 @@ import type {VenueListing} from '@/types';
 import '@/components/v2/styles/account.css';
 const venues=[
  {id:'venue-a',slug:'deanos-pub',venueName:"Deano's Pub - La Mesa",city:'La Mesa',neighborhood:'La Mesa',latitude:32.7754,longitude:-117.0327},
- {id:'venue-b',slug:'the-lamplighter',venueName:'The Lamplighter',city:'San Diego',neighborhood:'Mission Hills',latitude:32.751,longitude:-117.181}
+ {id:'venue-b',slug:'the-lamplighter',venueName:'The Lamplighter',city:'San Diego',neighborhood:'Mission Hills',latitude:32.751,longitude:-117.181},
+ {id:'venue-0048',slug:'hive-karaoke',venueName:'Hive Karaoke',city:'San Diego',neighborhood:'Kearny Mesa / Convoy',latitude:32.8244,longitude:-117.1541,venueType:'private_room'}
 ] as VenueListing[];
 export default function MyTourQa(){
  const [showSingHere,setShowSingHere]=useState(false);
@@ -45,7 +46,9 @@ try{
   await page.locator('.tour-leaflet-map[data-map-state="ready"][data-map-style="night"]').waitFor({timeout:60000});
   assert.equal(await page.locator('.tour-map canvas').count(),1);
   assert.equal(await page.locator('.tour-map canvas').evaluate(el=>getComputedStyle(el).filter),'none','Native vector colors must not be inverted or filtered');
-  assert.equal(await page.locator('.singhub-venue-map-marker').count(),2);
+  assert.equal(await page.locator('.singhub-venue-map-marker').count(),3);
+  assert.equal(await page.locator('.singhub-private-room-tag').count(),1);
+  assert.equal(await page.locator('.singhub-private-room-tag').innerText(),'PRIVATE');
   assert.ok((await page.locator('.leaflet-control-attribution').innerText()).includes('OpenMapTiles'));
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   await page.locator('.singhub-venue-map-marker').first().click();

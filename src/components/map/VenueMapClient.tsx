@@ -190,7 +190,7 @@ export default function VenueMapClient({
           <Marker
             key={venue.id}
             position={[venue.latitude, venue.longitude]}
-            icon={createVenueMapPin(venue.venueName,getStatusLabel(venue.listingStatus))}
+            icon={createVenueMapPin(venue.venueName,getStatusLabel(venue.listingStatus),venue.venueType==="private_room")}
             title={venue.venueName}
             alt={venue.venueName}
           >
