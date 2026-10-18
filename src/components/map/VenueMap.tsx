@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import type { VenueListing } from "@/types";
 import { hasValidCoordinates, type Coordinates } from "@/utils/distance";
 
@@ -19,36 +20,6 @@ const VenueMapClient = dynamic(() => import("./VenueMapClient"), {
   ),
 });
 
-const venueShapeLegend = [
-  { label: "Live karaoke", shape: "circle" },
-  { label: "Private rooms", shape: "square" },
-  { label: "Event producer", shape: "triangle" },
-];
-
-const statusLegend = [
-  { label: "Verified Karaoke", className: "bg-cyan-300" },
-  { label: "Recently Updated", className: "bg-fuchsia-300" },
-  { label: "On the Radar", className: "bg-violet-300" },
-];
-
-function LegendMicShape({ shape }: { shape: "circle" | "square" | "triangle" }) {
-  const shapeClass =
-    shape === "circle"
-      ? "rounded-full"
-      : shape === "square"
-        ? "rounded-md"
-        : "[clip-path:polygon(50%_7%,94%_88%,6%_88%)]";
-
-  return (
-    <span
-      className={`inline-flex h-5 w-5 items-center justify-center bg-slate-100 text-[0.58rem] font-black text-slate-950 ${shapeClass}`}
-      aria-hidden="true"
-    >
-      🎤
-    </span>
-  );
-}
-
 export function VenueMap({ venues, userLocation = null, title }: VenueMapProps) {
   const mappableVenues = venues.filter(hasValidCoordinates);
 
@@ -64,28 +35,13 @@ export function VenueMap({ venues, userLocation = null, title }: VenueMapProps) 
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
             Showing {mappableVenues.length} mapped karaoke spot
-            {mappableVenues.length === 1 ? "" : "s"}{venues.length > mappableVenues.length ? ` of ${venues.length} results. The others do not yet have map coordinates` : ""}. Shape shows venue type. The small color line shows listing status.
+            {mappableVenues.length === 1 ? "" : "s"}{venues.length > mappableVenues.length ? ` of ${venues.length} results. The others do not yet have map coordinates` : ""}. Tap an SH pin for venue type, listing status and karaoke details.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-xs font-semibold text-slate-200">
-          <div className="flex flex-wrap gap-3">
-            {venueShapeLegend.map((item) => (
-              <span key={item.label} className="inline-flex items-center gap-2">
-                <LegendMicShape shape={item.shape as "circle" | "square" | "triangle"} />
-                {item.label}
-              </span>
-            ))}
-          </div>
-          <span className="hidden h-5 w-px bg-white/10 md:block" />
-          <div className="flex flex-wrap gap-3">
-            {statusLegend.map((item) => (
-              <span key={item.label} className="inline-flex items-center gap-2">
-                <span className={`h-1.5 w-7 rounded-full ${item.className}`} aria-hidden="true" />
-                {item.label}
-              </span>
-            ))}
-          </div>
+        <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-xs font-semibold text-slate-200">
+          <Image src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" width={28} height={34} />
+          <span>SH pin · Karaoke venue</span>
         </div>
       </div>
 

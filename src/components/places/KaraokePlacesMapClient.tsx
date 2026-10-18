@@ -3,6 +3,7 @@
 import { useEffect,useState } from "react";
 import Link from "next/link";
 import L from "leaflet";
+import {createVenueMapPin} from "@/components/map/venuePin";
 import { MapContainer, Marker, Popup, useMap } from "react-leaflet";
 import {SingHubBasemap,MapThemeControl} from '@/components/map/SingHubBasemap';
 import type { VenueListing } from "@/types";
@@ -41,30 +42,6 @@ function getSignal(venue: VenueListing) {
   }
 
   return { icon: "✦", label: "Karaoke Place", color: "#fda4af", glow: "rgba(253,164,175,.66)" };
-}
-
-function getIcon(venue: VenueListing) {
-  const signal = getSignal(venue);
-
-  return L.divIcon({
-    className: "singhub-place-marker",
-    html: `
-      <span style="
-        align-items:center;
-        background:linear-gradient(145deg,#0f172a,#020617);
-        border:2px solid ${signal.color};
-        border-radius:9999px;
-        box-shadow:0 0 0 4px rgba(2,6,23,.88),0 0 24px ${signal.glow};
-        display:flex;
-        font-size:19px;
-        height:42px;
-        justify-content:center;
-        width:42px;
-      " title="${signal.label}">${signal.icon}</span>
-    `,
-    iconAnchor: [21, 21],
-    popupAnchor: [0, -20],
-  });
 }
 
 function BoundsController({ venues }: { venues: MappableVenue[] }) {
@@ -126,7 +103,7 @@ export default function KaraokePlacesMapClient({ venues }: { venues: MappableVen
             <Marker
               key={venue.id}
               position={[venue.latitude, venue.longitude]}
-              icon={getIcon(venue)}
+              icon={createVenueMapPin(venue.venueName,signal.label)} title={venue.venueName} alt={venue.venueName}
             >
               <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}>
                 <div className="space-y-2 text-slate-900">

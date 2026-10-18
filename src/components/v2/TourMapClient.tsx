@@ -2,6 +2,7 @@
 import {useEffect,useState} from "react";
 import Link from "next/link";
 import L from "leaflet";
+import {createVenueMapPin} from "@/components/map/venuePin";
 import {MapContainer,Marker,Popup,useMap} from "react-leaflet";
 import {SingHubBasemap,MapThemeControl} from '@/components/map/SingHubBasemap';
 import type {VenueListing} from "@/types";
@@ -10,10 +11,6 @@ type MappableVenue=VenueListing&{latitude:number;longitude:number};
 type Coordinate=[number,number];
 const DEFAULT_CENTER:Coordinate=[32.7157,-117.1611];
 
-function tourStopIcon(venueName:string){
- const safe=venueName.replace(/[&<>"']/g,char=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]!));
- return L.divIcon({className:"tour-stop-map-marker",html:`<span class="tour-stop-pin-wrap" title="${safe} TourStop"><img src="/images/singhub-v2/sh-venue-pin-transparent.png" alt="" /></span>`,iconSize:[48,58],iconAnchor:[24,55],popupAnchor:[0,-52]});
-}
 /* Leaflet needs its size recalculated after the account panel mounts or changes width.
    Without it, mobile layouts can show blank quadrants instead of tile coverage. */
 function MapSizeSync(){
@@ -64,7 +61,7 @@ export default function TourMapClient({venues}:{venues:MappableVenue[]}){
    <MapSizeSync/>
    <Bounds venues={venues}/>
    <SingHubBasemap theme={mapTheme}/>
-   {venues.map(venue=><Marker key={venue.id} position={[venue.latitude,venue.longitude]} icon={tourStopIcon(venue.venueName)}>
+   {venues.map(venue=><Marker key={venue.id} position={[venue.latitude,venue.longitude]} icon={createVenueMapPin(venue.venueName,"TourStop")} title={venue.venueName} alt={venue.venueName}>
     <Popup autoPanPaddingTopLeft={[12,72]} autoPanPaddingBottomRight={[12,36]}><div className="tour-stop-popup"><strong>{venue.venueName}</strong><span>{venue.neighborhood||venue.city}</span><Link href={'/venues/'+venue.slug}>Open venue</Link></div></Popup>
    </Marker>)}
   </MapContainer>

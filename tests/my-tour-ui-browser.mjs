@@ -45,10 +45,10 @@ try{
   await page.locator('.tour-leaflet-map[data-map-state="ready"][data-map-style="night"]').waitFor({timeout:60000});
   assert.equal(await page.locator('.tour-map canvas').count(),1);
   assert.equal(await page.locator('.tour-map canvas').evaluate(el=>getComputedStyle(el).filter),'none','Native vector colors must not be inverted or filtered');
-  assert.equal(await page.locator('.tour-stop-map-marker').count(),2);
+  assert.equal(await page.locator('.singhub-venue-map-marker').count(),2);
   assert.ok((await page.locator('.leaflet-control-attribution').innerText()).includes('OpenMapTiles'));
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-  await page.locator('.tour-stop-map-marker').first().click();
+  await page.locator('.singhub-venue-map-marker').first().click();
   assert.match(await page.locator('.leaflet-popup-content a').getAttribute('href'),/^\/venues\//);
   await page.locator('.leaflet-popup-close-button').click();
   await page.getByRole('button',{name:'Street',exact:true}).click();
@@ -70,6 +70,8 @@ try{
   await page.getByRole('button',{name:'Map view',exact:true}).click();
   await page.locator('.leaflet-container[data-map-state="ready"][data-map-style="night"]').waitFor({timeout:60000});
   assert.ok(await page.locator('.leaflet-marker-icon').count()>0,'Discovery retains venue markers');
+  assert.equal(await page.locator('.singhub-venue-map-marker').count(),await page.locator('.leaflet-marker-icon').count(),'Every venue uses the SH pin');
+  for(const src of await page.locator('.singhub-venue-map-marker img').evaluateAll(images=>images.map(image=>image.getAttribute('src'))))assert.equal(src,'/images/singhub-v2/sh-venue-pin-transparent.png');
   await page.getByRole('button',{name:'Street',exact:true}).click();
   await page.locator('.leaflet-container[data-map-state="ready"][data-map-style="street"]').waitFor({timeout:60000});
   await page.screenshot({path:'.my-tour-qa/discovery-street-'+width+'.png'});
