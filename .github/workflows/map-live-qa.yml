@@ -1,0 +1,23 @@
+name: Live map acceptance
+on: pull_request
+permissions:
+  contents: read
+jobs:
+  live-map:
+    if: github.head_ref == 'qa/map-production-oct17'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/map-live-qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: map-production-acceptance
+          path: .map-live-qa
+          include-hidden-files: true
