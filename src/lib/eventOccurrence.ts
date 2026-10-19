@@ -38,6 +38,12 @@ export function eventRunsOnNight(event: ScheduledEvent, weekday: string, date=ne
   const days=Math.round((night.getTime()-biweekly.getTime())/(24*60*60*1000));
   return days>=0 && days%14===0;
  }
+ const isLastWeekdayOfMonth = /\b(last|final)\s+(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b/i.test(pattern + " " + (event.eventNotes || ""));
+ if (/monthly/i.test(pattern) && isLastWeekdayOfMonth) {
+  const followingWeek = new Date(night);
+  followingWeek.setUTCDate(followingWeek.getUTCDate() + 7);
+  return followingWeek.getUTCMonth() !== night.getUTCMonth();
+ }
  const ordinal=monthlyOrdinal(event);
  if(!ordinal) return false;
  return Math.ceil(night.getUTCDate()/7)===ordinal;
