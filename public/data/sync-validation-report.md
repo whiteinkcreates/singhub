@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 110.
-Exported events: 204.
+Exported venues: 111.
+Exported events: 206.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -116,6 +116,7 @@ Exported events: 204.
 - venue-0135 Casa Reveles
 - venue-0136 The Pour House
 - venue-0138 The Brass Rail
+- venue-0149 Junkyard Sports Bar & Grill
 - venue-0125 Poway's Irish Pub
 - venue-0126 Way Point Saloon
 - venue-0120 Eastbound Bar & Grill
@@ -209,7 +210,7 @@ Exported events: 204.
 ## Events Skipped Because Inactive
 - None
 ## Events Skipped Because Missing Day Or Start Time
-- event row 215: weekly-saddle-bar-wednesday Saddle Bar
+- event row 217: weekly-saddle-bar-wednesday Saddle Bar
 ## Public Rows With TBD Address/Time/Host
 - event row 4: weekly-the-search-bar-thursday The Search Bar
 - event row 45: weekly-gaslamplighter-tuesday Gaslamplighter Karaoke Cocktail Bar
@@ -225,7 +226,6 @@ Exported events: 204.
 - event row 98: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
 - event row 98: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
 - event row 102: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
-- event row 104: event-0021 Tony’s Martini Bar
 - event row 118: weekly-de-oro-mine-co-monday De Oro Mine Co.
 - event row 124: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
 - event row 132: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
@@ -249,7 +249,9 @@ Exported events: 204.
 - event row 211: weekly-dirks-niteclub-friday Dirk's Niteclub
 - event row 212: weekly-el-sinaloense-cardiff-tuesday El Sinaloense - Cardiff
 - event row 214: weekly-winstons-thursday Winstons Beach Club
-- event row 216: weekly-1st-street-bar-sunday 1st Street Bar
+- event row 215: weekly-junkyard-oceanside-wednesday Junkyard Sports Bar & Grill
+- event row 216: weekly-junkyard-oceanside-saturday Junkyard Sports Bar & Grill
+- event row 218: weekly-1st-street-bar-sunday 1st Street Bar
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
@@ -284,16 +286,16 @@ Exported events: 204.
 SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
-Public venues: 110
-Authoritative events: 204
+Public venues: 111
+Authoritative events: 206
 Legacy venue slug aliases: 0
 
 PASS Monday: 19 authoritative / 8 expected minimum
 PASS Tuesday: 34 authoritative / 8 expected minimum
-PASS Wednesday: 31 authoritative / 9 expected minimum
+PASS Wednesday: 32 authoritative / 9 expected minimum
 PASS Thursday: 41 authoritative / 14 expected minimum
 PASS Friday: 31 authoritative / 10 expected minimum
-PASS Saturday: 22 authoritative / 10 expected minimum
+PASS Saturday: 23 authoritative / 10 expected minimum
 PASS Sunday: 26 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
