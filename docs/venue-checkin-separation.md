@@ -1,23 +1,20 @@
-# Venue check-in / Tour Stop / offer separation
+# Venue check-in / TourStop / offer rules
 
-## Business rules
-1. A signed-in singer can check in at a public venue without a karaoke schedule. GPS match is optional; self-reporting is explicitly labeled.
-2. A venue check-in is **not** a Tour Stop. Only the existing Tour Stop API can award a Tour Stop after karaoke begins.
-3. An enabled venue offer is governed by its configured days and terms, not the karaoke schedule. The offer is unlocked after venue check-in.
-4. Recording a song is independent of both check-ins and Tour Stops.
+## Approved product behavior (October 2026)
+1. One visible **Check In** action at any public venue, any time, for a signed-in singer.
+2. Check-in supports GPS proximity validation or clearly labeled self-report. Precise coordinates are not stored.
+3. A successful check-in records venue attendance and can unlock an active Partner Offer according to the venue's configured days and terms, independent of karaoke.
+4. That same check-in **automatically** earns one TourStop during a confirmed scheduled karaoke window. No second "Collect TourStop" button is needed.
+5. Outside karaoke, the check-in is a visit, **not** a TourStop. Checking in earlier and then again after karaoke begins can collect the TourStop without duplicating the venue-day check-in.
+6. Existing TourStops and venue offer redemption records remain separate. Recording a song is independent.
 
-## Implemented on this branch
-- Additive SQL for `singer_venue_checkins`, restricted to server access through the admin client.
-- Nullable legacy `venue_offer_unlocks.visit_id` with a new `checkin_id` reference. Old offer unlocks remain valid.
-- `POST /api/venue-checkins` and `GET /api/venue-checkins?venueSlug=...`.
-- Offer helper accepts a visit ID (legacy) or a venue check-in ID.
-- Existing `/api/tour-stops` remains unchanged and continues to enforce karaoke eligibility.
+## Operational boundaries
+- Only active/live market venues are eligible for the general check-in route.
+- The current venue-day calculation uses the San Diego 4 AM rollover. Expand market-local time handling before enabling additional cities.
+- Offers remain subject to Partner confirmation, weekday settings, venue-specific terms, and code redemption through the venue register.
+- Self-reported attendance must never be presented as GPS verified or guaranteed physical traffic.
+- The unified UI uses the existing general check-in endpoint; the legacy TourStop API remains for backward compatibility.
 
-## Release gates (NOT YET COMPLETE)
-- Review and apply the additive SQL migration in a controlled deployment, confirm RLS and constraints.
-- Connect venue profile check-in UI to the new endpoint, clearly distinguish offer and Tour Stop actions.
-- Confirm weekday and check-in date semantics per market; current endpoint intentionally uses San Diego clock, not safe for other markets.
-- Verify check-in with no karaoke; active offer; inactive offer; karaoke Tour Stop; self-report; GPS failure; duplicate visits; concurrent inserts; offer redemption.
-- Verify a singer's Tour Stops and performance stars still display correctly.
-- Verify no existing unlocks or singer history were lost.
-- Enable only after CI, preview, and device tests. No production source migration or rollout yet.
+## Release checks
+- Run focused tests, typecheck/build, and mobile and desktop check-in QA for venue with/without karaoke, before/during karaoke, self-report and GPS failure, offer unlock and redemption, duplicate clicks, legacy history, and no double TourStop.
+- Verify existing deployments and parallel PRs before merge. No automatic production deployment from this branch.
