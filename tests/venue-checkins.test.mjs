@@ -19,7 +19,7 @@ function fixture(){
      const q={
       eq(key,value){filters[key]=value;return q;},
       maybeSingle:async()=>({data:table.find(row=>Object.entries(filters).every(([key,value])=>row[key]===value))||null,error:null}),
-      single:async()=>({data:rows.find(row=>Object.entries(filters).every(([key,value])=>row[key]===value))||null,error:null})
+      single:async()=>({data:table.find(row=>Object.entries(filters).every(([key,value])=>row[key]===value))||null,error:null})
      };
      return q;
     },
@@ -27,7 +27,8 @@ function fixture(){
      const duplicate=table.some(row=>row.user_id===value.user_id&&row.venue_id===value.venue_id&&(name==='singer_venue_visits'?row.nightlife_date===value.nightlife_date:row.checked_in_on===value.checked_in_on));
      const inserted=duplicate?null:{id:'checkin-1',...value,checked_in_at:new Date().toISOString()};
      if(inserted)table.push(inserted);
-     const q={select(){return q;},single:async()=>({data:inserted,error:duplicate?{code:'23505'}:null})};
+     const outcome={data:inserted,error:duplicate?{code:'23505'}:null};
+     const q={select(){return q;},single:async()=>outcome,then(resolve){return Promise.resolve(outcome).then(resolve);}};
      return q;
     },
     update(value){
