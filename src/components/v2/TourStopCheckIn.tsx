@@ -9,7 +9,7 @@ type VisitStatus='none'|'pending'|'confirmed';
 type OfferUnlock={title:string;detail?:string;terms?:string;code:string;redeemedAt?:string};
 type Eligibility={phase:'early'|'open'|'closed';open:boolean;reason:string;startTime:string|null};
 type CheckinMethod='location_matched'|'self_reported';
-type Action='venue'|'tour';
+type Action='venue'|'tour'; // 'tour' retained only for backward-compatible GPS diagnostics
 
 async function readResponse(response:Response){
  const result=await response.json();
@@ -119,10 +119,6 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
    if(error)throw error;
    if(!data.session){setNeedsSignIn(true);return;}
    accessToken=data.session.access_token;
-   if(action==='tour'&&!eligibility?.open){
-    setMessage(eligibility?.reason||'Tour Stops open after karaoke starts.');
-    return;
-   }
    stage='browser';
    const position=method==='location_matched'?await currentLocation().catch(error=>{
     setGpsRecoveryAction(action);
@@ -130,7 +126,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
    }):undefined;
    gpsAccuracy=position?.accuracy;
    stage='network';
-   const response=await fetch(action==='venue'?'/api/venue-checkins':'/api/tour-stops',{
+   const response=await fetch('/api/venue-checkins',{
     method:'POST',
     headers:{'Content-Type':'application/json',Authorization:'Bearer '+accessToken},
     body:JSON.stringify({venueSlug,method,...(position?{location:position}:{})})
@@ -152,21 +148,19 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
     throw new Error(result.error||'Could not complete check-in.');
    }
    report('success');
-   if(action==='venue'){
-    setVenueCheckedIn(true);
-    setOfferUnlock(result.offerUnlock||offerUnlock);
-    setMessage(result.offerError|| (result.offerUnlock?'Checked in! Your SingHUB Offer is unlocked below.':result.alreadyCheckedIn?'You have already checked in here for this venue day.':'Venue check-in recorded. A Tour Stop is earned separately during karaoke.'));
-    trackEvent('venue_check_in',{venue_slug:venueSlug,check_in_method:method,offer_unlocked:Boolean(result.offerUnlock)});
-   }else{
-    if(result.pending){
-     setVisitStatus('pending');
-     setMessage('Visit pending. Return after karaoke starts to confirm your Tour Stop.');
-    }else{
-     setVisitStatus('confirmed');
-     setMessage(result.alreadyCheckedIn?'You already collected this karaoke night.':'Tour Stop added to My Tour!');
-    }
-    trackEvent('tour_stop_check_in',{venue_slug:venueSlug,check_in_method:method,new_tour_stop:Boolean(result.collected)});
-   }
+   setVenueCheckedIn(true);
+   setOfferUnlock(result.offerUnlock||offerUnlock);
+   if(result.tourStopCollected||result.tourStopAlreadyCollected)setVisitStatus('confirmed');
+   const details=[
+    result.offerUnlock?'SingHUB Offer unlocked.':null,
+    result.tourStopCollected?'Karaoke TourStop added to My Tour!':null,
+    result.tourStopAlreadyCollected?'Karaoke TourStop already collected.':null,
+    result.tourStopError||null,
+    result.offerError||null
+   ].filter(Boolean);
+   setMessage(details.join(' ')||(result.alreadyCheckedIn?'Already checked in for this venue day.':'Venue check-in saved.'));
+   trackEvent('venue_check_in',{venue_slug:venueSlug,check_in_method:method,offer_unlocked:Boolean(result.offerUnlock),tour_stop_collected:Boolean(result.tourStopCollected)});
+
    await refresh();
   }catch(error){
    if(error instanceof GpsLocationError)report('failure',error.diagnosticReason);
@@ -192,39 +186,32 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
  const tourOpen=eligibility?.open===true;
  return <div className="gig-check-in">
   <button type="button" className="gig-check-in-button" onClick={open}>
-   {visitStatus==='confirmed'?'Tour Stop collected · View check-in':hasOffer?'Check in · SingHUB Offer & Tour Stop':'Check in · Collect Tour Stop'}
+   {venueCheckedIn&&visitStatus==='confirmed'?'View check-in':'Check in'}
   </button>
   <dialog className="gig-dialog" ref={dialog} aria-labelledby={'tour-stop-title-'+venueSlug} onClick={e=>{if(e.target===e.currentTarget)e.currentTarget.close();}}>
    <button className="gig-close" aria-label="Close check-in" onClick={()=>dialog.current?.close()}>×</button>
    <p className="gig-eyebrow">Check in · Collect · Keep singing</p>
    <h2 id={'tour-stop-title-'+venueSlug}>{venueName}</h2>
-   <p>Check in to record your visit and access eligible venue offers. Tour Stops are separate and open only after karaoke starts.</p>
+   <p>Check in anytime to record a venue visit and unlock an eligible offer. During scheduled karaoke, the same check-in also earns a TourStop.</p>
    {hasOffer&&!offerUnlock&&<div className="tour-offer-teaser"><strong>SingHUB Offer</strong><span>{offer!.title}</span><small>Check in to see if today’s offer is available. Venue offer terms apply, even when karaoke isn’t running.</small></div>}
    <p className="gig-fine">Location matching is optional. Self-reported check-ins are labeled. We don’t save your precise GPS location.</p>
    {gpsRecoveryAction&&!needsSignIn&&<section className="gig-gps-recovery" aria-label="GPS check-in alternative">
     <strong>Inside the venue? GPS can drift indoors.</strong>
     <p>We couldn’t verify your phone’s reading. You can still save your visit as self-reported. It won’t be marked GPS-verified.</p>
     <button type="button" disabled={pending} onClick={()=>void checkIn(gpsRecoveryAction,'self_reported')}>
-     {pending?'Saving…':gpsRecoveryAction==='tour'?'Collect Tour Stop · Self-reported':'Check in here · Self-reported'}
+     {pending?'Saving…':'Check in here · Self-reported'}
     </button>
    </section>}
    {needsSignIn?<form onSubmit={signIn}><label>Email<input name="email" type="email" autoComplete="email" required /></label><button type="submit" disabled={pending||sent}>{sent?'Link sent':'Email me a sign-in link'}</button></form>:
    <>
     <div className="gig-actions">
-     <strong>{venueCheckedIn?'✓ Venue check-in saved':'Venue check-in · Anytime'}</strong>
-     {!venueCheckedIn&&<>
-      <button type="button" className="gig-gps-primary" disabled={pending} onClick={()=>void checkIn('venue','location_matched')}>{pending?'Working…':'Check in with my location'}</button>
-      <button type="button" className="gig-self-report" disabled={pending} onClick={()=>void checkIn('venue','self_reported')}>Self-report venue visit</button>
+     <strong>{venueCheckedIn?'✓ Venue check-in saved':'Check in · Anytime'}</strong>
+     {(!venueCheckedIn||(tourOpen&&visitStatus!=='confirmed'))&&<>
+      <button type="button" className="gig-gps-primary" disabled={pending} onClick={()=>void checkIn('venue','location_matched')}>{pending?'Working…':venueCheckedIn?'Check in again during karaoke':'Check in with my location'}</button>
+      <button type="button" className="gig-self-report" disabled={pending} onClick={()=>void checkIn('venue','self_reported')}>Self-report check-in</button>
      </>}
-    </div>
-    <div className="gig-actions">
-     <strong>{visitStatus==='confirmed'?'★ Tour Stop collected':'Tour Stop · Karaoke nights only'}</strong>
-     {visitStatus==='confirmed'?<Link href="/account#tour-stops">View My Tour →</Link>:tourOpen?
-      <>
-       <button type="button" className="gig-gps-primary" disabled={pending} onClick={()=>void checkIn('tour','location_matched')}>{pending?'Working…':'Collect Tour Stop with GPS'}</button>
-       <button type="button" className="gig-self-report" disabled={pending} onClick={()=>void checkIn('tour','self_reported')}>Self-report karaoke attendance</button>
-      </>:<p className="gig-fine">{eligibility?.reason||'Tour Stop availability is loading. Karaoke must have started before collecting.'}</p>
-     }
+     <p className="gig-fine">{visitStatus==='confirmed'?'★ Karaoke TourStop collected.':tourOpen?'★ This check-in also earns a karaoke TourStop.':eligibility?.phase==='early'?'Your visit counts now. Check in again after karaoke starts to earn a TourStop.':'TourStops are earned only during scheduled karaoke.'}</p>
+     {visitStatus==='confirmed'&&<Link href="/account#tour-stops">View My Tour →</Link>}
     </div>
    </>}
    <p role="status">{message}</p>
