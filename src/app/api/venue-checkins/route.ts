@@ -2,7 +2,8 @@ import {NextResponse} from 'next/server';
 import {createAdminClient} from '@/lib/supabase/admin';
 import {getVenueListings} from '@/lib/venueData';
 import {getPublicVenues} from '@/lib/publicVenueFilters';
-import {locationMatchReason,nightlifeDate} from '@/lib/tourStops';
+import {locationMatchReason,nightlifeDate,tourStopEligibility} from '@/lib/tourStops';
+import {getKaraokeEventsByVenueSlug} from '@/lib/eventData';
 import {getMarketConfig} from '@/lib/markets';
 import {getVenueOfferUnlock,unlockVenueOffer} from '@/lib/venueOffers.server';
 export const dynamic='force-dynamic';
@@ -91,6 +92,43 @@ export async function POST(request:Request){
    console.error('Venue offer unlock failed after successful check-in',error);
    offerError='Your visit was saved, but the venue offer could not be loaded. Try again shortly.';
   }
-  return NextResponse.json({checkedIn:true,alreadyCheckedIn:Boolean(existing),venueName:venue.venueName,offerUnlock,offerError,tourStopCollected:false},{headers:{'Cache-Control':'private, no-store'}});
+  // A single venue check-in is the only singer action. A TourStop is an
+  // additional karaoke-only reward; ordinary visits never enter My Tour.
+  // Existing check-ins are eligible when the singer checks in again during karaoke.
+  const eligibility=tourStopEligibility(await getKaraokeEventsByVenueSlug(venue.slug));
+  let tourStopCollected=false;
+  let tourStopAlreadyCollected=false;
+  let tourStopError:string|undefined;
+  if(eligibility.open){
+   try{
+    const {data:prior,error:priorError}=await auth.client.from('singer_venue_visits')
+     .select('id,status').eq('user_id',auth.user.id).eq('venue_id',venue.id).eq('nightlife_date',day).maybeSingle();
+    if(priorError)throw priorError;
+    if(prior?.status==='confirmed')tourStopAlreadyCollected=true;
+    else if(prior?.id){
+     const {error:updateError}=await auth.client.from('singer_venue_visits')
+      .update({status:'confirmed',method:input.method,confirmed_at:new Date().toISOString()}).eq('id',prior.id);
+     if(updateError)throw updateError;
+     tourStopCollected=true;
+    }else{
+     const {error:insertError}=await auth.client.from('singer_venue_visits').insert({
+      user_id:auth.user.id,venue_id:venue.id,venue_slug:venue.slug,
+      venue_name:venue.venueName,neighborhood:venue.neighborhood,
+      nightlife_date:day,method:input.method,status:'confirmed',confirmed_at:new Date().toISOString()
+     });
+     if(insertError&&insertError.code!=='23505')throw insertError;
+     tourStopCollected=!insertError;
+     tourStopAlreadyCollected=Boolean(insertError);
+    }
+   }catch(error){
+    console.error('TourStop award failed after venue check-in',error);
+    tourStopError='Your visit was saved, but the karaoke TourStop could not be recorded. Check in again to retry.';
+   }
+  }
+  return NextResponse.json({
+   checkedIn:true,alreadyCheckedIn:Boolean(existing),venueName:venue.venueName,
+   offerUnlock,offerError,tourStopCollected,tourStopAlreadyCollected,tourStopError,
+   tourStopEligible:eligibility.open
+  },{headers:{'Cache-Control':'private, no-store'}});
  }catch(error){console.error('Venue check-in save failed',error);return NextResponse.json({error:'Venue check-in could not be saved.'},{status:503});}
 }
