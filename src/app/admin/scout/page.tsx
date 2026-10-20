@@ -118,6 +118,9 @@ export default async function AdminScoutPage() {
           >
             Lead Queue
           </Link>
+          <Link href="/admin/scout/ufc" className="rounded-full border border-emerald-300/50 px-5 py-3 text-sm font-black uppercase tracking-[0.16em] text-emerald-100 hover:bg-emerald-300/10">
+            UFC-SCOUT
+          </Link>
           <Link
             href="/scout/import"
             className="rounded-full border border-cyan-300/50 px-5 py-3 text-sm font-black uppercase tracking-[0.16em] text-cyan-100 transition hover:-translate-y-0.5 hover:bg-cyan-300/10"
