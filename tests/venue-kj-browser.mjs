@@ -28,13 +28,17 @@ try{
     const page=await browser.newPage({viewport:{width,height:900}});
     const errors=[];page.on('pageerror',error=>errors.push(error.message));
     for(const [route,expected,absent] of checks){
-      const response=await page.goto(base+route,{waitUntil:'domcontentloaded'});
+      const response=await page.goto(base+route,{waitUntil:'load'});
       assert.equal(response.status(),200,route);
+      await page.evaluate(async()=>{
+        await document.fonts.ready;
+        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      });
       const text=await page.locator(route.startsWith('/venues/')?'.v2-basic':'main').innerText();
       assert.match(text,new RegExp(expected.source,'i'),route);
       if(absent)assert.doesNotMatch(text,new RegExp(absent.source,'i'),route);
-      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,route+' overflow');
       await page.screenshot({path:'.venue-kj-qa/'+route.slice(1).replaceAll('/','-')+'-'+width+'.png',fullPage:true});
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,route+' overflow');
       console.log('PASS',route,width);
     }
     await page.goto(base+'/hosts/dj-glyph',{waitUntil:'domcontentloaded'});
