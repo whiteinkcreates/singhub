@@ -1,11 +1,11 @@
 /** Reviewed venue activities from existing SingHUB source records and venue websites.
  * Sports viewing means facilities/programming, NEVER a guarantee a particular game airs.
- * UFC stays empty until a current event-specific screening is verified.
+ * A verified UFC bar-locator match confirms a viewing venue, not every individual fight.
  */
 export const backyardActivities=[
  {slug:"football",name:"Football",area:"Game Day Tent",description:"Find sports-friendly karaoke bars. Confirm the game with the venue.",icon:"🏈",image:"/images/backyard/football.webp"},
  {slug:"basketball",name:"Basketball",area:"Game Day Tent",description:"Catch basketball where there's also a mic nearby.",icon:"🏀",image:"/images/backyard/basketball.webp"},
- {slug:"ufc",name:"UFC",area:"Game Day Tent",description:"Find confirmed fight-night screenings as venues verify them.",icon:"🥊",image:"/images/backyard/ufc.webp"},
+ {slug:"ufc",name:"UFC",area:"Game Day Tent",description:"Find karaoke venues listed for UFC viewing. Confirm the specific fight before visiting.",icon:"🥊",image:"/images/backyard/ufc.webp"},
  {slug:"live-music",name:"Live Music",area:"Live Music Stage",description:"Bands, jams and open mic nights.",icon:"🎸",image:"/images/backyard/live-music.webp"},
  {slug:"comedy",name:"Comedy",area:"Live Music Stage",description:"Stand-up and comedy open mic nights.",icon:"🎤",image:"/images/backyard/comedy.webp"},
  {slug:"trivia",name:"Trivia",area:"Game Shack",description:"Team up for a different kind of spotlight.",icon:"🧠",image:"/images/backyard/trivia.webp"},
@@ -16,7 +16,7 @@ export const backyardActivities=[
  {slug:"open-early",name:"Open Early",area:"Game Day Tent",description:"Some neighborhood bars open as early as 6 AM. Check hours before heading over.",icon:"🌅",image:"/images/backyard/open-early.webp"}
 ] as const;
 export type BackyardActivity=typeof backyardActivities[number]["slug"];
-export type BackyardOffer={slug:string;activities:BackyardActivity[];highlights:string[];source:string};
+export type BackyardOffer={slug:string;activities:BackyardActivity[];highlights:string[];source:string;ufcSource?:string};
 export const backyardVenueOffers:BackyardOffer[]=[
  {slug:"norms",activities:["open-early","pool-games","football","basketball"],highlights:["Opens at 6 AM","Pool tables","Darts","Sports TVs"],source:"https://www.sandiegoreader.com/places/norms-cocktails/"},
  {slug:"cheers-bar-san-diego",activities:["football","basketball","trivia","pool-games","specials"],highlights:["Sports on TV","Thursday trivia","Pool table","Sunday BBQ"],source:"https://cheerssandiego.com/events"},
@@ -30,7 +30,7 @@ export const backyardVenueOffers:BackyardOffer[]=[
  {slug:"urban-mos-bar-grill",activities:["bingo","trivia","live-music","specials"],highlights:["Drag brunch","Bingo","Trivia"],source:"https://urbanmos.com/events/"},
  {slug:"richs-san-diego",activities:["live-music"],highlights:["DJ events","Drag shows"],source:"https://richssandiego.com/calendar/"},
  {slug:"bns-brewing-distilling-co",activities:["trivia","live-music","pool-games"],highlights:["Trivia","Cornhole","Live bands"],source:"https://www.bnsbrewinganddistillingco.com/event-list"},
- {slug:"double-deuce",activities:["pool-games","live-music"],highlights:["Mechanical bull","Country DJ nights"],source:"https://doubledeucesd.com/"},
+ {slug:"double-deuce",activities:["pool-games","live-music","ufc"],highlights:["UFC viewing location (official locator, Oct 2026)","Mechanical bull","Country DJ nights"],source:"https://doubledeucesd.com/",ufcSource:"https://www.ufc.com/bars"},
  {slug:"punch-bowl-social-san-diego",activities:["pool-games","specials","bowling"],highlights:["Bowling","Shuffleboard","Arcade"],source:"https://punchbowlsocial.com/location/san-diego"},
  {slug:"coyote-bar-grill-carlsbad",activities:["live-music"],highlights:["Live bands","DJ nights"],source:"https://coyotecarlsbad.com/events/"},
  {slug:"n-city-sports-lounge",activities:["football","basketball","pool-games","live-music"],highlights:["Sports viewing","Pool","DJ events"],source:"https://ncitysportslounge.com/national-city-n-city-sports-lounge-events"},
@@ -46,7 +46,8 @@ export const backyardVenueOffers:BackyardOffer[]=[
  {slug:"werewolf",activities:["football","basketball","specials"],highlights:["Sports viewing","Brunch","Game-day wings"],source:"https://thewerewolf.net/happenings"},
  {slug:"saddle-bar",activities:["football","live-music"],highlights:["49ers watch bar","Thursday bands","Sunday open mic"],source:"https://thesaddlebar.com/"},
  {slug:"shooters-cocktails",activities:["pool-games","live-music","specials"],highlights:["Pool tables","Beer pong tournament","Live bands"],source:"https://www.shooterscocktailsbar.com/"},
- {slug:"u-31",activities:["trivia","pool-games","live-music"],highlights:["Thursday trivia","Pool","Weekend DJs"],source:"https://u31bar.com/"},
+ {slug:"whiskey-girl",activities:["ufc"],highlights:["UFC viewing location (official locator, Oct 2026)"],source:"https://www.ufc.com/bars",ufcSource:"https://www.ufc.com/bars"},
+ {slug:"u-31",activities:["trivia","pool-games","live-music","ufc"],highlights:["UFC viewing location (official locator, Oct 2026)","Thursday trivia","Pool","Weekend DJs"],source:"https://u31bar.com/",ufcSource:"https://www.ufc.com/bars"},
  {slug:"the-north-bar-escondido",activities:["football","basketball","pool-games","live-music"],highlights:["Sports on TV","Darts","Live bands"],source:"https://www.thenorthbar.com/"},
  {slug:"rosie-ogradys",activities:["trivia","football","basketball","live-music","specials"],highlights:["Trivia","Sports viewing","Live music"],source:"https://rosieogradyssd.com/"},
  {slug:"flicks",activities:["live-music"],highlights:["DJ events"],source:"https://www.sdflicks.com/"}
