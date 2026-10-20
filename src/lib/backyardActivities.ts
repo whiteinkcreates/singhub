@@ -3,7 +3,7 @@
  * UFC stays empty until a current event-specific screening is verified.
  */
 export const backyardActivities=[
- {slug:"football",name:"Football",area:"Game Day Tent",description:"Find sports-friendly karaoke bars. Confirm the game with the venue.",icon:"🏈",image:"/images/backyard/football.webp"},
+ {slug:"football",name:"Sports & Watch Parties",area:"Game Day Tent",description:"Baseball, football, basketball and more at karaoke-friendly venues. Check the specific game with the venue.",icon:"⚾",image:"/images/backyard/football.webp"},
  {slug:"basketball",name:"Basketball",area:"Game Day Tent",description:"Catch basketball where there's also a mic nearby.",icon:"🏀",image:"/images/backyard/basketball.webp"},
  {slug:"ufc",name:"UFC",area:"Game Day Tent",description:"Find confirmed fight-night screenings as venues verify them.",icon:"🥊",image:"/images/backyard/ufc.webp"},
  {slug:"live-music",name:"Live Music",area:"Live Music Stage",description:"Bands, jams and open mic nights.",icon:"🎸",image:"/images/backyard/live-music.webp"},
@@ -18,6 +18,7 @@ export const backyardActivities=[
 export type BackyardActivity=typeof backyardActivities[number]["slug"];
 export type BackyardOffer={slug:string;activities:BackyardActivity[];highlights:string[];source:string};
 export const backyardVenueOffers:BackyardOffer[]=[
+ {slug:"kaminskis-sports-lounge",activities:["football","basketball","trivia","specials"],highlights:["Sports viewing","Wednesday trivia","BBQ"],source:"https://www.instagram.com/kaminskis_bbq/"},
  {slug:"norms",activities:["open-early","pool-games","football","basketball"],highlights:["Opens at 6 AM","Pool tables","Darts","Sports TVs"],source:"https://www.sandiegoreader.com/places/norms-cocktails/"},
  {slug:"cheers-bar-san-diego",activities:["football","basketball","trivia","pool-games","specials"],highlights:["Sports on TV","Thursday trivia","Pool table","Sunday BBQ"],source:"https://cheerssandiego.com/events"},
  {slug:"deanos-pub",activities:["football","basketball","bingo","pool-games","live-music","specials"],highlights:["Sports viewing","Dirty Bingo","Pool and shuffleboard","Live music"],source:"https://deanospub.com/"},
