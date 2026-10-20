@@ -36,7 +36,7 @@ export function matchesPlusDay(offer:BackyardOffer,day?:string):PlusMatch[]{
 /** Match the actual activity, not another amenity at the same venue. */
 export function highlightIsCategory(title:string, category:string):boolean {
  const label=title.toLowerCase();
- if(category==="football"||category==="basketball")return /\bsports?\b|\bgame.day\b|\b49ers\b|\bfootball\b|\bbasketball\b/.test(label);
+ if(category==="football"||category==="basketball")return /\bsports?\b|\bgame.day\b|\bwatch part(?:y|ies)\b|\b49ers\b|\bfootball\b|\bbasketball\b|\bbaseball\b|\bpadres\b|\bworld series\b/.test(label);
  if(category==="ufc")return /\bufc\b|\bmma\b|\bfight night\b/.test(label);
  if(category==="comedy")return /\bcomedy\b|\bstand[ -]?up\b/.test(label);
  if(category==="bowling")return /\bbowling\b/.test(label);
