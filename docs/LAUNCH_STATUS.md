@@ -1,5 +1,15 @@
 # SingHUB launch status
 
+## October 20 verified venue/KJ reconciliation
+
+Reapplies selected #434/#363/#429/#431 data on main 7abcf243, preserving all 112 venue IDs, all 208 existing event IDs, venue GPS/media/Partner flags, and Katy's first/last Tuesday rows from #436. Adds only Saddle Bar's verified untimed Wednesday event. Includes #423 Glyph slug/College Area and legacy redirect, #426 Jason G/Savor affiliation, and the canonical Ed/Katie favorite spots missing from #428. Keeps latest #428 host enrichment.
+
+Hearth House's confirmed name Rodney is displayed without associating the gigs to the existing Werewolf Rodney profile. Corey has not confirmed whether these are the same person. Explicit runtime identity hold covers both name fallback and an accidentally assigned host ID. Do not remove it or create a duplicate Rodney until Corey confirms. James remains retained but inactive/hidden. Company gigs belong to ALL MIC LONG, with independent Devyn/Mikey profiles preserved and Mikey's stale bio/unconfirmed affiliation removed.
+
+Local verification: data guardrails, 4 listing guardrail tests, 77 existing regression tests and 3 new identity/sync regressions pass; production build and TypeScript pass; lint has existing warnings and no errors. Browser acceptance is wired into CI for 16 venue/KJ routes at 390/1440 widths, Glyph redirect, and James 404. Source checks are not production verification.
+
+Canonical backfill required: #436 Katy venue and two recurring events were missing from Sheets, causing the two-event deletion guardrail. Preserve those exact merged records in canonical. Repair Hearth House description/tags and persist Poway/Way Point enrichment and Mikey's cleanup so future sync cannot revert them. Retain verified weekly events whose exact start time is unknown; do not relax archival or source guardrails. Recheck actual sync and deployed pages before reporting production complete.
+
 Last reconciled: October 6, 2026 (America/Los_Angeles).
 Owner: Corey / CB. Repository: whiteinkcreates/singhub.
 
