@@ -1,5 +1,15 @@
 # SingHUB launch status
 
+## October 20 verified venue/KJ reconciliation
+
+Reapplies selected #434/#363/#429/#431 data on main 7abcf243, preserving all 112 venue IDs, all 208 existing event IDs, venue GPS/media/Partner flags, and Katy's first/last Tuesday rows from #436. Adds only Saddle Bar's verified untimed Wednesday event. Includes #423 Glyph slug/College Area and legacy redirect, #426 Jason G/Savor affiliation, and the canonical Ed/Katie favorite spots missing from #428. Keeps latest #428 host enrichment.
+
+Hearth House's confirmed name Rodney is displayed without associating the gigs to the existing Werewolf Rodney profile. Corey has not confirmed whether these are the same person. Explicit runtime identity hold covers both name fallback and an accidentally assigned host ID. Do not remove it or create a duplicate Rodney until Corey confirms. James remains retained but inactive/hidden. Company gigs belong to ALL MIC LONG, with independent Devyn/Mikey profiles preserved and Mikey's stale bio/unconfirmed affiliation removed.
+
+Local verification: data guardrails, 4 listing guardrail tests, 77 existing regression tests and 3 new identity/sync regressions pass; production build and TypeScript pass; lint has existing warnings and no errors. Browser acceptance is wired into CI for 16 venue/KJ routes at 390/1440 widths, Glyph redirect, and James 404. Source checks are not production verification.
+
+Canonical repairs completed October 20: backfilled the exact merged #436 Katy venue and two recurring events into Venues_Canonical row 1018 and Events_Canonical rows 1002-1003. Repaired Hearth House description/tags and persisted Poway/Way Point enrichment and Mikey's cleanup, verified by read-back. GitHub's real canonical dry-run exports 112 venues and 209 events without removals. Retain sourced verified weekly events whose start time is unknown; archival/source guardrails remain intact. Profile association for Hearth House Rodney remains held even if an accidental explicit ID has a blank/TBD display name. Deployment and phone/desktop acceptance are separate gates recorded in the reconciliation PR.
+
 Last reconciled: October 6, 2026 (America/Los_Angeles).
 Owner: Corey / CB. Repository: whiteinkcreates/singhub.
 

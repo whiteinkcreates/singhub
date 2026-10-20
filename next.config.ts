@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: "/hosts/dj-glyph",
+        destination: "/hosts/kj-glyph",
+        permanent: true,
+      },
+      {
         source: "/venues/diversionary-theatre-clark-cabaret-bar",
         destination: "/venues/clark-cabaret",
         permanent: true,

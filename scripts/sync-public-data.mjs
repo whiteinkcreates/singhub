@@ -539,7 +539,15 @@ function buildEvents(sourceRows, venueRows, report) {
     }
 
     const days = dayList(row.karaoke_day);
-    if (!days.length || isTbd(row.start_time)) {
+    // A verified weekly night remains useful when its start time is unknown.
+    // Preserve the canonical event rather than silently dropping it on sync.
+    const review = key(row.review_status);
+    const verifiedStatus = VERIFIED_STATUSES.has(review) ||
+      /^(?:verified(?:_|$)|(?:flyer|story_flyer|host|venue|web)_verified(?:_|$))/.test(review);
+    const verifiedUntimedWeekly = verifiedStatus &&
+      Boolean(clean(row.source_primary)) &&
+      (truthy(row.recurring) || /^weekly$/i.test(clean(row.recurring)));
+    if (!days.length || (isTbd(row.start_time) && !verifiedUntimedWeekly)) {
       report.eventsSkippedMissingDayOrStart.push(`event row ${row.__rowNumber}: ${row.event_id} ${row.venue_name}`);
       continue;
     }
