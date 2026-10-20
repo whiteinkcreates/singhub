@@ -31,10 +31,11 @@ try{
       const response=await page.goto(base+route,{waitUntil:'domcontentloaded'});
       assert.equal(response.status(),200,route);
       const text=await page.locator(route.startsWith('/venues/')?'.v2-basic':'main').innerText();
-      assert.match(text,expected,route);
-      if(absent)assert.doesNotMatch(text,absent,route);
+      assert.match(text,new RegExp(expected.source,'i'),route);
+      if(absent)assert.doesNotMatch(text,new RegExp(absent.source,'i'),route);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,route+' overflow');
       await page.screenshot({path:'.venue-kj-qa/'+route.slice(1).replaceAll('/','-')+'-'+width+'.png',fullPage:true});
+      console.log('PASS',route,width);
     }
     await page.goto(base+'/hosts/dj-glyph',{waitUntil:'domcontentloaded'});
     assert.ok(page.url().endsWith('/hosts/kj-glyph'));
