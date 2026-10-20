@@ -30,7 +30,7 @@ try{
     for(const [route,expected,absent] of checks){
       const response=await page.goto(base+route,{waitUntil:'domcontentloaded'});
       assert.equal(response.status(),200,route);
-      const text=await page.locator('main').innerText();
+      const text=await page.locator(route.startsWith('/venues/')?'.v2-basic':'main').innerText();
       assert.match(text,expected,route);
       if(absent)assert.doesNotMatch(text,absent,route);
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,route+' overflow');

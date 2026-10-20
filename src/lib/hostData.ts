@@ -319,7 +319,8 @@ function attachCanonicalSchedules(
     // Corey has not confirmed whether Hearth House's Rodney is the Werewolf
     // host. Keep the verified venue label, but defer all profile association.
     // Remove this hold only after identity confirmation, with an explicit ID.
-    if (event.venueSlug === "hearth-house" && cleanIdentity(event.hostName) === "rodney") {
+    if (event.venueSlug === "hearth-house" &&
+      (cleanIdentity(event.hostName) === "rodney" || event.hostId === "rodney")) {
       continue;
     }
     const matchedHosts = new Set<HostProfile>();
