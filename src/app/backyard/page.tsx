@@ -24,7 +24,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
  const params=await searchParams;
  const [hero,allVenues]=await Promise.all([getHostMediaSettings(SITE_BACKYARD_HERO_KEY).catch(()=>null),getVenueListings()]);
  const venueBySlug=new Map(getSanDiegoPublicVenues(allVenues).map(venue=>[venue.slug,venue]));
- const stages=backyardActivities;
+ const stages=backyardActivities.filter(activity=>activity.slug!=="basketball");
  const current=stages.find(stage=>stage.slug===params.activity);
  const selectedDay=PLUS_DAYS.find(day=>day.toLowerCase()===params.day?.toLowerCase())||"all";
  const search=(params.q||"").trim().toLowerCase();
@@ -33,7 +33,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
    if(current?.slug==="open-early")return offer.highlights.filter(title=>highlightIsCategory(title,"open-early"));
    return matchesPlusDay(offer,selectedDay).filter(match=>!current||highlightIsCategory(match.title,current.slug)).map(match=>match.title);
  };
- const matches=backyardVenueOffers.filter(offer=>(!current||offer.activities.includes(current.slug))&&venueBySlug.has(offer.slug)&&offer.slug!=="winstons-beach-club")
+ const matches=backyardVenueOffers.filter(offer=>(!current||offer.activities.includes(current.slug)||(current.slug==="football"&&offer.activities.includes("basketball")))&&venueBySlug.has(offer.slug)&&offer.slug!=="winstons-beach-club")
  .filter(offer=>matchedHighlights(offer).length>0)
  .filter(offer=>{const venue=venueBySlug.get(offer.slug)!;return !search||[venue.venueName,venue.neighborhood,...matchedHighlights(offer)].join(" ").toLowerCase().includes(search)})
  .sort((a,b)=>venueBySlug.get(a.slug)!.venueName.localeCompare(venueBySlug.get(b.slug)!.venueName));
@@ -89,7 +89,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
    {showResults?<section id="backyard-results" aria-labelledby="backyard-results-title" className="scroll-mt-24 rounded-2xl border border-cyan-300/30 bg-cyan-300/[.05] p-6">
     <p className="text-xs font-black uppercase tracking-widest text-cyan-300">{current?.area||"BEYOND THE MIC"}</p>
     <h2 id="backyard-results-title" className="mt-2 text-3xl font-black">{current?current.name+" spots":"Your activity matches"}</h2>
-    <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">{current?.description||"Explore matching activities, then open a venue for more details."} {current&&(current.slug==="football"||current.slug==="basketball"||current.slug==="ufc")?"Sports-friendly doesn't guarantee a specific game or fight is being shown. Confirm with the venue before visiting.":""}</p>
+    <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-300">{current?.description||"Explore matching activities, then open a venue for more details."} {current&&(current.slug==="football"||current.slug==="ufc")?"Sports-friendly doesn't guarantee a specific game or fight is being shown. Confirm with the venue before visiting.":""}</p>
     <p className="mt-3 text-xs text-slate-400">{selectedDay==="all"?"Browse venue amenities and listed events.":"Showing permanent amenities and activities explicitly listed for "+selectedDay+". "} Check venue hours and confirm events before visiting.</p>
     <p role="status" className="mt-3 text-xs font-bold text-cyan-200">{matches.length} {matches.length===1?"venue":"venues"} to explore</p>
     {matches.length?<div className="mt-5 grid gap-3 md:grid-cols-2">{matches.map(offer=>{const venue=venueBySlug.get(offer.slug)!;return <article key={offer.slug} className="rounded-xl border border-white/15 bg-slate-950/70 p-4">
