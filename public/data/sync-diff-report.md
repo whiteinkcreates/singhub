@@ -4,10 +4,10 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 109
-- Candidate non-empty lines: 111
-- Added/changed lines: 111
-- Removed/changed lines: 109
+- Previous non-empty lines: 113
+- Candidate non-empty lines: 113
+- Added/changed lines: 113
+- Removed/changed lines: 113
 
 ### Added or changed sample
 
@@ -28,9 +28,9 @@ venue-0020	Don's Cocktails	dons-cocktails	basic	verified	live_bar	El Cajon	El Ca
 venue-0005	Double Deuce	double-deuce	basic	verified	live_bar	San Diego	Gaslamp Quarter	528 F St, San Diego, CA 92101	32.7139	-117.1603	https://doubledeucesd.com/	@doubledeucesandiego				Thursday, Friday, Saturday	8:00 PM / 7:00 PM	10:00 PM	Savor Entertainment	Gaslamp, Country Karaoke, Weekly Karaoke	Gaslamp Quarter bar with Thursday-Saturday karaoke. Thursday runs 8-10 PM with Savor Entertainment; Friday and Saturday run 7-10 PM with Savor Entertainment.											FALSE	95	Nickalus Randle / @navynickaraoke provided recurring Double Deuce karaoke schedule. Flyer confirms Navy Nick country collab with Savor Entertainment on 07.11 and 07.17, 7-10 PM.	Navy Nick response 2026-07-15	Navy Nick / Savor Entertainment flyer		2026-07-15
 venue-0014	Flicks	flicks	basic	verified	live_bar	San Diego	Hillcrest	1017 University Ave, San Diego, CA 92103	32.7483	-117.1546	https://www.sdflicks.com/	https://www.instagram.com/flicks_sd/?hl=enn				Tuesday	8:30 PM	1:30 AM	Thonie Lee	Hillcrest, Late Night, Weekly Karaoke	Hillcrest bar/nightlife venue with Tuesday karaoke from 8:30 PM-1:30 AM hosted by Thonie Lee.											FALSE	95	Nickalus Randle / @navynickaraoke provided Tuesday schedule: Flicks, 8:30 PM-1:30 AM, host Thonie Lee.	Navy Nick response 2026-07-15	Karaoke Venues SD - Full_Karaoke_Venue_List__Rebuilt_.csv		2026-07-15
 venue-0042	Gaslamplighter Karaoke Cocktail Bar	gaslamplighter	basic	verified	live_bar	San Diego	Gaslamp Quarter	536 Market St, San Diego, CA 92101	32.7111	-117.1604		@gaslamplighter				Tuesday, Wednesday, Friday, Sunday, Thursday, Saturday	9:00 PM	last call		Gaslamp Quarter, Tuesday karaoke, Wednesday karaoke, Friday karaoke, Sunday karaoke, Thursday karaoke	Gaslamp karaoke cocktail bar with karaoke Tuesday through Sunday from 9 PM to last call. Hours and availability may vary for private events or full venue buyouts.											FALSE	100	Corey confirmed Tuesday through Sunday from 9 PM to last call. Monday is not included.	Corey direct confirmation 2026-09-14			2026-09-14
-venue-0056	Gingers	gingers	basic	verified	live_bar	San Diego	Gaslamp Quarter	600 Fifth Ave (below Barleymash), San Diego (Gaslamp Quarter)	32.7119	-117.1604		@gingersgaslamp				Thursday	9:00 PM	12:00 AM	Mikey Mic	Gaslamp Quarter, Thursday karaoke, live karaoke	Gaslamp karaoke at Ginger's on Thursdays from 9 PM-12 AM.											FALSE	90	Corey confirmed Ginger's Thursday karaoke is 9 PM-12 AM. Host remains Mikey Mic from existing row unless corrected.	Corey direct correction 2026-07-02			2026-07-02
+venue-0056	Gingers	gingers	basic	verified	live_bar	San Diego	Gaslamp Quarter	600 Fifth Ave (below Barleymash), San Diego (Gaslamp Quarter)	32.7119	-117.1604		@gingersgaslamp				Thursday	9:00 PM	12:00 AM	ALL MIC LONG	Gaslamp Quarter, Thursday karaoke, live karaoke	Gaslamp karaoke at Ginger's on Thursdays from 9 PM to midnight, hosted by ALL MIC LONG.											FALSE	90	Recurring event hosted by ALL MIC LONG. Individual DJ credit is not permanent due to rotating company roster.	ALL MIC LONG direct schedule and company-only attribution to Corey 2026-10-18			2026-10-18
 venue-0054	Happy Does	happy-does	basic	verified	live_bar	San Diego	Gaslamp Quarter	340 5th Ave, San Diego, CA 92101	32.7109	-117.1585		@happydoesbar				Thursday, Friday, Saturday	8:30 PM	last call	Almost Famous Entertainment	Gaslamp Quarter, Thursday karaoke, Friday karaoke, Saturday karaoke, live karaoke	Gaslamp Quarter karaoke Thursday through Saturday from 8:30 PM to last call, hosted by Almost Famous Entertainment.											TRUE	100	Corey confirmed Thursday through Saturday from 8:30 PM to last call with Almost Famous Entertainment.	Corey direct confirmation 2026-09-14	Almost Famous Entertainment / Veronica canonical host profile		2026-09-14
-venue-0003	Hearth House	hearth-house	basic	verified	live_bar	San Diego	La Mesa	5505 Jackson Dr, La Mesa, CA 91942	32.7734	-117.0326	https://hearthhousebar.com	@hearthcocktails				Tuesday, Wednesday, Thursday	9:00 PM	close	James	La Mesa, Tuesday karaoke, Wednesday karaoke, Thursday karaoke, live karaoke	La Mesa / East County karaoke venue with karaoke Tuesday through Thursday from 9 PM to close, hosted by James.											FALSE	100	Corey confirmed Hearth House karaoke runs Tuesday through Thursday from 9 PM to close with James hosting all three nights.	Corey direct confirmation 2026-09-13	Corey direct update 2026-07-02		2026-09-13
+venue-0003	Hearth House	hearth-house	basic	verified	live_bar	San Diego	La Mesa	5505 Jackson Dr, La Mesa, CA 91942	32.7734	-117.0326	https://hearthhousebar.com	@hearthcocktails				Tuesday, Wednesday, Thursday	9:00 PM	close	Rodney	La Mesa, Tuesday karaoke, Wednesday karaoke, Thursday karaoke, live karaoke	La Mesa / East County karaoke venue with karaoke Tuesday through Thursday from 9 PM to close, hosted by Rodney.											FALSE	100	Rodney replaces James for Hearth House karaoke. Tuesday through Thursday times retained from prior confirmed schedule.	Corey direct host change 2026-10-18	Corey direct update 2026-07-02		2026-10-18
 venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearny Mesa / Convoy	4428 Convoy St, San Diego, CA 92111	32.8244	-117.1541		@hivesandiego								Kearny Mesa / Convoy, private rooms	Kearny Mesa / Convoy private-room karaoke venue where guests reserve rooms and sing without a dedicated KJ host.											FALSE	100	Corey confirmed Hive is private-room karaoke. A recurring host should not be attached.	Corey direct confirmation 2026-09-13	@hivesandiego		2026-09-13
 ```
 
@@ -53,30 +53,20 @@ venue-0020	Don's Cocktails	dons-cocktails	basic	verified	live_bar	El Cajon	El Ca
 venue-0005	Double Deuce	double-deuce	basic	verified	live_bar	San Diego	Gaslamp Quarter	Downtown	528 F St, San Diego, CA 92101	32.7139	-117.1603	https://doubledeucesd.com/	@doubledeucesandiego				Thursday, Friday, Saturday	8:00 PM / 7:00 PM	10:00 PM	Savor Entertainment	Gaslamp, Country Karaoke, Weekly Karaoke	Gaslamp Quarter bar with Thursday-Saturday karaoke. Thursday runs 8-10 PM with Savor Entertainment; Friday and Saturday run 7-10 PM with Savor Entertainment.											FALSE	95	Nickalus Randle / @navynickaraoke provided recurring Double Deuce karaoke schedule. Flyer confirms Navy Nick country collab with Savor Entertainment on 07.11 and 07.17, 7-10 PM.	Navy Nick response 2026-07-15	Navy Nick / Savor Entertainment flyer		2026-07-15
 venue-0014	Flicks	flicks	basic	verified	live_bar	San Diego	Hillcrest	Central San Diego	1017 University Ave, San Diego, CA 92103	32.7483	-117.1546	https://www.sdflicks.com/	https://www.instagram.com/flicks_sd/?hl=enn				Tuesday	8:30 PM	1:30 AM	Thonie Lee	Hillcrest, Late Night, Weekly Karaoke	Hillcrest bar/nightlife venue with Tuesday karaoke from 8:30 PM-1:30 AM hosted by Thonie Lee.											FALSE	95	Nickalus Randle / @navynickaraoke provided Tuesday schedule: Flicks, 8:30 PM-1:30 AM, host Thonie Lee.	Navy Nick response 2026-07-15	Karaoke Venues SD - Full_Karaoke_Venue_List__Rebuilt_.csv		2026-07-15
 venue-0042	Gaslamplighter Karaoke Cocktail Bar	gaslamplighter	basic	verified	live_bar	San Diego	Gaslamp Quarter	Downtown	536 Market St, San Diego, CA 92101	32.7111	-117.1604		@gaslamplighter				Tuesday, Wednesday, Friday, Sunday, Thursday, Saturday	9:00 PM	last call		Gaslamp Quarter, Tuesday karaoke, Wednesday karaoke, Friday karaoke, Sunday karaoke, Thursday karaoke	Gaslamp karaoke cocktail bar with karaoke Tuesday through Sunday from 9 PM to last call. Hours and availability may vary for private events or full venue buyouts.											FALSE	100	Corey confirmed Tuesday through Sunday from 9 PM to last call. Monday is not included.	Corey direct confirmation 2026-09-14			2026-09-14
-venue-0056	Gingers	gingers	basic	verified	live_bar	San Diego	Gaslamp Quarter	Downtown	600 Fifth Ave (below Barleymash), San Diego (Gaslamp Quarter)	32.7119	-117.1604		@gingersgaslamp				Thursday	9:00 PM	12:00 AM	Mikey Mic	Gaslamp Quarter, Thursday karaoke, live karaoke	Gaslamp karaoke at Ginger's on Thursdays from 9 PM-12 AM.											FALSE	90	Corey confirmed Ginger's Thursday karaoke is 9 PM-12 AM. Host remains Mikey Mic from existing row unless corrected.	Corey direct correction 2026-07-02			2026-07-02
+venue-0056	Gingers	gingers	basic	verified	live_bar	San Diego	Gaslamp Quarter	Downtown	600 Fifth Ave (below Barleymash), San Diego (Gaslamp Quarter)	32.7119	-117.1604		@gingersgaslamp				Thursday	9:00 PM	12:00 AM	ALL MIC LONG	Gaslamp Quarter, Thursday karaoke, live karaoke	Gaslamp karaoke at Ginger's on Thursdays from 9 PM to midnight, hosted by ALL MIC LONG.											FALSE	90	Recurring event hosted by ALL MIC LONG. Individual DJ credit is not permanent due to rotating company roster.	ALL MIC LONG direct schedule and company-only attribution to Corey 2026-10-18			2026-10-18
 venue-0054	Happy Does	happy-does	basic	verified	live_bar	San Diego	Gaslamp Quarter	Downtown	340 5th Ave, San Diego, CA 92101	32.7109	-117.1585		@happydoesbar				Thursday, Friday, Saturday	8:30 PM	last call	Almost Famous Entertainment	Gaslamp Quarter, Thursday karaoke, Friday karaoke, Saturday karaoke, live karaoke	Gaslamp Quarter karaoke Thursday through Saturday from 8:30 PM to last call, hosted by Almost Famous Entertainment.											TRUE	100	Corey confirmed Thursday through Saturday from 8:30 PM to last call with Almost Famous Entertainment.	Corey direct confirmation 2026-09-14	Almost Famous Entertainment / Veronica canonical host profile		2026-09-14
-venue-0003	Hearth House	hearth-house	basic	verified	live_bar	San Diego	La Mesa	East County	5505 Jackson Dr, La Mesa, CA 91942	32.7734	-117.0326	https://hearthhousebar.com	@hearthcocktails				Tuesday, Wednesday, Thursday	9:00 PM	close	James	La Mesa, Tuesday karaoke, Wednesday karaoke, Thursday karaoke, live karaoke	La Mesa / East County karaoke venue with karaoke Tuesday through Thursday from 9 PM to close, hosted by James.											FALSE	100	Corey confirmed Hearth House karaoke runs Tuesday through Thursday from 9 PM to close with James hosting all three nights.	Corey direct confirmation 2026-09-13	Corey direct update 2026-07-02		2026-09-13
+venue-0003	Hearth House	hearth-house	basic	verified	live_bar	San Diego	La Mesa	East County	5505 Jackson Dr, La Mesa, CA 91942	32.7734	-117.0326	https://hearthhousebar.com	@hearthcocktails				Tuesday, Wednesday, Thursday	9:00 PM	close	Rodney	La Mesa, Tuesday karaoke, Wednesday karaoke, Thursday karaoke, live karaoke	La Mesa / East County karaoke venue with karaoke Tuesday through Thursday from 9 PM to close, hosted by Rodney.											FALSE	100	Rodney replaces James for Hearth House karaoke. Tuesday through Thursday times retained from prior confirmed schedule.	Corey direct host change 2026-10-18	Corey direct update 2026-07-02		2026-10-18
 venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearny Mesa / Convoy	Central San Diego	4428 Convoy St, San Diego, CA 92111	32.8244	-117.1541		@hivesandiego								Kearny Mesa / Convoy, private rooms	Kearny Mesa / Convoy private-room karaoke venue where guests reserve rooms and sing without a dedicated KJ host.											FALSE	100	Corey confirmed Hive is private-room karaoke. A recurring host should not be attached.	Corey direct confirmation 2026-09-13	@hivesandiego		2026-09-13
 ```
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 205
-- Candidate non-empty lines: 205
-- Added/changed lines: 1
-- Removed/changed lines: 1
+- Previous non-empty lines: 210
+- Candidate non-empty lines: 210
+- Added/changed lines: 0
+- Removed/changed lines: 0
 
-### Added or changed sample
-
-```text
-weekly-1st-street-bar-sunday	venue-0148	1st Street Bar	1st-street-bar-encinitas	Sunday	9:00 PM	TBD		TBD	TBD	TRUE	active	Weekly Sunday karaoke.	98	https://1ststreetbar.com/		2026-10-14	verified_official_current_schedule_needs_host_end_time	FALSE
-```
-
-### Removed or changed sample
-
-```text
-event-sugar-monkey-el-segundo-2026-10-14	venue-0147	Sugar Monkey Brewing & Social Club	sugar-monkey-brewing-el-segundo	Wednesday	6:00 PM					One-time: 2026-10-14	active	Wednesday, Oct. 14 karaoke starts at 6 PM at Sugar Monkey Brewing in El Segundo.	100	Official @sugarmonkeybrewing Instagram post supplied by Corey 2026-10-13	Current El Segundo business listings; local El Segundo event coverage	2026-10-13	first_party_current_event_travel_radar	FALSE
-```
+- No content changes.
 
 ## generated_events_review.tsv
 
@@ -100,19 +90,17 @@ event-sugar-monkey-el-segundo-2026-10-14	venue-0147	Sugar Monkey Brewing & Socia
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 2
-- Removed/changed lines: 2
+- Added/changed lines: 1
+- Removed/changed lines: 1
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-10-16T21:22:38.313Z",
-  "venues": 110,
+  "generatedAt": "2026-10-20T16:56:03.695Z",
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-10-16T00:50:58.221Z",
-  "venues": 108,
+  "generatedAt": "2026-10-20T16:53:25.068Z",
 ```
