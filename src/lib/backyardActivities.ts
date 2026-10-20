@@ -46,6 +46,7 @@ export const backyardVenueOffers:BackyardOffer[]=[
  {slug:"werewolf",activities:["football","basketball","specials"],highlights:["Sports viewing","Brunch","Game-day wings"],source:"https://thewerewolf.net/happenings"},
  {slug:"saddle-bar",activities:["football","live-music"],highlights:["49ers watch bar","Thursday bands","Sunday open mic"],source:"https://thesaddlebar.com/"},
  {slug:"shooters-cocktails",activities:["pool-games","live-music","specials"],highlights:["Pool tables","Beer pong tournament","Live bands"],source:"https://www.shooterscocktailsbar.com/"},
+ {slug:"whiskey-girl",activities:["ufc"],highlights:["UFC viewing location (official locator, Oct 2026)"],source:"https://www.ufc.com/bars",ufcSource:"https://www.ufc.com/bars"},
  {slug:"u-31",activities:["trivia","pool-games","live-music","ufc"],highlights:["UFC viewing location (official locator, Oct 2026)","Thursday trivia","Pool","Weekend DJs"],source:"https://u31bar.com/",ufcSource:"https://www.ufc.com/bars"},
  {slug:"the-north-bar-escondido",activities:["football","basketball","pool-games","live-music"],highlights:["Sports on TV","Darts","Live bands"],source:"https://www.thenorthbar.com/"},
  {slug:"rosie-ogradys",activities:["trivia","football","basketball","live-music","specials"],highlights:["Trivia","Sports viewing","Live music"],source:"https://rosieogradyssd.com/"},
