@@ -9,7 +9,7 @@ const DAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturda
 export type PlusDay=(typeof DAYS)[number];
 export const PLUS_DAYS=DAYS;
 
-const PLACE_AMENITIES=/\bpool tables?\b|\bpool and shuffleboard\b|^pool$|\bdarts?\b|\bshuffleboard\b|\barcade\b|\bbowling\b|\bcornhole\b|\bfoosball\b|\bjukebox\b|\bmechanical bull\b|\bsports (?:on (?:TV|TVs)|TVs?|screens?|viewing|bar)\b|\bgame-day viewing\b/i;
+const PLACE_AMENITIES=/\bpool tables?\b|\bpool and shuffleboard\b|^pool$|\bdarts?\b|\bshuffleboard\b|\barcade\b|\bbowling\b|\bcornhole\b|\bfoosball\b|\bjukebox\b|\bmechanical bull\b|\bsports (?:on (?:TV|TVs)|TVs?|screens?|viewing|bar)\b|\bgame-day viewing\b|\bufc viewing location\b/i;
 
 /**
  * A weekday in a sourced highlight denotes a recurring *listing*, not confirmation
