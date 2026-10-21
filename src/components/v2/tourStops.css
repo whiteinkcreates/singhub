@@ -1,65 +1,65 @@
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-check-in{margin:18px 0}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-check-in-button,:is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog button,:is(.v2-basic,.v2-enhanced,.v2-account) .gig-refresh{background:#09151e;color:#fff;border:1px solid #0bd3ef;border-radius:8px;padding:12px 16px;font:700 17px Barlow,sans-serif;cursor:pointer}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog{background:#101820;color:#fff;border:1px solid #0bd3ef;border-radius:15px;width:min(520px,calc(100vw - 32px));max-height:85dvh;overflow:auto;padding:30px;margin:auto;font:18px/1.5 Barlow,sans-serif}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog::backdrop{background:#020711d9}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog h2{font:800 32px/1.1 'Barlow Condensed',sans-serif;margin:12px 0}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog .gig-close{float:right;border:0;font-size:26px;padding:0 10px}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-eyebrow{color:#0bd3ef;font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-fine{color:#b4c3ce;font-size:15px}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog form label{display:grid;gap:8px}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog input{width:100%;background:#061018;color:white;border:1px solid #667582;border-radius:6px;padding:12px}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions{display:grid;gap:12px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-check-in{margin:18px 0}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-check-in-button,:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog button,:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-refresh{background:#09151e;color:#fff;border:1px solid #0bd3ef;border-radius:8px;padding:12px 16px;font:700 17px Barlow,sans-serif;cursor:pointer}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog{background:#101820;color:#fff;border:1px solid #0bd3ef;border-radius:15px;width:min(520px,calc(100vw - 32px));max-height:85dvh;overflow:auto;padding:30px;margin:auto;font:18px/1.5 Barlow,sans-serif}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog::backdrop{background:#020711d9}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog h2{font:800 32px/1.1 'Barlow Condensed',sans-serif;margin:12px 0}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog .gig-close{float:right;border:0;font-size:26px;padding:0 10px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-eyebrow{color:#0bd3ef;font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-fine{color:#b4c3ce;font-size:15px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog form label{display:grid;gap:8px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog input{width:100%;background:#061018;color:white;border:1px solid #667582;border-radius:6px;padding:12px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-actions{display:grid;gap:12px}
 /* GPS is the recommended route. Self-report remains available for indoor drift. */
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions button.gig-gps-primary{
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-actions button.gig-gps-primary{
  min-height:54px;width:100%;border:2px solid #00c8ff;
  background:linear-gradient(112deg,#036c92,#092a53 58%,#30143a);
  box-shadow:inset 0 1px rgba(255,255,255,.17),0 0 16px rgba(0,200,255,.19);
  color:#fff;font:900 17px/1.2 Barlow,sans-serif;
 }
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions button.gig-gps-primary:not(:disabled):hover{
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-actions button.gig-gps-primary:not(:disabled):hover{
  border-color:#61edff;background:linear-gradient(112deg,#047da7,#0d3567 58%,#471648);
  box-shadow:0 0 20px rgba(0,200,255,.27);
 }
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions button.gig-self-report{
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-actions button.gig-self-report{
  min-height:42px;width:100%;padding:9px 12px;border:1px solid rgba(142,171,190,.55);
  background:rgba(5,12,20,.55);color:#d1dfe8;font:650 14px/1.3 Barlow,sans-serif;
 }
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-actions button.gig-self-report:not(:disabled):hover{
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-actions button.gig-self-report:not(:disabled):hover{
  border-color:#ff19a8;background:rgba(255,25,168,.09);color:#fff;
 }
 
 
 /* An inaccurate indoor GPS fix must not strand a singer at the venue.
    Recovery is an explicit, labeled self-report and never impersonates GPS verification. */
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-gps-recovery{
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-gps-recovery{
  display:grid;gap:9px;margin:14px 0 18px;padding:16px;
  border:1px solid rgba(255,25,168,.65);border-left:5px solid #ff19a8;
  border-radius:10px;background:linear-gradient(135deg,rgba(255,25,168,.12),rgba(0,200,255,.07));
 }
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-gps-recovery strong{
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-gps-recovery strong{
  color:#fff;font:900 18px/1.22 Barlow,sans-serif;
 }
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-gps-recovery p{
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-gps-recovery p{
  margin:0;color:#d6e3ec;font:500 15px/1.45 Barlow,sans-serif;
 }
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-gps-recovery button{
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-gps-recovery button{
  min-height:48px;width:100%;background:#0b2430;border:1px solid #00c8ff;border-radius:8px;
  color:#fff;font:800 16px Barlow,sans-serif;cursor:pointer;
 }
 
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog button:disabled{opacity:.6;cursor:wait}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog a{color:#0bd3ef;text-decoration:underline}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-stub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:16px;padding:20px}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-stub{display:grid;gap:10px;background:#101b25;color:#e5f8fc;padding:22px;border:1px dashed #0bd3ef;border-left:7px solid #ff1ba8;border-radius:12px;text-decoration:none;overflow-wrap:anywhere}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-stub strong{font:800 29px/1.1 'Barlow Condensed',sans-serif}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-stub span,:is(.v2-basic,.v2-enhanced,.v2-account) .gig-stub small{font:15px/1.4 Barlow,sans-serif}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-collection>p,:is(.v2-basic,.v2-enhanced,.v2-account) .gig-collection>.gig-refresh{margin:18px}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-refresh{font-size:15px}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-stub:focus-visible,:is(.v2-basic,.v2-enhanced,.v2-account) .gig-dialog button:focus-visible,:is(.v2-basic,.v2-enhanced,.v2-account) .gig-check-in-button:focus-visible{outline:3px solid #ff1ba8;outline-offset:4px}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-check-in .gig-check-in-button{width:100%;min-height:48px;font:700 17px Barlow,sans-serif;color:#fff}
-:is(.v2-basic,.v2-enhanced,.v2-account) .gig-collection{scroll-margin-top:100px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog button:disabled{opacity:.6;cursor:wait}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog a{color:#0bd3ef;text-decoration:underline}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-stub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:16px;padding:20px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-stub{display:grid;gap:10px;background:#101b25;color:#e5f8fc;padding:22px;border:1px dashed #0bd3ef;border-left:7px solid #ff1ba8;border-radius:12px;text-decoration:none;overflow-wrap:anywhere}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-stub strong{font:800 29px/1.1 'Barlow Condensed',sans-serif}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-stub span,:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-stub small{font:15px/1.4 Barlow,sans-serif}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-collection>p,:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-collection>.gig-refresh{margin:18px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-refresh{font-size:15px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-stub:focus-visible,:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog button:focus-visible,:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-check-in-button:focus-visible{outline:3px solid #ff1ba8;outline-offset:4px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-check-in .gig-check-in-button{width:100%;min-height:48px;font:700 17px Barlow,sans-serif;color:#fff}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-collection{scroll-margin-top:100px}
 
-:is(.v2-basic,.v2-enhanced,.v2-account) .tour-collection{scroll-margin-top:100px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-collection{scroll-margin-top:100px}
 :is(.v2-account) .tour-collection .panel-head{align-items:flex-end;gap:18px}
 :is(.v2-account) .tour-count{display:grid;flex:0 0 104px;min-width:0;align-content:center;padding:12px 10px;border:1px solid rgba(0,200,255,.28);background:rgba(0,200,255,.07);text-align:center}
 :is(.v2-account) .tour-count strong{font:900 2rem/1 'Barlow Condensed',sans-serif;color:#fff}
