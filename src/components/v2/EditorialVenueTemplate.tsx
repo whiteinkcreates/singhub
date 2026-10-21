@@ -35,8 +35,8 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
  const root=useRef<HTMLDivElement>(null);
  const viewerInitials=useViewerInitials();
  const row=makeVenueRow(venue,events,weekday,enhancement);
- const heroUrl=enhancement?.heroImageUrl||venue.bannerImageUrl||"/images/og/singhub-og.png";
- const gallery=[{url:heroUrl,alt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName,placement:enhancement?.heroPlacement||venue.bannerImagePlacement},...(enhancement?.gallery||[]).filter(item=>item.url!==heroUrl)];
+ const heroUrl=enhancement?.heroImageUrl||venue.bannerImageUrl;
+ const gallery=[...(heroUrl?[{url:heroUrl,alt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName,placement:enhancement?.heroPlacement||venue.bannerImagePlacement}]:[]),...(enhancement?.gallery||[]).filter(item=>item.url!==heroUrl)];
  const [photoIndex,setPhotoIndex]=useState(0);
  const selectedPhoto=gallery[photoIndex]||gallery[0];
  const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:singHereForHostNight(venue.slug,events,weekday,enhancement?.singHere)});
@@ -57,7 +57,7 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
  ].filter((entry):entry is [string,string]=>Boolean(entry[1]));
  const story=enhancement?.about||venue.description;
  const tagline=enhancement?.tagline||venue.enhancementTagline;
- const photoIsVenueImage=Boolean(enhancement?.heroImageUrl||venue.bannerImageUrl);
+ const photoIsVenueImage=Boolean(heroUrl);
  const venueVibe=venue.venueType==="private_room"?"PRIVATE KARAOKE":venue.venueType==="event_producer"?"KARAOKE EVENTS":"KARAOKE + NIGHTLIFE";
 
  return <div className="venue-editorial" ref={root}>
@@ -69,7 +69,7 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
 
   <main>
    <section className={"ve-hero"+(!photoIsVenueImage?" ve-no-photo":"")} aria-labelledby="venue-name">
-    <PositionedImage src={heroUrl} placement={enhancement?.heroPlacement||venue.bannerImagePlacement} position={enhancement?.heroPosition||venue.bannerImagePosition||"center"} className="ve-hero-image" alt={enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName}/>
+    {heroUrl?<PositionedImage src={heroUrl} placement={enhancement?.heroPlacement||venue.bannerImagePlacement} position={enhancement?.heroPosition||venue.bannerImagePosition||"center"} className="ve-hero-image" alt={enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName}/>:null}
     <div className="ve-hero-shade" aria-hidden="true"/>
     <div className="ve-hero-top"><span className="ve-kicker">{venue.neighborhood} / {venue.city}</span>{isPartner?<span className="ve-partner">SingHUB Partner</span>:null}</div>
     <div className="ve-hero-bottom">
