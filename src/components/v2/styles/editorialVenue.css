@@ -238,3 +238,15 @@
 }
 .venue-editorial .ve-hero h1 {overflow-wrap:anywhere;}
 .venue-editorial .ve-story h2 {overflow-wrap:break-word;}
+
+/* SingHUB following carries its own app behavior; presentation belongs to the venue layout. */
+.venue-editorial .follow-venue {
+ display:grid;gap:13px;padding:26px 0;border-top:1px solid var(--ve-divider);
+}
+.venue-editorial .follow-venue strong {font-family:"Barlow Condensed",sans-serif;font-size:1.7rem;line-height:1.1;}
+.venue-editorial .follow-venue p {margin-top:7px;font-size:.83rem;color:var(--ve-muted);}
+.venue-editorial .follow-venue :is(button,a) {justify-self:start;padding:10px 15px;border:1px solid var(--ve-cyan);background:rgba(0,200,255,.08);color:#b2f1ff;text-decoration:none;font-weight:800;font-size:.83rem;}
+.venue-editorial .follow-venue label {display:flex;gap:9px;align-items:center;color:#e5ecf1;font-size:.81rem;}
+.venue-editorial .follow-venue input {width:17px;height:17px;accent-color:var(--ve-pink);}
+.venue-editorial .ve-aside .gig-check-in {margin:15px 0 0;}
+.venue-editorial .ve-aside .gig-check-in-button {width:100%;min-height:48px;}
