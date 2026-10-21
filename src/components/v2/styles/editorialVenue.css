@@ -226,3 +226,15 @@
 @media(prefers-reduced-motion:reduce){
  .venue-editorial * {scroll-behavior:auto!important;transition:none!important;}
 }
+
+/* Photoless Enhanced profiles receive a purposeful stage composition, not a blank or generic image. */
+.venue-editorial .ve-hero.ve-no-photo::before {
+ content:"";position:absolute;inset:0;z-index:-2;
+ background:
+  radial-gradient(ellipse 26% 90% at 12% -10%,rgba(255,255,255,.15),transparent 80%),
+  radial-gradient(ellipse 35% 90% at 78% -10%,rgba(0,200,255,.18),transparent 80%),
+  repeating-linear-gradient(90deg,transparent 0,transparent 13%,rgba(255,255,255,.015) 13.1%,transparent 13.3%),
+  linear-gradient(130deg,#121624 0,#070910 62%,#1a1020);
+}
+.venue-editorial .ve-hero h1 {overflow-wrap:anywhere;}
+.venue-editorial .ve-story h2 {overflow-wrap:break-word;}
