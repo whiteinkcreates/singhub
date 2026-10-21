@@ -37,7 +37,11 @@ const partnerSpecials=isEnhanced?[...(enhancement?.weeklySpecials||[]),...(enhan
 const todayParts=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
 const todayMap=Object.fromEntries(todayParts.map(part=>[part.type,part.value]));
 const localToday=`${todayMap.year}-${todayMap.month}-${todayMap.day}`;
-const venueEvents=(isEnhanced?(enhancement?.venueEvents||[]):[]).filter(event=>event.date>=localToday).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
+const boardCalendarEvents=posts.filter(post=>(post.category==="special_event" || post.category==="theme_karaoke") && post.eventDate>=localToday)
+  .map(post=>({title:post.title,date:post.eventDate,time:post.startTime,detail:post.detail,category:post.category==="theme_karaoke"?"karaoke" as const:"special" as const,sourceUrl:"/events/"+post.id}));
+const venueEvents=(isEnhanced?[...(enhancement?.venueEvents||[]),...boardCalendarEvents]:[]).filter(event=>event.date>=localToday)
+  .filter((event,index,array)=>array.findIndex(item=>item.date===event.date&&item.title.toLowerCase()===event.title.toLowerCase()&&(item.time||"")===(event.time||""))===index)
+  .sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
 
 return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <article className="app-view active">
