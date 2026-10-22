@@ -138,7 +138,7 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
      </section>
      {isLiveMarket?<FollowVenue venueId={venue.id} venueSlug={venue.slug} venueName={venue.venueName}/>:null}
      {isLiveMarket&&events.length>0?<TipAChair venueSlug={venue.slug}/>:null}
-     {roomDetails.length>0?<section className="ve-amenities"><p className="ve-overline">WHAT YOU'LL FIND</p><h3>Around the room.</h3><ul>{roomDetails.map(item=><li key={item}>{item}</li>)}</ul></section>:null}
+     {roomDetails.length>0?<section className="ve-amenities"><p className="ve-overline">WHAT YOU’LL FIND</p><h3>Around the room.</h3><ul>{roomDetails.map(item=><li key={item}>{item}</li>)}</ul></section>:null}
     </aside>
    </div>
 
