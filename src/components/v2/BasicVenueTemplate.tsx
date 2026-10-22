@@ -22,9 +22,9 @@ import { VenueFeedback } from './VenueModules';
 import type { VenueTemplateProps } from './VenueModules';
 
 import "./styles/basic.css";
-export function BasicVenueTemplate({venue,events,enhancement,weekday,singersSay,posts=[]}:VenueTemplateProps) {
+export function BasicVenueTemplate({venue,events,kjHosts=[],enhancement,weekday,singersSay,posts=[]}:VenueTemplateProps) {
 const root=useRef<HTMLDivElement>(null);const viewerInitials=useViewerInitials();void viewerInitials;
-const row=makeVenueRow(venue,events,weekday,enhancement);const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:singHereForHostNight(venue.slug,events,weekday,enhancement?.singHere)});
+const row=makeVenueRow(venue,events,weekday,enhancement);const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:singHereForHostNight(venue.slug,events,weekday,enhancement?.singHere,kjHosts)});
 const details=[['Address',venue.address],['Room type',row.kind],['Age policy',venue.agePolicy],['Parking',venue.parkingInfo],['Accessibility',venue.accessibilityNotes],['Cover',venue.coverCharge],['About the room',venue.description],['Phone',enhancement?.phone]].filter((item):item is [string,string]=>Boolean(item[1]));
 const isEnhanced=Boolean(enhancement?.enabled);
 const isConfirmedPartner=isEnhanced&&enhancement?.partnerConfirmed===true;

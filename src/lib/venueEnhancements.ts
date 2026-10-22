@@ -14,6 +14,8 @@ export type SingHereConfig = {
   instructions?: string;
   linkLabel?: string;
   title?: string;
+  kjName?: string;
+  kjTips?: {label:string;url:string}[];
 };
 
 export const HOTEL_VIBE_OPTIONS = [

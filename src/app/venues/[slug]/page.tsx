@@ -12,6 +12,7 @@ import {
 } from "@/lib/seoStructuredData";
 import { getPersistedVenueEnhancement } from "@/lib/venueEnhancements.server";
 import { getVenueListingBySlug, getVenueListings } from "@/lib/venueData";
+import {getActiveHosts} from "@/lib/hostData";
 
 type VenuePageProps = { params: Promise<{ slug: string }> };
 
@@ -72,11 +73,12 @@ export default async function VenuePage({ params }: VenuePageProps) {
   const venue = await getVenueListingBySlug(canonicalSlug);
   if (!venue || !isPublicVenue(venue)) notFound();
 
-  const [events, enhancement, singersSay, posts] = await Promise.all([
+  const [events, enhancement, singersSay, posts, kjHosts] = await Promise.all([
     getKaraokeEventsByVenueSlug(venue.slug),
     getPersistedVenueEnhancement(venue.slug),
     getSingersSaySummary(venue.id),
     getActiveSingBoardFlyers().catch(() => []),
+    getActiveHosts({includeMedia:false}),
   ]);
 
   return (
@@ -94,7 +96,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
           ],
         }}
       />
-      <VenueProfile venue={venue} events={events} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venue.toLowerCase() === venue.venueName.toLowerCase())} />
+      <VenueProfile venue={venue} events={events} kjHosts={kjHosts.map(h=>({hostId:h.hostId,hostName:h.hostName,publicDisplayName:h.publicDisplayName,tipLink:h.tipLink}))} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venue.toLowerCase() === venue.venueName.toLowerCase())} />
     </>
   );
 }

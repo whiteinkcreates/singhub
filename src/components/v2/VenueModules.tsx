@@ -7,7 +7,7 @@ import type { VenueListing,KaraokeEventListing } from '@/types';
 import type { SingersSaySummary } from '@/lib/singersSay.server';
 import type { PersistedSingBoardPost } from '@/lib/singboard/repository';
 import type { VenueRowData } from '@/lib/v2/presentation';
-export type VenueTemplateProps={venue:VenueListing;events:KaraokeEventListing[];enhancement?:VenueEnhancement;singersSay?:SingersSaySummary;posts?:PersistedSingBoardPost[];weekday:string};
+export type VenueTemplateProps={kjHosts?:{hostId:string;hostName:string;publicDisplayName:string;tipLink?:string}[];venue:VenueListing;events:KaraokeEventListing[];enhancement?:VenueEnhancement;singersSay?:SingersSaySummary;posts?:PersistedSingBoardPost[];weekday:string};
 export function VenueFeatures({venue,row,enhancement}:{venue:VenueListing;row:VenueRowData;enhancement?:VenueEnhancement}){
  const features=[{icon:'♪',title:row.nightCount===7?'Karaoke-first room':row.kind,copy:row.rhythm+' on the current schedule.'},{icon:'✓',title:row.trust.replace('✓ ',''),copy:row.verification},...(enhancement?.amenities||venue.vibeTags).slice(0,1).map(title=>({icon:'◎',title,copy:venue.neighborhood}))];
  return <section className="signal-strip" aria-label={venue.venueName+' room features'}>{features.map(feature=><article className="signal" key={feature.title}><span className="signal-icon">{feature.icon}</span><div><strong>{feature.title}</strong><p>{feature.copy}</p></div></article>)}</section>;
