@@ -1,6 +1,16 @@
 'use client';
 import {useCallback,useEffect,useState} from 'react';
 import {accountClient} from '@/lib/v2/singerAccount';
+function TippedBarstoolIcon(){
+ return <svg className="tip-chair-stool" width="68" height="68" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <g transform="rotate(24 40 40)" strokeLinecap="round" strokeLinejoin="round">
+   <ellipse cx="40" cy="19" rx="20" ry="6" fill="#F52CA6" stroke="#FF96D5" strokeWidth="3"/>
+   <path d="M24 21 17 67M56 21 63 67M30 42h20M22 55h36" stroke="#80E9F5" strokeWidth="5"/>
+   <path d="M21 68h-8m54 0h-8" stroke="#80E9F5" strokeWidth="4"/>
+  </g>
+  <path d="M10 66h16" stroke="#F52CA6" strokeWidth="3" strokeLinecap="round"/>
+ </svg>;
+}
 type Night={date:string;going:number;plan:{intent:'going'|'maybe'}|null};
 export function TipAChair({venueSlug}:{venueSlug:string}){
  const [nights,setNights]=useState<Night[]>([]);
@@ -36,7 +46,7 @@ export function TipAChair({venueSlug}:{venueSlug:string}){
   finally{setSaving(false);}
  }
  return <section aria-label="Tip a Chair" className="tip-chair">
-  <div className="tip-chair-head"><div><span>UPCOMING KARAOKE</span><h3>Tip a Chair</h3></div><span aria-hidden="true">♬</span></div>
+  <div className="tip-chair-head"><div><span>UPCOMING KARAOKE</span><h3>Tip a Chair</h3></div><TippedBarstoolIcon/></div>
   <p>Thinking of going? Let other SingHUB singers know there is interest in this night.</p>
   {!signedIn&&!loading?<a href="/account?signin=1">Sign in to tip a chair →</a>:null}
   {loading?<p role="status">Loading upcoming nights…</p>:null}
