@@ -1,3 +1,4 @@
+import { getPublicNflAffiliations } from '@/lib/nflAffiliations';
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -96,7 +97,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
           ],
         }}
       />
-      <VenueProfile venue={venue} events={events} kjHosts={kjHosts.map(h=>({hostId:h.hostId,hostName:h.hostName,publicDisplayName:h.publicDisplayName,tipLink:h.tipLink}))} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venue.toLowerCase() === venue.venueName.toLowerCase())} />
+      <VenueProfile nflAffiliations={getPublicNflAffiliations().filter(a=>a.venueId===venue.id)} venue={venue} events={events} kjHosts={kjHosts.map(h=>({hostId:h.hostId,hostName:h.hostName,publicDisplayName:h.publicDisplayName,tipLink:h.tipLink}))} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venue.toLowerCase() === venue.venueName.toLowerCase())} />
     </>
   );
 }
