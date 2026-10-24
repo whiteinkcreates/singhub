@@ -1,0 +1,9 @@
+venue_id,team,team_code,affiliation_type,confidence,source_url,verification_note,checked_on
+venue-0030,Washington Commanders,WAS,home_bar,high,https://sandiego.tips/tips/nfl-team-bars-san-diego,Venue sports page reportedly calls itself home of Washington Commanders; game-time opening hours must be confirmed,2026-10-24
+venue-0006,Jacksonville Jaguars,JAX,fan_bar,high,https://www.sandiegoville.com/2026/09/san-diego-sports-bars-for-fan-of-nearly.html?m=0,User-confirmed and 2026 local guide; venue schedule to confirm,2026-10-24
+venue-0080,San Francisco 49ers,SF,fan_crowd,needs_confirmation,,"User reports strong 49ers fan base; 2026 SanDiegoVille lists Titans at same venue, so do not display as verified until venue confirms",2026-10-24
+venue-0113,Philadelphia Eagles,PHI,fan_bar,high,https://www.sandiegoville.com/2026/09/san-diego-sports-bars-for-fan-of-nearly.html?m=0,User-confirmed and 2026 local guide,2026-10-24
+venue-0062,Chicago Bears,CHI,fan_bar,medium,https://sandiego.tips/tips/nfl-team-bars-san-diego,2026 local roundup; venue confirmation pending,2026-10-24
+venue-0124,Denver Broncos,DEN,fan_bar,medium,https://sandiego.tips/tips/nfl-team-bars-san-diego,2026 local roundup; venue confirmation pending,2026-10-24
+venue-0041,Detroit Lions,DET,fan_bar,medium,https://sandiego.tips/tips/nfl-team-bars-san-diego,2026 local roundup; venue confirmation pending,2026-10-24
+venue-0008,New York Jets,NYJ,fan_bar,medium,https://www.sandiegoville.com/2026/09/san-diego-sports-bars-for-fan-of-nearly.html?m=1,2026 local roundup; venue confirmation pending,2026-10-24
