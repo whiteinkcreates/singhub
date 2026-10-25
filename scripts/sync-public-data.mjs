@@ -78,7 +78,7 @@ const DAY_ALIASES = {
 };
 
 const VENUE_COLUMNS = [
-  "id", "venue_name", "slug", "profile_tier", "listing_status", "venue_type", "city", "neighborhood", "address", "latitude", "longitude",
+  "id", "venue_name", "slug", "profile_tier", "listing_status", "venue_type", "city", "neighborhood", "market", "address", "latitude", "longitude",
   "website", "instagram", "banner_image_url", "banner_image_alt", "ticker_text", "karaoke_day", "start_time", "end_time", "host_name",
   "vibe_tags", "description", "specials", "happy_hour", "food_highlights", "drink_highlights", "parking_info", "age_policy",
   "accessibility_notes", "cover_charge", "reservation_link", "booking_contact", "is_featured", "confidence_score", "confidence_notes",
@@ -476,6 +476,7 @@ function buildVenues(sourceRows, report) {
       venue_type: venueType,
       city: clean(row.city),
       neighborhood: clean(row.neighborhood),
+      market: clean(row.market),
       address: clean(row.address),
       latitude: clean(row.latitude || coordinate.latitude),
       longitude: clean(row.longitude || coordinate.longitude),
