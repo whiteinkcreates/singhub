@@ -5,6 +5,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
 import { VenueProfile } from "@/components/venue/VenueProfile";
 import { getKaraokeEventsByVenueSlug } from "@/lib/eventData";
+import {applyKjSubs} from "@/lib/kjSubstitutions";
 import { getPublicVenues, isPublicVenue } from "@/lib/publicVenueFilters";
 import { getSingersSaySummary } from "@/lib/singersSay.server";
 import {
@@ -82,13 +83,14 @@ export default async function VenuePage({ params }: VenuePageProps) {
     getActiveHosts({includeMedia:false}),
   ]);
 
+  const currentEvents=applyKjSubs(events,venue.slug);
   return (
     <>
       <JsonLd
         data={{
           "@context": "https://schema.org",
           "@graph": [
-            venueStructuredData(venue, events),
+            venueStructuredData(venue, currentEvents),
             breadcrumbStructuredData([
               { name: "Home", path: "/" },
               { name: "Venue Index", path: "/places" },
@@ -97,7 +99,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
           ],
         }}
       />
-      <VenueProfile nflAffiliations={getPublicNflAffiliations().filter(a=>a.venueId===venue.id)} venue={venue} events={events} kjHosts={kjHosts.map(h=>({hostId:h.hostId,hostName:h.hostName,publicDisplayName:h.publicDisplayName,tipLink:h.tipLink}))} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venue.toLowerCase() === venue.venueName.toLowerCase())} />
+      <VenueProfile nflAffiliations={getPublicNflAffiliations().filter(a=>a.venueId===venue.id)} venue={venue} events={currentEvents} kjHosts={kjHosts.map(h=>({hostId:h.hostId,hostName:h.hostName,publicDisplayName:h.publicDisplayName,tipLink:h.tipLink}))} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venue.toLowerCase() === venue.venueName.toLowerCase())} />
     </>
   );
 }
