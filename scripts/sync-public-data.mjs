@@ -422,6 +422,11 @@ function buildVenues(sourceRows, report) {
     report.canonicalMappings,
   );
   const coordinates = loadCoordinates();
+  // The canonical venue sheet predates several public presentation fields.
+  // Preserve those fields from the last validated public snapshot ONLY when
+  // the source tab has no such column at all. An explicitly present blank
+  // canonical cell still wins, and canonical visibility/identity is always authoritative.
+  const previousPublicById = new Map(readPublicRows("venues.tsv").map(v => [clean(v.id), v]));
   const venues = [];
 
   for (const row of sourceRows) {
@@ -456,6 +461,12 @@ function buildVenues(sourceRows, report) {
     }
 
     const coordinate = coordinates[venueId] || coordinates[row.slug] || {};
+    const previous = previousPublicById.get(venueId);
+    const sameIdentity = previous && clean(previous.slug) === clean(row.slug);
+    const legacyField = field => {
+      if (Object.prototype.hasOwnProperty.call(row, field)) return clean(row[field]);
+      return sameIdentity ? clean(previous[field]) : "";
+    };
     venues.push({
       id: venueId,
       venue_name: venueName,
@@ -473,28 +484,28 @@ function buildVenues(sourceRows, report) {
       banner_image_url: clean(row.banner_image_url),
       banner_image_alt: clean(row.banner_image_alt),
       ticker_text: clean(row.ticker_text),
-      karaoke_day: clean(row.karaoke_day),
-      start_time: clean(row.start_time),
-      end_time: clean(row.end_time),
-      host_name: clean(row.host_name),
+      karaoke_day: legacyField("karaoke_day"),
+      start_time: legacyField("start_time"),
+      end_time: legacyField("end_time"),
+      host_name: legacyField("host_name"),
       vibe_tags: clean(row.vibe_tags),
       description: clean(row.public_description),
-      specials: clean(row.specials),
-      happy_hour: clean(row.happy_hour),
+      specials: legacyField("specials"),
+      happy_hour: legacyField("happy_hour"),
       food_highlights: clean(row.food_highlights),
-      drink_highlights: clean(row.drink_highlights),
-      parking_info: clean(row.parking_info),
+      drink_highlights: legacyField("drink_highlights"),
+      parking_info: legacyField("parking_info"),
       age_policy: clean(row.age_policy),
-      accessibility_notes: clean(row.accessibility_notes),
-      cover_charge: clean(row.cover_charge),
-      reservation_link: clean(row.reservation_link),
+      accessibility_notes: legacyField("accessibility_notes"),
+      cover_charge: legacyField("cover_charge"),
+      reservation_link: legacyField("reservation_link"),
       booking_contact: clean(row.booking_contact),
       is_featured: truthy(row.is_featured) || normalizeTier(row.profile_tier) === "premium" ? "TRUE" : "FALSE",
       confidence_score: clean(row.confidence_score),
       confidence_notes: clean(row.source_notes || row.internal_notes),
       source_1: clean(row.source_primary),
       source_2: clean(row.source_secondary),
-      source_3: clean(row.source_3),
+      source_3: legacyField("source_3"),
       last_verified: clean(row.last_verified),
       __rowNumber: row.__rowNumber,
     });

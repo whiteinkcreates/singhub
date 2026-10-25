@@ -53,16 +53,27 @@ async function getAccessToken() {
 export async function fetchGoogleSheetRows(sheetId, sheetTab, columnRange = "A:AZ") {
   const accessToken = await getAccessToken();
   const range = encodeURIComponent(`'${sheetTab}'!${columnRange}`);
-  const response = await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`,
-    { headers: { Authorization: `Bearer ${accessToken}` } },
-  );
-
-  if (!response.ok) {
-    throw new Error(`Google Sheets API responded with ${response.status} for ${sheetTab}.`);
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`;
+  let sheetResponse;
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    const response = await fetch(url, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    if (response.ok) {
+      sheetResponse = await response.json();
+      break;
+    }
+    if (![429, 500, 502, 503, 504].includes(response.status) || attempt === 4) {
+      throw new Error(`Google Sheets API responded with ${response.status} for ${sheetTab} after ${attempt + 1} attempt(s).`);
+    }
+    const retryAfter = Number(response.headers.get("retry-after"));
+    const backoffMs = Number.isFinite(retryAfter) && retryAfter > 0
+      ? Math.min(retryAfter * 1000, 30000)
+      : Math.min(2000 * (2 ** attempt), 30000);
+    console.warn(`Google Sheets ${sheetTab}: HTTP ${response.status}; retrying in ${Math.ceil(backoffMs / 1000)}s (attempt ${attempt + 1}/5).`);
+    await new Promise(resolve => setTimeout(resolve, backoffMs));
   }
-
-  const sheetResponse = await response.json();
+  if (!sheetResponse) throw new Error(`Google Sheets ${sheetTab} returned no data.`);
   const [headers = [], ...values] = sheetResponse.values || [];
 
   return values
