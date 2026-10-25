@@ -134,6 +134,7 @@ export type HostProfile = {
   websiteUrl?: string;
   tipLink?: string;
   bookingLink?: string;
+  signupLink?: string;
   bio?: string;
   vibeTags: string[];
   primaryAreas: string[];
