@@ -48,13 +48,13 @@ export function makeVenueRow(venue:VenueListing,events:KaraokeEventListing[],wee
   const nightCount=days.length;
   const date=verificationDate(events,venue);
   const verified=venue.listingStatus==='verified';
-  const kind=venue.venueType==='private_room'?'Private rooms':venue.venueType==='event_producer'?'Karaoke events':'Karaoke bar';
+  const kind=venue.venueType==='private_room'?'Private rooms':venue.venueType==='event_producer'?'Karaoke events':'Karaoke venue';
   const nights=nightCount+' '+(nightCount===1?'night':'nights');
   const qualifications=[...new Set(events.map(scheduleQualification).filter(Boolean))];
   const rhythm=venue.venueType==='private_room'?'Private rooms':nightCount===7?'Every night':events.length&&events.every(event=>Boolean(scheduleQualification(event)))?qualifications.join(' / '):nightCount?nights:'Schedule pending';
   const liveBandEvents=events.filter(event=>/live[- ]?band/i.test([event.eventNotes,event.hostName].join(' ')));
   const liveBandDays=[...new Set(liveBandEvents.map(event=>event.karaokeDay.slice(0,3)))];
-  const everydayTags=venue.vibeTags.filter(tag=>!/^live[- ]?band/i.test(tag)&&!/(monday|tuesday|wednesday|thursday|friday|saturday|sunday) karaoke/i.test(tag)&&tag.toLowerCase()!==venue.neighborhood.toLowerCase());
+  const everydayTags=venue.vibeTags.filter(tag=>!/^live karaoke$|^public karaoke$|^karaoke bar$|^karaoke venue$/i.test(tag.trim())&&!/^live[- ]?band/i.test(tag)&&!/(monday|tuesday|wednesday|thursday|friday|saturday|sunday) karaoke/i.test(tag)&&tag.toLowerCase()!==venue.neighborhood.toLowerCase());
   const tags=[nightCount===7?'Seven nights':nightCount?nights:'',...qualifications,liveBandDays.length?'Live band '+liveBandDays.join(' / '):'',...everydayTags,usable(venue.agePolicy)].filter(Boolean);
   const liveBandTonight=liveBandEvents.some(event=>today.includes(event));
   const tonightTags=[nightCount===7?'Seven nights':nightCount?nights:'',liveBandTonight?'Live band tonight':'',...everydayTags,usable(venue.agePolicy)].filter(Boolean).slice(0,4);
