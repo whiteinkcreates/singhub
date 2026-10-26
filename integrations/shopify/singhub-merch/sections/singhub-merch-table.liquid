@@ -10,7 +10,7 @@
     <nav class="sh-desktop-nav" aria-label="Primary"><a href="https://singhub.app">Discover</a><a href="https://singhub.app/find-karaoke">Venues</a><a href="https://singhub.app/hosts">Hosts</a><a href="https://singhub.app/hotel">Hotels</a><a href="https://singhub.app/singboard">SingBOARD</a></nav><div class="sh-header-actions"><a class="sh-return" data-return href="https://singhub.app/account#merch">My SingHUB <i class="material-symbols-rounded" aria-hidden="true">account_circle</i></a><button class="sh-bag-button" data-open-bag aria-haspopup="dialog" aria-controls="sh-bag">Bag <span data-cart-count>{{ cart.item_count }}</span></button><noscript><a href="{{ routes.cart_url }}">View cart</a></noscript></div>
   </header>
   <main id="merch-main" class="sh-merch-main">
-    <section class="sh-hero" aria-labelledby="sh-merch-title" style="--sh-hero-x:{{ section.settings.hero_x | default: 50 }}%;--sh-hero-y:{{ section.settings.hero_y | default: 50 }}%;--sh-hero-mobile-x:{{ section.settings.hero_mobile_x | default: 50 }}%;--sh-hero-mobile-y:{{ section.settings.hero_mobile_y | default: 50 }}%;--sh-hero-overlay:{{ section.settings.hero_overlay_color | default: '#000000' }};--sh-hero-opacity:{{ section.settings.hero_overlay_opacity | default: 45 | divided_by: 100.0 }};--sh-hero-text:{{ section.settings.hero_text_color | default: '#ffffff' }};--sh-hero-align:{{ section.settings.hero_text_align | default: 'left' }};--sh-hero-placement:{{ section.settings.hero_text_placement | default: 'center' }};">
+    <section class="sh-hero" aria-labelledby="sh-merch-title" style="--sh-hero-x:{{ section.settings.hero_x | default: 50 }}%;--sh-hero-y:{{ section.settings.hero_y | default: 50 }}%;--sh-hero-mobile-x:{{ section.settings.hero_mobile_x | default: 50 }}%;--sh-hero-mobile-fit:{{ section.settings.hero_mobile_fit | default: 'contain' }};--sh-hero-mobile-ratio:{{ section.settings.hero_mobile_image.aspect_ratio | default: section.settings.hero_image.aspect_ratio | default: 1.7778 }};--sh-hero-mobile-y:{{ section.settings.hero_mobile_y | default: 50 }}%;--sh-hero-overlay:{{ section.settings.hero_overlay_color | default: '#000000' }};--sh-hero-opacity:{{ section.settings.hero_overlay_opacity | default: 0 | divided_by: 100.0 }};--sh-hero-text:{{ section.settings.hero_text_color | default: '#ffffff' }};--sh-hero-align:{{ section.settings.hero_text_align | default: 'left' }};--sh-hero-placement:{{ section.settings.hero_text_placement | default: 'center' }};">
       {% assign hero_image = section.settings.hero_image | default: section.settings.hero_mobile_image %}
       {% if hero_image != blank %}
         <picture class="sh-hero-media">
@@ -103,6 +103,17 @@
       "info": "Uses the desktop image when left blank."
     },
     {
+      "type": "select",
+      "id": "hero_mobile_fit",
+      "label": "Mobile photo sizing",
+      "info": "Fit entire image keeps the whole scene visible. Fill and crop uses the mobile position controls.",
+      "options": [
+        {"value": "contain", "label": "Fit entire image"},
+        {"value": "cover", "label": "Fill screen and crop"}
+      ],
+      "default": "contain"
+    },
+    {
       "type": "range",
       "id": "hero_x",
       "label": "Desktop left / right",
@@ -156,7 +167,7 @@
       "max": 100,
       "step": 1,
       "unit": "%",
-      "default": 45
+      "default": 0
     },
     {
       "type": "color",

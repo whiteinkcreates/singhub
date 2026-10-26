@@ -1,0 +1,28 @@
+name: Shopify Merch mobile preview
+on:
+  pull_request:
+    paths:
+      - 'integrations/shopify/singhub-merch/**'
+      - 'tests/shopify-merch-mobile-preview.mjs'
+      - '.github/workflows/merch-mobile-qa.yml'
+permissions:
+  contents: read
+jobs:
+  merch-mobile:
+    if: startsWith(github.head_ref, 'fix/shopify-merch-responsive-')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/shopify-merch-mobile-preview.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: merch-mobile-preview
+          path: .merch-mobile-qa
+          include-hidden-files: true
