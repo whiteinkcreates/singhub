@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import {createHmac} from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { monthlyMic } from "@/lib/monthlymic";
 
@@ -23,10 +24,19 @@ export async function POST(req:Request) {
   if (!monthlyMic.rsvpOpen) return NextResponse.json({error:"RSVPs are closed."},{status:403,headers:noStore});
   try {
     const db=createAdminClient();
+    const forwarded=req.headers.get("x-vercel-forwarded-for")||req.headers.get("x-forwarded-for")||req.headers.get("x-real-ip");
+    const ip=(forwarded||"unknown").split(",")[0].trim().slice(0,80);
+    const secret=process.env.SINGHUB_ADMIN_PASSWORD||process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if(!secret)throw new Error("Rate limit key not configured");
+    const fingerprint=createHmac("sha256",secret).update(ip).digest("hex");
+    const since=new Date(Date.now()-60*60*1000).toISOString();
+    const {count,error:limitError}=await db.from("monthlymic_rsvps").select("id",{count:"exact",head:true}).eq("ip_hash",fingerprint).gte("created_at",since);
+    if(limitError)throw limitError;
+    if((count||0)>=12)return NextResponse.json({error:"Too many registrations from this network. Please try later."},{status:429,headers:noStore});
     const {error}=await db.from("monthlymic_rsvps").insert({
       event_id:monthlyMic.id, full_name:name,email,status,party_size:partySize,
       just_duet:payload.justDuet,photo_permission:payload.photoPermission,availability,
-      source,updated_at:new Date().toISOString()
+      source,ip_hash:fingerprint,updated_at:new Date().toISOString()
     });
     if(error?.code==="23505")return NextResponse.json({ok:true,message:"Thanks! If your email was already registered, your original entry remains on file."},{headers:noStore});
     if(error) throw error;
