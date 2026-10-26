@@ -99,7 +99,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
           ],
         }}
       />
-      <VenueProfile nflAffiliations={getPublicNflAffiliations().filter(a=>a.venueId===venue.id)} venue={venue} events={currentEvents} kjHosts={kjHosts.map(h=>({hostId:h.hostId,hostName:h.hostName,publicDisplayName:h.publicDisplayName,tipLink:h.tipLink}))} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venue.toLowerCase() === venue.venueName.toLowerCase())} />
+      <VenueProfile nflAffiliations={getPublicNflAffiliations().filter(a=>a.venueId===venue.id)} venue={venue} events={currentEvents} kjHosts={kjHosts.map(h=>({hostId:h.hostId,hostName:h.hostName,publicDisplayName:h.publicDisplayName,tipLink:h.tipLink,signupLink:h.signupLink}))} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.venue.toLowerCase() === venue.venueName.toLowerCase())} />
     </>
   );
 }
