@@ -13,10 +13,11 @@ export async function POST(req:Request) {
   const email=typeof payload.email==="string"?payload.email.trim().toLowerCase():"";
   const status="interested";
   const partySize=Number(payload.partySize);
+  const availability=payload.availability;
   const source=typeof payload.source==="string"?payload.source.replace(/[^a-z0-9_-]/gi,"").slice(0,40):"direct";
   if (name.length<2||name.length>100||!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)||email.length>254||
       !Number.isInteger(partySize)||partySize<1||partySize>6||
-      typeof payload.photoPermission!=="boolean"||typeof payload.justDuet!=="boolean") {
+      !["either","nov11","nov18","neither"].includes(String(availability))||typeof payload.photoPermission!=="boolean"||typeof payload.justDuet!=="boolean") {
     return NextResponse.json({error:"Please check your RSVP details."},{status:400,headers:noStore});
   }
   if (!monthlyMic.rsvpOpen) return NextResponse.json({error:"RSVPs are closed."},{status:403,headers:noStore});
@@ -24,7 +25,7 @@ export async function POST(req:Request) {
     const db=createAdminClient();
     const {error}=await db.from("monthlymic_rsvps").insert({
       event_id:monthlyMic.id, full_name:name,email,status,party_size:partySize,
-      just_duet:payload.justDuet,photo_permission:payload.photoPermission,
+      just_duet:payload.justDuet,photo_permission:payload.photoPermission,availability,
       source,updated_at:new Date().toISOString()
     });
     if(error?.code==="23505")return NextResponse.json({ok:true,message:"Thanks! If your email was already registered, your original entry remains on file."},{headers:noStore});
