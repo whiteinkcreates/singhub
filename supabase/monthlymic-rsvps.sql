@@ -10,6 +10,7 @@ create table if not exists public.monthlymic_rsvps (
   just_duet boolean not null default false,
   photo_permission boolean not null default false,
   source text,
+  availability text not null default 'either' check (availability in ('either','nov11','nov18','neither')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   unique(event_id,email_normalized)
