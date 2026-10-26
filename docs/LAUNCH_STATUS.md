@@ -1,5 +1,9 @@
 # SingHUB launch status
 
+## October 25 Merch Table menu link
+
+Adds Merch Table to the shared desktop More menu and mobile More menu, linking directly to https://whiteinkcreates.com/pages/singhub-merch-table. Menu-only change on current main after #469; no homepage, account, Shopify theme or canonical data changes. Source validation and production verification are recorded in the associated PR.
+
 ## October 20 verified venue/KJ reconciliation
 
 Reapplies selected #434/#363/#429/#431 data on main 7abcf243, preserving all 112 venue IDs, all 208 existing event IDs, venue GPS/media/Partner flags, and Katy's first/last Tuesday rows from #436. Adds only Saddle Bar's verified untimed Wednesday event. Includes #423 Glyph slug/College Area and legacy redirect, #426 Jason G/Savor affiliation, and the canonical Ed/Katie favorite spots missing from #428. Keeps latest #428 host enrichment.
