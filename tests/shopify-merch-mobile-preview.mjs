@@ -10,7 +10,6 @@ try{for(const viewport of [{width:320,height:568},{width:360,height:740},{width:
  await page.goto(url,{waitUntil:'domcontentloaded'});
  await page.locator('.sh-hero-media img').waitFor();await page.waitForFunction(()=>{const image=document.querySelector('.sh-hero-media img');return image?.complete&&image.naturalWidth>0;});
  await page.evaluate(()=>document.fonts.ready);
- for(const frame of page.frames())if(frame.url().includes('/preview-bar/')){const hide=frame.getByRole('button',{name:'Hide bar',exact:true});if(await hide.isVisible())await hide.click();}
  const metrics=await page.evaluate(()=>{
   const hero=document.querySelector('.sh-hero'),image=hero.querySelector('img'),copy=hero.querySelector('.sh-hero-copy'),cta=hero.querySelector('.sh-hero-link'),nav=document.querySelector('.sh-app-nav');
   const box=el=>{const r=el.getBoundingClientRect();return {top:r.top,bottom:r.bottom,left:r.left,right:r.right,width:r.width,height:r.height};};
