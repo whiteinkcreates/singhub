@@ -2,8 +2,8 @@
 export const monthlyMic = {
   id: "monthlymic-001",
   title: "SingHUB MonthlyMic #001",
-  venue: null as string | null,
-  date: null as string | null,
+  venue: "The Mesa" as string | null,
+  date: null as string | null, // November 18 is preferred, pending KJ/date confirmation
   startTime: null as string | null,
   neighborhood: "College Area, San Diego",
   heroUrl: "/images/og/singhub-og.png",
