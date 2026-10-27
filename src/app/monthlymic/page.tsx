@@ -21,8 +21,8 @@ export default async function MonthlyMicPage(){
     <div className="mb-8 flex items-center gap-4"><Image src={SITE_WORDMARK_SRC} alt="SingHUB" width={170} height={70} unoptimized className="h-auto w-[150px] object-contain"/><span className="text-sm font-black uppercase tracking-[.25em] text-cyan-300">Presents</span></div>
     <h1 className="text-5xl font-black tracking-tight sm:text-8xl">Monthly<span className="text-fuchsia-400">Mic</span></h1>
     <p className="mt-5 max-w-2xl text-xl text-slate-200">New venue. New voices. New friends. Every month.</p>
-    <p className="mt-6 text-sm font-semibold text-cyan-200">Stop #001 · The Mesa · {m.neighborhood} · Date pending (November 18 preferred)</p>
-    <a href="#rsvp" className="mt-8 inline-block rounded-xl bg-cyan-300 px-6 py-3 font-black text-slate-950">I'm interested</a>
+    <p className="mt-6 text-sm font-semibold text-cyan-200">Stop #001 · The Mesa · Wednesday, November 18 · Arrive 6:30–7 PM · {m.neighborhood}</p>
+    <a href="#rsvp" className="mt-8 inline-block rounded-xl bg-cyan-300 px-6 py-3 font-black text-slate-950">RSVP for November 18</a>
    </div>
   </section>
   <div className="mx-auto grid max-w-5xl gap-12 px-5 py-14 lg:grid-cols-[1fr_390px]">
@@ -30,8 +30,9 @@ export default async function MonthlyMicPage(){
     <h2 className="text-3xl font-black">Come for the people. Stay for karaoke.</h2>
     <p className="mt-4 leading-7 text-slate-300">Once a month, SingHUB brings people together at a different San Diego karaoke spot. Show up solo or with friends, meet the group, and settle into the venue's normal karaoke night. Singing is always optional.</p>
     <div className="mt-8 rounded-2xl border border-fuchsia-400/30 bg-fuchsia-400/10 p-6"><h3 className="text-2xl font-black">JustDuet 🎤</h3><p className="mt-2 text-slate-200">Feeling adventurous? Put your name in the bowl, get paired with another willing singer, and pick a duet. We'll work with the KJ's normal rotation.</p></div>
-    <div className="mt-6 rounded-2xl border border-white/10 p-6"><h3 className="text-xl font-bold">A custom SingHUB shirt giveaway is coming</h3><p className="mt-2 text-slate-300">A future prize will be printed on demand in the winner's chosen size. Rules and eligibility will be published before entries open. The giveaway is not open yet, and attendance is free.</p></div>
-    <h2 className="mt-12 text-2xl font-black">Gallery</h2><p className="mt-2 text-slate-300">The people make the night. Event photos will appear here after the first MonthlyMic, and selected images may be featured on the SingHUB homepage with permission.</p>
+    <div className="mt-6 rounded-2xl border border-white/10 p-6"><h3 className="text-xl font-bold">MonthlyMic shirt deal: $25 (regularly $31)</h3><p className="mt-2 text-slate-300">Reserve your size when you RSVP so we can bring shirts for pickup at The Mesa. Pay $25 at the meetup. Limited to shirts reserved by the ordering cutoff and available stock. No purchase required to attend.</p></div>
+    <a href="#rsvp" className="mt-4 inline-block rounded-xl bg-fuchsia-400 px-5 py-3 font-black text-slate-950">Reserve a $25 shirt for pickup</a>
+    <h2 className="mt-12 text-2xl font-black">Gallery</h2><p className="mt-2 text-slate-300">Meet our first host, The Mesa. After the event we’ll add attendee photos here, with permission.</p>
     {m.gallery.length>0?<div className="mt-5 grid grid-cols-2 gap-3">{m.gallery.map(p=><figure key={p.url}><img src={p.url} alt={p.alt} className="aspect-square w-full rounded-xl object-cover"/>{p.credit&&<figcaption className="text-xs">{p.credit}</figcaption>}</figure>)}</div>:<div className="mt-5 rounded-2xl border border-dashed border-white/20 bg-white/5 p-10 text-center text-slate-400">The first MonthlyMic gallery starts with you.</div>}
     <p className="mt-10 text-sm text-slate-400">Have a venue we should visit next? Bring your nomination. We'll collect suggestions at the meetup.</p>
     <Link href="/singboard" className="mt-4 inline-block text-cyan-300 underline">More local events on SingBOARD</Link>
