@@ -7,11 +7,11 @@ export default function RsvpForm(){
  async function submit(e:FormEvent<HTMLFormElement>){
   e.preventDefault();setState("saving");setError("");
   const f=new FormData(e.currentTarget);
-  const payload={name:f.get("name"),email:f.get("email"),status:"interested",partySize:Number(f.get("partySize")),availability:"nov18",shirtSize:f.get("shirtSize")||null,justDuet:f.has("justDuet"),photoPermission:f.has("photoPermission"),website:f.get("website"),source:new URLSearchParams(window.location.search).get("src")||"direct"};
+  const payload={name:f.get("name"),email:f.get("email"),status:"interested",partySize:Number(f.get("partySize")),availability:"nov18",justDuet:f.has("justDuet"),photoPermission:f.has("photoPermission"),website:f.get("website"),source:new URLSearchParams(window.location.search).get("src")||"direct"};
   try{const r=await fetch("/api/monthlymic/rsvp",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok)throw new Error(d.error||"Unable to save RSVP");setState("saved");}
   catch(ex){setState("failed");setError(ex instanceof Error?ex.message:"Unable to save RSVP");}
  }
- if(state==="saved")return <div role="status" className="rounded-2xl bg-cyan-300 p-6 font-bold text-slate-950">RSVP received for November 18! 🎤 If you reserved a shirt, we'll confirm availability and pickup details by email.</div>;
+ if(state==="saved")return <div role="status" className="rounded-2xl bg-cyan-300 p-6 font-bold text-slate-950">RSVP received for November 18! 🎤 Shirt purchases are separate through WhiteInk Creates.</div>;
  return <form onSubmit={submit} className="space-y-4 rounded-3xl border border-cyan-300/30 bg-slate-900 p-5 sm:p-7">
   <h2 className="text-2xl font-black">Count me in</h2>
   <p className="text-sm text-slate-300">Wednesday, November 18 at The Mesa. Arrive 6:30–7 PM. Bryon joins around 7:30. Free to attend; no SingHUB account required.</p>
@@ -20,7 +20,6 @@ export default function RsvpForm(){
   <label className="block text-sm font-semibold">Email<input name="email" required type="email" maxLength={254} autoComplete="email" className="mt-1 w-full rounded-lg bg-white p-3 text-slate-950"/></label>
   
   <label className="block text-sm font-semibold">Group size<select name="partySize" className="mt-1 w-full rounded-lg bg-white p-3 text-slate-950">{[1,2,3,4,5,6].map(n=><option key={n} value={n}>{n}</option>)}</select></label>
-  <label className="block text-sm font-semibold">Optional: Reserve a SingHUB shirt for $25 (normally $31)<select name="shirtSize" defaultValue="" className="mt-1 w-full rounded-lg bg-white p-3 text-slate-950"><option value="">No shirt, thanks</option>{["S","M","L","XL","2XL","3XL"].map(size=><option key={size} value={size}>{size}</option>)}</select><span className="mt-1 block text-xs font-normal text-slate-400">For pickup and payment at The Mesa. Reservation requests are subject to availability and confirmation; no payment is collected here.</span></label>
   <label className="flex gap-3 text-sm"><input type="checkbox" name="justDuet" className="accent-cyan-300"/> I'm interested in JustDuet, the optional random duet partner draw.</label>
   <label className="flex gap-3 text-sm"><input type="checkbox" name="photoPermission" className="accent-cyan-300"/> SingHUB may feature photographs/video showing me from this event on its website, homepage and social media. I can decline and still attend. I can request removal of future use by contacting SingHUB.</label>
   <p className="text-xs text-slate-400">We'll use your email for this event's RSVP and logistics. We won't add you to promotional mailings without separate consent. Anyone attending can tell the photographer they prefer not to be recorded.</p>
