@@ -1,3 +1,4 @@
+import {requireAdminAuthorization} from "@/lib/adminAuthorization";
 import Link from "next/link";
 import {createAdminClient} from "@/lib/supabase/admin";
 import {monthlyMic} from "@/lib/monthlymic";
@@ -5,6 +6,7 @@ import {cancelMonthlyMicRsvp} from "./actions";
 export const dynamic="force-dynamic";
 export const metadata={title:"MonthlyMic RSVPs | SingHUB Admin",robots:{index:false,follow:false}};
 export default async function MonthlyMicAdmin(){
+ await requireAdminAuthorization();
  const db=createAdminClient();
  const {data,error}=await db.from("monthlymic_rsvps").select("id,full_name,email,status,party_size,just_duet,photo_permission,availability,shirt_size,source,created_at").eq("event_id",monthlyMic.id).order("created_at",{ascending:false}).limit(500);
  return <main className="mx-auto max-w-6xl px-4 py-10 text-white">
