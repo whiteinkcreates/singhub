@@ -4,10 +4,10 @@ Candidate output compared with the currently committed public data.
 
 ## venues.tsv
 
-- Previous non-empty lines: 113
-- Candidate non-empty lines: 113
-- Added/changed lines: 113
-- Removed/changed lines: 113
+- Previous non-empty lines: 117
+- Candidate non-empty lines: 117
+- Added/changed lines: 117
+- Removed/changed lines: 117
 
 ### Added or changed sample
 
@@ -61,12 +61,42 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 
 ## events_by_night.tsv
 
-- Previous non-empty lines: 210
-- Candidate non-empty lines: 210
-- Added/changed lines: 0
-- Removed/changed lines: 0
+- Previous non-empty lines: 219
+- Candidate non-empty lines: 219
+- Added/changed lines: 11
+- Removed/changed lines: 11
 
-- No content changes.
+### Added or changed sample
+
+```text
+weekly-whiskey-girl-thursday	venue-0008	Whiskey Girl	whiskey-girl	Thursday	9:00 PM	1:00 AM		Live Band Karaoke	Live Band Karaoke	TRUE	active	Thursday Live Band Karaoke from 9 PM to 1 AM (operator's current listing).	100	https://www.bardicmanagement.com/whiskey-girl	2026-09-23 venue promotional copy listed 8:30 PM; current Bardic live music calendar and Oct 22, Oct 29 events list 9 PM. https://www.bardicmanagement.com/whiskey-girl	2026-10-22	verified_direct_venue_schedule	FALSE
+weekly-peter-ds-thursday	venue-0038	Peter D's	peter-ds	Thursday	TBD	TBD		Bri / Hannah (rotating; specific night unconfirmed)	Bri / Hannah (rotating; specific night unconfirmed)	TRUE	active	Thursday karaoke. Regular hosts Bri and Hannah rotate; exact host and times to be confirmed.	90	Corey direct venue/host schedule confirmation 2026-10-22	Former Sep 13 quarantine and unverified 9 PM start removed. Nightly host assignment/times must still be confirmed.	2026-10-22	verified_direct_user_confirmation	FALSE
+weekly-peter-ds-friday	venue-0038	Peter D's	peter-ds	Friday	TBD	TBD		Bri / Hannah (rotating; specific night unconfirmed)	Bri / Hannah (rotating; specific night unconfirmed)	TRUE	active	Friday karaoke. Regular hosts Bri and Hannah rotate; exact host and times to be confirmed.	90	Corey direct venue/host schedule confirmation 2026-10-22	Former Sep 13 quarantine and unverified 9 PM start removed. Nightly host assignment/times must still be confirmed.	2026-10-22	verified_direct_user_confirmation	FALSE
+weekly-peter-ds-saturday	venue-0038	Peter D's	peter-ds	Saturday	TBD	TBD		Bri / Hannah (rotating; specific night unconfirmed)	Bri / Hannah (rotating; specific night unconfirmed)	TRUE	active	Saturday karaoke. Regular hosts Bri and Hannah rotate; exact host and times to be confirmed.	90	Corey direct venue/host schedule confirmation 2026-10-22	Former Sep 13 quarantine and unverified 9 PM start removed. Nightly host assignment/times must still be confirmed.	2026-10-22	verified_direct_user_confirmation	FALSE
+weekly-peter-ds-sunday	venue-0038	Peter D's	peter-ds	Sunday	TBD	TBD		Bri / Hannah (rotating; specific night unconfirmed)	Bri / Hannah (rotating; specific night unconfirmed)	TRUE	active	Sunday karaoke. Regular hosts Bri and Hannah rotate; exact host and times to be confirmed.	90	Corey direct venue/host schedule confirmation 2026-10-22	Former Sep 13 quarantine and unverified 9 PM start removed. Nightly host assignment/times must still be confirmed.	2026-10-22	verified_direct_user_confirmation	FALSE
+weekly-star-bar-monday	venue-0047	Star Bar	star-bar	Monday	9:00 PM	1:00 AM		Art	Art	TRUE	active	Monday karaoke with Art starting 9pm until 1am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
+weekly-star-bar-tuesday	venue-0047	Star Bar	star-bar	Tuesday	9:00 PM	1:30 AM		TBD	TBD	TRUE	active	Tuesday karaoke starting 9pm until 1:30am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync_needs_detail	FALSE
+weekly-star-bar-wednesday	venue-0047	Star Bar	star-bar	Wednesday	9:00 PM	1:30 AM		Art	Art	TRUE	active	Wednesday karaoke with Art starting 9pm until 1:30am.	85	Weekly_Grid	SingHUB Source of Truth	2026-07-13	weekly_grid_sync	FALSE
+weekly-peter-ds-monday	venue-0038	Peter D's	peter-ds	Monday	TBD	TBD		Bri / Hannah (rotating; specific night unconfirmed)	Bri / Hannah (rotating; specific night unconfirmed)	TRUE	active	Monday karaoke, rotating hosts Bri and Hannah; possible stand-up comedy programming, exact times TBD.	90	Corey direct venue/host schedule confirmation 2026-10-22	https://locallivemusic.us/index.aspx?display=byvenue&venueid=2754	2026-10-22	verified_direct_user_confirmation	FALSE
+weekly-tap-that-oceanside-thursday	venue-0152	Tap That	tap-that-oceanside	Thursday	7:00 PM	11:00 PM		DJ Strikeout	DJ Strikeout	TRUE	active	Every Thursday 7–11 PM with DJ Strikeout. The venue lists a $10 minimum purchase per singer for the song list; non-alcohol or cover options available.	100	https://tapthatkegnow.com/kegs/throw-back-thursdays-every-thursday/	https://tapthatkegnow.com/events/	2026-10-23	verified_official_current_schedule	FALSE
+weekly-rookies-oceanside-sunday	venue-0153	Rookies Sports Bar	rookies-sports-bar-oceanside	Sunday	8:30 PM	TBD		TBD	TBD	TRUE	active	Sunday karaoke from 8:30 PM. Host and finish time to be confirmed.	100	https://iloverookies.com/events	https://iloverookies.com/contact	2026-10-23	verified_official_current_schedule	FALSE
+```
+
+### Removed or changed sample
+
+```text
+weekly-whiskey-girl-thursday	venue-0008	Whiskey Girl	whiskey-girl	Thursday	9:00 PM	1:00 AM		Live Band Karaoke	Live Band Karaoke	TRUE	active	Thursday Live Band Karaoke from 9 PM to 1 AM per current operator listing. Earlier venue promo cited 8:30 PM, potentially doors/pre-show.	100	https://www.bardicmanagement.com/whiskey-girl	Oct 22 and Oct 29 dated operator events: 9 PM; venue promotional post Sep 23 says 8:30 PM.	2026-10-22	verified_official_current_schedule	FALSE
+weekly-star-bar-monday	venue-0047	Star Bar	star-bar	Monday	9:00 PM	1:00 AM	art-ruiz	Art Ruiz	Art Ruiz	TRUE	active	Monday karaoke with Art starting 9pm until 1am.	85	Corey direct host schedule correction 2026-10-24	SingHUB Source of Truth	2026-10-24	verified_direct_user_confirmation	FALSE
+weekly-star-bar-tuesday	venue-0047	Star Bar	star-bar	Tuesday	9:00 PM	1:30 AM	art-ruiz	Art Ruiz	Art Ruiz	TRUE	active	Tuesday karaoke with Art Ruiz from 9 PM to 1:30 AM.	85	Corey direct host schedule correction 2026-10-24	SingHUB Source of Truth	2026-10-24	verified_direct_user_confirmation	FALSE
+weekly-star-bar-wednesday	venue-0047	Star Bar	star-bar	Wednesday	9:00 PM	1:30 AM		TBD	TBD	TRUE	active	Wednesday karaoke from 9 PM to 1:30 AM; host needs confirmation.	85	Corey direct host schedule correction 2026-10-24	SingHUB Source of Truth	2026-10-24	host_needs_confirmation	FALSE
+weekly-peter-ds-thursday	venue-0038	Peter D's	peter-ds	Thursday	TBD	TBD		Bri / Hannah (rotating)	Bri / Hannah (rotating)	TRUE	active	Thursday karaoke confirmed by Corey Oct 22, 2026. Bri and Hannah are regular hosts; specific assignments and times unconfirmed.	90	Corey direct venue and host confirmation 2026-10-22	SingHUB Source of Truth, Events_Canonical	2026-10-22	verified_direct_user_confirmation	FALSE
+weekly-peter-ds-friday	venue-0038	Peter D's	peter-ds	Friday	TBD	TBD		Bri / Hannah (rotating)	Bri / Hannah (rotating)	TRUE	active	Friday karaoke confirmed by Corey Oct 22, 2026. Bri and Hannah are regular hosts; specific assignments and times unconfirmed.	90	Corey direct venue and host confirmation 2026-10-22	SingHUB Source of Truth, Events_Canonical	2026-10-22	verified_direct_user_confirmation	FALSE
+weekly-peter-ds-saturday	venue-0038	Peter D's	peter-ds	Saturday	TBD	TBD		Bri / Hannah (rotating)	Bri / Hannah (rotating)	TRUE	active	Saturday karaoke confirmed by Corey Oct 22, 2026. Bri and Hannah are regular hosts; specific assignments and times unconfirmed.	90	Corey direct venue and host confirmation 2026-10-22	SingHUB Source of Truth, Events_Canonical	2026-10-22	verified_direct_user_confirmation	FALSE
+weekly-peter-ds-sunday	venue-0038	Peter D's	peter-ds	Sunday	TBD	TBD		Bri / Hannah (rotating)	Bri / Hannah (rotating)	TRUE	active	Sunday karaoke confirmed by Corey Oct 22, 2026. Bri and Hannah are regular hosts; specific assignments and times unconfirmed.	90	Corey direct venue and host confirmation 2026-10-22	SingHUB Source of Truth, Events_Canonical	2026-10-22	verified_direct_user_confirmation	FALSE
+weekly-peter-ds-monday	venue-0038	Peter D's	peter-ds	Monday	TBD	TBD		Bri / Hannah (rotating)	Bri / Hannah (rotating)	TRUE	active	Monday karaoke confirmed by Corey Oct 22, 2026. Possible comedy overlap, not fully verified. Bri/Hannah rotation and hours unconfirmed.	90	Corey direct venue and host confirmation 2026-10-22	https://locallivemusic.us/index.aspx?display=byvenue&venueid=2754 (third party Monday comedy/karaoke listing)	2026-10-22	verified_direct_user_confirmation	FALSE
+weekly-rookies-oceanside-sunday	venue-0153	Rookies Sports Bar	rookies-sports-bar-oceanside	Sunday	8:30 PM	TBD		TBD	TBD	TRUE	active	Sunday karaoke starts at 8:30 PM per current venue event calendar. Service Industry Sundays promotion starts at 7 PM, not karaoke. Host and end time to be confirmed.	100	https://iloverookies.com/events	https://iloverookies.com/contact	2026-10-23	verified_official_current_schedule	FALSE
+weekly-tap-that-oceanside-thursday	venue-0152	Tap That	tap-that-oceanside	Thursday	7:00 PM	11:00 PM		DJ Strikeout	DJ Strikeout	TRUE	active	Thursday karaoke 7–11 PM with DJ Strikeout. Venue requires a $10 minimum purchase per singer to join the song list, allowing non-alcoholic purchases or a cover charge. $1 off pints during karaoke.	100	https://tapthatkegnow.com/kegs/throw-back-thursdays-every-thursday/	https://tapthatkegnow.com/events/	2026-10-23	verified_official_current_schedule	FALSE
+```
 
 ## generated_events_review.tsv
 
@@ -90,17 +120,21 @@ venue-0048	Hive Karaoke	hive-karaoke	basic	verified	private_room	San Diego	Kearn
 
 - Previous non-empty lines: 10
 - Candidate non-empty lines: 10
-- Added/changed lines: 1
-- Removed/changed lines: 1
+- Added/changed lines: 3
+- Removed/changed lines: 3
 
 ### Added or changed sample
 
 ```text
-  "generatedAt": "2026-10-20T16:56:03.695Z",
+  "generatedAt": "2026-10-27T01:30:31.052Z",
+  "venues": 116,
+  "authoritativeEvents": 218,
 ```
 
 ### Removed or changed sample
 
 ```text
-  "generatedAt": "2026-10-20T16:53:25.068Z",
+  "generatedAt": "2026-10-20T16:56:03.695Z",
+  "venues": 112,
+  "authoritativeEvents": 209,
 ```
