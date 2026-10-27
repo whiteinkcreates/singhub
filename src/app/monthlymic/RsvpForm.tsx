@@ -28,6 +28,6 @@ export default function RsvpForm(){
   {choice==="going"&&<label className="flex gap-3 text-sm"><input type="checkbox" name="photoPermission" className="accent-cyan-300"/> SingHUB may feature photographs/video showing me from this event on its website, homepage and social media. I can decline and still attend. I can request removal of future use by contacting SingHUB.</label>}
   <p className="text-xs text-slate-400">We'll use your email for your selected MonthlyMic purpose only. Future meetup emails require the opt-in above (or choosing next time). You can unsubscribe by replying to a message. Anyone attending can tell the photographer they prefer not to be recorded.</p>
   {state==="failed"&&<p role="alert" className="text-rose-300">{error}</p>}
-  <button disabled={state==="saving"} type="submit" className="w-full rounded-xl bg-fuchsia-500 px-5 py-3 font-black text-white disabled:opacity-50">{state==="saving"?"Saving...":{choice==="going"?"RSVP for November 18":"Keep me posted"}}</button>
+  <button disabled={state==="saving"} type="submit" className="w-full rounded-xl bg-fuchsia-500 px-5 py-3 font-black text-white disabled:opacity-50">{state==="saving"?"Saving...":{choice==="going"?"RSVP for November 18":"Keep me posted"}</button>
  </form>
 }
