@@ -12,7 +12,7 @@ export async function POST(req:Request) {
   if (payload.website) return NextResponse.json({ok:true},{headers:noStore}); // honeypot
   const name=typeof payload.name==="string"?payload.name.trim():"";
   const email=typeof payload.email==="string"?payload.email.trim().toLowerCase():"";
-  const status="interested";
+  const status="going";
   const partySize=Number(payload.partySize);
   const availability="nov18";
   const shirtSize=payload.shirtSize;
