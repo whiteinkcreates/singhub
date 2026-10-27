@@ -10,6 +10,7 @@ create table if not exists public.monthlymic_rsvps (
   just_duet boolean not null default false,
   photo_permission boolean not null default false,
   source text,
+  shirt_size text check (shirt_size in ('S','M','L','XL','2XL','3XL')),
   ip_hash text,
   availability text not null default 'either' check (availability in ('either','nov11','nov18','neither')),
   created_at timestamptz not null default now(),
