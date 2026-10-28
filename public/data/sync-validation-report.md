@@ -3,8 +3,8 @@
 Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
-Exported venues: 112.
-Exported events: 209.
+Exported venues: 116.
+Exported events: 218.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -29,118 +29,19 @@ Exported events: 209.
 - venue-0145 Watra Night Club
 - venue-0147 Sugar Monkey Brewing & Social Club
 ## Public Venues Missing Schedule
-- venue-0051 #1 Fifth Avenue
-- venue-0062 710 Beach Club
-- venue-0018 BLVD
-- venue-0013 Camels Bar & Grill
-- venue-0015 Carriage House Cocktails & Karaoke
-- venue-0027 Cheers Bar San Diego
-- venue-0009 Deano's Pub - La Mesa
-- venue-0082 Deano's East
-- venue-0069 Dirk's Niteclub
-- venue-0077 Clark Cabaret
 - venue-0073 Dock's Cocktail Lounge
-- venue-0020 Don's Cocktails
-- venue-0005 Double Deuce
-- venue-0014 Flicks
-- venue-0042 Gaslamplighter Karaoke Cocktail Bar
-- venue-0056 Gingers
-- venue-0054 Happy Does
-- venue-0003 Hearth House
 - venue-0048 Hive Karaoke
 - venue-0065 Jin Music Studios
-- venue-0081 Joycee's Cocktails
-- venue-0006 JT's Tavern
-- venue-0071 Kaminski's Sports Lounge
-- venue-0012 Main Tap Tavern
-- venue-0057 Moxy San Diego (Hotel)
-- venue-0025 McGuffie's Live
-- venue-0004 Norms
-- venue-0067 Grand Comedy Club and Pizzeria
 - venue-0066 North County - Larrys Beach Club
-- venue-0076 Novo Brazil Brewing - Lane Ave
-- venue-0017 Pal Joey's Cocktail Lounge
-- venue-0060 Punch Bowl Social San Diego
-- venue-0039 Redwing Bar & Grill
-- venue-0050 Saddle Bar
-- venue-0026 Shooters Cocktails
-- venue-0047 Star Bar
-- venue-0002 The Lamplighter
-- venue-0035 The Luau
-- venue-0080 The Mesa
-- venue-0041 The Ould Sod
-- venue-0010 The Regal Bar
-- venue-0079 The Scoreboard Imperial Beach Sports Bar & Grill
-- venue-0101 Urban Mo’s Bar & Grill
-- venue-0007 Werewolf
-- venue-0008 Whiskey Girl
-- venue-0030 Winstons Beach Club
-- venue-0036 Wong's Golden Palace
-- venue-0102 Three Stags Irish Pub and Restaurant
-- venue-0103 Whiskey Republic
-- venue-0086 The Redlands Underground
-- venue-0104 Flights Bar & Eats
-- venue-0088 Batter Rebellion
-- venue-0089 U-31
-- venue-0090 JP's Pub
-- venue-0091 Harbor Town Pub
-- venue-0092 Neon Moon
-- venue-0094 Mine Oyster
-- venue-0095 Pier 1 Pizza & Pub
-- venue-0096 Wild Rover
-- venue-0097 Sissy K's
-- venue-0098 The White Bull Tavern
-- venue-0099 Bell in Hand Tavern
-- venue-0100 VIVA Karaoke x Studios
-- venue-0083 Tony’s Martini Bar
-- venue-0084 Side Piece
-- venue-0085 Hennessey’s La Jolla
-- venue-0105 De Oro Mine Co.
-- venue-0106 Silver Dollar
-- venue-0107 Coyote Bar & Grill Carlsbad
-- venue-0108 The North Bar
 - venue-0109 N City Sports Lounge
-- venue-0110 BNS Brewing and Distilling Co.
-- venue-0111 D O T Cocktail Lounge
-- venue-0112 Cow Shed Bar & Grill
-- venue-0113 Full Circle Saloon
-- venue-0114 Casino Inn Bar & Grill
-- venue-0115 Market on 8th
-- venue-0116 Filippi's Pizza Grotto - Santee
-- venue-0117 Rosie O'Grady's
-- venue-0118 Chief's Da Tiki Bar
 - venue-0119 Rich's San Diego
-- venue-0072 The Search Bar
-- venue-0134 Steele 94 Restaurant Bar
-- venue-0135 Casa Reveles
-- venue-0136 The Pour House
-- venue-0138 The Brass Rail
-- venue-0149 Junkyard Sports Bar & Grill
-- venue-0125 Poway's Irish Pub
-- venue-0126 Way Point Saloon
-- venue-0120 Eastbound Bar & Grill
-- venue-0122 Stoney's Bar & Grill
-- venue-0123 Mr. Peabody's Bar & Grill
-- venue-0124 The Rabbit Hole
 - venue-0127 Smitty's Downtown
 - venue-0128 La Estación
 - venue-0129 Barlando
-- venue-0130 Spring Valley Inn
-- venue-0131 Mike's Cocktails
 - venue-0132 Alpine VFW Post 9578
-- venue-0133 VFW Santee Post 9327
-- venue-0137 Kimball Coastal Eatery
-- venue-0141 Ye Olde Plank Inn
-- venue-0140 Moonshine Beach
-- venue-0142 Gossip Grill
-- venue-0143 Jimmy O's
 - venue-0144 Barley & Sword Brewing Company - Escondido
 - venue-0145 Watra Night Club
-- venue-0139 El Viejon Seafood - Mira Mesa
-- venue-0146 El Sinaloense - Cardiff
 - venue-0147 Sugar Monkey Brewing & Social Club
-- venue-0148 1st Street Bar
-- venue-0150 Katy's Diner
 ## Venues Skipped Because App Hidden
 - row 7: venue-0022 Cat Eye Club
 - row 9: venue-0075 Chula Vista Brewery
@@ -156,13 +57,12 @@ Exported events: 209.
 - row 43: venue-0074 On The Rocks Cocktails
 - row 45: venue-0034 Paradise Lounge
 - row 46: venue-0028 Parkys Saloon
-- row 47: venue-0038 Peter D's
 - row 50: venue-0023 Rock Out Karaoke
-- row 54: venue-0064 Spot KTV & Restaurant
-- row 56: venue-0016 The Cordova Bar
-- row 64: venue-0024 Tremont St. Bar & Grill
-- row 78: venue-0093 Rosie O'Grady's
-- row 996: venue-0121 Vogue Tavern
+- row 53: venue-0064 Spot KTV & Restaurant
+- row 55: venue-0016 The Cordova Bar
+- row 63: venue-0024 Tremont St. Bar & Grill
+- row 77: venue-0093 Rosie O'Grady's
+- row 970: venue-0121 Vogue Tavern
 ## Venues With Invalid App Visibility
 - None
 ## Venues Skipped As Not Public-Usable
@@ -170,33 +70,29 @@ Exported events: 209.
 ## Events Skipped Because App Hidden
 - event row 10: weekly-cordova-bar-tuesday
 - event row 39: weekly-wongs-golden-palace-sunday
-- event row 41: weekly-peter-ds-thursday
-- event row 42: weekly-peter-ds-friday
-- event row 43: weekly-peter-ds-saturday
-- event row 44: weekly-peter-ds-sunday
 - event row 55: weekly-gaslamp-lumpia-factory-thursday
 - event row 56: weekly-gaslamp-lumpia-factory-saturday
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
 - event row 76: event-double-deuce-2026-07-17-navy-nick-cover
-- event row 121: event-mcguffies-karaoke-2026-09-02
-- event row 122: event-mcguffies-karaoke-2026-09-23
-- event row 123: event-mcguffies-karaoke-2026-09-30
-- event row 124: weekly-grand-comedy-club-monday
-- event row 152: weekly-richs-san-diego-thursday
-- event row 153: event-n-city-sports-lounge-thursday-karaoke-party
-- event row 154: weekly-docks-cocktail-lounge-friday
-- event row 155: weekly-docks-cocktail-lounge-saturday
-- event row 162: event-n-city-sports-lounge-karaoke-2026-09-03
-- event row 165: weekly-vogue-tavern-tuesday
-- event row 166: weekly-vogue-tavern-saturday
-- event row 168: event-kaminskis-sports-lounge-karaoke-2026-09-04
-- event row 178: event-richs-san-diego-karaoke-2026-09-17
-- event row 179: event-kaminskis-sports-lounge-karaoke-2026-09-18
-- event row 182: weekly-barlando-friday
-- event row 186: weekly-alpine-vfw-post-9578-thursday
-- event row 223: event-barley-sword-escondido-2026-10-08
-- event row 226: event-sugar-monkey-el-segundo-2026-10-14
+- event row 120: event-mcguffies-karaoke-2026-09-02
+- event row 121: event-mcguffies-karaoke-2026-09-23
+- event row 122: event-mcguffies-karaoke-2026-09-30
+- event row 123: weekly-grand-comedy-club-monday
+- event row 151: weekly-richs-san-diego-thursday
+- event row 152: event-n-city-sports-lounge-thursday-karaoke-party
+- event row 153: weekly-docks-cocktail-lounge-friday
+- event row 154: weekly-docks-cocktail-lounge-saturday
+- event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
+- event row 163: weekly-vogue-tavern-tuesday
+- event row 164: weekly-vogue-tavern-saturday
+- event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
+- event row 176: event-richs-san-diego-karaoke-2026-09-17
+- event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
+- event row 180: weekly-barlando-friday
+- event row 184: weekly-alpine-vfw-post-9578-thursday
+- event row 210: event-barley-sword-escondido-2026-10-08
+- event row 213: event-sugar-monkey-el-segundo-2026-10-14
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -213,50 +109,57 @@ Exported events: 209.
 - None
 ## Public Rows With TBD Address/Time/Host
 - event row 4: weekly-the-search-bar-thursday The Search Bar
+- event row 41: weekly-peter-ds-thursday Peter D's
+- event row 42: weekly-peter-ds-friday Peter D's
+- event row 43: weekly-peter-ds-saturday Peter D's
+- event row 44: weekly-peter-ds-sunday Peter D's
 - event row 45: weekly-gaslamplighter-tuesday Gaslamplighter Karaoke Cocktail Bar
 - event row 46: weekly-gaslamplighter-wednesday Gaslamplighter Karaoke Cocktail Bar
 - event row 47: weekly-gaslamplighter-friday Gaslamplighter Karaoke Cocktail Bar
 - event row 48: weekly-gaslamplighter-sunday Gaslamplighter Karaoke Cocktail Bar
-- event row 50: weekly-star-bar-tuesday Star Bar
+- event row 51: weekly-star-bar-wednesday Star Bar
 - event row 64: weekly-clark-cabaret-friday Clark Cabaret
 - event row 70: event-winstons-friday Winstons Beach Club
-- event row 95: weekly-mine-oyster-wednesday Mine Oyster
-- event row 96: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
-- event row 99: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
-- event row 99: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
-- event row 99: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
-- event row 103: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
-- event row 119: weekly-de-oro-mine-co-monday De Oro Mine Co.
-- event row 125: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
-- event row 133: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
-- event row 140: event-0046 Market on 8th
-- event row 148: weekly-redwing-bar-grill-monday Redwing Bar & Grill
-- event row 150: weekly-redwing-bar-grill-wednesday Redwing Bar & Grill
-- event row 158: weekly-the-luau-thursday The Luau
-- event row 159: weekly-the-luau-saturday The Luau
-- event row 160: weekly-the-luau-sunday The Luau
-- event row 161: weekly-the-luau-friday The Luau
-- event row 169: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
-- event row 180: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
-- event row 181: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
-- event row 193: weekly-casa-reveles-valley-center-monday Casa Reveles
-- event row 194: weekly-redwing-bar-grill-thursday Redwing Bar & Grill
-- event row 202: weekly-710-beach-club-tuesday 710 Beach Club
-- event row 207: weekly-jimmy-os-del-mar-tuesday Jimmy O's
-- event row 219: weekly-moonshine-beach-friday Moonshine Beach
-- event row 220: weekly-moonshine-beach-saturday Moonshine Beach
-- event row 221: weekly-mcguffies-live-wednesday McGuffie's Live
-- event row 224: weekly-dirks-niteclub-friday Dirk's Niteclub
-- event row 225: weekly-el-sinaloense-cardiff-tuesday El Sinaloense - Cardiff
-- event row 227: weekly-winstons-thursday Winstons Beach Club
-- event row 228: weekly-junkyard-oceanside-wednesday Junkyard Sports Bar & Grill
-- event row 229: weekly-junkyard-oceanside-saturday Junkyard Sports Bar & Grill
-- event row 1000: weekly-saddle-bar-wednesday Saddle Bar
-- event row 1001: weekly-1st-street-bar-sunday 1st Street Bar
+- event row 94: weekly-mine-oyster-wednesday Mine Oyster
+- event row 95: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
+- event row 98: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
+- event row 98: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
+- event row 98: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
+- event row 102: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
+- event row 118: weekly-de-oro-mine-co-monday De Oro Mine Co.
+- event row 124: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
+- event row 132: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
+- event row 139: event-0046 Market on 8th
+- event row 156: weekly-the-luau-thursday The Luau
+- event row 157: weekly-the-luau-saturday The Luau
+- event row 158: weekly-the-luau-sunday The Luau
+- event row 159: weekly-the-luau-friday The Luau
+- event row 167: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
+- event row 178: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
+- event row 179: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
+- event row 191: weekly-casa-reveles-valley-center-monday Casa Reveles
+- event row 192: weekly-redwing-bar-grill-thursday Redwing Bar & Grill
+- event row 200: weekly-710-beach-club-tuesday 710 Beach Club
+- event row 205: weekly-jimmy-os-del-mar-tuesday Jimmy O's
+- event row 206: weekly-moonshine-beach-friday Moonshine Beach
+- event row 207: weekly-moonshine-beach-saturday Moonshine Beach
+- event row 208: weekly-mcguffies-live-wednesday McGuffie's Live
+- event row 211: weekly-dirks-niteclub-friday Dirk's Niteclub
+- event row 212: weekly-el-sinaloense-cardiff-tuesday El Sinaloense - Cardiff
+- event row 214: weekly-winstons-thursday Winstons Beach Club
+- event row 215: weekly-junkyard-oceanside-wednesday Junkyard Sports Bar & Grill
+- event row 216: weekly-junkyard-oceanside-saturday Junkyard Sports Bar & Grill
+- event row 217: weekly-peter-ds-monday Peter D's
+- event row 219: weekly-rookies-oceanside-sunday Rookies Sports Bar
+- event row 220: weekly-salty-frog-thursday The Salty Frog Bar
+- event row 221: weekly-salty-frog-sunday The Salty Frog Bar
+- event row 222: weekly-saddle-bar-wednesday Saddle Bar
+- event row 223: weekly-1st-street-bar-sunday 1st Street Bar
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
 - venue: venue-0066 North County - Larrys Beach Club
+- venue: venue-0038 Peter D's
 - venue: venue-0050 Saddle Bar
 - venue: venue-0109 N City Sports Lounge
 - venue: venue-0119 Rich's San Diego
@@ -287,18 +190,18 @@ Exported events: 209.
 ```text
 SingHUB public data guardrails
 
-Data directory: /tmp/singhub-aligned-candidate
-Public venues: 112
-Authoritative events: 209
+Data directory: /home/runner/work/singhub/singhub/.data-sync-output
+Public venues: 116
+Authoritative events: 218
 Legacy venue slug aliases: 0
 
-PASS Monday: 19 authoritative / 8 expected minimum
+PASS Monday: 20 authoritative / 8 expected minimum
 PASS Tuesday: 36 authoritative / 8 expected minimum
 PASS Wednesday: 33 authoritative / 9 expected minimum
-PASS Thursday: 41 authoritative / 14 expected minimum
-PASS Friday: 31 authoritative / 10 expected minimum
-PASS Saturday: 23 authoritative / 10 expected minimum
-PASS Sunday: 26 authoritative / 7 expected minimum
+PASS Thursday: 44 authoritative / 14 expected minimum
+PASS Friday: 32 authoritative / 10 expected minimum
+PASS Saturday: 24 authoritative / 10 expected minimum
+PASS Sunday: 29 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
 ```
