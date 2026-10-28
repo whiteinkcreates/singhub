@@ -72,7 +72,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
      <h2 className="mt-2 text-3xl font-black uppercase">What are you here for?</h2>
      <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">Explore the activities, games and events at venues in SingHUB’s karaoke directory. Karaoke doesn’t have to be happening that day.</p>
     </div>
-    <Link href="/find-karaoke" className="rounded-lg border border-cyan-300/50 px-4 py-2 text-sm font-bold text-cyan-200 hover:bg-cyan-300/10">Find karaoke →</Link>
+    <div className="flex flex-wrap gap-2"><Link href="/backyard?activity=ufc#backyard-results" className="rounded-lg bg-cyan-300 px-4 py-2 text-sm font-bold text-black">Upcoming UFC fights →</Link><Link href="/find-karaoke" className="rounded-lg border border-cyan-300/50 px-4 py-2 text-sm font-bold text-cyan-200 hover:bg-cyan-300/10">Karaoke nearby →</Link></div>
    </header>
    <form method="get" action="/backyard#backyard-results" className="flex flex-wrap gap-2" role="search">
     {current&&<input type="hidden" name="activity" value={current.slug}/>}
@@ -112,7 +112,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
           const confirmed=(ufcFeed.screenings||[]).filter(screening=>screening.event_key===event.event_key);
           return <article key={event.event_key} className="rounded-xl border border-white/15 bg-white/[.035] p-4">
             <p className="text-xs font-black uppercase tracking-wide text-fuchsia-300">{localDate} · {formatPacificUfcTime(event.main_card_pt)}</p>
-            <h4 className="mt-1 text-lg font-black">{event.event_name}</h4>
+            <h4 className="mt-1 text-lg font-black"><Link href={"/backyard/ufc/"+encodeURIComponent(event.event_key)} className="hover:text-cyan-200 underline-offset-4 hover:underline">{event.event_name}</Link></h4>
             <a href={event.official_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-xs font-bold text-cyan-200 underline underline-offset-2">Official fight details ↗</a>
             {confirmed.length>0?<div className="mt-3 space-y-2">
               <p className="text-xs font-black text-emerald-300">{confirmed.length} verified local {confirmed.length===1?"screening":"screenings"}</p>
@@ -122,7 +122,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
                 if(!slug||!venueBySlug.has(slug))return null;
                 return <p key={screening.id} className="text-xs text-white"><Link className="font-bold text-cyan-200 underline" href={"/venues/"+slug}>{venueBySlug.get(slug)!.venueName}</Link> · <a href={screening.source_url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Screening proof ↗</a></p>;
               })}
-            </div>:<p className="mt-3 text-xs text-slate-400">No venue-specific screenings verified yet.</p>}
+            </div>:<p className="mt-3 text-xs text-slate-400">San Diego viewing locations being verified. No venue-specific screenings approved yet.</p>}
           </article>;
         })}
       </div>
