@@ -4,7 +4,7 @@ import {monthlyMic} from "@/lib/monthlymic";
 import {uploadVenueMedia} from "@/lib/venueMediaCloudinary";
 export const runtime="nodejs";
 export async function GET(){
- const {data,error}=await createAdminClient().from("monthlymic_media").select("id,image_url,alt_text,credit").eq("event_id",monthlyMic.id).eq("status","approved").order("sort_order",{ascending:true}).order("created_at",{ascending:true}).limit(60);
+ const {data,error}=await createAdminClient().from("monthlymic_media").select("id,image_url,alt_text,credit,caption,subject_tags,venue_tag").eq("event_id",monthlyMic.id).eq("status","approved").order("sort_order",{ascending:true}).order("created_at",{ascending:true}).limit(60);
  if(error)return NextResponse.json({error:"Gallery unavailable"},{status:503});
  return NextResponse.json({photos:data||[]},{headers:{"Cache-Control":"no-store"}});
 }
