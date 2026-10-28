@@ -1,5 +1,5 @@
-import {requireAdminAuthorization} from "@/lib/adminAuthorization";
 "use server";
+import {requireAdminAuthorization} from "@/lib/adminAuthorization";
 import {revalidatePath} from "next/cache";
 import {createAdminClient} from "@/lib/supabase/admin";
 import {monthlyMic} from "@/lib/monthlymic";
