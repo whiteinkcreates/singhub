@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 const tools = [
+  { href: "/admin/monthlymic", eyebrow: "Community Events", title: "MonthlyMic RSVPs", description: "View November 18 registrations, group sizes, JustDuet interest, and attendee details." },
   { href: "/admin/main-heroes", eyebrow: "Site Appearance", title: "Main Page Heroes", description: "Upload and replace Discover, Venues, My SingHUB, and SingBOARD main hero images without touching host profile media." },
   { href: "/admin/venue-activity", eyebrow: "Venue Intelligence", title: "Venue Activity", description: "Compare recorded Performance Stars, Tour Stop visits, and check-ins by venue, with singer breakdowns and direct edit links." },
   { href: "/admin/singers", eyebrow: "Singer Community", title: "Singer Activity", description: "Private admin view of accounts, karaoke aliases, Performance Stars, Tour Stops, check-ins, and recorded song histories." },
