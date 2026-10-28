@@ -23,7 +23,7 @@ export default function RsvpForm(){
   
   {!nextTime&&<label className="block text-sm font-semibold">Group size<select name="partySize" className="mt-1 w-full rounded-lg bg-white p-3 text-slate-950">{[1,2,3,4,5,6].map(n=><option key={n} value={n}>{n}</option>)}</select></label>}
   {!nextTime&&<label className="flex gap-3 text-sm"><input type="checkbox" name="futureUpdates"/> Also email me future MonthlyMic announcements (optional).</label>}
-  {!nextTime&&<label className="flex gap-3 text-sm"><input type="checkbox" name="justDuet" className="accent-cyan-300"/> I'm interested in JustDuet, the optional random duet partner draw.</label>}
+  {!nextTime&&<label className="flex gap-3 text-sm"><input type="checkbox" name="justDuet" className="accent-cyan-300"/> I&apos;m interested in JustDuet, the optional random duet partner draw.</label>}
   {!nextTime&&<label className="flex gap-3 text-sm"><input type="checkbox" name="photoPermission" className="accent-cyan-300"/> SingHUB may feature photographs/video showing me from this event on its website, homepage and social media. I can decline and still attend. I can request removal of future use by contacting SingHUB.</label>}
   <p className="text-xs text-slate-400">Your email will only be used for your RSVP and, if selected, future MonthlyMic announcements. Reply to any future announcement to opt out. Anyone attending can tell the photographer they prefer not to be recorded.</p>
   {state==="failed"&&<p role="alert" className="text-rose-300">{error}</p>}
