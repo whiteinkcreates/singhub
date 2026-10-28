@@ -1,3 +1,4 @@
+import MonthlyMicGallery from "./MonthlyMicGallery";
 import type {Metadata} from "next";
 import QRCode from "qrcode";
 import Image from "next/image";
@@ -31,8 +32,7 @@ export default async function MonthlyMicPage(){
     <p className="mt-4 leading-7 text-slate-300">Once a month, SingHUB brings people together at a different San Diego karaoke spot. Show up solo or with friends, meet the group, and settle into the venue's normal karaoke night. Singing is always optional.</p>
     <div className="mt-8 rounded-2xl border border-fuchsia-400/30 bg-fuchsia-400/10 p-6"><h3 className="text-2xl font-black">JustDuet 🎤</h3><p className="mt-2 text-slate-200">Feeling adventurous? Put your name in the bowl, get paired with another willing singer, and pick a duet. We'll work with the KJ's normal rotation.</p></div>
     <div className="mt-6 rounded-2xl border border-white/10 p-6"><h3 className="text-xl font-bold">SingHUB Original Tee · MonthlyMic pickup · $25</h3><p className="mt-2 text-slate-300">Get the special $25 event price (regularly $31). Choose your size and pay through WhiteInk Creates, then collect your shirt from the SingHUB table at The Mesa on November 18. Event pickup only, no shipping. A shirt purchase is optional; MonthlyMic is free to attend.</p><a href="https://whiteinkcreates.com/products/singhub-original-tee-monthlymic-001-event-pickup" target="_blank" rel="noopener noreferrer" className="mt-5 inline-block rounded-xl bg-fuchsia-400 px-5 py-3 font-black text-slate-950">Buy your $25 shirt for event pickup</a><p className="mt-3 text-xs text-slate-400">T-shirt purchases are handled separately through Shopify. Be sure the product checkout shows event pickup, not shipping.</p></div>
-    <h2 className="mt-12 text-2xl font-black">Gallery</h2><p className="mt-2 text-slate-300">Meet our first host, The Mesa. After the event we’ll add attendee photos here, with permission.</p>
-    {m.gallery.length>0?<div className="mt-5 grid grid-cols-2 gap-3">{m.gallery.map(p=><figure key={p.url}><img src={p.url} alt={p.alt} className="aspect-square w-full rounded-xl object-cover"/>{p.credit&&<figcaption className="text-xs">{p.credit}</figcaption>}</figure>)}</div>:<div className="mt-5 rounded-2xl border border-dashed border-white/20 bg-white/5 p-10 text-center text-slate-400">The first MonthlyMic gallery starts with you.</div>}
+    <MonthlyMicGallery/>
     <p className="mt-10 text-sm text-slate-400">Have a venue we should visit next? Bring your nomination. We'll collect suggestions at the meetup.</p>
     <Link href="/singboard" className="mt-4 inline-block text-cyan-300 underline">More local events on SingBOARD</Link>
    </div>

@@ -1,3 +1,4 @@
+import MonthlyMicMediaAdmin from "./MonthlyMicMediaAdmin";
 import {requireAdminAuthorization} from "@/lib/adminAuthorization";
 import Link from "next/link";
 import {createAdminClient} from "@/lib/supabase/admin";
@@ -17,5 +18,6 @@ export default async function MonthlyMicAdmin(){
  <p className="mt-5 text-xl font-bold">{(data||[]).filter(x=>x.status==="going").reduce((n,x)=>n+x.party_size,0)} planning to come · {(data||[]).filter(x=>x.future_updates&&x.status!=="cancelled").length} future-update subscribers · {(data||[]).filter(x=>x.just_duet&&x.status!=="cancelled").length} JustDuet participants</p>
  <div className="mt-6 overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b border-white/30">{["Name","Email","Status","Party","Available","Future alerts","Shirt","JustDuet","Photo OK","Source","Action"].map(s=><th key={s} className="p-3">{s}</th>)}</tr></thead><tbody>{(data||[]).map(x=><tr key={x.id} className="border-b border-white/10"><td className="p-3">{x.full_name}</td><td className="p-3">{x.email}</td><td className="p-3">{x.status}</td><td className="p-3">{x.party_size}</td><td className="p-3">{x.availability}</td><td className="p-3">{x.future_updates?"Opted in":"No"}</td><td className="p-3">{x.shirt_size||"—"}</td><td className="p-3">{x.just_duet?"Yes":"No"}</td><td className="p-3">{x.photo_permission?"Yes":"No"}</td><td className="p-3">{x.source}</td><td className="p-3">{x.status!=="cancelled"&&<form action={cancelMonthlyMicRsvp}><input type="hidden" name="id" value={x.id}/><button className="rounded-md border border-white/20 px-3 py-1">Cancel</button></form>}</td></tr>)}</tbody></table></div>
  </>}
+ <MonthlyMicMediaAdmin/>
  </main>;
 }
