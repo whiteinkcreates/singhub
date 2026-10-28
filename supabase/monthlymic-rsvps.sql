@@ -9,6 +9,7 @@ create table if not exists public.monthlymic_rsvps (
   party_size integer not null default 1 check (party_size between 1 and 6),
   just_duet boolean not null default false,
   photo_permission boolean not null default false,
+  future_updates boolean not null default false,
   source text,
   ip_hash text,
   availability text not null default 'either' check (availability in ('either','nov11','nov18','neither')),
@@ -20,3 +21,6 @@ create index if not exists monthlymic_rsvps_event_status_idx on public.monthlymi
 alter table public.monthlymic_rsvps enable row level security;
 -- No public table grants or RLS policies. Server-side service role access only.
 revoke all on public.monthlymic_rsvps from anon, authenticated;
+
+-- For already-created installations, apply this additive migration:
+alter table public.monthlymic_rsvps add column if not exists future_updates boolean not null default false;
