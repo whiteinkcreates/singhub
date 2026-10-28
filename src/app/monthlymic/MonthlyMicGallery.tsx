@@ -3,7 +3,11 @@ import {useEffect,useState} from "react";
 type Photo={id:string;image_url:string;alt_text:string;credit:string|null};
 export default function MonthlyMicGallery(){
  const [photos,setPhotos]=useState<Photo[]>([]),[status,setStatus]=useState(""),[busy,setBusy]=useState(false);
- const submissionsOpen=Date.now()>=new Date("2026-11-19T00:00:00-08:00").getTime();
+ const [submissionsOpen,setSubmissionsOpen]=useState(false);
+ useEffect(()=>{
+  const timer=window.setTimeout(()=>setSubmissionsOpen(Date.now()>=new Date("2026-11-19T00:00:00-08:00").getTime()),0);
+  return ()=>window.clearTimeout(timer);
+ },[]);
  useEffect(()=>{fetch("/api/monthlymic/media",{cache:"no-store"}).then(r=>r.json()).then(d=>{if(Array.isArray(d.photos))setPhotos(d.photos)}).catch(()=>setStatus("Gallery photos are temporarily unavailable."));},[]);
  async function send(form:FormData){setBusy(true);setStatus("Uploading your photo…");try{const r=await fetch("/api/monthlymic/media",{method:"POST",body:form});const data=await r.json();if(!r.ok)throw new Error(data.error||"Upload failed");setStatus("Thanks for joining us! Your photo was received and will appear after review.");}catch(e){setStatus(e instanceof Error?e.message:"Upload failed");}finally{setBusy(false);}}
  return <section id="monthlymic-gallery" className="mt-12"><h2 className="text-2xl font-black">The MonthlyMic Gallery</h2><p className="mt-2 text-slate-300">Meet our first venue, The Mesa. We&apos;ll add memories from the night here with permission.</p>
