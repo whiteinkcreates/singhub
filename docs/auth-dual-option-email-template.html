@@ -1,0 +1,9 @@
+<!-- Copy to Supabase Authentication > Email Templates > Magic Link. Do not deploy without real inbox test. -->
+<h2>Sign in to SingHUB 🎤</h2>
+<p>Choose whichever is easier:</p>
+<p><strong>Option 1: Paste this code into SingHUB</strong></p>
+<p style="font-size:28px;font-weight:700;letter-spacing:4px">{{ .Token }}</p>
+<p><strong>Option 2: Press this link</strong></p>
+<p><a href="{{ .ConfirmationURL }}">Sign in to SingHUB</a></p>
+<p>Both options are for the same one-time sign-in. Use whichever works best for you.</p>
+<p>If you did not request this email, you can ignore it. Never share your code with anyone.</p>
