@@ -135,6 +135,7 @@ function loadedProfileSignature(profile: VenueEnhancement, venue?: VenueOption):
       detail: singhubOffer.detail?.trim() || undefined,
       terms: singhubOffer.terms?.trim() || undefined,
       days: singhubOffer.days?.length ? singhubOffer.days : undefined,
+      presentationMode: singhubOffer.presentationMode || "staff_code",
     },
   });
 }
