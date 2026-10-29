@@ -140,3 +140,26 @@
 :is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-item strong{display:block;color:#fff;font-size:17px}
 :is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-item a{display:inline-block;margin-top:5px}
 @media (prefers-reduced-motion:no-preference){:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-reveal{animation:singhub-checkin-reveal .35s ease-out both}@keyframes singhub-checkin-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}}
+
+/* One-time offer: bartender-friendly presentation, separate from a verified redemption. */
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-dialog.presenting-offer{width:100vw;max-width:none;max-height:100dvh;height:100dvh;border:0;border-radius:0;padding:0;overflow:hidden}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-one-time{border-color:rgba(255,25,168,.6);border-radius:12px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-one-time>button{min-height:50px;background:#ff19a8;color:#fff;font-weight:900}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-warning{display:grid;gap:12px;padding:15px;border:1px solid rgba(255,25,168,.4);border-radius:10px;background:rgba(255,25,168,.07)}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-warning strong{font-size:19px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-warning p{margin:0;font-size:15px;line-height:1.45}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-warning button:first-of-type{min-height:52px;background:#ff19a8;border-color:#ff19a8}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-warning .tour-offer-secondary{background:transparent;border-color:rgba(255,255,255,.25);min-height:44px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-live{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:max(20px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom));overflow:auto;background:radial-gradient(circle at 50% 0%,#18334a,#03070e 70%)}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-live-card{position:relative;isolation:isolate;width:min(520px,100%);max-height:calc(100dvh - 40px);overflow:hidden;padding:3px;border-radius:20px;background:#00c8ff;box-shadow:0 0 30px rgba(0,200,255,.24),0 0 65px rgba(255,25,168,.14)}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-live-card::before{content:"";position:absolute;z-index:-1;inset:-90%;background:conic-gradient(from 0deg,transparent 15%,#00c8ff 32%,#fff 38%,#ff19a8 48%,transparent 63%,#00c8ff 84%,transparent);animation:singhub-offer-glimmer 4s linear infinite}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-live-content{position:relative;display:grid;justify-items:center;gap:16px;max-height:calc(100dvh - 46px);overflow:auto;padding:clamp(22px,5vw,42px) 18px;text-align:center;border-radius:17px;background:#07131a}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-live-content h2{margin:0;font:900 clamp(30px,7vw,42px)/1.05 'Barlow Condensed',sans-serif}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-headline{color:#fff;font:900 clamp(35px,9vw,54px)/1.05 'Barlow Condensed',sans-serif}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-live-content p{margin:0}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-live-dot{display:inline-block;width:9px;height:9px;margin-right:8px;border-radius:50%;background:#00e7ff;box-shadow:0 0 12px #00e7ff;animation:singhub-live-pulse 1.6s ease-in-out infinite}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-clock{color:#91efff;font:800 30px/1 'Barlow Condensed',sans-serif;letter-spacing:.07em;font-variant-numeric:tabular-nums}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-live-content .tour-offer-end{min-height:54px;width:100%;background:#ff19a8;border:1px solid #ff19a8;border-radius:10px;color:white;font:900 17px Barlow,sans-serif}
+@keyframes singhub-offer-glimmer{to{transform:rotate(360deg)}}
+@keyframes singhub-live-pulse{50%{opacity:.55;box-shadow:0 0 3px #00e7ff}}
+@media(prefers-reduced-motion:reduce){:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-live-card::before,:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .tour-offer-live-dot{animation:none}}
