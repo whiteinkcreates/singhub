@@ -19,13 +19,19 @@ export type VenueOfferUnlock = {
   redemption_code: string;
   unlocked_at: string;
   redeemed_at: string | null;
+  presentation_mode?: "staff_code" | "one_time";
+  presentation_started_at?: string | null;
+  presented_at?: string | null;
 };
 
 export type PublicVenueOfferUnlock = {
   title: string;
   detail?: string;
   terms?: string;
-  code: string;
+  code?: string;
+  presentationMode: "staff_code" | "one_time";
+  presentationStartedAt?: string;
+  presentedAt?: string;
   redeemedAt?: string;
 };
 
@@ -38,7 +44,10 @@ function publicUnlock(row: VenueOfferUnlock): PublicVenueOfferUnlock {
     title: row.offer_title,
     detail: row.offer_detail || undefined,
     terms: row.offer_terms || undefined,
-    code: row.redemption_code,
+    ...(row.presentation_mode === "one_time" ? {} : {code:row.redemption_code}),
+    presentationMode: row.presentation_mode === "one_time" ? "one_time" : "staff_code",
+    presentationStartedAt: row.presentation_started_at || undefined,
+    presentedAt: row.presented_at || undefined,
     redeemedAt: row.redeemed_at || undefined,
   };
 }
@@ -52,6 +61,7 @@ export async function getActiveVenueOffer(slug: string, weekday: string) {
     title: offer.title.trim(),
     detail: offer.detail?.trim() || undefined,
     terms: offer.terms?.trim() || undefined,
+    presentationMode: offer.presentationMode === "one_time" ? "one_time" : "staff_code",
   };
 }
 
@@ -102,6 +112,7 @@ export async function unlockVenueOffer(input: {
         offer_detail: offer.detail,
         offer_terms: offer.terms,
         redemption_code: code,
+        presentation_mode: offer.presentationMode,
       })
       .select("*")
       .single();
@@ -163,4 +174,51 @@ export async function redeemVenueOffer(input: { venueSlug: string; registerKey: 
     .single();
   if (error) throw error;
   return { ok: true as const, alreadyRedeemed: false, unlock: publicUnlock(data as VenueOfferUnlock) };
+}
+
+/**
+ * The one-time presentation is a venue-controlled alternative to staff code entry.
+ * It records a presented screen, NOT an independently verified POS redemption.
+ * Atomic conditional updates prevent reopening after intentional closure.
+ * A short recovery window helps if the browser reloads accidentally.
+ */
+export async function changeVenueOfferPresentation(input: {
+  userId: string; venueSlug: string; action: "open" | "close";
+}) {
+  const supabase = createAdminClient();
+  const date = nightlifeDate();
+  const base = () => supabase.from("venue_offer_unlocks")
+    .select("*").eq("user_id",input.userId)
+    .eq("venue_slug",input.venueSlug).eq("nightlife_date",date);
+  const { data: found, error: findError } = await base().maybeSingle();
+  if(findError)throw findError;
+  if(!found)return {ok:false as const,status:404,error:"No unlocked offer for this venue tonight."};
+  const row = found as VenueOfferUnlock;
+  if(row.presentation_mode!=="one_time")return {ok:false as const,status:409,error:"This offer uses staff redemption instead."};
+  if(row.redeemed_at)return {ok:false as const,status:409,error:"This offer has already been redeemed."};
+  if(row.presented_at)return {ok:false as const,status:409,error:"This offer was already presented."};
+  if(input.action==="close"){
+    if(!row.presentation_started_at)return {ok:false as const,status:409,error:"Open the offer before presenting it."};
+    const {data,error}=await supabase.from("venue_offer_unlocks")
+      .update({presented_at:new Date().toISOString()})
+      .eq("id",row.id).eq("user_id",input.userId).is("presented_at",null)
+      .select("*").maybeSingle();
+    if(error)throw error;
+    if(!data)return {ok:false as const,status:409,error:"This offer was already closed."};
+    return {ok:true as const,offer:publicUnlock(data as VenueOfferUnlock),recovered:false};
+  }
+  if(row.presentation_started_at){
+    // A reload can recover the same presentation for 60 seconds, not start a new one.
+    const elapsed = Date.now()-new Date(row.presentation_started_at).getTime();
+    if(elapsed<0||elapsed>60000)return {ok:false as const,status:409,error:"This offer has already been opened and is no longer available."};
+    return {ok:true as const,offer:publicUnlock(row),recovered:true};
+  }
+  const {data,error}=await supabase.from("venue_offer_unlocks")
+    .update({presentation_started_at:new Date().toISOString()})
+    .eq("id",row.id).eq("user_id",input.userId)
+    .is("presentation_started_at",null).is("presented_at",null)
+    .select("*").maybeSingle();
+  if(error)throw error;
+  if(!data)return {ok:false as const,status:409,error:"This offer has already been opened on another device."};
+  return {ok:true as const,offer:publicUnlock(data as VenueOfferUnlock),recovered:false};
 }
