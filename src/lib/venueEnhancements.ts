@@ -7,7 +7,7 @@ export type VenueGalleryItem = { url: string; alt: string; caption?: string; pla
 export type VenueSpecial = { day: string; title: string; price?: string; detail?: string; };
 export type VenueDailyDeal = { title: string; price?: string; detail?: string; };
 export type VenueProgramEvent = { title: string; date: string; time?: string; detail?: string; recurring?: boolean; category?: "karaoke" | "live_music" | "game" | "trivia" | "bingo" | "sports" | "community" | "special"; sourceUrl?: string; };
-export type SingHubOffer = { enabled: boolean; title: string; detail?: string; terms?: string; days?: string[]; };
+export type SingHubOffer = { enabled: boolean; title: string; detail?: string; terms?: string; days?: string[]; presentationMode?: "staff_code" | "one_time"; };
 export type SingHereConfig = {
   mode?: "instructions" | "external";
   url?: string;
