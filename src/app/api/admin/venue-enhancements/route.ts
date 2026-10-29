@@ -103,6 +103,9 @@ export async function PUT(request: Request) {
       if (typeof offer.enabled !== "boolean") {
         return NextResponse.json({ error: "SingHUB Offer state is invalid." }, { status: 400 });
       }
+      if (offer.presentationMode !== undefined && !["staff_code", "one_time"].includes(offer.presentationMode)) {
+        return NextResponse.json({ error: "SingHUB Offer presentation mode is invalid." }, { status: 400 });
+      }
       if (offer.enabled && !offer.title?.trim()) {
         return NextResponse.json({ error: "An enabled SingHUB Offer needs a headline." }, { status: 400 });
       }
