@@ -130,3 +130,13 @@
 :is(.v2-basic,.v2-enhanced) .tour-offer-code{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:5px;padding:12px 14px;border:1px dashed rgba(255,255,255,.28);background:rgba(255,255,255,.04)}
 :is(.v2-basic,.v2-enhanced) .tour-offer-code span{color:#9fb5c4;font-size:.65rem;font-weight:900;letter-spacing:.14em}
 :is(.v2-basic,.v2-enhanced) .tour-offer-code strong{color:#00c8ff;font:900 1.65rem/1 'Barlow Condensed',sans-serif;letter-spacing:.13em}
+
+/* Check-in result: one quiet, clearly labeled reveal. No reward is invented. */
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-reveal{display:grid;gap:12px;margin:18px 0;padding:18px;border:1px solid rgba(0,200,255,.52);border-radius:12px;background:linear-gradient(135deg,rgba(0,200,255,.12),rgba(255,25,168,.07)),#07131a}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-title{color:#fff;font:900 26px/1.1 'Barlow Condensed',sans-serif}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-reveal p{margin:0;color:#d6e3ec;font-size:15px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-item{display:flex;align-items:flex-start;gap:12px;padding:12px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);border-radius:9px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-item>span{color:#00c8ff;font-size:24px;line-height:1.2}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-item strong{display:block;color:#fff;font-size:17px}
+:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-item a{display:inline-block;margin-top:5px}
+@media (prefers-reduced-motion:no-preference){:is(.v2-basic,.v2-enhanced,.v2-account,.venue-editorial) .gig-reward-reveal{animation:singhub-checkin-reveal .35s ease-out both}@keyframes singhub-checkin-reveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}}
