@@ -4,9 +4,9 @@ import Link from 'next/link';
 import {accountClient,sendAccountLink} from '@/lib/v2/singerAccount';
 import {trackEvent} from '@/lib/analytics';
 import type {SingHubOffer} from '@/lib/venueEnhancements';
+import {VenueOfferPresentation,type OfferUnlock} from './VenueOfferPresentation';
 
 type VisitStatus='none'|'pending'|'confirmed';
-type OfferUnlock={title:string;detail?:string;terms?:string;code:string;redeemedAt?:string};
 type Eligibility={phase:'early'|'open'|'closed';open:boolean;reason:string;startTime:string|null};
 type CheckinMethod='location_matched'|'self_reported';
 type Action='venue'|'tour'; // 'tour' retained only for backward-compatible GPS diagnostics
@@ -72,6 +72,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
  const [visitStatus,setVisitStatus]=useState<VisitStatus>('none');
  const [eligibility,setEligibility]=useState<Eligibility|undefined>();
  const [offerUnlock,setOfferUnlock]=useState<OfferUnlock|undefined>();
+ const [presentingOffer,setPresentingOffer]=useState(false);
  const [message,setMessage]=useState('');
  const [justCheckedIn,setJustCheckedIn]=useState(false);
  const [justEarnedTourStop,setJustEarnedTourStop]=useState(false);
@@ -194,7 +195,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
   <button type="button" className="gig-check-in-button" onClick={open}>
    {venueCheckedIn&&visitStatus==='confirmed'?'View check-in':'Check in'}
   </button>
-  <dialog className="gig-dialog" ref={dialog} aria-labelledby={'tour-stop-title-'+venueSlug} onClick={e=>{if(e.target===e.currentTarget)e.currentTarget.close();}}>
+  <dialog className="gig-dialog" ref={dialog} aria-labelledby={'tour-stop-title-'+venueSlug} onCancel={event=>{if(presentingOffer)event.preventDefault();}} onClick={e=>{if(e.target===e.currentTarget&&!presentingOffer)e.currentTarget.close();}}>
    <button className="gig-close" aria-label="Close check-in" onClick={()=>dialog.current?.close()}>×</button>
    <p className="gig-eyebrow">Check in · Collect · Keep singing</p>
    <h2 id={'tour-stop-title-'+venueSlug}>{venueName}</h2>
@@ -220,10 +221,10 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
      {visitStatus==='confirmed'&&<Link href="/account#tour-stops">View My Tour →</Link>}
     </div>
    </>}
-   {justCheckedIn&&<section className="gig-reward-reveal" aria-label="Check-in result" role="status" aria-live="polite"><strong className="gig-reward-title">✓ You&apos;re checked in!</strong><p>{venueName} is saved to your SingHUB visit history.</p>{justEarnedTourStop&&<div className="gig-reward-item"><span aria-hidden="true">★</span><div><strong>TourStop collected!</strong><p>Another karaoke venue added to My Tour.</p><Link href="/account#tour-stops">See My Tour</Link></div></div>}{justUnlockedOffer&&<div className="gig-reward-item"><span aria-hidden="true">✦</span><div><strong>SingHUB offer unlocked</strong><p>Your offer and register code are below. Show them to venue staff when you&apos;re ready.</p></div></div>}</section>}
+   {justCheckedIn&&<section className="gig-reward-reveal" aria-label="Check-in result" role="status" aria-live="polite"><strong className="gig-reward-title">✓ You&apos;re checked in!</strong><p>{venueName} is saved to your SingHUB visit history.</p>{justEarnedTourStop&&<div className="gig-reward-item"><span aria-hidden="true">★</span><div><strong>TourStop collected!</strong><p>Another karaoke venue added to My Tour.</p><Link href="/account#tour-stops">See My Tour</Link></div></div>}{justUnlockedOffer&&<div className="gig-reward-item"><span aria-hidden="true">✦</span><div><strong>SingHUB offer unlocked</strong><p>Your offer is ready below. Open it when your bartender is ready.</p></div></div>}</section>}
    <p role="status">{message}</p>
    {errorMessage&&<p role="alert">{errorMessage}</p>}
-   {offerUnlock&&<section className={'tour-offer-unlocked'+(offerUnlock.redeemedAt?' redeemed':'')} aria-label="Unlocked SingHUB Offer"><p className="gig-eyebrow">{offerUnlock.redeemedAt?'Offer redeemed':'SingHUB Offer unlocked'}</p><h3>{offerUnlock.title}</h3>{offerUnlock.detail&&<p>{offerUnlock.detail}</p>}<div className="tour-offer-code"><span>REGISTER CODE</span><strong>{offerUnlock.code}</strong></div><p className="gig-fine">{offerUnlock.redeemedAt?'This offer has already been redeemed.':'Show this code at the register. Venue staff marks it redeemed.'}</p>{offerUnlock.terms&&<small>{offerUnlock.terms}</small>}</section>}
+   {offerUnlock&&<VenueOfferPresentation offer={offerUnlock} venueSlug={venueSlug} venueName={venueName} onChange={setOfferUnlock} onLiveChange={setPresentingOffer}/>}
   </dialog>
  </div>;
 }
