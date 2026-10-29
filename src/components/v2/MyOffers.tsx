@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import {useCallback,useEffect,useState} from "react";
+import {useCallback,useEffect,useRef,useState} from "react";
 import {accountClient} from "@/lib/v2/singerAccount";
 
 type Offer = {
@@ -22,20 +22,25 @@ export function MyOffers({userId,venues}:{userId:string|null;venues:Venue[]}){
  const [message,setMessage]=useState("Loading your offers…");
  const [pending,setPending]=useState(false);
  const [now,setNow]=useState(()=>Date.now());
+ const generation=useRef(0);
  const load=useCallback(async()=>{
+  const turn=++generation.current;
   if(!userId){setOffers([]);setMessage("Sign in above to see your offers.");return;}
   setPending(true);
   try{
    const {data,error}=await accountClient().auth.getSession();
+   if(turn!==generation.current)return;
    if(error)throw error;
    if(!data.session||data.session.user.id!==userId){setOffers([]);setMessage("Sign in above to see your offers.");return;}
    const response=await fetch("/api/my-offers",{cache:"no-store",headers:{Authorization:"Bearer "+data.session.access_token}});
    const result=await response.json();
+   if(turn!==generation.current)return;
    if(!response.ok)throw new Error(result.error||"Could not load your offers.");
    setOffers(Array.isArray(result.offers)?result.offers:[]);
    setMessage("");
-  }catch(error){setOffers([]);setMessage(error instanceof Error?error.message:"Could not load your offers.");}
-  finally{setPending(false);}
+  }catch(error){if(turn===generation.current){setOffers([]);setMessage(error instanceof Error?error.message:"Could not load your offers.");}}
+  finally{if(turn===generation.current)setPending(false);}
+
  },[userId]);
  useEffect(()=>{
   // Load after mount, and whenever the signed-in account changes.
