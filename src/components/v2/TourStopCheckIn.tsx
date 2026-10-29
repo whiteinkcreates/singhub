@@ -73,6 +73,9 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
  const [eligibility,setEligibility]=useState<Eligibility|undefined>();
  const [offerUnlock,setOfferUnlock]=useState<OfferUnlock|undefined>();
  const [message,setMessage]=useState('');
+ const [justCheckedIn,setJustCheckedIn]=useState(false);
+ const [justEarnedTourStop,setJustEarnedTourStop]=useState(false);
+ const [justUnlockedOffer,setJustUnlockedOffer]=useState(false);
  const [errorMessage,setErrorMessage]=useState('');
  const [gpsRecoveryAction,setGpsRecoveryAction]=useState<Action|null>(null);
 
@@ -101,7 +104,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
  },[refresh]);
 
  async function checkIn(action:Action,method:CheckinMethod){
-  setPending(true);setErrorMessage('');setMessage('');setGpsRecoveryAction(null);
+  setPending(true);setErrorMessage('');setMessage('');setGpsRecoveryAction(null);setJustCheckedIn(false);setJustEarnedTourStop(false);setJustUnlockedOffer(false);
   let accessToken:string|undefined;
   let gpsAccuracy:number|undefined;
   let stage:'browser'|'api'|'network'='browser';
@@ -149,6 +152,9 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
    }
    report('success');
    setVenueCheckedIn(true);
+   setJustCheckedIn(true);
+   setJustEarnedTourStop(Boolean(result.tourStopCollected));
+   setJustUnlockedOffer(Boolean(result.offerUnlock&&!result.offerUnlock.redeemedAt));
    setOfferUnlock(result.offerUnlock||offerUnlock);
    if(result.tourStopCollected||result.tourStopAlreadyCollected)setVisitStatus('confirmed');
    const details=[
@@ -178,7 +184,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
   finally{setPending(false);}
  }
  const open=()=>{
-  setMessage('');setErrorMessage('');setGpsRecoveryAction(null);setNeedsSignIn(false);setSent(false);
+  setMessage('');setErrorMessage('');setGpsRecoveryAction(null);setNeedsSignIn(false);setSent(false);setJustCheckedIn(false);setJustEarnedTourStop(false);setJustUnlockedOffer(false);
   dialog.current?.showModal();void refresh();
   trackEvent('venue_check_in_open',{venue_slug:venueSlug});
  };
@@ -214,6 +220,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
      {visitStatus==='confirmed'&&<Link href="/account#tour-stops">View My Tour →</Link>}
     </div>
    </>}
+   {justCheckedIn&&<section className="gig-reward-reveal" aria-label="Check-in result" role="status" aria-live="polite"><strong className="gig-reward-title">✓ You&apos;re checked in!</strong><p>{venueName} is saved to your SingHUB visit history.</p>{justEarnedTourStop&&<div className="gig-reward-item"><span aria-hidden="true">★</span><div><strong>TourStop collected!</strong><p>Another karaoke venue added to My Tour.</p><Link href="/account#tour-stops">See My Tour</Link></div></div>}{justUnlockedOffer&&<div className="gig-reward-item"><span aria-hidden="true">✦</span><div><strong>SingHUB offer unlocked</strong><p>Your offer and register code are below. Show them to venue staff when you&apos;re ready.</p></div></div>}</section>}
    <p role="status">{message}</p>
    {errorMessage&&<p role="alert">{errorMessage}</p>}
    {offerUnlock&&<section className={'tour-offer-unlocked'+(offerUnlock.redeemedAt?' redeemed':'')} aria-label="Unlocked SingHUB Offer"><p className="gig-eyebrow">{offerUnlock.redeemedAt?'Offer redeemed':'SingHUB Offer unlocked'}</p><h3>{offerUnlock.title}</h3>{offerUnlock.detail&&<p>{offerUnlock.detail}</p>}<div className="tour-offer-code"><span>REGISTER CODE</span><strong>{offerUnlock.code}</strong></div><p className="gig-fine">{offerUnlock.redeemedAt?'This offer has already been redeemed.':'Show this code at the register. Venue staff marks it redeemed.'}</p>{offerUnlock.terms&&<small>{offerUnlock.terms}</small>}</section>}
