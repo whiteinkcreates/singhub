@@ -254,3 +254,18 @@
 .v2-account .modal-foot .jacket-share-error {flex-basis:100%;margin:0;color:#ff9bb0;font-size:.8rem;}
 
 .v2-account .modal-foot:has(.jacket-share-error) {flex-wrap:wrap;}
+
+/* Keep an unlocked offer findable without changing its one-time presentation rules. */
+.v2-account .my-offers-panel{scroll-margin-top:100px}
+.v2-account .my-offers-list{display:grid;gap:10px;padding:0 20px 20px}
+.v2-account .my-offers-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:16px;border:1px solid rgba(0,200,255,.25);border-left:4px solid #ff19a8;border-radius:10px;background:rgba(3,20,30,.5)}
+.v2-account .my-offers-copy{display:grid;gap:5px;min-width:0}
+.v2-account .my-offers-copy strong{color:#fff;font:850 1.25rem/1.1 "Barlow Condensed",sans-serif}
+.v2-account .my-offers-copy>span{color:#c5d8e5;font-size:.82rem}
+.v2-account .my-offers-status{width:max-content;border-radius:30px;border:1px solid #7b899866;padding:3px 9px;color:#cedae4;font-size:.69rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.v2-account .my-offers-status.available{border-color:rgba(0,200,255,.5);color:#7ee9fc}
+.v2-account .my-offers-open{display:inline-flex;min-height:42px;align-items:center;justify-content:center;padding:9px 16px;border:1px solid #00c8ff;border-radius:24px;color:#fff;background:rgba(0,200,255,.1);font-size:.82rem;font-weight:850;text-decoration:none}
+.v2-account .my-offers-open:focus-visible{outline:3px solid #ff19a8;outline-offset:3px}
+.v2-account .my-offers-empty,.v2-account .my-offers-note{margin:0;padding:0 20px 20px;color:#c5d8e5;font-size:.83rem;line-height:1.5}
+.v2-account .my-offers-note{font-size:.75rem;color:#a9bdca}
+@media(max-width:640px){.v2-account .my-offers-list{padding-inline:14px}.v2-account .my-offers-row{align-items:flex-start}.v2-account .my-offers-open{width:100%}.v2-account .my-offers-empty,.v2-account .my-offers-note{padding-inline:14px}}
