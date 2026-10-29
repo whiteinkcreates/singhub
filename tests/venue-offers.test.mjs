@@ -5,7 +5,7 @@ import {test} from 'node:test';
 import ts from 'typescript';
 import crypto from 'node:crypto';
 
-function fixture(){
+function fixture({presentationMode='staff_code'}={}){
  const tables={venue_offer_unlocks:[],venue_offer_registers:[]};
  function table(name){
   const rows=tables[name];
@@ -17,7 +17,7 @@ function fixture(){
    },
    insert(value){
     const duplicate=rows.some(row=>(row.redemption_code&&row.redemption_code===value.redemption_code)||(row.user_id===value.user_id&&row.venue_id===value.venue_id&&row.nightlife_date===value.nightlife_date));
-    const inserted=duplicate?null:{id:'unlock-'+(rows.length+1),...value,unlocked_at:'2026-10-06T20:00:00Z',redeemed_at:null};
+    const inserted=duplicate?null:{id:'unlock-'+(rows.length+1),...value,unlocked_at:'2026-10-06T20:00:00Z',redeemed_at:null,presentation_started_at:null,presented_at:null};
     if(inserted)rows.push(inserted);
     const result={data:inserted,error:duplicate?{code:'23505'}:null};
     const q={select(){return q;},single(){return Promise.resolve(result);}};return q;
@@ -29,7 +29,8 @@ function fixture(){
    },
    update(patch){
     const filters={};
-    const q={eq(key,value){filters[key]=value;return q;},select(){return q;},single(){const row=rows.find(item=>Object.entries(filters).every(([k,v])=>item[k]===v));if(row)Object.assign(row,patch);return Promise.resolve({data:row||null,error:row?null:{code:'PGRST116'}});}};return q;
+    const result=()=>{const row=rows.find(item=>Object.entries(filters).every(([k,v])=>item[k]===v));if(row)Object.assign(row,patch);return {data:row||null,error:null};};
+    const q={eq(key,value){filters[key]=value;return q;},is(key,value){filters[key]=value;return q;},select(){return q;},single(){return Promise.resolve(result());},maybeSingle(){return Promise.resolve(result());}};return q;
    }
   };
  }
@@ -39,7 +40,7 @@ function fixture(){
   'server-only':{},
   'node:crypto':crypto,
   '@/lib/supabase/admin':{createAdminClient:()=>client},
-  '@/lib/venueEnhancements.server':{getPersistedVenueEnhancement:async()=>({enabled:true,singhubOffer:{enabled:true,title:'$1 off drinks',detail:'During karaoke',terms:'One per guest',days:['Tuesday']}})},
+  '@/lib/venueEnhancements.server':{getPersistedVenueEnhancement:async()=>({enabled:true,singhubOffer:{enabled:true,title:'$1 off drinks',detail:'During karaoke',terms:'One per guest',days:['Tuesday'],presentationMode}})},
   '@/lib/tourStops':{nightlifeDate:()=> '2026-10-06'},
  };
  vm.runInNewContext(ts.transpileModule(readFileSync('src/lib/venueOffers.server.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,esModuleInterop:true}}).outputText,{exports:api,require:id=>imports[id],Date,JSON,Math});
@@ -74,4 +75,42 @@ test('venue check-in unlocks an offer without requiring a Tour Stop',async()=>{
  assert.equal(repeated.code,unlocked.code);
  const unavailable=await api.unlockVenueOffer({userId:'user-3',checkinId:'checkin-3',venueId:'venue-3',venueSlug:'one',nightlifeDate:'2026-10-07',weekday:'Wednesday'});
  assert.equal(unavailable,undefined);
+});
+
+test('one-time presentation is shown without a register code and never claims redemption',async()=>{
+ const {api,tables}=fixture({presentationMode:'one_time'});
+ const offer=await api.unlockVenueOffer({userId:'one-time-user',checkinId:'one-time-checkin',venueId:'venue-10',venueSlug:'one',nightlifeDate:'2026-10-06',weekday:'Tuesday'});
+ assert.equal(offer.presentationMode,'one_time');
+ assert.equal(offer.code,undefined);
+ const opened=await api.changeVenueOfferPresentation({userId:'one-time-user',venueSlug:'one',action:'open'});
+ assert.equal(opened.ok,true);
+ assert.ok(opened.offer.presentationStartedAt);
+ const reopened=await api.changeVenueOfferPresentation({userId:'one-time-user',venueSlug:'one',action:'open'});
+ assert.equal(reopened.ok,true);
+ assert.equal(reopened.recovered,true);
+ const presented=await api.changeVenueOfferPresentation({userId:'one-time-user',venueSlug:'one',action:'close'});
+ assert.equal(presented.ok,true);
+ assert.ok(presented.offer.presentedAt);
+ const after=await api.changeVenueOfferPresentation({userId:'one-time-user',venueSlug:'one',action:'open'});
+ assert.equal(after.ok,false);
+ assert.equal(after.status,409);
+ assert.equal(tables.venue_offer_unlocks[0].redeemed_at,null);
+ const stranger=await api.changeVenueOfferPresentation({userId:'another-user',venueSlug:'one',action:'close'});
+ assert.equal(stranger.status,404);
+});
+
+test('one-time presentation cannot reopen after recovery expires',async()=>{
+ const {api,tables}=fixture({presentationMode:'one_time'});
+ await api.unlockVenueOffer({userId:'expiry-user',checkinId:'checkin',venueId:'venue-11',venueSlug:'one',nightlifeDate:'2026-10-06',weekday:'Tuesday'});
+ tables.venue_offer_unlocks[0].presentation_started_at=new Date(Date.now()-120000).toISOString();
+ const result=await api.changeVenueOfferPresentation({userId:'expiry-user',venueSlug:'one',action:'open'});
+ assert.equal(result.ok,false);
+ assert.equal(result.status,409);
+});
+
+test('staff-code offers cannot enter one-time presentation endpoint',async()=>{
+ const {api}=fixture();
+ await api.unlockVenueOffer({userId:'staff-user',checkinId:'checkin',venueId:'venue-12',venueSlug:'one',nightlifeDate:'2026-10-06',weekday:'Tuesday'});
+ const result=await api.changeVenueOfferPresentation({userId:'staff-user',venueSlug:'one',action:'open'});
+ assert.equal(result.status,409);
 });
