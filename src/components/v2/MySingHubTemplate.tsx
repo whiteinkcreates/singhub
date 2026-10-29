@@ -49,7 +49,7 @@ return <div data-scroll-page="account" className="v2-account" ref={root}>
 <div className="hero-actions"><button className="button primary" data-open-jacket="" onClick={()=>root.current?.querySelector<HTMLDialogElement>('#jacket-modal')?.showModal()}>{"Open My Jacket"}</button><button className="button" data-scroll="share" onClick={()=>root.current?.querySelector('#share')?.scrollIntoView({behavior:'smooth',block:'start'})}>{"Share your performance"}</button></div></div><span className="scroll-note">{"Scroll backstage"}</span></section>
 <main data-page-surface="" className="surface">
 <TourStopCollection venues={venues} refreshKey={account?.performanceCount||0} />
-<MyOffers userId={state.user?.id||null} venues={venues} />
+<MyOffers key={state.user?.id||"signed-out"} userId={state.user?.id||null} venues={venues} />
 <MyUpcomingGigs userId={state.user?.id||null} />
 <FollowedVenueUpdates userId={state.user?.id||null} />
 <section className="career-strip" aria-label="Singer progress"><div className="career-name"><strong>{viewerName}</strong><span>{'My SingHUB · San Diego'}</span></div><div className="metric star"><strong>{account?account.performanceCount:'—'}</strong><span>{"Performance stars"}</span></div><div className="metric"><strong>{account?account.achievements.length:'—'}</strong><span>{"Patches earned"}</span></div><div className="metric"><strong>{account?account.performances.length:'—'}</strong><span>{"Recent songs"}</span></div><div className="metric"><strong>{account?countSavedPicks(account):'—'}</strong><span>{"Saved picks"}</span></div></section>
