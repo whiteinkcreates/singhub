@@ -195,7 +195,7 @@ export function TourStopCheckIn({venueSlug,venueName,offer}:{venueSlug:string;ve
   <button type="button" className="gig-check-in-button" onClick={open}>
    {venueCheckedIn&&visitStatus==='confirmed'?'View check-in':'Check in'}
   </button>
-  <dialog className="gig-dialog" ref={dialog} aria-labelledby={'tour-stop-title-'+venueSlug} onCancel={event=>{if(presentingOffer)event.preventDefault();}} onClick={e=>{if(e.target===e.currentTarget&&!presentingOffer)e.currentTarget.close();}}>
+  <dialog className={"gig-dialog"+(presentingOffer?" presenting-offer":"")} ref={dialog} aria-labelledby={'tour-stop-title-'+venueSlug} onCancel={event=>{if(presentingOffer)event.preventDefault();}} onClick={e=>{if(e.target===e.currentTarget&&!presentingOffer)e.currentTarget.close();}}>
    <button className="gig-close" aria-label="Close check-in" onClick={()=>dialog.current?.close()}>×</button>
    <p className="gig-eyebrow">Check in · Collect · Keep singing</p>
    <h2 id={'tour-stop-title-'+venueSlug}>{venueName}</h2>
