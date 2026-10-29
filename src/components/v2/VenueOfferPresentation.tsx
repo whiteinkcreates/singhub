@@ -9,7 +9,7 @@ export type OfferUnlock = {
 };
 type Props = {
  offer:OfferUnlock;venueSlug:string;venueName:string;
- onChange:(offer:OfferUnlock)=>void;
+ onChange:(offer:OfferUnlock)=>void;onLiveChange?:(active:boolean)=>void;
 };
 function ended(offer:OfferUnlock){
  if(offer.presentedAt||offer.redeemedAt)return true;
@@ -17,7 +17,7 @@ function ended(offer:OfferUnlock){
  const age=Date.now()-new Date(offer.presentationStartedAt).getTime();
  return age<0||age>60000;
 }
-export function VenueOfferPresentation({offer,venueSlug,venueName,onChange}:Props){
+export function VenueOfferPresentation({offer,venueSlug,venueName,onChange,onLiveChange}:Props){
  const [phase,setPhase]=useState<"summary"|"warning"|"live">("summary");
  const [pending,setPending]=useState(false);
  const [message,setMessage]=useState("");
@@ -40,8 +40,8 @@ export function VenueOfferPresentation({offer,venueSlug,venueName,onChange}:Prop
    const result=await response.json();
    if(!response.ok)throw new Error(result.error||"Could not update your offer.");
    onChange(result.offer);
-   if(action==="open"){setNow(Date.now());setPhase("live");}
-   else {setPhase("summary");setMessage("Offer marked Presented. It can no longer be opened.");}
+   if(action==="open"){setNow(Date.now());setPhase("live");onLiveChange?.(true);}
+   else {setPhase("summary");onLiveChange?.(false);setMessage("Offer marked Presented. It can no longer be opened.");}
   }catch(error){setMessage(error instanceof Error?error.message:"Could not update your offer.");}
   finally{setPending(false);}
  }
