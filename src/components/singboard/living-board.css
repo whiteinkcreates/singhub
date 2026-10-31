@@ -2,6 +2,8 @@
 /* SingBOARD Living Board. Performance-friendly backstage textures, no heavy art layers. */
 .sb-page {
   --sb-pink:#ff36c9; --sb-cyan:#37dbff; --sb-paper:#f2e5d9;
+  /* SingBOARD is a browse-first page: keep the existing sticky hero, not a full-screen takeover. */
+  --main-hero-height:clamp(320px,46svh,460px);
   color:#f9faff; background:#050914;
   background-image:
     radial-gradient(ellipse 60% 35% at 8% 9%,rgba(239,29,145,.13),transparent),
@@ -59,13 +61,13 @@
   height:100%;
   max-width:1300px;
   margin-inline:auto;
-  padding:28px clamp(18px,3.5vw,48px) 78px;
+  padding:24px clamp(18px,3.5vw,48px) 54px;
 }
 .sb-page [data-page-hero] [data-hero-copy].sb-hero__copy {
-  width:min(690px,100%);
-  max-width:690px;
+  width:min(510px,100%);
+  max-width:510px;
   min-height:0;
-  padding:clamp(18px,3vw,30px);
+  padding:clamp(13px,2.2vw,20px);
   border:1px solid rgba(255,255,255,.28);
   background:rgba(3,5,10,.76);
   box-shadow:0 14px 55px rgba(0,0,0,.32);
@@ -83,17 +85,17 @@
   margin:0;
   color:#fff;
   font-family:"Barlow Condensed",sans-serif;
-  font-size:clamp(3.5rem,8vw,6.8rem);
+  font-size:clamp(2.65rem,5.5vw,4.5rem);
   font-weight:900;
   line-height:.87;
   letter-spacing:-.02em;
   text-transform:uppercase;
 }
 .sb-hero__copy .sb-hero__description {
-  margin:16px 0 0;
+  margin:8px 0 0;
   max-width:560px;
   color:#e4e9f5!important;
-  font-size:clamp(.9rem,1.5vw,1.1rem);
+  font-size:clamp(.83rem,1.3vw,.99rem);
   font-weight:600;
   line-height:1.45;
 }
@@ -227,23 +229,32 @@
 /* The central poster sheet stays opaque. Desktop gutters reveal the hero;
    narrow phones get a full-width foreground sheet and accessible controls. */
 @media(max-width:860px){
-  .sb-hero__layout {padding:22px 18px 66px;}
+  .sb-page[data-scroll-page="singboard"] { --main-hero-height:clamp(240px,36svh,335px); }
+  .sb-hero__layout {padding:15px 18px 44px;}
   .sb-page[data-scroll-page="singboard"] [data-page-surface].sb-surface {
     padding:0 15px 90px;
   }
 }
 @media(max-width:680px){
+  .sb-page[data-scroll-page="singboard"] { --main-hero-height:clamp(220px,32svh,280px); }
   .sb-page[data-scroll-page="singboard"] [data-page-surface].sb-surface {
     padding:0 0 78px;
     margin-top:-28px;
   }
   .sb-page .sb-shell {max-width:none;padding:19px 13px 90px;}
-  .sb-hero__layout {padding:18px 14px 64px;}
-  .sb-page [data-page-hero] [data-hero-copy].sb-hero__copy {padding:18px;}
-  .sb-hero__copy h1 {font-size:clamp(3.35rem,12.5vw,5rem);}
-  .sb-hero__copy .sb-hero__description {margin-top:11px;font-size:.9rem;}
+  .sb-hero__layout {padding:13px 12px 30px;}
+  .sb-page [data-page-hero] [data-hero-copy].sb-hero__copy {
+    width:min(390px,100%);padding:10px 12px;
+    border:0;border-left:2px solid rgba(255,54,201,.85);
+    background:rgba(3,5,10,.67);box-shadow:none;
+  }
+  .sb-hero__eyebrow {margin-bottom:5px;font-size:.59rem;letter-spacing:.12em;}
+  .sb-hero__copy h1 {font-size:clamp(2rem,8.5vw,2.6rem);line-height:.98;}
+  .sb-hero__copy .sb-hero__description {margin-top:5px;font-size:.74rem;line-height:1.3;}
+  .sb-page .hero-scroll-cue {display:none;}
 }
 @media(max-height:580px){
-  .sb-page .sb-hero__layout {padding-bottom:42px;}
-  .sb-page [data-page-hero] [data-hero-copy].sb-hero__copy {padding:14px;}
+  .sb-page[data-scroll-page="singboard"] { --main-hero-height:min(225px,43svh); }
+  .sb-page .sb-hero__layout {padding-bottom:28px;}
+  .sb-page [data-page-hero] [data-hero-copy].sb-hero__copy {padding:9px 12px;}
 }
