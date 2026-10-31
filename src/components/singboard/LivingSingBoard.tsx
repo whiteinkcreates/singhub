@@ -107,6 +107,7 @@ export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:List
     }).sort((a,b)=>a.eventDate.localeCompare(b.eventDate)||a.title.localeCompare(b.title));
   },[posts,region,period,filter,query]);
   const spotlight=filtered.find(post=>/monthly mic #001/i.test(post.title))||filtered[0];
+  const isFeatured=Boolean(spotlight&&/monthly mic #001/i.test(spotlight.title));
   const rest=filtered.filter(post=>post.id!==spotlight?.id);
   const notes=rest.filter(post=>post.postType!=="image");
   const flyers=rest.filter(post=>post.postType==="image");
@@ -224,7 +225,7 @@ export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:List
       </div>
     </div>
     {!spotlight&&<div className="rounded-2xl border border-white/15 bg-white/5 px-5 py-10 text-center"><h3 className="text-lg font-bold">Nothing on the Board for these filters yet.</h3><p className="mt-1 text-sm text-slate-400">Try another neighborhood or date range.</p></div>}
-    {spotlight&&<section className="space-y-3"><h3 className="text-lg font-black text-white">Featured event</h3><EventCard post={spotlight} featured/></section>}
+    {spotlight&&<section className="space-y-3"><h3 className="text-lg font-black text-white">{isFeatured?"SingHUB spotlight":"Next up on the Board"}</h3><EventCard post={spotlight} featured={isFeatured}/></section>}
     {flyers.length>0&&<section className="space-y-3"><h3 className="text-lg font-black text-white">More on the Board</h3><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{flyers.map(post=><EventCard key={post.id} post={post}/>)}</div></section>}
     {notes.length>0&&<section className="space-y-3"><h3 className="text-lg font-black text-white">Community notes & announcements</h3><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{notes.map(post=><EventCard key={post.id} post={post}/>)}</div></section>}
   </div>;
