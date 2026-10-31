@@ -4,6 +4,7 @@ import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
 import { getPublicVenues } from "@/lib/publicVenueFilters";
 import { getVenueListings } from "@/lib/venueData";
 import { getActiveHosts } from "@/lib/hostData";
+import "@/components/singboard/living-board.css";
 
 export const metadata: Metadata = {
   title: "SingBOARD | SingHUB",
@@ -22,6 +23,9 @@ function regionFor(neighborhood: string): VenueChoice["region"] {
   return "central";
 }
 
+// Use registered venue photography only. No AI-generated or invented venue signs.
+const MESA_PHOTO = "https://res.cloudinary.com/dy3lyejkk/image/upload/v1791249550/singhub/venues/the-mesa/e9pqrecg4md6bhufq49e.jpg";
+
 export default async function SingBoardPage() {
   const [flyers, venueRows, hostRows] = await Promise.all([
     getActiveSingBoardFlyers(),
@@ -29,28 +33,33 @@ export default async function SingBoardPage() {
     getActiveHosts({includeMedia:false}).catch(() => []),
   ]);
   const venues:VenueChoice[] = getPublicVenues(venueRows).map(venue=>({
-    slug:venue.slug,name:venue.venueName,neighborhood:venue.neighborhood,region:regionFor(venue.neighborhood),
+    slug:venue.slug,name:venue.venueName,neighborhood:venue.neighborhood,
+    region:regionFor(venue.neighborhood),
+    imageUrl:venue.bannerImageUrl || (venue.slug==="the-mesa" ? MESA_PHOTO : undefined),
   }));
   const hosts:HostChoice[] = hostRows.map(host=>({
     id:host.hostId,slug:host.slug,name:host.publicDisplayName,otherName:host.hostName,
   }));
   const byId = new Map(hosts.map(host=>[host.id,host.slug]));
-  const listings=flyers.map(post=>({...post,hostSlug:post.hostId?byId.get(post.hostId):undefined}));
+  const byVenueSlug = new Map(venues.map(venue=>[venue.slug,venue]));
+  const listings=flyers.map(post=>({
+    ...post,
+    hostSlug:post.hostId?byId.get(post.hostId):undefined,
+    venuePhoto:post.venueSlug?byVenueSlug.get(post.venueSlug)?.imageUrl:undefined,
+  }));
 
-  return <main data-scroll-page="singboard" className="min-h-[100dvh] bg-[#060912] pb-28 text-white">
-    <section className="relative overflow-hidden border-b border-fuchsia-400/20 bg-[radial-gradient(ellipse_at_top_left,rgba(235,31,147,.22),transparent_55%),radial-gradient(ellipse_at_top_right,rgba(0,163,249,.19),transparent_50%),linear-gradient(160deg,#070912,#0c1323)]">
-      <div className="mx-auto max-w-6xl px-4 py-9 sm:px-6 sm:py-12">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" className="mb-3 h-auto w-44 object-contain sm:w-56"/>
-            <p className="inline-block -rotate-1 border border-white/20 bg-[#e8dfd1] px-4 py-1 text-4xl font-black uppercase tracking-tight text-[#111827] shadow-[5px_5px_0_rgba(236,72,153,.35)] sm:text-5xl">SingBOARD</p>
-            <p className="mt-4 text-sm font-semibold text-slate-200 sm:text-base">San Diego karaoke events, meetups, and community. Everything happening beyond the usual night.</p>
-          </div>
-          <div className="hidden -rotate-3 border-l-2 border-cyan-400 pl-4 text-xs font-black uppercase tracking-[.2em] leading-6 text-cyan-300 sm:block">Real nights.<br/>Real people.<br/>Real places.</div>
+  return <main data-scroll-page="singboard" className="sb-page">
+    <header className="sb-masthead">
+      <div className="sb-masthead__inner">
+        <div className="sb-masthead__brand">
+          <img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" className="sb-wordmark"/>
+          <h1 className="sb-paper">SingBOARD</h1>
+          <p className="sb-masthead__sub">San Diego karaoke events, meetups, and community.</p>
         </div>
+        <p aria-hidden="true" className="sb-graffiti">PEOPLE<br/>SONGS<br/>PLACES<br/>COMMUNITY</p>
       </div>
-    </section>
-    <section className="mx-auto max-w-6xl px-4 pt-7 sm:px-6">
+    </header>
+    <section className="sb-shell" aria-label="SingBOARD events and notices">
       <LivingSingBoard initialFlyers={listings} venues={venues} hosts={hosts}/>
     </section>
   </main>;
