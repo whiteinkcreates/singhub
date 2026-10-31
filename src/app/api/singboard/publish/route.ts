@@ -102,10 +102,11 @@ export async function POST(request: Request) {
       const requested = hosts.find(host => host.hostId === requestedHostId);
       const owned = hosts.find(host => host.hostId === poster.host_id);
       if (poster.poster_type === "kj") {
-        if (!owned) return NextResponse.json({ error: "Your posting access is not linked to a confirmed KJ." }, { status: 403 });
-        if (requestedHostId && requested?.hostId !== owned.hostId) return NextResponse.json({ error: "You cannot post as another KJ." }, { status: 403 });
-        hostId = owned.hostId;
-        hostName = owned.publicDisplayName;
+        // Legacy KJ codes without a canonical host remain board-only contributors.
+        // They cannot claim another host's profile, even by selecting it in the form.
+        if (!owned && requestedHostId) return NextResponse.json({ error: "Your posting access is not linked to a confirmed KJ." }, { status: 403 });
+        if (owned && requestedHostId && requested?.hostId !== owned.hostId) return NextResponse.json({ error: "You cannot post as another KJ." }, { status: 403 });
+        if (owned) { hostId = owned.hostId; hostName = owned.publicDisplayName; }
       } else if (poster.poster_type === "admin" && requested) {
         hostId = requested.hostId;
         hostName = requested.publicDisplayName;
