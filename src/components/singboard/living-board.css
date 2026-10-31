@@ -247,3 +247,30 @@
   .sb-page .sb-hero__layout {padding-bottom:42px;}
   .sb-page [data-page-hero] [data-hero-copy].sb-hero__copy {padding:14px;}
 }
+
+
+/* Image-fit correction, 2026-10-31.
+   Keep SingBOARD's full-height sticky stage and rising event surface.
+   Its landscape sticker-wall art should not be blown up to cover a portrait
+   phone viewport. Keep the whole graphic visible over a dark, blurred fill. */
+.sb-hero__backdrop {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  filter:blur(24px) brightness(.43) saturate(.85);
+  transform:scale(1.09);
+  pointer-events:none;
+}
+@media (max-width:680px) {
+  .sb-page .sb-hero__image {
+    object-fit:contain;
+    object-position:center center;
+    transform:none !important;
+  }
+  .sb-page .sb-hero__image[data-image-placement] {
+    object-position:center center !important;
+    transform:none !important;
+  }
+}

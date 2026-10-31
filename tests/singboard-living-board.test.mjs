@@ -65,3 +65,16 @@ test("SingBOARD uses the shared stationary hero and sliding content surface", ()
   assert.match(css,/background:transparent/);
   assert.match(css,/\.sb-page \.sb-shell/);
 });
+
+test("mobile SingBOARD uses full-height stage with uncropped image fit", () => {
+  const page=readFileSync(new URL("../src/app/singboard/page.tsx",import.meta.url),"utf8");
+  const css=readFileSync(new URL("../src/components/singboard/living-board.css",import.meta.url),"utf8");
+  const shared=readFileSync(new URL("../src/components/layout/mainPageHero.css",import.meta.url),"utf8");
+  assert.match(page,/className="sb-hero__backdrop"/);
+  assert.match(page,/className="sb-hero__image"/);
+  assert.match(css,/\.sb-page \.sb-hero__image\s*\{\s*object-fit:contain/);
+  assert.match(css,/\.sb-hero__backdrop\s*\{/);
+  assert.match(shared,/--main-hero-height:calc\(100svh/);
+  assert.doesNotMatch(css,/--main-hero-height:clamp\(/);
+  assert.doesNotMatch(css,/\.sb-page \[data-page-hero\] \[data-hero-copy\]\.sb-hero__copy\s*\{\s*width:min\(390px/);
+});
