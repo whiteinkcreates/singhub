@@ -57,6 +57,12 @@ export default async function SingBoardPage() {
   return <main data-scroll-page="singboard" className="sb-page">
     <section data-page-hero="" className="sb-hero" aria-labelledby="singboard-hero-title">
       <div data-board-hero-frame="" className="sb-hero__frame">
+        <img
+          src={boardHero?.heroUrl || SINGBOARD_STICKER_ART}
+          alt=""
+          aria-hidden="true"
+          className="sb-hero__backdrop"
+        />
         <PositionedImage
           src={boardHero?.heroUrl || SINGBOARD_STICKER_ART}
           alt={boardHero?.heroAlt || "SingBOARD sticker wall"}
