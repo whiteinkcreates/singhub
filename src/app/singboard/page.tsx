@@ -1,57 +1,66 @@
 import type { Metadata } from "next";
-import {PositionedImage} from "@/components/media/PositionedImage";
-import { HeroScrollCue } from "@/components/layout/HeroScrollCue";
-import { SingBoard } from "@/components/singboard/SingBoard";
+import { LivingSingBoard, type HostChoice, type VenueChoice } from "@/components/singboard/LivingSingBoard";
 import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
-import { SINGBOARD_STICKER_ART } from "@/lib/singboardStickerArt";
-import {getHostMediaSettings} from "@/lib/hostMedia.server";
-import {SITE_SINGBOARD_HERO_KEY} from "@/lib/hostMedia";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
+import { getVenueListings } from "@/lib/venueData";
+import { getActiveHosts } from "@/lib/hostData";
+import "@/components/singboard/living-board.css";
 
 export const metadata: Metadata = {
   title: "SingBOARD | SingHUB",
-  description: "See San Diego karaoke events, community notices, and wanted posts from local venues and KJs on SingBOARD.",
+  description: "Real San Diego karaoke events, special nights, meetups, flyers, and community notices.",
   alternates: { canonical: "/singboard" },
 };
-
 export const dynamic = "force-dynamic";
 
+function regionFor(neighborhood: string): VenueChoice["region"] {
+  const name = neighborhood.toLowerCase();
+  if (/gaslamp|downtown|east village|little italy|marina district/.test(name)) return "downtown";
+  if (/la mesa|el cajon|santee|spring valley|lakeside|alpine|lemon grove/.test(name)) return "east-county";
+  if (/ocean beach|pacific beach|mission beach|point loma/.test(name)) return "beach";
+  if (/encinitas|carlsbad|oceanside|vista|escondido|poway|san marcos/.test(name)) return "north-county";
+  if (/chula vista|national city|imperial beach|bonita/.test(name)) return "south-bay";
+  return "central";
+}
+
+// Use registered venue photography only. No AI-generated or invented venue signs.
+const MESA_PHOTO = "https://res.cloudinary.com/dy3lyejkk/image/upload/v1791249550/singhub/venues/the-mesa/e9pqrecg4md6bhufq49e.jpg";
+
 export default async function SingBoardPage() {
-  const [flyers,hero] = await Promise.all([getActiveSingBoardFlyers(),getHostMediaSettings(SITE_SINGBOARD_HERO_KEY).catch(()=>null)]);
+  const [flyers, venueRows, hostRows] = await Promise.all([
+    getActiveSingBoardFlyers(),
+    getVenueListings(),
+    getActiveHosts({includeMedia:false}).catch(() => []),
+  ]);
+  const venues:VenueChoice[] = getPublicVenues(venueRows).map(venue=>({
+    slug:venue.slug,name:venue.venueName,neighborhood:venue.neighborhood,
+    region:regionFor(venue.neighborhood),
+    imageUrl:venue.bannerImageUrl || (venue.slug==="the-mesa" ? MESA_PHOTO : undefined),
+  }));
+  const hosts:HostChoice[] = hostRows.map(host=>({
+    id:host.hostId,slug:host.slug,name:host.publicDisplayName,otherName:host.hostName,
+  }));
+  const byId = new Map(hosts.map(host=>[host.id,host.slug]));
+  const byVenueSlug = new Map(venues.map(venue=>[venue.slug,venue]));
+  const listings=flyers.map(post=>({
+    ...post,
+    hostSlug:post.hostId?byId.get(post.hostId):undefined,
+    venuePhoto:post.venueSlug?byVenueSlug.get(post.venueSlug)?.imageUrl:undefined,
+  }));
 
-  return (
-    <main data-scroll-page="singboard" className="min-h-[100dvh] bg-[#05060a] pb-24 text-white">
-      <section data-page-hero="" className="relative isolate overflow-hidden border-b border-white/10" aria-labelledby="singboard-hero-title">
-        <div data-board-hero-frame="" className="relative h-full w-full">
-          <PositionedImage placement={hero?.heroPlacement} position={hero?.heroPosition}
-            src={hero?.heroUrl||SINGBOARD_STICKER_ART}
-            alt={hero?.heroAlt||"SingBOARD sticker wall"}
-            className="absolute inset-0 h-full w-full object-cover object-center"
-          />
-          <div className="relative z-10 flex h-full w-full items-end px-5 pb-28 pt-6 sm:px-10 sm:pb-20">
-            <div data-hero-copy="" className="w-full">
-              <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-fuchsia-300">SAN DIEGO KARAOKE COMMUNITY</p>
-              <h1 id="singboard-hero-title" className="m-0 text-[clamp(3.5rem,8vw,6.8rem)] font-black uppercase leading-[0.84] tracking-[-0.025em]" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>SingBOARD</h1>
-              <p className="mt-4 max-w-xl text-sm font-semibold leading-relaxed text-slate-200 sm:text-base">
-                Karaoke event flyers, community updates and wanted posts from local venues and KJs.
-              </p>
-            </div>
-          </div>
+  return <main data-scroll-page="singboard" className="sb-page">
+    <header className="sb-masthead">
+      <div className="sb-masthead__inner">
+        <div className="sb-masthead__brand">
+          <img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" className="sb-wordmark"/>
+          <h1 className="sb-paper">SingBOARD</h1>
+          <p className="sb-masthead__sub">San Diego karaoke events, meetups, and community.</p>
         </div>
-        <HeroScrollCue />
-      </section>
-
-      <section data-page-surface="" className="mx-auto max-w-6xl px-3 pt-5 sm:px-6 sm:pt-7">
-        <div className="mb-3 flex items-end justify-between gap-4 px-1">
-          <div>
-            <h2 className="mt-1 text-xl font-black sm:text-2xl">What&apos;s pinned</h2>
-          </div>
-          <p className="max-w-52 text-right text-[10px] leading-snug text-slate-400 sm:max-w-xs sm:text-xs">
-            Tap a flyer or note for the full event page.
-          </p>
-        </div>
-
-        <SingBoard initialFlyers={flyers} />
-      </section>
-    </main>
-  );
+        <p aria-hidden="true" className="sb-graffiti">PEOPLE<br/>SONGS<br/>PLACES<br/>COMMUNITY</p>
+      </div>
+    </header>
+    <section className="sb-shell" aria-label="SingBOARD events and notices">
+      <LivingSingBoard initialFlyers={listings} venues={venues} hosts={hosts}/>
+    </section>
+  </main>;
 }
