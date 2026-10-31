@@ -9,6 +9,12 @@ export type VenueChoice = { slug:string; name:string; neighborhood:string; regio
 export type HostChoice = { id:string; slug:string; name:string; otherName:string };
 type Listing = PersistedSingBoardPost & { hostSlug?:string; venuePhoto?:string };
 
+// Only the explicit SingHUB onboarding example is undated in the UI.
+// The database event_date remains a publishing expiration, not an event date.
+const isSingBoardExample = (post: Pick<PersistedSingBoardPost, "postType" | "category" | "title">) =>
+  post.postType === "note" && post.category === "notice" &&
+  /^welcome to singboard.*example post/i.test(post.title);
+
 const REGIONS: {value:"all"|SingBoardRegion;label:string}[] = [
   {value:"all",label:"All San Diego"}, {value:"central",label:"Central"},
   {value:"downtown",label:"Downtown"}, {value:"beach",label:"Beach Areas"},
@@ -29,6 +35,7 @@ const localToday = () => { const parts=new Intl.DateTimeFormat("en-CA",{timeZone
 
 function EventCard({post,featured=false}:{post:Listing;featured?:boolean}) {
   const eventHref="/events/"+post.id;
+  const isGuide = isSingBoardExample(post);
   const dated = new Date(post.eventDate+"T12:00:00Z");
   const fullDate=new Intl.DateTimeFormat("en-US",{weekday:"long",month:"long",day:"numeric",timeZone:"UTC"}).format(dated);
   const month=new Intl.DateTimeFormat("en-US",{month:"short",timeZone:"UTC"}).format(dated);
@@ -73,25 +80,28 @@ function EventCard({post,featured=false}:{post:Listing;featured?:boolean}) {
 
   return <article className="sb-poster">
     <span className="sb-poster__tape" aria-hidden="true"/>
-    <time className="sb-date-tab" dateTime={post.eventDate}>
-      <span className="sb-date-tab__month">{month}</span>
-      <span className="sb-date-tab__day">{day}</span>
-      <span className="sb-date-tab__weekday">{weekday}</span>
-    </time>
+    {isGuide?
+      <span className="sb-date-tab sb-date-tab--example" aria-label="Example post, not an event">EXAMPLE</span>:
+      <time className="sb-date-tab" dateTime={post.eventDate}>
+        <span className="sb-date-tab__month">{month}</span>
+        <span className="sb-date-tab__day">{day}</span>
+        <span className="sb-date-tab__weekday">{weekday}</span>
+      </time>}
     <Link href={eventHref} className={"sb-poster__media"+(posterIsImage?"":" sb-poster__media--note")} aria-label={"View "+post.title}>
       {posterIsImage?<img src={post.imageUrl} alt={post.title+" original event flyer"} loading="lazy"/>:
-        <span>{post.postType==="wanted"?"Looking for singers or crew":post.title}</span>}
+        <span>{post.noteText || (post.postType==="wanted"?"Looking for singers or crew":post.title)}</span>}
     </Link>
     <div className="sb-poster__body">
       <h3 className="sb-poster__title"><Link href={eventHref}>{post.title}</Link></h3>
-      <p className="sb-poster__venue">⌖ {venueLink?<Link href={venueLink}>{post.venue}</Link>:post.venue}
-        {post.neighborhood&&<span> · {post.neighborhood}</span>}</p>
-      {post.startTime&&<p className="sb-poster__venue">{dayString(post.eventDate)} · {post.startTime}</p>}
+      {isGuide?<p className="sb-poster__venue">From SingHUB · How the Board works</p>:
+        <p className="sb-poster__venue">⌖ {venueLink?<Link href={venueLink}>{post.venue}</Link>:post.venue}
+          {post.neighborhood&&<span> · {post.neighborhood}</span>}</p>}
+      {!isGuide&&post.startTime&&<p className="sb-poster__venue">{dayString(post.eventDate)} · {post.startTime}</p>}
       {post.hostName&&<p className="sb-poster__venue">On the mic: {hostLink?<Link href={hostLink}>{post.hostName}</Link>:post.hostName}</p>}
       {post.detail&&<p className="sb-poster__desc">{post.detail}</p>}
       <div className="sb-poster__footer">
-        <span>{verified?"Reviewed by SingHUB":"Community post"}</span>
-        <Link href={eventHref}>Details <span aria-hidden="true">›</span></Link>
+        <span>{isGuide?"How it works":verified?"Reviewed by SingHUB":"Community post"}</span>
+        <Link href={eventHref}>{isGuide?"Read guide":"Details"} <span aria-hidden="true">›</span></Link>
       </div>
     </div>
   </article>;
@@ -146,7 +156,8 @@ export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:List
     }).sort((a,b)=>a.eventDate.localeCompare(b.eventDate)||a.title.localeCompare(b.title));
   },[posts,neighborhood,period,filter,query]);
   const neighborhoods=useMemo(()=>[...new Set(posts.map(post=>post.neighborhood.trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)),[posts]);
-  const spotlight=filtered.find(post=>/monthly mic #001/i.test(post.title))||filtered[0];
+  const spotlight=filtered.find(post=>/monthly mic #001/i.test(post.title))||
+    filtered.find(post=>post.postType==="image"&&["special_event","theme_karaoke"].includes(post.category||"special_event"));
   const isFeatured=Boolean(spotlight&&/monthly mic #001/i.test(spotlight.title));
   const rest=filtered.filter(post=>post.id!==spotlight?.id);
   const notes=rest.filter(post=>post.postType!=="image");
@@ -283,7 +294,7 @@ export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:List
       {published&&<Link className="block text-sm font-bold text-cyan-200 underline" href={published}>View published SingBOARD event →</Link>}
       <button type="submit" disabled={working} className="w-full rounded-xl bg-cyan-300 px-5 py-3 font-black text-slate-950 disabled:opacity-50">{working?"Publishing…":"Review complete. Publish to SingBOARD"}</button>
     </form>}
-    {!spotlight&&<div className="sb-empty"><h2 className="text-xl font-bold">Nothing pinned for those filters.</h2><p className="mt-2 text-sm">Try another neighborhood or date range, or contribute an event.</p></div>}
+    {filtered.length===0&&<div className="sb-empty"><h2 className="text-xl font-bold">Nothing pinned for those filters.</h2><p className="mt-2 text-sm">Try another neighborhood or date range, or contribute an event.</p></div>}
     {spotlight&&<section aria-label={isFeatured?"Featured SingHUB event":"Next event"}>{isFeatured&&<h2 className="sr-only">Featured event</h2>}<EventCard post={spotlight} featured={isFeatured}/></section>}
     <div className="sb-heading">
       <h2>On the Board</h2>
