@@ -107,7 +107,8 @@ export async function POST(request: Request) {
         if (!owned && requestedHostId) return NextResponse.json({ error: "Your posting access is not linked to a confirmed KJ." }, { status: 403 });
         if (owned && requestedHostId && requested?.hostId !== owned.hostId) return NextResponse.json({ error: "You cannot post as another KJ." }, { status: 403 });
         if (owned) { hostId = owned.hostId; hostName = owned.publicDisplayName; }
-      } else if (poster.poster_type === "admin" && requested) {
+      } else if ((poster.poster_type === "admin" || poster.poster_type === "venue") && requested) {
+        // Venue-submitted KJ attribution is held for review before cross-posting.
         hostId = requested.hostId;
         hostName = requested.publicDisplayName;
       } else if (requestedHostId && !requested) {
