@@ -11,17 +11,113 @@
 }
 .sb-page a:focus-visible,.sb-page button:focus-visible,.sb-page select:focus-visible,
 .sb-page input:focus-visible {outline:2px solid var(--sb-cyan);outline-offset:3px}
-.sb-masthead {position:relative;isolation:isolate;overflow:hidden}
-.sb-masthead:before {content:"";position:absolute;inset:0;pointer-events:none;opacity:.26;background-image:radial-gradient(rgba(255,255,255,.34) .65px, transparent .65px);background-size:8px 8px;mask-image:linear-gradient(to bottom,black,transparent 95%);}
-.sb-masthead__inner {position:relative;max-width:1160px;margin:auto;padding:26px 20px 10px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
-.sb-masthead__brand {min-width:0;}
-.sb-wordmark {display:block;object-fit:contain;object-position:left center;width:clamp(190px,40vw,340px);height:auto;filter:drop-shadow(0 0 13px rgba(255,54,201,.28))}
-.sb-paper {position:relative;display:table;margin:-1px 0 0;transform:rotate(-2deg);font-family:"Permanent Marker","Barlow Condensed",sans-serif;font-weight:500;font-size:clamp(2.8rem,8.4vw,5.3rem);line-height:1.02;letter-spacing:-.045em;color:#080b14;padding:2px 28px 9px 19px;z-index:0;text-shadow:1px 1px 0 rgba(12,12,20,.17);}
-.sb-paper:before {content:"";position:absolute;z-index:-1;inset:1px -12px 0 -10px;background:var(--sb-paper);box-shadow:0 4px 7px rgba(0,0,0,.5);clip-path:polygon(0 9%,7% 5%,16% 8%,24% 0%,33% 4%,39% 0%,48% 5%,59% 1%,72% 6%,83% 1%,93% 5%,100% 0%,98% 21%,100% 40%,98% 61%,100% 79%,96% 100%,83% 95%,72% 98%,59% 96%,47% 100%,35% 94%,25% 100%,12% 94%,0 99%,2% 76%,0 60%,3% 42%);}
-.sb-masthead__sub {font-size:clamp(.77rem,2.5vw,1rem);margin:12px 0 0;color:#d0d6e8;letter-spacing:.015em}
-.sb-graffiti {display:none;flex:none;align-self:center;transform:rotate(-9deg);color:#40dfff;text-align:center;font-family:"Permanent Marker",sans-serif;line-height:1.15;font-size:clamp(.75rem,1.7vw,1.05rem);letter-spacing:.06em;text-shadow:0 0 13px #00aceb8a;}
-.sb-graffiti:after {content:"♡";display:block;font-size:1.5rem;line-height:1.1;}
-.sb-shell {max-width:1160px;margin:auto;padding:9px 15px 110px}
+
+/* Share the photo-backed SingHUB hero/scroll contract. The artwork stays
+   pinned under the site header while the actual Board rises over it.
+   This is not background-attachment:fixed, which breaks on mobile Safari. */
+.sb-page[data-scroll-page="singboard"] [data-page-hero].sb-hero {
+  position:sticky;
+  top:var(--main-header-height);
+  z-index:0;
+  width:100%;
+  height:var(--main-hero-height);
+  min-height:var(--main-hero-height);
+  padding:0;
+  margin:0;
+  border:0;
+  overflow:hidden;
+  background:#090c13;
+}
+.sb-hero__frame {
+  position:relative;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  isolation:isolate;
+}
+.sb-hero__image {
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.sb-hero__shade {
+  position:absolute;
+  inset:0;
+  z-index:1;
+  pointer-events:none;
+  background:linear-gradient(0deg,rgba(2,3,7,.75),rgba(2,4,8,.22) 46%,rgba(2,3,8,.1));
+}
+.sb-hero__layout {
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:flex-end;
+  width:100%;
+  height:100%;
+  max-width:1300px;
+  margin-inline:auto;
+  padding:28px clamp(18px,3.5vw,48px) 78px;
+}
+.sb-page [data-page-hero] [data-hero-copy].sb-hero__copy {
+  width:min(690px,100%);
+  max-width:690px;
+  min-height:0;
+  padding:clamp(18px,3vw,30px);
+  border:1px solid rgba(255,255,255,.28);
+  background:rgba(3,5,10,.76);
+  box-shadow:0 14px 55px rgba(0,0,0,.32);
+  text-shadow:none;
+}
+.sb-hero__eyebrow {
+  margin:0 0 10px;
+  color:#ff7ad9!important;
+  font-size:.73rem;
+  font-weight:900;
+  line-height:1.2;
+  letter-spacing:.19em;
+}
+.sb-hero__copy h1 {
+  margin:0;
+  color:#fff;
+  font-family:"Barlow Condensed",sans-serif;
+  font-size:clamp(3.5rem,8vw,6.8rem);
+  font-weight:900;
+  line-height:.87;
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+}
+.sb-hero__copy .sb-hero__description {
+  margin:16px 0 0;
+  max-width:560px;
+  color:#e4e9f5!important;
+  font-size:clamp(.9rem,1.5vw,1.1rem);
+  font-weight:600;
+  line-height:1.45;
+}
+.sb-page[data-scroll-page="singboard"] [data-page-surface].sb-surface {
+  position:relative;
+  z-index:3;
+  width:100%;
+  max-width:none;
+  margin:-28px 0 0;
+  padding:0 clamp(15px,3vw,44px) 90px;
+  border:0;
+  box-shadow:none;
+  background:transparent;
+}
+.sb-page .sb-shell {
+  width:100%;
+  max-width:1240px;
+  min-height:45vh;
+  margin:0 auto;
+  padding:23px clamp(16px,3vw,40px) 110px;
+  border-top:1px solid rgba(255,255,255,.25);
+  background:#050914;
+  box-shadow:0 14px 55px rgba(0,0,0,.55);
+}
 .sb-toolbar {display:flex;flex-direction:column;gap:13px;margin:12px 0 23px}
 .sb-toolbar__top {display:flex;justify-content:space-between;align-items:center;gap:12px}
 .sb-filter-list {display:flex;gap:8px;overflow:auto;scrollbar-width:none;padding:8px 2px 11px;min-width:0;flex:1}
@@ -88,25 +184,18 @@
 .sb-form {margin:20px 0 28px;padding:18px;border:1px solid #ff36c97d;border-radius:20px;background:#0e1222;box-shadow:0 0 25px #ff36c91b;}
 .sb-neon-divider {height:2px;margin:24px 2px 22px;background:linear-gradient(90deg,#e124ba,#f326db 36%,#009ee9 80%,transparent);box-shadow:0 0 11px #e62fc7}
 @media(min-width:600px){
-  .sb-graffiti {display:block}
-  .sb-masthead__inner {padding:35px 30px 18px}
-  .sb-shell {padding:14px 28px 110px}
   .sb-feature__content {min-height:295px}
   .sb-feature__copy {padding:28px 26px;gap:16px}
   .sb-board-grid {gap:25px}
   .sb-poster__body {padding:17px 18px}
 }
 @media(min-width:880px){
-  .sb-shell {padding:20px 30px 130px}
   .sb-feature {max-width:100%;min-height:340px}
   .sb-feature__content {grid-template-columns:minmax(0,45%) minmax(0,55%);min-height:340px}
   .sb-board-grid {grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}
   .sb-notes-grid {grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media(max-width:420px){
-  .sb-masthead__inner {padding:23px 16px 5px}
-  .sb-paper {font-size:clamp(2.6rem,10.5vw,3.35rem);}
-  .sb-shell {padding:8px 12px 95px}
   .sb-filter-list {gap:6px}
   .sb-filter-pill {padding:11px 13px;font-size:.77rem}
   .sb-feature__content {grid-template-columns:minmax(0,36%) minmax(0,64%);min-height:235px}
@@ -133,4 +222,28 @@
 }
 @media(prefers-reduced-motion:reduce) {
   .sb-page * {transition:none!important;animation:none!important;}
+}
+
+/* The central poster sheet stays opaque. Desktop gutters reveal the hero;
+   narrow phones get a full-width foreground sheet and accessible controls. */
+@media(max-width:860px){
+  .sb-hero__layout {padding:22px 18px 66px;}
+  .sb-page[data-scroll-page="singboard"] [data-page-surface].sb-surface {
+    padding:0 15px 90px;
+  }
+}
+@media(max-width:680px){
+  .sb-page[data-scroll-page="singboard"] [data-page-surface].sb-surface {
+    padding:0 0 78px;
+    margin-top:-28px;
+  }
+  .sb-page .sb-shell {max-width:none;padding:19px 13px 90px;}
+  .sb-hero__layout {padding:18px 14px 64px;}
+  .sb-page [data-page-hero] [data-hero-copy].sb-hero__copy {padding:18px;}
+  .sb-hero__copy h1 {font-size:clamp(3.35rem,12.5vw,5rem);}
+  .sb-hero__copy .sb-hero__description {margin-top:11px;font-size:.9rem;}
+}
+@media(max-height:580px){
+  .sb-page .sb-hero__layout {padding-bottom:42px;}
+  .sb-page [data-page-hero] [data-hero-copy].sb-hero__copy {padding:14px;}
 }
