@@ -5,9 +5,9 @@ import ts from "typescript";
 
 const source = readFileSync(new URL("../src/lib/singboard/flyerExtraction.ts", import.meta.url), "utf8");
 const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
-const module = { exports: {} };
-new Function("module", "exports", output)(module, module.exports);
-const { normalizeFlyerFields, uniqueIdentityMatch } = module.exports;
+const fixtureModule = { exports: {} };
+new Function("module", "exports", output)(fixtureModule, fixtureModule.exports);
+const { normalizeFlyerFields, uniqueIdentityMatch } = fixtureModule.exports;
 
 test("flyer extraction never guesses dates and rejects invalid calendar days", () => {
   const fields=normalizeFlyerFields({
