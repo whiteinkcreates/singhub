@@ -51,3 +51,39 @@ export async function rotateSingBoardAccessCode(memberId:string,accessCode:strin
 export async function setSingBoardAccessActive(memberId:string,active:boolean){const supabase=createAdminClient();const{error}=await supabase.from("singboard_posters").update({active,updated_at:new Date().toISOString()}).eq("id",memberId);if(error)throw new Error(`Failed to update SingBOARD access: ${error.message}`)}
 export async function createSingBoardPost(input:{posterId:string;postType:SingBoardPostType;title:string;venueName:string;neighborhood:string;region:SingBoardRegion;detail:string;imageUrl?:string;imagePublicId?:string;noteText?:string;noteColor?:SingBoardNoteColor;eventDate:string;startTime?:string;hostName?:string;linkUrl?:string;venueSlug?:string;hostId?:string;category?:string;reviewStatus?:"pending"|"verified";x:number;y:number;rotation:number}){const supabase=createAdminClient();const{data,error}=await supabase.from("singboard_flyers").insert({poster_id:input.posterId,post_type:input.postType,title:input.title,venue_name:input.venueName,neighborhood:input.neighborhood,region:input.region,detail:input.detail,image_url:input.imageUrl||null,image_public_id:input.imagePublicId||null,note_text:input.noteText||null,note_color:input.noteColor||null,event_date:input.eventDate,start_time:input.startTime||null,host_name:input.hostName||null,link_url:input.linkUrl||null,venue_slug:input.venueSlug||null,host_id:input.hostId||null,category:input.category||"special_event",review_status:input.reviewStatus||"pending",reviewed_at:input.reviewStatus==="verified"?new Date().toISOString():null,x:input.x,y:input.y,rotation:input.rotation,status:"active"}).select("id").single();if(error)throw new Error(`Failed to publish SingBOARD post: ${error.message}`);return data.id as string}
 export async function archiveSingBoardPost(postId:string,accessCode:string){const poster=await getAuthorizedSingBoardPoster(accessCode);if(!poster)throw new Error("Invalid or inactive SingBOARD access code.");const supabase=createAdminClient();const{data:post,error:loadError}=await supabase.from("singboard_flyers").select("poster_id").eq("id",postId).maybeSingle();if(loadError)throw new Error(`Failed to load SingBOARD post: ${loadError.message}`);if(!post)throw new Error("SingBOARD post not found.");if(post.poster_id!==poster.id&&poster.poster_type!=="admin")throw new Error("That access code cannot remove this post.");const{error}=await supabase.from("singboard_flyers").update({status:"archived",archived_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("id",postId);if(error)throw new Error(`Failed to archive SingBOARD post: ${error.message}`)}
+
+
+export type SingBoardReviewItem={
+  id:string;title:string;venueName:string;postType:string;category:string;
+  posterName:string;postedAt:string;eventDate:string;reviewStatus:"pending"|"verified";
+  venueSlug?:string;hostId?:string;
+};
+
+/** Admin-only inbox. Entries stay on one shared SingBOARD record. */
+export async function getSingBoardReviewQueue():Promise<SingBoardReviewItem[]>{
+  const db=createAdminClient();
+  const [flyers,posters]=await Promise.all([
+    db.from("singboard_flyers").select("id,poster_id,post_type,category,review_status,title,venue_name,venue_slug,host_id,event_date,created_at").eq("status","active").order("created_at",{ascending:false}).limit(200),
+    db.from("singboard_posters").select("id,display_name").limit(200),
+  ]);
+  if(flyers.error)throw new Error(`SingBOARD review queue unavailable: ${flyers.error.message}`);
+  if(posters.error)throw new Error(`SingBOARD poster lookup unavailable: ${posters.error.message}`);
+  const names=new Map((posters.data||[]).map(p=>[p.id,p.display_name]));
+  return (flyers.data||[]).map(row=>({
+    id:row.id,title:row.title,venueName:row.venue_name,postType:row.post_type,
+    category:row.category||"special_event",posterName:names.get(row.poster_id)||"Unknown contributor",
+    postedAt:row.created_at,eventDate:row.event_date,
+    reviewStatus:row.review_status==="verified"?"verified" as const:"pending" as const,
+    venueSlug:row.venue_slug||undefined,hostId:row.host_id||undefined,
+  }));
+}
+export async function reviewSingBoardPost(postId:string,action:"verify"|"unpublish"){
+  const db=createAdminClient();
+  const now=new Date().toISOString();
+  const update=action==="verify"
+    ? {review_status:"verified",reviewed_at:now,updated_at:now}
+    : {status:"archived",archived_at:now,updated_at:now};
+  const{data,error}=await db.from("singboard_flyers").update(update).eq("id",postId).eq("status","active").select("id").maybeSingle();
+  if(error)throw new Error(`Failed to review SingBOARD post: ${error.message}`);
+  if(!data)throw new Error("Post is not active or no longer exists.");
+}
