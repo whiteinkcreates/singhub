@@ -54,6 +54,7 @@
 .sb-feature__meta div {display:flex;gap:9px;align-items:flex-start}
 .sb-feature__meta svg {width:16px;height:16px;flex:none;margin-top:1px;color:#ff38c9;stroke-width:2;stroke:currentColor;fill:none;filter:drop-shadow(0 0 5px #f729ab)}
 .sb-feature__meta a {color:#d9faff;text-decoration:underline;text-decoration-color:#37dbff90;text-underline-offset:2px}
+.sb-feature__description {margin:0;color:#bcc5d6;font-size:.72rem;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .sb-feature__cta {align-self:flex-start;color:#8ceeff;font-size:.82rem;font-weight:800;margin-top:auto;text-decoration:underline;text-decoration-color:#ff43c4;text-underline-offset:4px}
 .sb-feature__sticker {position:absolute;top:-16px;left:-13px;z-index:3;transform:rotate(-12deg);background:#ff2eba;color:#0b0613;font-family:"Permanent Marker",sans-serif;font-size:clamp(.9rem,2.5vw,1.35rem);padding:4px 15px;clip-path:polygon(0 3%,100% 0,96% 100%,4% 93%);box-shadow:0 5px 10px #0008;}
 .sb-feature__tape {position:absolute;z-index:4;right:-13px;top:45%;transform:rotate(-9deg);height:76px;width:23px;border:1px solid #ffffff3b;background:repeating-linear-gradient(0deg,#b6b3ad55 0px,#b6b3ad55 2px,#efefeb66 3px,#c4c6c15c 5px);box-shadow:0 3px 6px #0008;pointer-events:none}
