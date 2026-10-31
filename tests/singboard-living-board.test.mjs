@@ -50,3 +50,18 @@ test("AI extraction is contributor gated and keeps API key server-side", () => {
   assert.match(route,/store: false/);
   assert.match(route,/normalizeFlyerFields/);
 });
+
+test("SingBOARD uses the shared stationary hero and sliding content surface", () => {
+  const page=readFileSync(new URL("../src/app/singboard/page.tsx",import.meta.url),"utf8");
+  const css=readFileSync(new URL("../src/components/singboard/living-board.css",import.meta.url),"utf8");
+  assert.match(page,/data-scroll-page="singboard"/);
+  assert.match(page,/data-page-hero=""/);
+  assert.match(page,/data-page-surface=""/);
+  assert.match(page,/SINGBOARD_STICKER_ART/);
+  assert.match(page,/SITE_SINGBOARD_HERO_KEY/);
+  assert.match(page,/<HeroScrollCue\s*\/>/);
+  assert.doesNotMatch(page,/sb-paper|sb-masthead/);
+  assert.match(css,/position:sticky/);
+  assert.match(css,/background:transparent/);
+  assert.match(css,/\.sb-page \.sb-shell/);
+});
