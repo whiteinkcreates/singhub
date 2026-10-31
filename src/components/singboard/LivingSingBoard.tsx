@@ -30,6 +30,7 @@ const localToday = () => { const parts=new Intl.DateTimeFormat("en-CA",{timeZone
 function EventCard({post,featured=false}:{post:Listing;featured?:boolean}) {
   const eventHref="/events/"+post.id;
   const dated = new Date(post.eventDate+"T12:00:00Z");
+  const fullDate=new Intl.DateTimeFormat("en-US",{weekday:"long",month:"long",day:"numeric",timeZone:"UTC"}).format(dated);
   const month=new Intl.DateTimeFormat("en-US",{month:"short",timeZone:"UTC"}).format(dated);
   const weekday=new Intl.DateTimeFormat("en-US",{weekday:"short",timeZone:"UTC"}).format(dated);
   const day=new Intl.DateTimeFormat("en-US",{day:"numeric",timeZone:"UTC"}).format(dated);
@@ -56,13 +57,14 @@ function EventCard({post,featured=false}:{post:Listing;featured?:boolean}) {
           <div className="sb-feature__venue">at {post.venue}</div>
           <div className="sb-feature__meta">
             <div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v5M17 3v5M3 10h18"/></svg>
-              <span>{dayString(post.eventDate)}</span></div>
+              <span>{fullDate}</span></div>
             {post.startTime&&<div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></svg><span>{post.startTime}</span></div>}
             <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-8.2 8-14A8 8 0 0 0 4 8c0 5.8 8 14 8 14Z"/><circle cx="12" cy="8" r="2"/></svg>
               <span>{venueLink?<Link href={venueLink}>{post.venue}</Link>:post.venue}{post.neighborhood?" · "+post.neighborhood:""}</span></div>
             {post.hostName&&<div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg>
               <span>With {hostLink?<Link href={hostLink}>{post.hostName}</Link>:post.hostName}</span></div>}
           </div>
+          {post.detail&&<p className="sb-feature__description">{post.detail}</p>}
           <Link href={eventHref} className="sb-feature__cta">See event details ↗</Link>
         </div>
       </div>
