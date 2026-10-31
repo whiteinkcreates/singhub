@@ -5,9 +5,9 @@ import { useEffect, useMemo, useState } from "react";
 import { uniqueIdentityMatch, type FlyerFields } from "@/lib/singboard/flyerExtraction";
 import type { PersistedSingBoardPost, SingBoardRegion, SingBoardPostType } from "@/lib/singboard/repository";
 
-export type VenueChoice = { slug:string; name:string; neighborhood:string; region:SingBoardRegion };
+export type VenueChoice = { slug:string; name:string; neighborhood:string; region:SingBoardRegion; imageUrl?:string };
 export type HostChoice = { id:string; slug:string; name:string; otherName:string };
-type Listing = PersistedSingBoardPost & { hostSlug?:string };
+type Listing = PersistedSingBoardPost & { hostSlug?:string; venuePhoto?:string };
 
 const REGIONS: {value:"all"|SingBoardRegion;label:string}[] = [
   {value:"all",label:"All San Diego"}, {value:"central",label:"Central"},
@@ -26,34 +26,70 @@ const dayString = (date:string) => {
 };
 const localToday = () => { const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());const values=Object.fromEntries(parts.map(part=>[part.type,part.value]));return `${values.year}-${values.month}-${values.day}`; };
 
+
 function EventCard({post,featured=false}:{post:Listing;featured?:boolean}) {
-  const isNote = post.postType !== "image" || !post.imageUrl;
-  const archived = post.eventDate < localToday();
-  return <article className={`overflow-hidden rounded-2xl border border-white/15 bg-[#101522] shadow-[0_12px_35px_rgba(0,0,0,.25)] ${featured?"md:grid md:grid-cols-[.9fr_1.1fr]":""}`}>
-    <Link href={`/events/${post.id}`} className={`group relative flex min-h-44 items-center justify-center overflow-hidden bg-gradient-to-br from-[#142335] via-[#190e25] to-[#080e18] ${featured?"min-h-60":""}`}>
-      {!isNote?<img src={post.imageUrl} alt={post.title+" event flyer"} loading="lazy" className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.025]" />:
-        <div className="mx-5 my-6 -rotate-1 border border-white/15 bg-black/30 px-6 py-10 text-center shadow-xl">
-          <span className="text-xs font-black uppercase tracking-[.3em] text-fuchsia-300">SINGBOARD</span>
-          <p className="mt-3 text-3xl font-black uppercase leading-tight tracking-tight text-white">{post.title}</p>
-        </div>}
-      {featured&&<span className="absolute left-3 top-3 rotate-[-3deg] bg-fuchsia-500 px-3 py-1 text-xs font-black uppercase text-white">Featured on the Board</span>}
+  const eventHref="/events/"+post.id;
+  const dated = new Date(post.eventDate+"T12:00:00Z");
+  const month=new Intl.DateTimeFormat("en-US",{month:"short",timeZone:"UTC"}).format(dated);
+  const weekday=new Intl.DateTimeFormat("en-US",{weekday:"short",timeZone:"UTC"}).format(dated);
+  const day=new Intl.DateTimeFormat("en-US",{day:"numeric",timeZone:"UTC"}).format(dated);
+  const verified=post.reviewStatus==="verified";
+  const venueLink=post.venueSlug&&verified ? "/venues/"+post.venueSlug : undefined;
+  const hostLink=post.hostSlug&&verified ? "/hosts/"+post.hostSlug : undefined;
+  const posterIsImage=post.postType==="image"&&Boolean(post.imageUrl);
+  const photo=post.imageUrl||post.venuePhoto;
+  const monthly=post.title.match(/monthly\s+mic\s*#(\d+)/i);
+
+  if(featured) {
+    return <article className="sb-feature">
+      <span className="sb-feature__sticker">FEATURED</span>
+      <span className="sb-feature__tape" aria-hidden="true"/>
+      <div className="sb-feature__content">
+        <Link className="sb-feature__visual" href={eventHref} aria-label={"Open "+post.title}>
+          {photo?<img src={photo} alt={posterIsImage?post.title+" original flyer":post.venue+" venue photo"} style={posterIsImage?{objectFit:"contain"}:undefined}/>:
+            <span>{post.venue}</span>}
+        </Link>
+        <div className="sb-feature__copy">
+          <Link href={eventHref} className="sb-feature__title">
+            {monthly?<>Monthly<br/><strong>Mic #{monthly[1]}</strong></>:post.title}
+          </Link>
+          <div className="sb-feature__venue">at {post.venue}</div>
+          <div className="sb-feature__meta">
+            <div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v5M17 3v5M3 10h18"/></svg>
+              <span>{dayString(post.eventDate)}</span></div>
+            {post.startTime&&<div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></svg><span>{post.startTime}</span></div>}
+            <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-8.2 8-14A8 8 0 0 0 4 8c0 5.8 8 14 8 14Z"/><circle cx="12" cy="8" r="2"/></svg>
+              <span>{venueLink?<Link href={venueLink}>{post.venue}</Link>:post.venue}{post.neighborhood?" · "+post.neighborhood:""}</span></div>
+            {post.hostName&&<div><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg>
+              <span>With {hostLink?<Link href={hostLink}>{post.hostName}</Link>:post.hostName}</span></div>}
+          </div>
+          <Link href={eventHref} className="sb-feature__cta">See event details ↗</Link>
+        </div>
+      </div>
+    </article>;
+  }
+
+  return <article className="sb-poster">
+    <span className="sb-poster__tape" aria-hidden="true"/>
+    <time className="sb-date-tab" dateTime={post.eventDate}>
+      <span className="sb-date-tab__month">{month}</span>
+      <span className="sb-date-tab__day">{day}</span>
+      <span className="sb-date-tab__weekday">{weekday}</span>
+    </time>
+    <Link href={eventHref} className={"sb-poster__media"+(posterIsImage?"":" sb-poster__media--note")} aria-label={"View "+post.title}>
+      {posterIsImage?<img src={post.imageUrl} alt={post.title+" original event flyer"} loading="lazy"/>:
+        <span>{post.postType==="wanted"?"Looking for singers or crew":post.title}</span>}
     </Link>
-    <div className="flex flex-col gap-3 p-4 sm:p-5">
-      <div className="flex items-start justify-between gap-2">
-        <p className="text-xs font-bold uppercase tracking-[.13em] text-cyan-300">{post.category?.replaceAll("_"," ")||"Karaoke event"}</p>
-        <time dateTime={post.eventDate} className="shrink-0 rounded-md border border-white/15 bg-black/40 px-2 py-1 text-xs font-bold text-slate-200">{dayString(post.eventDate)}</time>
-      </div>
-      <Link href={`/events/${post.id}`} className="text-xl font-black leading-tight text-white hover:text-cyan-200">{post.title}</Link>
-      <div className="space-y-1 text-sm text-slate-300">
-        {post.venueSlug&&post.reviewStatus==="verified"?<Link className="block font-semibold text-cyan-200 underline-offset-4 hover:underline" href={`/venues/${post.venueSlug}`}>📍 {post.venue}</Link>:<p>📍 {post.venue}</p>}
-        {post.neighborhood&&<p className="text-xs text-slate-400">{post.neighborhood}</p>}
-        {post.startTime&&<p>◷ {post.startTime}</p>}
-        {post.hostName&&<p>🎤 {post.hostSlug&&post.reviewStatus==="verified"?<Link href={`/hosts/${post.hostSlug}`} className="text-cyan-200 underline-offset-4 hover:underline">{post.hostName}</Link>:post.hostName}</p>}
-      </div>
-      {post.detail&&<p className={`text-sm leading-relaxed text-slate-300 ${featured?"line-clamp-4":"line-clamp-2"}`}>{post.detail}</p>}
-      <div className="mt-auto flex items-center justify-between gap-2 pt-2">
-        <span className="text-[11px] font-medium text-slate-400">{archived?"Past event":post.reviewStatus==="verified"?"Reviewed by SingHUB":"Community submission"}</span>
-        <Link className="rounded-full border border-cyan-400/50 px-4 py-2 text-xs font-bold text-cyan-200 hover:bg-cyan-400/10" href={`/events/${post.id}`}>Details →</Link>
+    <div className="sb-poster__body">
+      <h3 className="sb-poster__title"><Link href={eventHref}>{post.title}</Link></h3>
+      <p className="sb-poster__venue">⌖ {venueLink?<Link href={venueLink}>{post.venue}</Link>:post.venue}
+        {post.neighborhood&&<span> · {post.neighborhood}</span>}</p>
+      {post.startTime&&<p className="sb-poster__venue">{dayString(post.eventDate)} · {post.startTime}</p>}
+      {post.hostName&&<p className="sb-poster__venue">On the mic: {hostLink?<Link href={hostLink}>{post.hostName}</Link>:post.hostName}</p>}
+      {post.detail&&<p className="sb-poster__desc">{post.detail}</p>}
+      <div className="sb-poster__footer">
+        <span>{verified?"Reviewed by SingHUB":"Community post"}</span>
+        <Link href={eventHref}>Details <span aria-hidden="true">›</span></Link>
       </div>
     </div>
   </article>;
