@@ -1,57 +1,57 @@
 import type { Metadata } from "next";
-import {PositionedImage} from "@/components/media/PositionedImage";
-import { HeroScrollCue } from "@/components/layout/HeroScrollCue";
-import { SingBoard } from "@/components/singboard/SingBoard";
+import { LivingSingBoard, type HostChoice, type VenueChoice } from "@/components/singboard/LivingSingBoard";
 import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
-import { SINGBOARD_STICKER_ART } from "@/lib/singboardStickerArt";
-import {getHostMediaSettings} from "@/lib/hostMedia.server";
-import {SITE_SINGBOARD_HERO_KEY} from "@/lib/hostMedia";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
+import { getVenueListings } from "@/lib/venueData";
+import { getActiveHosts } from "@/lib/hostData";
 
 export const metadata: Metadata = {
   title: "SingBOARD | SingHUB",
-  description: "See San Diego karaoke events, community notices, and wanted posts from local venues and KJs on SingBOARD.",
+  description: "Real San Diego karaoke events, special nights, meetups, flyers, and community notices.",
   alternates: { canonical: "/singboard" },
 };
-
 export const dynamic = "force-dynamic";
 
+function regionFor(neighborhood: string): VenueChoice["region"] {
+  const name = neighborhood.toLowerCase();
+  if (/gaslamp|downtown|east village|little italy|marina district/.test(name)) return "downtown";
+  if (/la mesa|el cajon|santee|spring valley|lakeside|alpine|lemon grove/.test(name)) return "east-county";
+  if (/ocean beach|pacific beach|mission beach|point loma/.test(name)) return "beach";
+  if (/encinitas|carlsbad|oceanside|vista|escondido|poway|san marcos/.test(name)) return "north-county";
+  if (/chula vista|national city|imperial beach|bonita/.test(name)) return "south-bay";
+  return "central";
+}
+
 export default async function SingBoardPage() {
-  const [flyers,hero] = await Promise.all([getActiveSingBoardFlyers(),getHostMediaSettings(SITE_SINGBOARD_HERO_KEY).catch(()=>null)]);
+  const [flyers, venueRows, hostRows] = await Promise.all([
+    getActiveSingBoardFlyers(),
+    getVenueListings(),
+    getActiveHosts({includeMedia:false}).catch(() => []),
+  ]);
+  const venues:VenueChoice[] = getPublicVenues(venueRows).map(venue=>({
+    slug:venue.slug,name:venue.venueName,neighborhood:venue.neighborhood,region:regionFor(venue.neighborhood),
+  }));
+  const hosts:HostChoice[] = hostRows.map(host=>({
+    id:host.hostId,slug:host.slug,name:host.publicDisplayName,otherName:host.hostName,
+  }));
+  const byId = new Map(hosts.map(host=>[host.id,host.slug]));
+  const listings=flyers.map(post=>({...post,hostSlug:post.hostId?byId.get(post.hostId):undefined}));
 
-  return (
-    <main data-scroll-page="singboard" className="min-h-[100dvh] bg-[#05060a] pb-24 text-white">
-      <section data-page-hero="" className="relative isolate overflow-hidden border-b border-white/10" aria-labelledby="singboard-hero-title">
-        <div data-board-hero-frame="" className="relative h-full w-full">
-          <PositionedImage placement={hero?.heroPlacement} position={hero?.heroPosition}
-            src={hero?.heroUrl||SINGBOARD_STICKER_ART}
-            alt={hero?.heroAlt||"SingBOARD sticker wall"}
-            className="absolute inset-0 h-full w-full object-cover object-center"
-          />
-          <div className="relative z-10 flex h-full w-full items-end px-5 pb-28 pt-6 sm:px-10 sm:pb-20">
-            <div data-hero-copy="" className="w-full">
-              <p className="mb-3 text-xs font-black uppercase tracking-[0.22em] text-fuchsia-300">SAN DIEGO KARAOKE COMMUNITY</p>
-              <h1 id="singboard-hero-title" className="m-0 text-[clamp(3.5rem,8vw,6.8rem)] font-black uppercase leading-[0.84] tracking-[-0.025em]" style={{ fontFamily: "'Barlow Condensed', sans-serif" }}>SingBOARD</h1>
-              <p className="mt-4 max-w-xl text-sm font-semibold leading-relaxed text-slate-200 sm:text-base">
-                Karaoke event flyers, community updates and wanted posts from local venues and KJs.
-              </p>
-            </div>
-          </div>
-        </div>
-        <HeroScrollCue />
-      </section>
-
-      <section data-page-surface="" className="mx-auto max-w-6xl px-3 pt-5 sm:px-6 sm:pt-7">
-        <div className="mb-3 flex items-end justify-between gap-4 px-1">
+  return <main data-scroll-page="singboard" className="min-h-[100dvh] bg-[#060912] pb-28 text-white">
+    <section className="relative overflow-hidden border-b border-fuchsia-400/20 bg-[radial-gradient(ellipse_at_top_left,rgba(235,31,147,.22),transparent_55%),radial-gradient(ellipse_at_top_right,rgba(0,163,249,.19),transparent_50%),linear-gradient(160deg,#070912,#0c1323)]">
+      <div className="mx-auto max-w-6xl px-4 py-9 sm:px-6 sm:py-12">
+        <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h2 className="mt-1 text-xl font-black sm:text-2xl">What&apos;s pinned</h2>
+            <img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" className="mb-3 h-auto w-44 object-contain sm:w-56"/>
+            <p className="inline-block -rotate-1 border border-white/20 bg-[#e8dfd1] px-4 py-1 text-4xl font-black uppercase tracking-tight text-[#111827] shadow-[5px_5px_0_rgba(236,72,153,.35)] sm:text-5xl">SingBOARD</p>
+            <p className="mt-4 text-sm font-semibold text-slate-200 sm:text-base">San Diego karaoke events, meetups, and community. Everything happening beyond the usual night.</p>
           </div>
-          <p className="max-w-52 text-right text-[10px] leading-snug text-slate-400 sm:max-w-xs sm:text-xs">
-            Tap a flyer or note for the full event page.
-          </p>
+          <div className="hidden -rotate-3 border-l-2 border-cyan-400 pl-4 text-xs font-black uppercase tracking-[.2em] leading-6 text-cyan-300 sm:block">Real nights.<br/>Real people.<br/>Real places.</div>
         </div>
-
-        <SingBoard initialFlyers={flyers} />
-      </section>
-    </main>
-  );
+      </div>
+    </section>
+    <section className="mx-auto max-w-6xl px-4 pt-7 sm:px-6">
+      <LivingSingBoard initialFlyers={listings} venues={venues} hosts={hosts}/>
+    </section>
+  </main>;
 }
