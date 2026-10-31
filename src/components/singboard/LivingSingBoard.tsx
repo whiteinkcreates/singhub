@@ -24,7 +24,7 @@ const dayString = (date:string) => {
   if (!date) return "Date TBA";
   return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",year:"numeric",timeZone:"UTC"}).format(new Date(date+"T12:00:00Z"));
 };
-const localToday = () => new Intl.DateTimeFormat("en-CA", {timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+const localToday = () => { const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());const values=Object.fromEntries(parts.map(part=>[part.type,part.value]));return `${values.year}-${values.month}-${values.day}`; };
 
 function EventCard({post,featured=false}:{post:Listing;featured?:boolean}) {
   const isNote = post.postType !== "image" || !post.imageUrl;
@@ -87,16 +87,13 @@ export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:List
   const [published,setPublished] = useState<string|null>(null);
   const set = <K extends keyof FormFields>(key:K,value:FormFields[K]) => setFields(current=>({...current,[key]:value}));
 
-  useEffect(()=>{
-    if(!file){setPreview("");return;}
-    const url=URL.createObjectURL(file);setPreview(url);return ()=>URL.revokeObjectURL(url);
-  },[file]);
+  useEffect(()=>()=>{ if(preview)URL.revokeObjectURL(preview); },[preview]);
 
   const filtered = useMemo(()=>{
     const today=localToday();
     const end=new Date(today+"T12:00:00Z");
     if(period==="week")end.setUTCDate(end.getUTCDate()+7);
-    if(period==="month")end.setUTCDate(end.getUTCDate()+31);
+    if(period==="month")end.setUTCDate(end.getUTCDate()+30);
     const until=end.toISOString().slice(0,10);
     return posts.filter(post=>{
       if(region!=="all"&&post.region!==region)return false;
@@ -114,8 +111,9 @@ export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:List
   const notes=rest.filter(post=>post.postType!=="image");
   const flyers=rest.filter(post=>post.postType==="image");
 
-  function pickFile(file:File|null) {
-    setFile(file);setFoundDates([]);setSuggestedHost(undefined);setSuggestedVenue(undefined);setMessage("");
+  function pickFile(nextFile:File|null) {
+    setFile(nextFile);setPreview(nextFile?URL.createObjectURL(nextFile):"");
+    setFoundDates([]);setSuggestedHost(undefined);setSuggestedVenue(undefined);setMessage("");
   }
   async function readFlyer() {
     if(!file||!code.trim()){setMessage("Choose a flyer and enter your SingBOARD posting code first.");return;}
