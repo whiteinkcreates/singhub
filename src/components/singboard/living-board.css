@@ -64,9 +64,10 @@
 .sb-poster__media {display:block;position:relative;aspect-ratio: 1 / .88;overflow:hidden;border-radius:12px 12px 0 0;background:radial-gradient(ellipse at 25% 30%,#282039,#081225);}
 .sb-poster__media img {width:100%;height:100%;object-fit:contain;display:block;}
 .sb-poster__media--note {display:grid;place-items:center;padding:30px 13px;background:linear-gradient(160deg,#b68b65,#d8bba5 55%,#725d59);}
-.sb-poster__media--note span {display:grid;place-items:center;min-height:100%;width:90%;padding:12px;color:#201324;text-align:center;background:#eddbb8;transform:rotate(-2deg);font-family:"Permanent Marker",sans-serif;font-size:clamp(1rem,2vw,1.6rem);line-height:1.16;clip-path:polygon(0 1%,98% 0,100% 100%,3% 99%)}
+.sb-poster__media--note span {display:grid;place-items:center;min-height:100%;width:90%;padding:12px;color:#201324;text-align:center;background:#eddbb8;transform:rotate(-2deg);font-family:"Permanent Marker",sans-serif;font-size:clamp(.84rem,1.85vw,1.45rem);line-height:1.25;white-space:pre-line;overflow-wrap:anywhere;overflow:hidden;clip-path:polygon(0 1%,98% 0,100% 100%,3% 99%)}
 .sb-poster__tape {position:absolute;z-index:3;top:-7px;left:45%;width:64px;height:23px;background:repeating-linear-gradient(90deg,#a4acb6bb 0px,#a4acb6bb 2px,#bdc3caad 4px);transform:rotate(7deg);box-shadow:0 2px 4px #0008;opacity:.8;pointer-events:none;}
 .sb-date-tab {position:absolute;z-index:4;left:-8px;top:-9px;display:flex;flex-direction:column;align-items:center;padding:4px 11px 5px;min-width:54px;background:#fc40b8;color:#100a15;transform:rotate(-5deg);clip-path:polygon(0 4%,100% 0,97% 99%,3% 100%);font-family:"Barlow Condensed",sans-serif;font-weight:900;line-height:.92;text-align:center;text-shadow:none;}
+.sb-date-tab--example {min-width:0;max-width:84px;word-break:normal;line-height:1.05;font-size:.9rem;padding:8px 12px;transform:rotate(-7deg);background:#35dcf7;color:#071026;}
 .sb-date-tab__month {font-size:.79rem;text-transform:uppercase}
 .sb-date-tab__day {font-size:1.85rem;line-height:.95}
 .sb-date-tab__weekday {font-size:.7rem;text-transform:uppercase;margin-top:2px}
