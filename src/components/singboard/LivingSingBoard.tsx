@@ -45,10 +45,10 @@ function EventCard({post,featured=false}:{post:Listing;featured?:boolean}) {
       </div>
       <Link href={`/events/${post.id}`} className="text-xl font-black leading-tight text-white hover:text-cyan-200">{post.title}</Link>
       <div className="space-y-1 text-sm text-slate-300">
-        {post.venueSlug?<Link className="block font-semibold text-cyan-200 underline-offset-4 hover:underline" href={`/venues/${post.venueSlug}`}>📍 {post.venue}</Link>:<p>📍 {post.venue}</p>}
+        {post.venueSlug&&post.reviewStatus==="verified"?<Link className="block font-semibold text-cyan-200 underline-offset-4 hover:underline" href={`/venues/${post.venueSlug}`}>📍 {post.venue}</Link>:<p>📍 {post.venue}</p>}
         {post.neighborhood&&<p className="text-xs text-slate-400">{post.neighborhood}</p>}
         {post.startTime&&<p>◷ {post.startTime}</p>}
-        {post.hostName&&<p>🎤 {post.hostSlug?<Link href={`/hosts/${post.hostSlug}`} className="text-cyan-200 underline-offset-4 hover:underline">{post.hostName}</Link>:post.hostName}</p>}
+        {post.hostName&&<p>🎤 {post.hostSlug&&post.reviewStatus==="verified"?<Link href={`/hosts/${post.hostSlug}`} className="text-cyan-200 underline-offset-4 hover:underline">{post.hostName}</Link>:post.hostName}</p>}
       </div>
       {post.detail&&<p className={`text-sm leading-relaxed text-slate-300 ${featured?"line-clamp-4":"line-clamp-2"}`}>{post.detail}</p>}
       <div className="mt-auto flex items-center justify-between gap-2 pt-2">
