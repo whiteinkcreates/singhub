@@ -42,6 +42,7 @@ const tools = [
     description:
       "Create and track intentional /go/ links for QR placements, social posts, partners, collabs, Reddit CTAs, hotels, and campaigns.",
   },
+  { href: "/admin/singboard-review", eyebrow: "Community Publishing", title: "SingBOARD Review", description: "Review contributor flyers and notes, confirm profile attribution, or unpublish problem posts." },
   {
     href: "/admin/singboard-access",
     eyebrow: "Community Access",
