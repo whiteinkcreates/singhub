@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { unstable_cache } from "next/cache";
 import { getHostMediaOverrides } from "@/lib/hostMedia.server";
 import { HOST_DIRECTORY_MEDIA_KEY, type HostMediaSettings } from "@/lib/hostMedia";
 import path from "node:path";
@@ -488,7 +489,7 @@ function rowToHost(row: HostSourceRow): HostProfile {
   };
 }
 
-async function getSheetRows() {
+const getSheetRows = unstable_cache(async function fetchHostSheetRows() {
   const sheetId = getSourceSheetId();
   const sheetTab = getSourceTab(
     "hosts",
@@ -505,7 +506,7 @@ async function getSheetRows() {
     }
     return null;
   }
-}
+}, ["singhub-host-sheet-rows-v1"], { revalidate: 900 });
 
 function getFallbackRows() {
   if (!fs.existsSync(FALLBACK_DATA_PATH)) return [];
