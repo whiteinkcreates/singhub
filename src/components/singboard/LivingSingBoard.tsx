@@ -105,7 +105,8 @@ const blank:FormFields = {title:"",venueName:"",neighborhood:"",region:"central"
 export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:Listing[];venues:VenueChoice[];hosts:HostChoice[]}) {
   const [posts,setPosts] = useState(initialFlyers);
   const [filter,setFilter] = useState("all");
-  const [region,setRegion] = useState<"all"|SingBoardRegion>("all");
+  const [neighborhood,setNeighborhood] = useState("all");
+  const [searchVisible,setSearchVisible] = useState(false);
   const [query,setQuery] = useState("");
   const [period,setPeriod] = useState("all");
   const [posting,setPosting] = useState(false);
@@ -132,7 +133,7 @@ export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:List
     if(period==="month")end.setUTCDate(end.getUTCDate()+30);
     const until=end.toISOString().slice(0,10);
     return posts.filter(post=>{
-      if(region!=="all"&&post.region!==region)return false;
+      if(neighborhood!=="all"&&post.neighborhood.trim().toLowerCase()!==neighborhood.toLowerCase())return false;
       if(period!=="all"&&(post.eventDate<today||post.eventDate>until))return false;
       if(filter==="events"&&(!["special_event","theme_karaoke"].includes(post.category||"special_event")||post.postType==="wanted"))return false;
       if(filter==="meetups"&&!/monthly mic|meetup/i.test(post.title))return false;
@@ -141,7 +142,8 @@ export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:List
       const haystack=[post.title,post.venue,post.neighborhood,post.hostName,post.detail].join(" ").toLowerCase();
       return haystack.includes(query.toLowerCase().trim());
     }).sort((a,b)=>a.eventDate.localeCompare(b.eventDate)||a.title.localeCompare(b.title));
-  },[posts,region,period,filter,query]);
+  },[posts,neighborhood,period,filter,query]);
+  const neighborhoods=useMemo(()=>[...new Set(posts.map(post=>post.neighborhood.trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b)),[posts]);
   const spotlight=filtered.find(post=>/monthly mic #001/i.test(post.title))||filtered[0];
   const isFeatured=Boolean(spotlight&&/monthly mic #001/i.test(spotlight.title));
   const rest=filtered.filter(post=>post.id!==spotlight?.id);
@@ -212,12 +214,39 @@ export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:List
   const inputClass="w-full rounded-xl border border-white/20 bg-[#0a1120] px-3 py-3 text-sm text-white placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none";
   const labelClass="mb-1 block text-xs font-bold uppercase tracking-wider text-slate-300";
 
-  return <div className="space-y-7">
-    <div className="flex flex-wrap items-end justify-between gap-4">
-      <div><h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl">On the Board</h2><p className="mt-1 text-sm text-slate-400">Real events. Real karaoke people. Find your next night.</p></div>
-      <button type="button" onClick={()=>setPosting(value=>!value)} className="rounded-full bg-fuchsia-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_25px_rgba(236,72,153,.25)] hover:bg-fuchsia-400">{posting?"Close posting tools":"+ Post a flyer or note"}</button>
+  return <div className="sb-board-root">
+    <div className="sb-toolbar">
+      <div className="sb-toolbar__top">
+        <nav className="sb-filter-list" aria-label="SingBOARD post categories">
+          {[
+            ["all","All"],["events","Events"],["meetups","Meetups"],["kjs","KJs"],["community","Community"],
+          ].map(([value,label])=><button key={value} type="button" aria-pressed={filter===value} onClick={()=>setFilter(value)} className="sb-filter-pill">{label}</button>)}
+        </nav>
+        <button type="button" className="sb-search-toggle" aria-label={searchVisible?"Hide event search":"Search SingBOARD"} aria-expanded={searchVisible} onClick={()=>{setSearchVisible(value=>!value);if(searchVisible)setQuery("");}}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.8"/><path d="m16 16 5 5"/></svg>
+        </button>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="sb-filter-row flex-1">
+          <label>
+            <span className="sr-only">Neighborhood</span>
+            <select value={neighborhood} onChange={event=>setNeighborhood(event.target.value)}>
+              <option value="all">⌖ All San Diego</option>
+              {neighborhoods.map(name=><option value={name} key={name}>{name}</option>)}
+            </select>
+          </label>
+          <label>
+            <span className="sr-only">Date range</span>
+            <select value={period} onChange={event=>setPeriod(event.target.value)}>
+              <option value="all">All dates</option><option value="week">Next 7 days</option><option value="month">Next 30 days</option>
+            </select>
+          </label>
+        </div>
+        <button type="button" onClick={()=>setPosting(value=>!value)} aria-expanded={posting} className="sb-post-action">{posting?"Close editor":"+ Post"}</button>
+      </div>
+      {searchVisible&&<label><span className="sr-only">Search events, venues or KJs</span><input autoFocus type="search" value={query} onChange={event=>setQuery(event.target.value)} className="sb-toolbar__search" placeholder="Search events, venues, KJs…"/></label>}
     </div>
-    {posting&&<form onSubmit={publish} className="space-y-4 rounded-3xl border border-fuchsia-400/35 bg-[#101020] p-4 shadow-xl sm:p-6" aria-label="Post to SingBOARD">
+    {posting&&<form onSubmit={publish} className="sb-form space-y-4" aria-label="Post to SingBOARD">
       <div><h3 className="text-xl font-black text-white">Post to SingBOARD</h3><p className="text-sm text-slate-400">Upload, auto-fill, review, publish. Your original artwork stays intact.</p></div>
       <div className="grid gap-3 sm:grid-cols-2">
         <label><span className={labelClass}>Posting code</span><input className={inputClass} type="password" autoComplete="off" required value={code} onChange={event=>setCode(event.target.value)} placeholder="Your contributor code"/></label>
@@ -252,17 +281,17 @@ export function LivingSingBoard({initialFlyers,venues,hosts}:{initialFlyers:List
       {published&&<Link className="block text-sm font-bold text-cyan-200 underline" href={published}>View published SingBOARD event →</Link>}
       <button type="submit" disabled={working} className="w-full rounded-xl bg-cyan-300 px-5 py-3 font-black text-slate-950 disabled:opacity-50">{working?"Publishing…":"Review complete. Publish to SingBOARD"}</button>
     </form>}
-    <div className="space-y-3">
-      <div className="flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Post category">{[["all","All"],["events","Events"],["meetups","Meetups"],["kjs","KJs"],["community","Community"]].map(([value,label])=><button type="button" key={value} onClick={()=>setFilter(value)} aria-pressed={filter===value} className={`shrink-0 rounded-full border px-4 py-2 text-sm font-bold ${filter===value?"border-fuchsia-400 bg-fuchsia-500 text-white":"border-white/20 bg-white/5 text-slate-200 hover:border-cyan-300/60"}`}>{label}</button>)}</div>
-      <div className="grid gap-2 sm:grid-cols-3">
-        <label><span className="sr-only">Neighborhood area</span><select className={inputClass} value={region} onChange={event=>setRegion(event.target.value as "all"|SingBoardRegion)}>{REGIONS.map(region=><option key={region.value} value={region.value}>{region.label}</option>)}</select></label>
-        <label><span className="sr-only">Date range</span><select className={inputClass} value={period} onChange={event=>setPeriod(event.target.value)}><option value="all">All upcoming</option><option value="week">Next 7 days</option><option value="month">Next 30 days</option></select></label>
-        <label><span className="sr-only">Search events and venues</span><input className={inputClass} value={query} onChange={event=>setQuery(event.target.value)} placeholder="Search events, venues, KJs…"/></label>
-      </div>
+    {!spotlight&&<div className="sb-empty"><h2 className="text-xl font-bold">Nothing pinned for those filters.</h2><p className="mt-2 text-sm">Try another neighborhood or date range, or contribute an event.</p></div>}
+    {spotlight&&<section aria-label={isFeatured?"Featured SingHUB event":"Next event"}>{isFeatured&&<h2 className="sr-only">Featured event</h2>}<EventCard post={spotlight} featured={isFeatured}/></section>}
+    <div className="sb-heading">
+      <h2>On the Board</h2>
+      <span className="sb-heading__caption">REAL EVENTS. REAL PEOPLE.</span>
     </div>
-    {!spotlight&&<div className="rounded-2xl border border-white/15 bg-white/5 px-5 py-10 text-center"><h3 className="text-lg font-bold">Nothing on the Board for these filters yet.</h3><p className="mt-1 text-sm text-slate-400">Try another neighborhood or date range.</p></div>}
-    {spotlight&&<section className="space-y-3"><h3 className="text-lg font-black text-white">{isFeatured?"SingHUB spotlight":"Next up on the Board"}</h3><EventCard post={spotlight} featured={isFeatured}/></section>}
-    {flyers.length>0&&<section className="space-y-3"><h3 className="text-lg font-black text-white">More on the Board</h3><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{flyers.map(post=><EventCard key={post.id} post={post}/>)}</div></section>}
-    {notes.length>0&&<section className="space-y-3"><h3 className="text-lg font-black text-white">Community notes & announcements</h3><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{notes.map(post=><EventCard key={post.id} post={post}/>)}</div></section>}
+    {flyers.length>0&&<section className="sb-board-grid" aria-label="Additional event flyers">{flyers.map(post=><EventCard key={post.id} post={post}/>)}</section>}
+    {notes.length>0&&<section aria-label="Community notes and announcements">
+      <h3 className="sb-section-label">Community notes</h3>
+      <div className="sb-notes-grid">{notes.map(post=><EventCard key={post.id} post={post}/>)}</div>
+    </section>}
+    {(flyers.length>0||notes.length>0)&&<div className="sb-neon-divider" aria-hidden="true"/>}
   </div>;
 }
