@@ -31,6 +31,9 @@ jobs:
       - name: Run listing guardrail regression tests
         run: npm run test:data
 
+      - name: Verify SingBOARD flyer extraction and profile-attribution safeguards
+        run: node --test tests/singboard-living-board.test.mjs
+
       - name: Verify pending KJ identity and untimed verified schedule reconciliation
         run: node --test tests/venue-kj-reconciliation.test.mjs
 
