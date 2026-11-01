@@ -83,7 +83,7 @@ export function SupportReportForm() {
       <label className="text-sm font-bold text-slate-100">Name (optional)<input name="name" maxLength={120} className={input}/></label>
       <label className="text-sm font-bold text-slate-100">Email for a reply (optional)<input name="email" type="email" maxLength={160} className={input}/></label>
     </div>
-    <p className="mt-4 text-xs leading-5 text-slate-400">Your report goes to the SingHUB review inbox. Please don't include sign-in codes, passwords, or payment details. You can report an issue without signing in.</p>
+    <p className="mt-4 text-xs leading-5 text-slate-400">Your report goes to the SingHUB review inbox. Please don&apos;t include sign-in codes, passwords, or payment details. You can report an issue without signing in.</p>
     {error&&<p role="alert" className="mt-4 rounded-xl border border-red-300/30 bg-red-500/10 p-3 text-sm text-red-100">{error}</p>}
     {success&&<p role="status" className="mt-4 rounded-xl border border-cyan-300/30 bg-cyan-500/10 p-3 text-sm text-cyan-100">{success}</p>}
     <button type="submit" disabled={busy} className="mt-6 rounded-full bg-cyan-300 px-6 py-3 font-black text-slate-950 hover:bg-cyan-200 disabled:opacity-60">{busy?"Sending report...":"Send problem report"}</button>
