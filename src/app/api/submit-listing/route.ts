@@ -127,10 +127,10 @@ export async function POST(request: Request) {
         "Name: "+(cleanString(payload.submitterName)||"Not provided"),
         "Reply contact: "+(cleanString(payload.submitterContact)||"Not provided"),
         "Source: "+cleanString(payload.sourceLink),
-        "Details:\\n"+cleanString(payload.notes),
+        "Details:\n"+cleanString(payload.notes),
         "",
         "Submitted to the SingHUB intake queue. Review before modifying public data or granting venue authority.",
-      ].join("\\n");
+      ].join("\n");
       await notifySingHubOperator(subject,text);
     }
     return NextResponse.json({ ok: true });
