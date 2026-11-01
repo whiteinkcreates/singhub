@@ -48,7 +48,8 @@ function routeFixture({webhookOk=true, emailOk=true}={}) {
   fetch:mockFetch,
  });
  const submit=contact=>exports.POST(new Request('https://singhub.example.test/api/submit-listing',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({submissionType:'activity_search_request',notes:'Please find bowling in La Mesa this weekend.',submitterContact:contact,sourceLink:'/backyard'})}));
- return {calls,submit};
+ const submitPayload=payload=>exports.POST(new Request('https://singhub.example.test/api/submit-listing',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)}));
+ return {calls,submit,submitPayload};
 }
 test('normal optional email passes and request reaches inbox plus owner notification',async()=>{
  for(const contact of ['you@example.com','singer@example.com','']){
@@ -65,6 +66,31 @@ test('invalid contact is rejected before external writes; inbox failure is not s
 });
 test('saved request remains successful if optional email transport fails',async()=>{
  const {calls,submit}=routeFixture({emailOk:false});assert.equal((await submit('you@example.com')).status,200);assert.equal(calls.length,2);
+});
+test('support reports are saved and notify the operator, without requiring sign-in',async()=>{
+ const {calls,submitPayload}=routeFixture();
+ const result=await submitPayload({submissionType:'support_request',venueName:'SingHUB support',supportCategory:'sign_in',notes:'The email code expired when I returned to the account page.',sourceLink:'/account'});
+ assert.equal(result.status,200);
+ assert.equal(calls.length,2);
+ assert.equal(calls[0].body.payload.submissionType,'support_request');
+ assert.match(calls[1].body.subject,/support.*sign-in/);
+});
+test('venue claim and Partner review submissions are independent of paid activation',async()=>{
+ for(const submissionType of ['venue_claim_request','venue_partner_inquiry']){
+  const {calls,submitPayload}=routeFixture();
+  const result=await submitPayload({submissionType,venueName:'Example Bar',notes:'Owner requests personal review of the karaoke schedule and venue profile.',submitterContact:'owner@example.com'});
+  assert.equal(result.status,200);
+  assert.equal(calls.length,2);
+  assert.match(calls[1].body.subject,submissionType==='venue_claim_request'?/claim requires verification/:/Partner inquiry/);
+ }
+});
+test('invalid category and claim without contact are rejected before any external submission',async()=>{
+ const {calls,submitPayload}=routeFixture();
+ const invalid=await submitPayload({submissionType:'support_request',supportCategory:'magic-token',notes:'Cannot sign into the application after verification.'});
+ assert.equal(invalid.status,400);
+ const anonymous=await submitPayload({submissionType:'venue_claim_request',venueName:'Example Bar',notes:'I own this venue and would like to claim the listing.'});
+ assert.equal(anonymous.status,400);
+ assert.equal(calls.length,0);
 });
 test('all independent hero keys survive V2 integration',()=>{
  const {SITE_HERO_KEYS}=load('src/lib/hostMedia.ts');
