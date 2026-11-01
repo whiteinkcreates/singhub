@@ -20,14 +20,14 @@ export function SupportReportForm() {
   useEffect(()=>{
     const params=new URLSearchParams(window.location.search);
     const topic=params.get("topic");
-    if(topic==="check-in")setCategory("check_in_offer");
-    else if(topic==="listing")setCategory("listing");
-    else if(topic==="other")setCategory("other");
-    else if(topic==="sign-in")setCategory("sign_in");
+    const selectedCategory:Category=topic==="check-in"?"check_in_offer":topic==="listing"?"listing":topic==="other"?"other":"sign_in";
     const from=params.get("source")||"";
     const source=from.startsWith("/")&&!from.startsWith("//")?from:
       document.referrer.startsWith(window.location.origin)?new URL(document.referrer).pathname:"";
-    setPagePath(source.slice(0,250));
+    queueMicrotask(()=>{
+      setCategory(selectedCategory);
+      setPagePath(source.slice(0,250));
+    });
   },[]);
   async function submit(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
