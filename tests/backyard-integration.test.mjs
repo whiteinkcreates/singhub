@@ -43,7 +43,7 @@ function routeFixture({webhookOk=true, emailOk=true}={}) {
  const exports={},calls=[];
  const env={SINGHUB_SUBMISSIONS_WEBHOOK_URL:'https://inbox.example.test',SINGHUB_SUBMISSIONS_WEBHOOK_SECRET:'fixture',RESEND_API_KEY:'fixture',SINGHUB_SUBMISSIONS_TO:'owner@example.test',SINGHUB_SUBMISSIONS_FROM:'SingHUB <notify@example.test>'};
  vm.runInNewContext(ts.transpileModule(readFileSync('src/app/api/submit-listing/route.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{
-  exports,process:{env},console:{error(){}},require:()=>({NextResponse:{json:Response.json}}),
+  exports,process:{env},console:{error(){}},require:id=>id==='@/lib/operationalAlerts.server'?{notifySingHubOperator:async(subject,text)=>{const sent=await fetch('https://api.resend.com/emails',{method:'POST',body:JSON.stringify({subject,text,to:['owner@example.test']})});return sent.ok;}}:{NextResponse:{json:Response.json}},
   fetch:async(url,init)=>{calls.push({url,body:JSON.parse(init.body)});return url===env.SINGHUB_SUBMISSIONS_WEBHOOK_URL?new Response(JSON.stringify({ok:webhookOk}),{status:webhookOk?200:500}):new Response('{}',{status:emailOk?200:500});},
  });
  const submit=contact=>exports.POST(new Request('https://singhub.example.test/api/submit-listing',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({submissionType:'activity_search_request',notes:'Please find bowling in La Mesa this weekend.',submitterContact:contact,sourceLink:'/backyard'})}));
