@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { notifySingHubOperator } from "@/lib/operationalAlerts.server";
 
 function cleanString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -30,7 +31,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const isActivityRequest=cleanString(payload.submissionType)==="activity_search_request";
+  const submissionType=cleanString(payload.submissionType) || inferSubmissionType(payload);
+  const isActivityRequest=submissionType==="activity_search_request";
+  const isSupportRequest=submissionType==="support_request";
+  const isClaimRequest=submissionType==="venue_claim_request"||submissionType==="claim_update";
+  const isPartnerInquiry=submissionType==="venue_partner_inquiry";
+  if(isSupportRequest||isClaimRequest||isPartnerInquiry){
+    const email=cleanString(payload.submitterContact);
+    const notes=cleanString(payload.notes);
+    const validEmail=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(notes.length<15||notes.length>2500||email.length>200||
+      (email&&!validEmail.test(email))||
+      (!email&&!isSupportRequest)||
+      (isSupportRequest&&!["sign_in","check_in_offer","listing","other"].includes(cleanString(payload.supportCategory)))||
+      ((isClaimRequest||isPartnerInquiry)&&!cleanString(payload.venueName)))
+      return NextResponse.json({error:"Please check the details and contact information before sending."},{status:400});
+  }
   if(isActivityRequest){
     const notes=cleanString(payload.notes);
     const email=cleanString(payload.submitterContact);
@@ -63,7 +79,7 @@ export async function POST(request: Request) {
 
   const enrichedPayload = {
     ...payload,
-    submissionType: cleanString(payload.submissionType) || inferSubmissionType(payload),
+    submissionType,
     userAgent: request.headers.get("user-agent") || "",
     sourcePath: request.headers.get("referer") || "",
   };
@@ -98,28 +114,24 @@ export async function POST(request: Request) {
       );
     }
 
-    if(isActivityRequest) {
-      const apiKey=process.env.RESEND_API_KEY;
-      const to=process.env.SINGHUB_SUBMISSIONS_TO;
-      const from=process.env.SINGHUB_SUBMISSIONS_FROM;
-      if(apiKey&&to&&from){
-        try{
-          const sent=await fetch("https://api.resend.com/emails",{
-            method:"POST",
-            headers:{"Authorization":"Bearer "+apiKey,"Content-Type":"application/json"},
-            body:JSON.stringify({
-              from,to:to.split(",").map(value=>value.trim()).filter(Boolean),
-              subject:"SingHUB: new Other activity request",
-              text:["A visitor asked SingHUB to research an activity.","",cleanString(payload.notes),"","Reply contact: "+(cleanString(payload.submitterContact)||"Not provided"),"Source: "+cleanString(payload.sourceLink),"Next step: research venues, verify sources, and consider a new Backyard category."].join("\n")
-            })
-          });
-          if(!sent.ok){
-            const failure=await sent.json().catch(()=>({})) as {name?:unknown;message?:unknown};
-            const detail=typeof failure.message==="string"?failure.message.slice(0,500).replace(/re_[A-Za-z0-9_]+/g,"[redacted]").replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,"[email]"):"No provider error detail";
-            console.error("Activity request email notification failed",sent.status,typeof failure.name==="string"?failure.name:"unknown",detail);
-          }
-        }catch(error){console.error("Activity request notification transport failed",error);}
-      } else console.error("Activity request notification lacks email configuration");
+    // Always record requests in the submission inbox first. Notify operator only after successful storage.
+    if(isActivityRequest||isSupportRequest||isClaimRequest||isPartnerInquiry){
+      const subject=isSupportRequest
+        ? "SingHUB support: "+(cleanString(payload.supportCategory)==="sign_in"?"sign-in problem":"new problem report")
+        : isPartnerInquiry?"SingHUB: new $59 Partner inquiry"
+        : isClaimRequest?(submissionType==="venue_claim_request"?"SingHUB: venue claim requires verification":"SingHUB: venue correction")
+        :"SingHUB: new Other activity request";
+      const text=[
+        "Type: "+submissionType,
+        "Venue: "+(cleanString(payload.venueName)||"Not provided"),
+        "Name: "+(cleanString(payload.submitterName)||"Not provided"),
+        "Reply contact: "+(cleanString(payload.submitterContact)||"Not provided"),
+        "Source: "+cleanString(payload.sourceLink),
+        "Details:\\n"+cleanString(payload.notes),
+        "",
+        "Submitted to the SingHUB intake queue. Review before modifying public data or granting venue authority.",
+      ].join("\\n");
+      await notifySingHubOperator(subject,text);
     }
     return NextResponse.json({ ok: true });
   } catch (error) {
