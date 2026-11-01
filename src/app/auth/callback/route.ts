@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import { safeNextPath } from "@/lib/authRedirect";
+import { recordAuthIncident } from "@/lib/authIncidents.server";
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -9,8 +10,13 @@ export async function GET(request: NextRequest) {
   const destination = new URL(next, requestUrl.origin);
 
   if (!code) {
-    destination.searchParams.set("authError", "missing_code");
-    return NextResponse.redirect(destination);
+    const providerError = requestUrl.searchParams.has("error") || requestUrl.searchParams.has("error_code");
+    if (providerError) await recordAuthIncident(request, "callback", "provider_link_error");
+    const recovery = new URL("/account", requestUrl.origin);
+    recovery.searchParams.set("signin", "1");
+    recovery.searchParams.set("authError", providerError ? "provider_link_error" : "missing_code");
+    recovery.searchParams.set("next", next);
+    return NextResponse.redirect(recovery);
   }
 
   let response = NextResponse.redirect(destination);
@@ -37,8 +43,12 @@ export async function GET(request: NextRequest) {
   const { error } = await supabase.auth.exchangeCodeForSession(code);
 
   if (error) {
-    destination.searchParams.set("authError", "session_exchange_failed");
-    return NextResponse.redirect(destination);
+    await recordAuthIncident(request, "callback", "exchange_failed");
+    const recovery = new URL("/account", requestUrl.origin);
+    recovery.searchParams.set("signin", "1");
+    recovery.searchParams.set("authError", "session_exchange_failed");
+    recovery.searchParams.set("next", next);
+    return NextResponse.redirect(recovery);
   }
 
   return response;
