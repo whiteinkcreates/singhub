@@ -41,7 +41,7 @@ jobs:
         run: node --test tests/tip-chair-foundation.test.mjs tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs tests/hotel-package.test.mjs tests/hotel-photo-rights.test.mjs tests/hotel-media-delete.test.mjs
 
       - name: Verify Backyard integration behavior
-        if: startsWith(github.head_ref, 'review/backyard-v2-integration-')
+        if: startsWith(github.head_ref, 'review/backyard-v2-integration-') || startsWith(github.head_ref, 'feature/venue-claim-support-')
         run: node --test tests/backyard-integration.test.mjs
 
       - name: Verify TourStops and Partner offer redemption

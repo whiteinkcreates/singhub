@@ -13,6 +13,7 @@ const footerLinks = [
   { href: "/submit-listing", label: "Submit Listing" },
   { href: "/claim-listing", label: "Claim Listing" },
   { href: "/venues/premium", label: "For Venues" },
+  { href: "/support", label: "Help & Report a Problem" },
   { href: "/hotel", label: "For Hotels" },
 ];
 

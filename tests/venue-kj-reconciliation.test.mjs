@@ -25,6 +25,7 @@ async function loadHosts({sheet=false, explicitRodney=false,rodneyName}={}) {
   const output={};
   const imports={
     'node:fs':fs,'node:path':path,
+    'next/cache':{unstable_cache:fn=>fn},
     '@/lib/hostMedia.server':{getHostMediaOverrides:async()=>new Map()},
     '@/lib/hostMedia':{},
     '@/lib/eventData':{getKaraokeEventListings:async()=>events},

@@ -5,7 +5,7 @@ import { getVenueListings } from "@/lib/venueData";
 export const metadata = {
   title: "Venue Partnership Demo | SingHUB",
   description:
-    "Compare a current SingHUB venue listing with the enhanced Founding Venue experience.",
+    "Compare a current SingHUB venue listing with the enhanced SingHUB Partner experience.",
   robots: {
     index: false,
     follow: false,
@@ -34,7 +34,7 @@ export default async function VenueDemoPage({ searchParams }: VenueDemoPageProps
     <main className="mx-auto max-w-[96rem] px-4 py-10 text-white md:py-14">
       <section className="mb-9 max-w-5xl">
         <div className="inline-flex rounded-full border border-cyan-300/35 bg-cyan-300/10 px-3 py-2 text-xs font-black uppercase tracking-[0.22em] text-cyan-100">
-          SingHUB Founding Venue Demo
+          SingHUB Partner Demo
         </div>
         <h1 className="mt-5 text-4xl font-black leading-tight text-white md:text-6xl">
           Your karaoke night is already listed. Here is what a partnership can turn it into.
