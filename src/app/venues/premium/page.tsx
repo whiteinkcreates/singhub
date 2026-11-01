@@ -8,7 +8,7 @@ import "./premium.css";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "SingHUB for Venues | Free Listing vs. Partner",
-  description: "Every venue can be found on SingHUB for free. Compare the free karaoke listing with SingHUB Partner's enhanced calendar, promotions, SingBOARD and founding offer.",
+  description: "Every venue can be found on SingHUB for free. Compare the free karaoke listing with SingHUB Partner's enhanced calendar, promotions, SingBOARD and $59/month Partner tools.",
   alternates: { canonical: "/venues/premium" },
 };
 
@@ -21,13 +21,15 @@ const freeFeatures = [
 ];
 
 const partnerFeatures = [
-  "Everything in the free listing",
-  "Richer venue story, gallery and promotional details",
-  "Fuller event calendar for karaoke and other venue happenings",
-  "Qualifying event flyers and promotions through SingBOARD",
-  "Food, drink, happy hour and venue special highlights",
-  "Optional venue-controlled Partner Offers",
-  "Priority information updates and available engagement insights",
+  "Everything in the free karaoke listing, including SingHERE",
+  "Enhanced venue story, expanded photo gallery, room vibe and amenities",
+  "Calendar for karaoke and additional venue events, when supplied and verified",
+  "Food, drink, happy hour, specials and announcements on your venue profile",
+  "Eligible events, flyers and promotions through SingBOARD",
+  "Optional venue-controlled check-in offers after staff redemption testing",
+  "Priority help with schedule, KJ, photo and information updates",
+  "Direct feedback on venue promotional needs",
+  "Engagement summaries as data becomes available and is validated",
 ];
 
 const differences = [
@@ -38,13 +40,14 @@ const differences = [
   {title:"Additional events and fuller monthly calendar", free:"Regular karaoke schedule", partner:"Promotional event calendar"},
   {title:"SingBOARD flyers and venue announcements", free:"Community discovery", partner:"Partner promotions"},
   {title:"Specials, venue-led offers and promotion", free:"Core facts", partner:"Featured venue content"},
-  {title:"Priority changes and engagement insights", free:"Standard corrections", partner:"Priority support and available reporting"},
+  {title:"Priority changes and engagement insights", free:"Standard corrections", partner:"Priority support; reporting as verified"},
 ];
 
 const faqs = [
   {question:"Do I have to pay to be listed?", answer:"No. SingHUB keeps the useful karaoke information, a venue hero, Why Sing Here, amenities, and SingHERE available on the free listing. Partner adds promotional tools, not access to the microphone."},
-  {question:"Is Founding Venue a separate product?", answer:"No. Founding Venue is a discounted 90-day introduction to SingHUB Partner. It comes with the same Partner experience and a preferred optional continuation rate."},
-  {question:"Does the pilot automatically renew?", answer:"No. The $149 covers the 90-day Founding Venue Pilot. At the end, you can stop or explicitly choose to continue for $49 per month at the founding rate while participating."},
+  {question:"What does $59 per month include?", answer:"Your enhanced profile and gallery, wider event calendar, specials, eligible SingBOARD posts, optional configured offers, priority updates and engagement insights where the reporting is available and validated. The essential karaoke listing remains free."},
+  {question:"Does a request start a subscription?", answer:"No. The inquiry is free and begins a personal review, not billing. We explain setup and terms before activating the $59/month standard Partner plan."},
+  {question:"Do I have to discount drinks?", answer:"No. Offers are optional and controlled by the venue. Any offer requires agreed terms and an end-to-end staff redemption test."},
   {question:"Is more traffic or first place in search guaranteed?", answer:"No. Partner creates better ways to tell your story and promote your events. Placement opportunities and reporting depend on available SingHUB features; attendance and rankings are never guaranteed."},
 ];
 
@@ -105,11 +108,10 @@ export default async function PremiumVenuePage() {
             <p className="venue-offers-plan-lede">A promotional home for the whole venue, from your karaoke night to the other reasons people keep coming back.</p>
             <ul>{partnerFeatures.map(feature => <li key={feature}>{feature}</li>)}</ul>
             <div className="venue-offers-founding">
-              <p className="venue-offers-eyebrow">FOUNDING VENUE OFFER</p>
-              <p className="venue-offers-founding-price">$149 <span>total for your first 90 days</span></p>
-              <p>Afterward, choose whether to continue at <strong>$49/month</strong> while your founding membership stays active. <strong>No automatic renewal.</strong></p>
+              <p className="venue-offers-eyebrow">ONE CLEAR PARTNER RATE</p>
+              <p><strong>$59/month standard rate.</strong> Request a review without paying today. We confirm features, terms and activation before billing begins.</p>
             </div>
-            <Link className="venue-offers-button venue-offers-solid" href="/claim-listing?premium=true">Request a Partner review ↗</Link>
+            <Link className="venue-offers-button venue-offers-solid" href="/claim-listing?premium=true">Ask about the $59 Partner plan ↗</Link>
           </article>
         </section>
 
