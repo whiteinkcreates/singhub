@@ -38,7 +38,7 @@ try{
   await page.goto(base+'/auth/callback?next=%2Faccount',{waitUntil:'networkidle'});
   assert.equal(new URL(page.url()).pathname,'/account');
   assert.equal(new URL(page.url()).searchParams.get('authError'),'missing_code');
-  assert.match(await dialog.innerText(),/expired or could not be completed/i);
+  assert.match(await dialog.innerText(),/expired or could not finish signing you in/i);
   await page.goto(base+'/auth/callback?next=https%3A%2F%2Funtrusted.example',{waitUntil:'networkidle'});
   assert.ok(['localhost','127.0.0.1'].includes(new URL(page.url()).hostname),'external redirect is rejected');
   assert.equal(new URL(page.url()).pathname,'/account','unsafe redirect rejected');
