@@ -32,6 +32,11 @@ export async function POST(request: Request) {
   }
 
   const submissionType=cleanString(payload.submissionType) || inferSubmissionType(payload);
+  if(["support_request","venue_claim_request","claim_update","venue_partner_inquiry"].includes(submissionType)){
+    const origin=request.headers.get("origin");
+    if(origin&&origin!==new URL(request.url).origin)
+      return NextResponse.json({error:"Cross-site submissions are not allowed."},{status:403});
+  }
   const isActivityRequest=submissionType==="activity_search_request";
   const isSupportRequest=submissionType==="support_request";
   const isClaimRequest=submissionType==="venue_claim_request"||submissionType==="claim_update";
