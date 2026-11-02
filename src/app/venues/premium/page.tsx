@@ -11,7 +11,7 @@ import "./premium.css";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "SingHUB for Venues | Free Listing vs. Partner",
-  description: "Every venue can be found on SingHUB for free. Compare the free karaoke listing with SingHUB Partner's enhanced calendar, promotions, SingBOARD and founding offer.",
+  description: "Every venue can be found on SingHUB for free. Compare the free karaoke listing with SingHUB Partner's enhanced calendar, promotions, SingBOARD and real venue examples.",
   alternates: { canonical: "/venues/premium" },
 };
 
@@ -77,7 +77,7 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
           <h1 id="venue-offers-title">Your karaoke night. <span>More ways to be found.</span></h1>
           <p>Every karaoke venue deserves a useful free listing. SingHUB Partner adds the tools to promote everything that makes people choose your room.</p>
           <div className="venue-offers-hero-actions">
-            <a href="#venue-plans" className="venue-offers-primary">Compare your options <span aria-hidden="true">↓</span></a>
+            <a href="#real-profiles" className="venue-offers-primary">See live profiles <span aria-hidden="true">↓</span></a>
             <Link href="/find-karaoke" className="venue-offers-secondary">Explore SingHUB ↗</Link>
           </div>
         </div>
@@ -156,6 +156,7 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
             <Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-solid">Ask about Partner ↗</Link>
             <Link href="/claim-listing" className="venue-offers-button venue-offers-outline">Update a free listing ↗</Link>
           </div>
+          <p className="mt-5 text-sm text-slate-300">Before enrolling, review our <Link className="underline" href="/venue-partner-terms">Venue Partner Terms</Link> and <Link className="underline" href="/privacy">Privacy Policy</Link>. Payment is never required to request a listing correction.</p>
         </section>
       </div>
     </main>
