@@ -78,7 +78,7 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
           <p>Your karaoke nights should be easy to find. Your food, events, specials and atmosphere deserve attention too. See what your venue already has and what a partnership could add.</p>
           <div className="venue-offers-hero-actions">
             <a href="#real-profiles" className="venue-offers-primary">See live profiles <span aria-hidden="true">↓</span></a>
-            <Link href="/claim-listing?premium=true" className="venue-offers-secondary">Tell us about your place ↗</Link>
+            <Link href={requestedVenue ? `/claim-listing?premium=true&venue=${encodeURIComponent(requestedVenue)}` : "/claim-listing?premium=true"} className="venue-offers-secondary">Tell us about your place ↗</Link>
           </div>
         </div>
         <HeroScrollCue />
@@ -164,7 +164,7 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
           <p>You don't need perfect photos, a marketing plan or an afternoon of paperwork. A few details will get the conversation started. We can handle the rest together.</p>
           <div className="venue-offers-end-actions">
             <Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-solid">Tell us about your venue ↗</Link>
-            <Link href="/claim-listing" className="venue-offers-button venue-offers-outline">Update a free listing ↗</Link>
+            <Link href={requestedVenue ? `/claim-listing?venue=${encodeURIComponent(requestedVenue)}` : "/claim-listing"} className="venue-offers-button venue-offers-outline">Update a free listing ↗</Link>
           </div>
           <p className="mt-5 text-sm text-slate-300">When you're ready to enroll, you can review our <Link className="underline" href="/venue-partner-terms">Venue Partner Terms</Link> and <Link className="underline" href="/privacy">Privacy Policy</Link>. Payment is never required to request a listing correction.</p>
         </section>
