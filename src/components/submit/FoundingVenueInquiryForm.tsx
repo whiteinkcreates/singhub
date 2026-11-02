@@ -35,9 +35,9 @@ export function FoundingVenueInquiryForm({
     const email = getFormValue(formData, "email");
     const karaokeDetails = getFormValue(formData, "karaoke-details");
 
-    if (!venueName || !contactName || !email || !karaokeDetails) {
+    if (!venueName || !contactName || !email) {
       setSubmittedMessage("");
-      setErrorMessage("Please include the venue, your name, email, and current karaoke details.");
+      setErrorMessage("Please include your venue name and how we can reach you.");
       return;
     }
 
@@ -62,7 +62,7 @@ export function FoundingVenueInquiryForm({
         `Selected listing: ${selectedSlug || "Not selected"}`,
         `Preferred contact: ${getFormValue(formData, "preferred-contact") || "No preference"}`,
         `Best time to connect: ${getFormValue(formData, "best-time") || "Not provided"}`,
-        `Current karaoke details:\n${karaokeDetails}`,
+        `Current karaoke details:\n${karaokeDetails || "Not provided"}`,
         `Promotion goals:\n${getFormValue(formData, "promotion-goals") || "Not provided"}`,
         `Additional notes:\n${getFormValue(formData, "notes") || "None"}`,
       ].join("\n\n"),
@@ -166,15 +166,14 @@ export function FoundingVenueInquiryForm({
         <FormField label="Best time to connect" name="best-time" placeholder="Weekday mornings, after 2pm..." />
 
         <TextAreaField
-          label="Current karaoke night(s)"
+          label="Karaoke nights (if you know the details)"
           name="karaoke-details"
-          helper="Days, approximate times, host or KJ, and anything that regularly changes."
-          required
+          helper="Optional. We can help verify days, times and the KJ together."
         />
         <TextAreaField
-          label="What would you most like to promote?"
+          label="What would you love more people to know about?"
           name="promotion-goals"
-          helper="A slower night, a new host, specials, private rooms, a specific crowd, or general awareness."
+          helper="Maybe a karaoke night, live music, food, specials or just the feel of your place."
         />
         <TextAreaField
           label="Anything else we should know?"
