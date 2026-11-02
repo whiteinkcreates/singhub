@@ -74,11 +74,11 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
         <div className="venue-offers-photo-shade" aria-hidden="true" />
         <div data-hero-copy="" className="venue-offers-hero-copy">
           <p className="venue-offers-eyebrow">SINGHUB FOR VENUES</p>
-          <h1 id="venue-offers-title">Your karaoke night. <span>More ways to be found.</span></h1>
-          <p>Every karaoke venue deserves a useful free listing. SingHUB Partner adds the tools to promote everything that makes people choose your room.</p>
+          <h1 id="venue-offers-title">Your place has a personality. <span>Let people find it.</span></h1>
+          <p>Your karaoke nights should be easy to find. Your food, events, specials and atmosphere deserve attention too. See what your venue already has and what a partnership could add.</p>
           <div className="venue-offers-hero-actions">
             <a href="#real-profiles" className="venue-offers-primary">See live profiles <span aria-hidden="true">↓</span></a>
-            <Link href="/find-karaoke" className="venue-offers-secondary">Explore SingHUB ↗</Link>
+            <Link href="/claim-listing?premium=true" className="venue-offers-secondary">Tell us about your place ↗</Link>
           </div>
         </div>
         <HeroScrollCue />
@@ -86,11 +86,28 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
 
       <div data-page-surface="" className="venue-offers-sheet">
         <section className="venue-offers-intro" aria-labelledby="difference-heading">
-          <p className="venue-offers-eyebrow">TWO LEVELS. ONE COMMUNITY.</p>
-          <h2 id="difference-heading">Being listed is free. <span>Being a Partner does more.</span></h2>
-          <p>Free gets the essentials right so singers can find you, know what to expect and sign up. Partner gives you a bigger stage for your calendar, specials, announcements and what makes your venue worth a visit.</p>
+          <p className="venue-offers-eyebrow">GOOD FOR SINGERS. BETTER FOR YOUR VENUE.</p>
+          <h2 id="difference-heading">A good listing starts the story. <span>A Partner profile tells more of it.</span></h2>
+          <p>We keep the essentials free because accurate karaoke information helps everyone. Partner gives your team room to show the experience, highlight what happens beyond karaoke and keep the good stuff from getting buried.</p>
         </section>
 
+        <section id="real-profiles" className="venue-offers-compare" aria-labelledby="real-profile-heading">
+          <p className="venue-offers-eyebrow">EXPLORE REAL VENUES</p>
+          <h2 id="real-profile-heading">See real venues. Get a feel for the difference.</h2>
+          <p className="mb-5 max-w-3xl text-slate-300">Start with your venue or explore a few others. These are live listings, not mockups. Enhanced examples do not necessarily mean paid partnerships.</p>
+          <VenueProfileExplorer venues={publicVenues} initialSlug={requestedVenue} />
+        </section>
+
+        <section className="venue-offers-journey" aria-labelledby="partner-process-heading">
+          <p className="venue-offers-eyebrow">NO BIG PITCH. JUST A BETTER WAY TO SHOW UP.</p>
+          <h2 id="partner-process-heading">Here&apos;s how we work together.</h2>
+          <div className="venue-offers-journey-grid">
+            <article><span>01</span><h3>Take a look</h3><p>Find your listing and let us know if something needs correcting. That&apos;s free, whether you partner or not.</p></article>
+            <article><span>02</span><h3>Show us your place</h3><p>Tell us about your nights, your crowd and what makes the room worth visiting. Photos and flyers can come later.</p></article>
+            <article><span>03</span><h3>Decide what fits</h3><p>We&apos;ll show you the options. If you want to partner, you review the details before any payment.</p></article>
+          </div>
+          <div className="venue-offers-gentle-cta"><div><strong>Know what you want to improve?</strong><p>Send us a few details and we&apos;ll take it from there.</p></div><Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-solid">Start a conversation ↗</Link></div>
+        </section>
         <section id="venue-plans" className="venue-offers-plans" aria-label="Venue offers">
           <article className="venue-offers-plan venue-offers-free">
             <p className="venue-offers-plan-kicker">01 / EVERY VENUE</p>
@@ -115,16 +132,9 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
           </article>
         </section>
 
-        <section id="real-profiles" className="venue-offers-compare" aria-labelledby="real-profile-heading">
-          <p className="venue-offers-eyebrow">EXPLORE REAL VENUES</p>
-          <h2 id="real-profile-heading">See what a profile actually looks like.</h2>
-          <p className="mb-5 max-w-3xl text-slate-300">Choose from the current Enhanced and Basic listings. Open the live page to see the real experience, with no invented mockup or partnership status.</p>
-          <VenueProfileExplorer venues={publicVenues} initialSlug={requestedVenue} />
-        </section>
-
         <section className="venue-offers-compare" aria-labelledby="venue-compare-title">
-          <p className="venue-offers-eyebrow">THE DIFFERENCE, FEATURE BY FEATURE</p>
-          <h2 id="venue-compare-title">What changes when you partner?</h2>
+          <p className="venue-offers-eyebrow">THE DETAILS, IF YOU WANT THEM</p>
+          <h2 id="venue-compare-title">What comes with a partnership?</h2>
           <div className="venue-offers-comparison" role="table" aria-label="Free and Partner venue feature comparison">
             <div className="venue-offers-compare-row venue-offers-compare-head" role="row"><span role="columnheader">Capability</span><span role="columnheader">Free listing</span><span role="columnheader">Partner</span></div>
             {differences.map(row => <div className="venue-offers-compare-row" role="row" key={row.title}><strong role="cell">{row.title}</strong><span role="cell" data-plan="Free">{row.free}</span><span role="cell" data-plan="Partner">{row.partner}</span></div>)}
@@ -149,14 +159,14 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
         </section>
 
         <section className="venue-offers-end" aria-labelledby="venue-offers-end-title">
-          <p className="venue-offers-eyebrow">LET&apos;S TALK KARAOKE</p>
-          <h2 id="venue-offers-end-title">Your venue already has a story. <span>Let more singers find it.</span></h2>
-          <p>Whether you just need your free details corrected or want to explore being a Partner, the first move is a conversation. No checkout required.</p>
+          <p className="venue-offers-eyebrow">WE&apos;D LOVE TO HEAR ABOUT YOUR ROOM</p>
+          <h2 id="venue-offers-end-title">Show us what makes your place <span>your place.</span></h2>
+          <p>You don't need perfect photos, a marketing plan or an afternoon of paperwork. A few details will get the conversation started. We can handle the rest together.</p>
           <div className="venue-offers-end-actions">
-            <Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-solid">Ask about Partner ↗</Link>
+            <Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-solid">Tell us about your venue ↗</Link>
             <Link href="/claim-listing" className="venue-offers-button venue-offers-outline">Update a free listing ↗</Link>
           </div>
-          <p className="mt-5 text-sm text-slate-300">Before enrolling, review our <Link className="underline" href="/venue-partner-terms">Venue Partner Terms</Link> and <Link className="underline" href="/privacy">Privacy Policy</Link>. Payment is never required to request a listing correction.</p>
+          <p className="mt-5 text-sm text-slate-300">When you're ready to enroll, you can review our <Link className="underline" href="/venue-partner-terms">Venue Partner Terms</Link> and <Link className="underline" href="/privacy">Privacy Policy</Link>. Payment is never required to request a listing correction.</p>
         </section>
       </div>
     </main>
