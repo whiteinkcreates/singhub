@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { getVenueListings } from "@/lib/venueData";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
+import { VenueProfileExplorer } from "@/components/venue/VenueProfileExplorer";
 import { HeroScrollCue } from "@/components/layout/HeroScrollCue";
 import { PositionedImage } from "@/components/media/PositionedImage";
 import { getHostMediaSettings } from "@/lib/hostMedia.server";
@@ -43,8 +46,8 @@ const differences = [
 
 const faqs = [
   {question:"Do I have to pay to be listed?", answer:"No. SingHUB keeps the useful karaoke information, a venue hero, Why Sing Here, amenities, and SingHERE available on the free listing. Partner adds promotional tools, not access to the microphone."},
-  {question:"Is Founding Venue a separate product?", answer:"No. Founding Venue is a discounted 90-day introduction to SingHUB Partner. It comes with the same Partner experience and a preferred optional continuation rate."},
-  {question:"Does the pilot automatically renew?", answer:"No. The $149 covers the 90-day Founding Venue Pilot. At the end, you can stop or explicitly choose to continue for $49 per month at the founding rate while participating."},
+  {question:"Can we see a real profile first?", answer:"Yes. Choose any enhanced or basic venue below and open its live public listing. Enhanced examples are not necessarily paid Partners."},
+  {question:"How do we get started?", answer:"Review or correct your free listing first. If you want a richer presence, request a Partner conversation. Payment and recurring terms are presented separately for your approval."},
   {question:"Is more traffic or first place in search guaranteed?", answer:"No. Partner creates better ways to tell your story and promote your events. Placement opportunities and reporting depend on available SingHUB features; attendance and rankings are never guaranteed."},
 ];
 
@@ -53,6 +56,7 @@ export default async function PremiumVenuePage() {
     getHostMediaSettings(SITE_PARTNER_OFFERS_HERO_KEY).catch(() => null),
     getHostMediaSettings(SITE_DISCOVERY_HERO_KEY).catch(() => null),
   ]);
+  const publicVenues = getPublicVenues(await getVenueListings()).filter(v => v.venueType === "live_bar").sort((a,b) => a.venueName.localeCompare(b.venueName)).map(v => ({ slug:v.slug, name:v.venueName, neighborhood:v.neighborhood, city:v.city, enhanced:v.profileTier === "premium" }));
   const hero = configured?.heroUrl ? configured : discovery?.heroUrl ? discovery : null;
 
   return (
@@ -104,13 +108,16 @@ export default async function PremiumVenuePage() {
             <p className="venue-offers-price">$59 <span>/ month, standard rate</span></p>
             <p className="venue-offers-plan-lede">A promotional home for the whole venue, from your karaoke night to the other reasons people keep coming back.</p>
             <ul>{partnerFeatures.map(feature => <li key={feature}>{feature}</li>)}</ul>
-            <div className="venue-offers-founding">
-              <p className="venue-offers-eyebrow">FOUNDING VENUE OFFER</p>
-              <p className="venue-offers-founding-price">$149 <span>total for your first 90 days</span></p>
-              <p>Afterward, choose whether to continue at <strong>$49/month</strong> while your founding membership stays active. <strong>No automatic renewal.</strong></p>
-            </div>
+            <div className="venue-offers-founding"><p className="venue-offers-eyebrow">EARLY COLLABORATORS</p><p>Some venues are helping us test profile content and offers before making a commercial decision. Founding arrangements are discussed privately, never implied by an enhanced example.</p></div>
             <Link className="venue-offers-button venue-offers-solid" href="/claim-listing?premium=true">Request a Partner review ↗</Link>
           </article>
+        </section>
+
+        <section id="real-profiles" className="venue-offers-compare" aria-labelledby="real-profile-heading">
+          <p className="venue-offers-eyebrow">EXPLORE REAL VENUES</p>
+          <h2 id="real-profile-heading">See what a profile actually looks like.</h2>
+          <p className="mb-5 max-w-3xl text-slate-300">Choose from the current Enhanced and Basic listings. Open the live page to see the real experience, with no invented mockup or partnership status.</p>
+          <VenueProfileExplorer venues={publicVenues} />
         </section>
 
         <section className="venue-offers-compare" aria-labelledby="venue-compare-title">
