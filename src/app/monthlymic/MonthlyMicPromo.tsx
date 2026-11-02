@@ -19,5 +19,16 @@ export default async function MonthlyMicPromo(){
     {photo.caption&&<figcaption className="px-4 py-3 text-sm text-slate-200">{photo.caption}</figcaption>}
    </figure>)}
   </div>
+  <div className="mt-4 flex flex-col gap-4 rounded-2xl border border-cyan-300/25 bg-slate-900/80 p-5 sm:flex-row sm:items-center sm:justify-between">
+   <div className="max-w-lg">
+    <p className="text-lg font-black">Take home a piece of MonthlyMic #001.</p>
+    <p className="mt-1 text-sm text-slate-300">Choose your color and size. Prepay for pickup at The Mesa on November 18, or have it shipped to you.</p>
+    <p className="mt-2 text-xs font-semibold text-amber-200">Event pickup orders close November 5 at 11:59 PM Pacific. Pickup date depends on production and delivery.</p>
+   </div>
+   <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:items-end">
+    <a href="https://whiteinkcreates.com/products/monthlymic-001-the-mesa-event-pickup-prepaid" target="_blank" rel="noopener noreferrer" className="rounded-xl bg-cyan-300 px-5 py-3 text-center text-sm font-black text-slate-950 transition-colors hover:bg-cyan-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-200">Shop the #001 tee · $30 pickup</a>
+    <a href="https://whiteinkcreates.com/products/monthlymic-001-the-mesa-limited-edition-tee" target="_blank" rel="noopener noreferrer" className="px-2 py-1 text-center text-sm font-semibold text-cyan-200 underline underline-offset-4 hover:text-white">Prefer shipping? Shop the mailed tee</a>
+   </div>
+  </div>
  </section>;
 }
