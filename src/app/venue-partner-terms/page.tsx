@@ -1,0 +1,24 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Venue Partner Terms | SingHUB",
+  description: "Terms for SingHUB Venue Partner subscriptions and onboarding.",
+};
+
+export default function VenuePartnerTermsPage() {
+  return (
+    <main className="mx-auto max-w-3xl px-6 py-16 text-slate-100">
+      <h1 className="mb-4 text-4xl font-bold">SingHUB Venue Partner Terms</h1>
+      <p className="mb-8 text-sm text-slate-400">Effective upon acceptance at checkout. Provided by SingHUB LLC.</p>
+      <div className="space-y-7 leading-relaxed">
+        <section><h2 className="mb-2 text-xl font-semibold">1. Partnership services</h2><p>SingHUB provides an Enhanced Venue Profile on singhub.app and associated available partner features, which may include SingBOARD content and priority profile updates. This is a paid promotional listing service, not a guarantee of traffic, attendance, revenue, search ranking, or exclusivity. Individual promotional offers and integrations require separate coordination and approval.</p></section>
+        <section><h2 className="mb-2 text-xl font-semibold">2. Rates and renewal</h2><p>The rate and billing schedule shown at checkout govern your purchase. Standard Venue Partner service is $59 per month, recurring until canceled. Founder-approved Founding Partner service costs $149 for the first 90 days of service and then $49 per month, recurring until canceled. The founding rate is offered only to venues expressly approved by SingHUB. Applicable taxes, if any, will be shown at checkout.</p></section>
+        <section><h2 className="mb-2 text-xl font-semibold">3. Onboarding and activation</h2><p>After checkout, SingHUB will request the venue information and assets reasonably needed to launch the Enhanced Venue Profile. Please provide requested essentials within seven calendar days. SingHUB aims to activate the profile within three business days after receiving the essentials. If information is delayed, SingHUB may activate an accurate profile using available verified details and approved imagery. The paid service period begins when the agreed core service is available, no later than 14 calendar days after payment if SingHUB has made that service available. If SingHUB cannot make the core service available by that date for reasons within its control, the service start date will be deferred accordingly. Optional missing assets do not indefinitely postpone an otherwise available service.</p></section>
+        <section><h2 className="mb-2 text-xl font-semibold">4. Venue information and permissions</h2><p>You confirm that information you submit is accurate and that you have permission to provide photos, logos, and other materials for SingHUB to display in connection with your venue profile. SingHUB may correct or withhold inaccurate, misleading, or rights-infringing materials. Venue-specific promotions must be approved by the venue and may require staff procedures beyond the listing service.</p></section>
+        <section><h2 className="mb-2 text-xl font-semibold">5. Payment and cancellation</h2><p>By subscribing, you authorize Stripe to collect the stated recurring charges using your selected payment method according to the disclosed billing schedule. You may cancel future renewal through the provided billing management process or by emailing hello@singhub.app. Cancellation stops future renewals and ordinarily leaves access through the end of the paid period. Fees already paid are not automatically refunded, except as required by law or where SingHUB does not provide the agreed service. SingHUB will notify partners of material changes to price or these terms before they apply to a renewal.</p></section>
+        <section><h2 className="mb-2 text-xl font-semibold">6. Changes and availability</h2><p>SingHUB may update the platform and partner features over time. Material reductions in the purchased service will be communicated. SingHUB may remove content that is inaccurate, unlawful, or violates platform rules. Nothing in these terms transfers ownership of venue-provided materials to SingHUB.</p></section>
+        <section><h2 className="mb-2 text-xl font-semibold">7. Questions</h2><p>For onboarding, billing, cancellation, or corrections, contact <a className="underline" href="mailto:hello@singhub.app">hello@singhub.app</a>.</p></section>
+      </div>
+    </main>
+  );
+}
