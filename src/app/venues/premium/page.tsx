@@ -51,7 +51,9 @@ const faqs = [
   {question:"Is more traffic or first place in search guaranteed?", answer:"No. Partner creates better ways to tell your story and promote your events. Placement opportunities and reporting depend on available SingHUB features; attendance and rankings are never guaranteed."},
 ];
 
-export default async function PremiumVenuePage() {
+export default async function PremiumVenuePage({ searchParams }: { searchParams: Promise<{ venue?: string | string[] }> }) {
+  const params = await searchParams;
+  const requestedVenue = typeof params.venue === "string" ? params.venue : Array.isArray(params.venue) ? params.venue[0] : undefined;
   const [configured, discovery] = await Promise.all([
     getHostMediaSettings(SITE_PARTNER_OFFERS_HERO_KEY).catch(() => null),
     getHostMediaSettings(SITE_DISCOVERY_HERO_KEY).catch(() => null),
@@ -117,7 +119,7 @@ export default async function PremiumVenuePage() {
           <p className="venue-offers-eyebrow">EXPLORE REAL VENUES</p>
           <h2 id="real-profile-heading">See what a profile actually looks like.</h2>
           <p className="mb-5 max-w-3xl text-slate-300">Choose from the current Enhanced and Basic listings. Open the live page to see the real experience, with no invented mockup or partnership status.</p>
-          <VenueProfileExplorer venues={publicVenues} />
+          <VenueProfileExplorer venues={publicVenues} initialSlug={requestedVenue} />
         </section>
 
         <section className="venue-offers-compare" aria-labelledby="venue-compare-title">
