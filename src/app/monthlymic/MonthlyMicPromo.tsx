@@ -15,7 +15,7 @@ export default async function MonthlyMicPromo(){
   </div>
   <div className={data.length===1?"grid gap-4":"grid gap-4 sm:grid-cols-2"}>
    {data.map(photo=><figure key={photo.id} className="overflow-hidden rounded-2xl border border-white/15 bg-slate-900">
-    <img src={photo.image_url} alt={photo.alt_text||"Friends chatting at a karaoke meetup, promotional concept"} loading="lazy" className="aspect-[3/2] w-full object-cover"/>
+    <img src={photo.image_url} alt={photo.alt_text||"Friends chatting at a karaoke meetup, promotional concept"} loading="lazy" className="h-auto w-full"/>
     {photo.caption&&<figcaption className="px-4 py-3 text-sm text-slate-200">{photo.caption}</figcaption>}
    </figure>)}
   </div>
