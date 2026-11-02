@@ -12,8 +12,8 @@ import {JacketShareStudio} from "@/components/v2/JacketShareStudio";
 import {PatchCase} from "@/components/v2/PatchCase";
 import "@/components/v2/styles/account.css";
 const awards=[
- {id:"a1",badge_key:"first_gig",badge_name:"First Gig",awarded_at:"2026-10-13T19:30:00Z",award_note:"Earned"},
- {id:"a2",badge_key:"mic_crawl",badge_name:"Mic Crawl",awarded_at:"2026-10-13T19:30:00Z",award_note:"Earned"},
+ {id:"a1",badge_key:"first_gig",badge_name:"First Gig",level:1,awarded_at:"2026-10-13T19:30:00Z",award_note:"Earned"},
+ {id:"a2",badge_key:"mic_crawl",badge_name:"Mic Crawl",level:2,awarded_at:"2026-10-13T19:30:00Z",award_note:"Earned"},
 ];
 export default function JacketQa(){
  const root=useRef<HTMLDivElement>(null);const actions=useV2Actions(root);
@@ -53,6 +53,9 @@ try{
   assert.equal(await page.locator(".patch-catalog-item").count(),8);
   assert.equal(await page.locator(".patch-catalog-item.earned").count(),2);
   assert.equal(await page.locator(".patch-catalog-item.locked").count(),6);
+  assert.match(await page.locator(".patch-catalog-item.earned").nth(1).innerText(),/Level II/,"Award tier is visible in patch case");
+  await page.getByRole("button",{name:/Mic Crawl/}).click();
+  await page.getByText(/Mic Crawl · Level II · Earned/).waitFor();
   await page.getByRole("button",{name:/Building a Setlist/}).click();
   await page.getByText(/Record 10 performances/).first().waitFor();
   const sc=await page.locator(".patch-catalog-list").evaluate(el=>({max:el.scrollHeight,visible:el.clientHeight}));
