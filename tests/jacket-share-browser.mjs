@@ -54,7 +54,7 @@ try{
   assert.equal(await page.locator(".patch-catalog-item.earned").count(),2);
   assert.equal(await page.locator(".patch-catalog-item.locked").count(),6);
   assert.match(await page.locator(".patch-catalog-item.earned").nth(1).innerText(),/Level II/,"Award tier is visible in patch case");
-  await page.getByRole("button",{name:/Mic Crawl/}).click();
+  await page.locator(".patch-catalog-item.earned").nth(1).click();
   await page.getByText(/Mic Crawl · Level II · Earned/).waitFor();
   await page.getByRole("button",{name:/Building a Setlist/}).click();
   await page.getByText(/Record 10 performances/).first().waitFor();
