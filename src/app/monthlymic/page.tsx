@@ -7,6 +7,7 @@ import Link from "next/link";
 import RsvpForm from "./RsvpForm";
 import {SITE_WORDMARK_SRC} from "@/lib/siteWordmark";
 import {monthlyMic as m} from "@/lib/monthlymic";
+export const dynamic="force-dynamic";
 export const metadata:Metadata={
  title:"MonthlyMic | SingHUB",
  description:"The SingHUB MonthlyMic. Meet people, explore a new San Diego karaoke venue each month, and join JustDuet.",
