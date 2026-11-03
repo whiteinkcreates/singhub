@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
 import { HostProfileTemplate } from "@/components/host/HostProfileTemplate";
 import { getActiveHosts, getHostBySlug } from "@/lib/hostData";
+import { getKaraokeEventListings } from "@/lib/eventData";
 
 type HostProfilePageProps = {
   params: Promise<{ slug: string }>;
@@ -50,10 +51,18 @@ export default async function HostProfilePage({ params }: HostProfilePageProps) 
   const { slug } = await params;
   const host = await getHostBySlug(slug);
   if (!host) notFound();
+  const now = new Intl.DateTimeFormat("en-CA", {timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+  const upcomingGigs = (await getKaraokeEventListings()).filter(event => event.hostId === host.hostId)
+    .flatMap(event => {
+      const date = event.recurrencePattern?.match(/^date:(20\d{2}-\d{2}-\d{2})$/i)?.[1];
+      return date && date >= now ? [{event,date}] : [];
+    })
+    .sort((a,b) => a.date.localeCompare(b.date))
+    .map(({event,date}) => ({date, venueName:event.venueName,venueSlug:event.venueSlug,time:[event.startTime,event.endTime].filter(Boolean).join(" - ")}));
   const posts = await getActiveSingBoardFlyers().catch(() => []);
   const related = posts.filter(post => post.reviewStatus === "verified" && post.hostId === host.hostId);
   return <>
-    <HostProfileTemplate host={host} />
+    <HostProfileTemplate host={host} upcomingGigs={upcomingGigs} />
     {related.length>0&&<section className="mx-auto max-w-6xl px-4 py-8 text-white" aria-labelledby="kj-singboard-heading">
       <div className="mb-4 flex items-center justify-between gap-3"><h2 id="kj-singboard-heading" className="text-2xl font-black">On SingBOARD</h2><Link href="/singboard" className="text-sm font-bold text-cyan-300">Browse SingBOARD →</Link></div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{related.map(post=><Link key={post.id} href={`/events/${post.id}`} className="flex gap-3 rounded-2xl border border-white/15 bg-[#111827] p-3 hover:border-cyan-300/50">

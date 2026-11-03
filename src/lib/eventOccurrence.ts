@@ -33,6 +33,8 @@ export function eventRunsOnNight(event: ScheduledEvent, weekday: string, date=ne
  const pattern=event.recurrencePattern?.trim() || "";
  if(!pattern || event.recurring || /^(daily|daily availability|weekly \(seasonal\))$/i.test(pattern)) return true;
  const night=nightlifeDate(date);
+ const specificDate=pattern.match(/^date:(20\d{2}-\d{2}-\d{2})$/i);
+ if(specificDate) return night.toISOString().slice(0,10)===specificDate[1];
  const biweekly=biweeklyAnchor(event);
  if(biweekly){
   const days=Math.round((night.getTime()-biweekly.getTime())/(24*60*60*1000));
