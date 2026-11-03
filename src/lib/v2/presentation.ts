@@ -12,6 +12,11 @@ export type HotelRowData = {
 };
 export function usable(value?:string){return value && !/^(tbd|unknown|-|n\/a)$/i.test(value.trim())?value.trim():'';}
 export function compactTime(value?:string){return usable(value).replace(/(\d{1,2}):00(?=\s*[AP]M)/gi,'$1');}
+/** Honor host-advertised flexible hours without breaking structured event-time filtering. */
+export function publicEventTimeLabel(event:Pick<KaraokeEventListing,'startTime'|'endTime'|'eventNotes'>){
+  const advertised=event.eventNotes?.match(/Official advertised hours:\s*([^;\n.]+)/i)?.[1]?.trim();
+  return advertised||[compactTime(event.startTime),compactTime(event.endTime)].filter(Boolean).join(" - ")||"Time pending";
+}
 /** Parse a confirmed karaoke start time as San Diego-local minutes after midnight. */
 export function karaokeStartMinutes(value:string|undefined):number|null {
   const raw=usable(value);
