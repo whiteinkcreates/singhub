@@ -16,7 +16,7 @@ import { eventRunsOnNight, scheduleQualification } from '@/lib/eventOccurrence';
 import { useRef,useState } from 'react';
 import { useV2Actions,useViewerInitials } from './actions';
 import { goBackToList } from './listReturn';
-import { makeVenueRow,usable,compactTime } from '@/lib/v2/presentation';
+import { makeVenueRow,usable,compactTime,publicEventTimeLabel } from '@/lib/v2/presentation';
 import {scheduledExtrasOnDay,venueAmenities} from '@/lib/karaokePlusOverlap';
 import { VenueFeedback } from './VenueModules';
 import type { VenueTemplateProps } from './VenueModules';
@@ -60,7 +60,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <section className="section">
 <div className="card tonight-card">
 <div className="tonight-label"><span className="live-dot"></span>{venue.venueType==='private_room'?' PRIVATE ROOMS':row.tonight?' TONIGHT':' KARAOKE SCHEDULE'}</div>
-<div className="event-row"><div><strong>{venue.venueType==='private_room'?'Reserve a room':'Karaoke'}</strong><div className="host">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Host details pending' : venue.venueType==='private_room'?'Contact the venue for room availability.':'No confirmed karaoke tonight'}</div></div><time className="event-time">{row.tonight ? [compactTime(row.tonight.startTime),compactTime(row.tonight.endTime)].filter(Boolean).join(" - ") || "Time pending" : row.tonightTime}</time></div>
+<div className="event-row"><div><strong>{venue.venueType==='private_room'?'Reserve a room':'Karaoke'}</strong><div className="host">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Host details pending' : venue.venueType==='private_room'?'Contact the venue for room availability.':'No confirmed karaoke tonight'}</div></div><time className="event-time">{row.tonight ? publicEventTimeLabel(row.tonight) : row.tonightTime}</time></div>
 <button className="primary-action singhere-brand-action" aria-label={venue.venueType==='private_room'?'SingHERE private rooms':row.tonight?'SingHERE tonight':'SingHERE signup information'} data-toast="SingHERE flow would open here"><SingHereMark alt="" className="singhere-wordmark" /></button>
 </div>
 {getMarketConfig(venue.metro)?.status==='live'&&<TourStopCheckIn venueSlug={venue.slug} venueName={venue.venueName} offer={activeOffer} />}
@@ -74,7 +74,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
  return <div className={"schedule-row"+(eventRunsOnNight(event,weekday)?" tonight-row":"")} key={event.eventId}>
  <div className="schedule-night-head"><strong>{event.karaokeDay}</strong>{scheduled.length>0&&<span className="karaoke-plus-day-tag">KARAOKE+</span>}</div>
  <div className="schedule-host"><span>{[usable(event.hostName)||"Host pending",scheduleQualification(event)].filter(Boolean).join(" · ")}</span>{scheduled.length>0&&<span className="schedule-extra-copy">{scheduled.map(extra=>extra.title+(extra.status==='needs_confirmation'?' · confirm screening':'')).join(' · ')}</span>}</div>
- <time title={[usable(event.startTime),usable(event.endTime)].filter(Boolean).join(" to ")}>{[compactTime(event.startTime),compactTime(event.endTime)].filter(Boolean).join(" to ")||"Time pending"}</time>
+ <time title={[usable(event.startTime),usable(event.endTime)].filter(Boolean).join(" to ")}>{publicEventTimeLabel(event)}</time>
  </div>})}</div>
 </section>
 {venueAmenities(venue.slug).length>0?<section className="section"><div className="section-heading"><h2>More at this venue</h2></div><div className="chips partner-amenities">{venueAmenities(venue.slug).map(item=><span className="chip" key={item}>{item}</span>)}</div><p className="subline">These are venue amenities, not additional scheduled events.</p></section>:null}
