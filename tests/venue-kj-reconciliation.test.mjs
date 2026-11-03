@@ -25,6 +25,8 @@ async function loadHosts({sheet=false, explicitRodney=false,rodneyName}={}) {
   const output={};
   const imports={
     'node:fs':fs,'node:path':path,
+    // Isolated VM tests should not require the Next.js cache runtime.
+    'next/cache':{unstable_cache:fn=>fn},
     '@/lib/hostMedia.server':{getHostMediaOverrides:async()=>new Map()},
     '@/lib/hostMedia':{},
     '@/lib/eventData':{getKaraokeEventListings:async()=>events},
