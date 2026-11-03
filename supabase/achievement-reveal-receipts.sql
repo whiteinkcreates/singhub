@@ -1,5 +1,5 @@
 -- SingHUB My Jacket: achievement presentation state.
--- Apply once at release after QA. This does not change award eligibility or backfill
+-- APPLIED to production Nov 3 2026 as singhub_achievement_reveal_receipts_20261103. DO NOT REAPPLY. This does not change award eligibility or backfill
 -- any false "seen" receipts for previously granted singer achievements.
 create table if not exists public.singer_achievement_reveal_accounts (
   user_id uuid primary key references auth.users(id) on delete cascade,
