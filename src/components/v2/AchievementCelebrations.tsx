@@ -44,6 +44,8 @@ export function AchievementCelebrations({
    queueMicrotask(()=>{if(!cancelled){setEvents([]);setActivatedAt(null);setAcknowledged(new Set());setReady(false);setActive(null);}});
    return()=>{cancelled=true;};
   }
+  // Block an old receipt snapshot from firing while a refreshed account loads.
+  queueMicrotask(()=>{if(!cancelled)setReady(false);});
   async function load(){
    const uid=userId!;
    try{
