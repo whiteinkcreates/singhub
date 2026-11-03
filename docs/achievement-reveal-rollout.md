@@ -30,9 +30,11 @@ fake host identity or invented achievement is part of the sequence.
 
 ## Activation sequence
 1. Run `npm ci`, lint, build, pure selection tests and phone/desktop browser QA.
-2. Review the production DB's current migration history; apply
-   `supabase/achievement-reveal-receipts.sql` **once** as an additive migration.
-   Never replay the already-live Founding Eight award migration.
+2. **DB applied on Nov 3, 2026**, as migration
+   `singhub_achievement_reveal_receipts_20261103`. Do not apply
+   `supabase/achievement-reveal-receipts.sql` again. This created two
+   owner-only, RLS-enabled tables and left all 9 existing award events and 8
+   achievement records unchanged. Both new tables started empty.
 3. Check RLS allows only a singer to initialize their own baseline and
    acknowledge events belonging to them; denies cross-user insert/select,
    anonymous access, updates and deletes.
