@@ -10,6 +10,7 @@
 .achievement-history-tile:hover{background:rgba(0,200,255,.09);border-color:#62d9ef}
 .achievement-history-tile:focus-visible,.achievement-theater button:focus-visible{outline:3px solid #ff57b7;outline-offset:3px}
 .achievement-history-symbol{display:grid;place-items:center;flex-shrink:0;width:43px;height:43px;border:2px solid #e8b959;border-radius:11px;transform:rotate(-7deg);color:#f6da7d;font-size:23px;background:radial-gradient(circle,#322d21,#171721)}
+.achievement-history-symbol svg{width:27px;height:32px;color:#f6da7d}
 .achievement-history-info{min-width:0;display:grid;gap:5px;flex:1}
 .achievement-history-info strong{font:900 1.09rem/1.1 "Barlow Condensed",Arial,sans-serif;text-transform:uppercase;overflow-wrap:anywhere}
 .achievement-history-info small{color:#b5cce1;font-size:.7rem;line-height:1.3}
