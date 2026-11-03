@@ -8,7 +8,7 @@ import {SingHereMark} from "@/components/brand/SingHereMark";
 import {singHereForHostNight} from "@/lib/singHereHostNight";
 import {getMarketConfig} from "@/lib/markets";
 import {eventRunsOnNight,scheduleQualification} from "@/lib/eventOccurrence";
-import {makeVenueRow,usable,compactTime} from "@/lib/v2/presentation";
+import {makeVenueRow,usable,publicEventTimeLabel} from "@/lib/v2/presentation";
 import {scheduledExtrasOnDay,venueAmenities} from "@/lib/karaokePlusOverlap";
 import {getTonightSpecials} from "@/lib/venueEnhancements";
 import {VenueMonthlyCalendar} from "@/components/venue/VenueMonthlyCalendar";
@@ -108,7 +108,7 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
        return <article className={"ve-night"+(eventRunsOnNight(event,weekday)?" ve-night-today":"")} key={event.eventId}>
         <div className="ve-night-day">{event.karaokeDay}</div>
         <div className="ve-night-detail"><strong>{usable(event.hostName)?"With "+event.hostName:"Host to be confirmed"}</strong>{scheduleQualification(event)?<small>{scheduleQualification(event)}</small>:null}{extras.map(extra=><small key={extra.title}>{extra.title}{extra.status==="needs_confirmation"?" · confirm screening":""}</small>)}</div>
-        <time>{[compactTime(event.startTime),compactTime(event.endTime)].filter(Boolean).join(" – ")||"Time pending"}</time>
+        <time>{publicEventTimeLabel(event)}</time>
        </article>;
       })}</div>:<div className="ve-pending"><span aria-hidden="true">✳</span><p><strong>Next karaoke dates are being verified.</strong> Check with the venue before planning a night around the mic.</p></div>}
      </section>
@@ -129,7 +129,7 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
       <h2 id="ve-tonight-title">{row.tonight?"You're up next.":venue.venueType==="private_room"?"Your own room.":"Find your mic."}</h2>
       <div className="ve-tonight-info">
        <span>{row.tonight?"Karaoke tonight":"Karaoke information"}</span>
-       <strong>{row.tonight?[compactTime(row.tonight.startTime),compactTime(row.tonight.endTime)].filter(Boolean).join(" – ")||"Time pending":venue.venueType==="private_room"?"Book with the venue":"Next night pending"}</strong>
+       <strong>{row.tonight?publicEventTimeLabel(row.tonight):venue.venueType==="private_room"?"Book with the venue":"Next night pending"}</strong>
        <p>{row.tonight?(usable(row.tonight.hostName)?"Hosted by "+row.tonight.hostName:"Host details pending"):"Current dates and hosts are being checked."}</p>
       </div>
       <button className="ve-singhere" type="button" aria-label="Open SingHERE signup information" data-toast="SingHERE flow opened"><SingHereMark alt="SingHERE" /></button>
