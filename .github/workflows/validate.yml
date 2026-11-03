@@ -37,6 +37,10 @@ jobs:
       - name: Verify pending KJ identity and untimed verified schedule reconciliation
         run: node --test tests/venue-kj-reconciliation.test.mjs
 
+      - name: Test achievement reveal baseline, history, and privacy guards
+        if: startsWith(github.head_ref, 'feat/achievement-reveal-')
+        run: node --test tests/achievement-reveal.test.mjs
+
       - name: Verify canonical reconciliation and nightlife behavior
         run: node --test tests/tip-chair-foundation.test.mjs tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs tests/hotel-package.test.mjs tests/hotel-photo-rights.test.mjs tests/hotel-media-delete.test.mjs
 
@@ -434,4 +438,20 @@ jobs:
         with:
           name: singhub-account-signin-qa
           path: .account-signin-qa
+          include-hidden-files: true
+
+      - name: Install browser for achievement presentation QA
+        if: startsWith(github.head_ref, 'feat/achievement-reveal-')
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify First Gig and Level Up animations at phone and desktop sizes
+        if: startsWith(github.head_ref, 'feat/achievement-reveal-')
+        run: node tests/achievement-reveal-browser.mjs
+
+      - name: Save achievement presentation review screenshots
+        if: always() && startsWith(github.head_ref, 'feat/achievement-reveal-')
+        uses: actions/upload-artifact@v4
+        with:
+          name: achievement-reveal-qa
+          path: .achievement-reveal-qa
           include-hidden-files: true
