@@ -37,6 +37,9 @@ jobs:
       - name: Verify pending KJ identity and untimed verified schedule reconciliation
         run: node --test tests/venue-kj-reconciliation.test.mjs
 
+      - name: Confirm My SingHUB sign-in is button-only
+        run: node --test tests/auth-button-only.test.mjs
+
       - name: Verify canonical reconciliation and nightlife behavior
         run: node --test tests/tip-chair-foundation.test.mjs tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs tests/hotel-package.test.mjs tests/hotel-photo-rights.test.mjs tests/hotel-media-delete.test.mjs
 
@@ -83,8 +86,8 @@ jobs:
 
       - name: Build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-')) && 'http://127.0.0.1:3101' || '' }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-')) && 'qa-public-key' || '' }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-') || startsWith(github.head_ref, 'fix/account-email-button-only-')) && 'http://127.0.0.1:3101' || '' }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-') || startsWith(github.head_ref, 'fix/account-email-button-only-')) && 'qa-public-key' || '' }}
         run: npm run build
 
       - name: Install browser for My SingHUB acceptance
@@ -421,15 +424,15 @@ jobs:
           include-hidden-files: true
 
       - name: Install browser for account entry QA
-        if: startsWith(github.head_ref, 'fix/account-signin-')
+        if: (startsWith(github.head_ref, 'fix/account-signin-') || startsWith(github.head_ref, 'fix/account-email-button-only-'))
         run: npx playwright install --with-deps chromium
 
       - name: Verify signed-out account entry, signup, and callback redirects
-        if: startsWith(github.head_ref, 'fix/account-signin-')
+        if: (startsWith(github.head_ref, 'fix/account-signin-') || startsWith(github.head_ref, 'fix/account-email-button-only-'))
         run: node tests/account-signin-browser.mjs
 
       - name: Save account entry screenshots
-        if: always() && startsWith(github.head_ref, 'fix/account-signin-')
+        if: always() && (startsWith(github.head_ref, 'fix/account-signin-') || startsWith(github.head_ref, 'fix/account-email-button-only-'))
         uses: actions/upload-artifact@v4
         with:
           name: singhub-account-signin-qa
