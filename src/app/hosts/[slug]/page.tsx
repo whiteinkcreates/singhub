@@ -53,8 +53,10 @@ export default async function HostProfilePage({ params }: HostProfilePageProps) 
   if (!host) notFound();
   const now = new Intl.DateTimeFormat("en-CA", {timeZone:"America/Los_Angeles",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
   const upcomingGigs = (await getKaraokeEventListings()).filter(event => event.hostId === host.hostId)
-    .map(event => ({event, date:event.recurrencePattern?.match(/^date:(20\\d{2}-\\d{2}-\\d{2})$/i)?.[1]}))
-    .filter((item): item is {event: typeof item.event; date:string} => Boolean(item.date && item.date >= now))
+    .flatMap(event => {
+      const date = event.recurrencePattern?.match(/^date:(20\d{2}-\d{2}-\d{2})$/i)?.[1];
+      return date && date >= now ? [{event,date}] : [];
+    })
     .sort((a,b) => a.date.localeCompare(b.date))
     .map(({event,date}) => ({date, venueName:event.venueName,venueSlug:event.venueSlug,time:[event.startTime,event.endTime].filter(Boolean).join(" - ")}));
   const posts = await getActiveSingBoardFlyers().catch(() => []);
