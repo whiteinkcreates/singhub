@@ -23,8 +23,8 @@ try{
   const dialog=page.getByRole("dialog");
   await dialog.waitFor({state:"visible"});
   await dialog.getByRole("heading",{name:"ACHIEVEMENT UNLOCKED"}).waitFor();
-  assert.ok(await dialog.getByText("First Gig",{exact:true}).isVisible());
-  assert.ok(await dialog.getByText("Level I",{exact:true}).isVisible());
+  await dialog.getByText("First Gig",{exact:true}).waitFor({state:"visible"});
+  await dialog.getByText("Level I",{exact:true}).waitFor({state:"visible"});
   await page.waitForTimeout(1500);
   await page.screenshot({path:out+"/first-gig-"+width+".png"});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,"no horizontal overflow at "+width);
