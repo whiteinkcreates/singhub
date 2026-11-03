@@ -27,6 +27,34 @@ try{
   assert.ok(await dialog.isVisible(),'sign-in modal visible');
   assert.match(await dialog.innerText(),/Sign in to My SingHUB/i);
   assert.ok(await dialog.getByRole('textbox',{name:'Email address'}).isVisible());
+  // Confirm the full email code reaches Auth without sending real messages.
+  if(width===390){
+   const headers={
+    'Access-Control-Allow-Origin':'*',
+    'Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info',
+    'Access-Control-Allow-Methods':'POST, OPTIONS',
+    'Content-Type':'application/json',
+   };
+   let verifiedToken='';
+   await page.route('**/auth/v1/otp*',async route=>{
+    await route.fulfill({status:route.request().method()==='OPTIONS'?204:200,headers,body:route.request().method()==='OPTIONS'?'':'{}'});
+   });
+   await page.route('**/auth/v1/verify*',async route=>{
+    if(route.request().method()==='POST')verifiedToken=String(route.request().postDataJSON()?.token||'');
+    await route.fulfill({status:route.request().method()==='OPTIONS'?204:422,headers,body:route.request().method()==='OPTIONS'?'':JSON.stringify({message:'Test-only rejected code',code:'otp_expired'})});
+   });
+   await dialog.getByRole('textbox',{name:'Email address'}).fill('qa@example.invalid');
+   await dialog.getByRole('button',{name:'Email my sign-in link'}).click();
+   const code=dialog.getByRole('textbox',{name:'Email sign-in code'});
+   await code.waitFor();
+   await code.fill('0 1 2 3 4 5 6 7');
+   assert.equal(await code.inputValue(),'01234567','eight digits and leading zero survived paste');
+   const verify=dialog.getByRole('button',{name:'Verify code & sign in'});
+   assert.equal(await verify.isEnabled(),true,'eight-digit code is accepted for submission');
+   await verify.click();
+   await dialog.getByText('Test-only rejected code').waitFor();
+   assert.equal(verifiedToken,'01234567','full eight-digit code sent to Supabase Auth');
+  }
   await dialog.getByRole('button',{name:'Close account action'}).click();
   await page.getByRole('button',{name:'Create account',exact:true}).click();
   assert.match(await dialog.innerText(),/Create your My SingHUB account/i);
@@ -38,7 +66,7 @@ try{
   await page.goto(base+'/auth/callback?next=%2Faccount',{waitUntil:'networkidle'});
   assert.equal(new URL(page.url()).pathname,'/account');
   assert.equal(new URL(page.url()).searchParams.get('authError'),'missing_code');
-  assert.match(await dialog.innerText(),/expired or could not be completed/i);
+  assert.match(await dialog.innerText(),/expired or did not open correctly/i);
   await page.goto(base+'/auth/callback?next=https%3A%2F%2Funtrusted.example',{waitUntil:'networkidle'});
   assert.ok(['localhost','127.0.0.1'].includes(new URL(page.url()).hostname),'external redirect is rejected');
   assert.equal(new URL(page.url()).pathname,'/account','unsafe redirect rejected');
