@@ -27,6 +27,25 @@ try{
   assert.ok(await dialog.isVisible(),'sign-in modal visible');
   assert.match(await dialog.innerText(),/Sign in to My SingHUB/i);
   assert.ok(await dialog.getByRole('textbox',{name:'Email address'}).isVisible());
+  if(width===390){
+   // Stub only the outbound request; no real email is delivered or user created.
+   const headers={
+    'Access-Control-Allow-Origin':'*',
+    'Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info',
+    'Access-Control-Allow-Methods':'POST, OPTIONS',
+    'Content-Type':'application/json',
+   };
+   await page.route('**/auth/v1/otp*',async route=>{
+    await route.fulfill({status:route.request().method()==='OPTIONS'?204:200,headers,body:route.request().method()==='OPTIONS'?'':'{}'});
+   });
+   await dialog.getByRole('textbox',{name:'Email address'}).fill('qa@example.invalid');
+   await dialog.getByRole('button',{name:'Email my sign-in link'}).click();
+   await dialog.getByRole('button',{name:'Link sent · Check your email'}).waitFor();
+   assert.match(await dialog.innerText(),/tap.*Sign in to SingHUB/i,'button-only email guidance');
+   assert.equal(await dialog.locator('#singhub-email-otp').count(),0,'no manual code field');
+   assert.equal(await dialog.getByRole('button',{name:'Verify code & sign in'}).count(),0,'no code verification button');
+   assert.ok(await dialog.getByRole('button',{name:'Send a new link or change email'}).isVisible(),'link recovery available');
+  }
   await dialog.getByRole('button',{name:'Close account action'}).click();
   await page.getByRole('button',{name:'Create account',exact:true}).click();
   assert.match(await dialog.innerText(),/Create your My SingHUB account/i);
@@ -38,7 +57,7 @@ try{
   await page.goto(base+'/auth/callback?next=%2Faccount',{waitUntil:'networkidle'});
   assert.equal(new URL(page.url()).pathname,'/account');
   assert.equal(new URL(page.url()).searchParams.get('authError'),'missing_code');
-  assert.match(await dialog.innerText(),/expired or could not be completed/i);
+  assert.match(await dialog.innerText(),/expired or did not open correctly/i);
   await page.goto(base+'/auth/callback?next=https%3A%2F%2Funtrusted.example',{waitUntil:'networkidle'});
   assert.ok(['localhost','127.0.0.1'].includes(new URL(page.url()).hostname),'external redirect is rejected');
   assert.equal(new URL(page.url()).pathname,'/account','unsafe redirect rejected');
