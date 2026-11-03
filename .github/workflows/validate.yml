@@ -71,7 +71,7 @@ jobs:
 
       - name: Verify My SingHUB account loading and identity changes
         if: startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-')
-        run: node --test tests/singer-account-loading.test.mjs
+        run: node --test tests/singer-account-loading.test.mjs tests/auth-redirect-achievements.test.mjs
 
       - name: Prepare isolated My Jacket earned patch export fixture
         if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-'))
