@@ -16,7 +16,7 @@ import { eventRunsOnNight, scheduleQualification } from '@/lib/eventOccurrence';
 import { useRef,useState } from 'react';
 import { useV2Actions,useViewerInitials } from './actions';
 import { goBackToList } from './listReturn';
-import { makeVenueRow,usable,compactTime,publicEventTimeLabel } from '@/lib/v2/presentation';
+import { makeVenueRow,usable,publicEventTimeLabel } from '@/lib/v2/presentation';
 import {scheduledExtrasOnDay,venueAmenities} from '@/lib/karaokePlusOverlap';
 import { VenueFeedback } from './VenueModules';
 import type { VenueTemplateProps } from './VenueModules';
