@@ -86,8 +86,8 @@ jobs:
 
       - name: Build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-')) && 'http://127.0.0.1:3101' || '' }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-')) && 'qa-public-key' || '' }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-') || startsWith(github.head_ref, 'fix/account-signin-')) && 'http://127.0.0.1:3101' || '' }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-') || startsWith(github.head_ref, 'fix/account-signin-')) && 'qa-public-key' || '' }}
         run: npm run build
 
       - name: Install browser for My SingHUB acceptance
