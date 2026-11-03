@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useMemo,useRef,useState} from "react";
 import {accountClient} from "@/lib/v2/singerAccount";
+import {AchievementSymbol} from "./AchievementSymbol";
 import {achievementDate,achievementDetails,pendingAchievementEvents,type AchievementEvent} from "@/lib/v2/achievementReveals";
 import "./styles/achievementCelebrations.css";
 
@@ -178,7 +179,7 @@ export function AchievementCelebrations({
     const isNew=!isDemo&&pending.some(item=>item.id===event.id);
     return <button type="button" className="achievement-history-tile" key={event.id}
      onClick={()=>setActive({event,origin:isDemo?"demo":"replay"})} aria-label={`Replay ${info.name}, ${info.level}`}>
-      <span className="achievement-history-symbol" aria-hidden="true">★</span>
+      <span className="achievement-history-symbol" aria-hidden="true"><AchievementSymbol badgeKey={event.badge_key}/></span>
       <span className="achievement-history-info"><strong>{info.name}</strong><small>{info.level} · {info.isUpgrade?"Level Up":"Unlocked"} · {achievementDate(event.awarded_at)}</small></span>
       {isNew?<span className="achievement-history-new">NEW</span>:<span className="achievement-history-play">REPLAY</span>}
      </button>;
@@ -200,11 +201,7 @@ export function AchievementCelebrations({
     </h2>
     <div className="achievement-medallion" aria-hidden="true">
      <div className="achievement-medallion-center">
-      <svg viewBox="0 0 90 100" width="96" height="108" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-       <rect x="29" y="7" width="32" height="51" rx="16" stroke="currentColor" strokeWidth="6"/>
-       <path d="M18 41v4c0 17 12 29 27 29s27-12 27-29v-4M45 74v18M27 92h36" stroke="currentColor" strokeWidth="6" strokeLinecap="round"/>
-       <path d="M33 27h24M33 38h24" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/>
-      </svg>
+      <AchievementSymbol badgeKey={active.event.badge_key}/>
      </div>
      <span className="achievement-medallion-label">{selected.level}</span>
     </div>
