@@ -98,7 +98,8 @@ export async function POST(request: Request) {
       );
     }
 
-    if(isActivityRequest) {
+    // Send an owner notification only after the inbox webhook confirms persistence.
+    {
       const apiKey=process.env.RESEND_API_KEY;
       const to=process.env.SINGHUB_SUBMISSIONS_TO;
       const from=process.env.SINGHUB_SUBMISSIONS_FROM;
@@ -109,17 +110,37 @@ export async function POST(request: Request) {
             headers:{"Authorization":"Bearer "+apiKey,"Content-Type":"application/json"},
             body:JSON.stringify({
               from,to:to.split(",").map(value=>value.trim()).filter(Boolean),
-              subject:"SingHUB: new Other activity request",
-              text:["A visitor asked SingHUB to research an activity.","",cleanString(payload.notes),"","Reply contact: "+(cleanString(payload.submitterContact)||"Not provided"),"Source: "+cleanString(payload.sourceLink),"Next step: research venues, verify sources, and consider a new Backyard category."].join("\n")
+              subject: isActivityRequest
+                ? "SingHUB: new Other activity request"
+                : "SingHUB submission: " + (
+                    enrichedPayload.submissionType === "founding_venue_inquiry" ? "Partner inquiry" :
+                    enrichedPayload.submissionType === "claim_update" ? "Listing correction" :
+                    "Venue listing"
+                  ) + " | " + (cleanString(payload.venueName).slice(0,80) || "Unspecified venue"),
+              text: isActivityRequest
+                ? ["A visitor asked SingHUB to research an activity.","",cleanString(payload.notes),"","Reply contact: "+(cleanString(payload.submitterContact)||"Not provided"),"Source: "+cleanString(payload.sourceLink),"Next step: research venues, verify sources, and consider a new Backyard category."].join("\n")
+                : [
+                    "A new SingHUB submission was saved.",
+                    "Type: " + cleanString(enrichedPayload.submissionType),
+                    "Venue: " + (cleanString(payload.venueName) || "Not specified"),
+                    "Name: " + (cleanString(payload.submitterName) || "Not provided"),
+                    "Contact: " + (cleanString(payload.submitterContact) || cleanString(payload.venueContact) || "Not provided"),
+                    "Source: " + (cleanString(payload.sourceLink) || "Not provided"),
+                    "",
+                    "Details:",
+                    cleanString(payload.notes).slice(0,3000) || "No notes. Review the inbox for the full submission.",
+                    "",
+                    "Submissions inbox: https://docs.google.com/spreadsheets/d/1xLKts71EXlI5u61z44NPkba_OBeAxH1aefLcQsVRYrc/edit#gid=300000004",
+                  ].join("\n")
             })
           });
           if(!sent.ok){
             const failure=await sent.json().catch(()=>({})) as {name?:unknown;message?:unknown};
             const detail=typeof failure.message==="string"?failure.message.slice(0,500).replace(/re_[A-Za-z0-9_]+/g,"[redacted]").replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,"[email]"):"No provider error detail";
-            console.error("Activity request email notification failed",sent.status,typeof failure.name==="string"?failure.name:"unknown",detail);
+            console.error("Submission email notification failed",sent.status,typeof failure.name==="string"?failure.name:"unknown",detail);
           }
-        }catch(error){console.error("Activity request notification transport failed",error);}
-      } else console.error("Activity request notification lacks email configuration");
+        }catch(error){console.error("Submission notification transport failed",error);}
+      } else console.error("Submission notification lacks email configuration");
     }
     return NextResponse.json({ ok: true });
   } catch (error) {
