@@ -101,15 +101,17 @@ export async function POST(request: Request) {
     // Send an owner notification only after the inbox webhook confirms persistence.
     {
       const apiKey=process.env.RESEND_API_KEY;
-      const to=process.env.SINGHUB_SUBMISSIONS_TO;
-      const from=process.env.SINGHUB_SUBMISSIONS_FROM;
-      if(apiKey&&to&&from){
+      const configuredRecipients=(process.env.SINGHUB_SUBMISSIONS_TO||"").split(",").map(value=>value.trim()).filter(Boolean);
+      // Always include the operator inbox, even if the optional recipient setting is empty.
+      const recipients=[...new Set([...configuredRecipients,"hello@singhub.app"])];
+      const from=process.env.SINGHUB_SUBMISSIONS_FROM||"SingHUB Alerts <notifications@singhub.app>";
+      if(apiKey){
         try{
           const sent=await fetch("https://api.resend.com/emails",{
             method:"POST",
             headers:{"Authorization":"Bearer "+apiKey,"Content-Type":"application/json"},
             body:JSON.stringify({
-              from,to:to.split(",").map(value=>value.trim()).filter(Boolean),
+              from,to:recipients,
               subject: isActivityRequest
                 ? "SingHUB: new Other activity request"
                 : "SingHUB submission: " + (
@@ -125,6 +127,11 @@ export async function POST(request: Request) {
                     "Venue: " + (cleanString(payload.venueName) || "Not specified"),
                     "Name: " + (cleanString(payload.submitterName) || "Not provided"),
                     "Contact: " + (cleanString(payload.submitterContact) || cleanString(payload.venueContact) || "Not provided"),
+                    "Host/KJ: " + (cleanString(payload.hostName) || "Not provided"),
+                    "Days: " + (Array.isArray(payload.karaokeDays) ? payload.karaokeDays.map(cleanString).filter(Boolean).join(", ") : "Not provided"),
+                    "Time: " + ([cleanString(payload.startTime),cleanString(payload.endTime)].filter(Boolean).join(" - ") || "Not provided"),
+                    "Website: " + (cleanString(payload.venueWebsite) || "Not provided"),
+                    "Instagram: " + (cleanString(payload.venueInstagram) || "Not provided"),
                     "Source: " + (cleanString(payload.sourceLink) || "Not provided"),
                     "",
                     "Details:",
@@ -140,7 +147,7 @@ export async function POST(request: Request) {
             console.error("Submission email notification failed",sent.status,typeof failure.name==="string"?failure.name:"unknown",detail);
           }
         }catch(error){console.error("Submission notification transport failed",error);}
-      } else console.error("Submission notification lacks email configuration");
+      } else console.error("Submission notification lacks RESEND_API_KEY");
     }
     return NextResponse.json({ ok: true });
   } catch (error) {
