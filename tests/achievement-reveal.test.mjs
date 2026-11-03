@@ -34,6 +34,7 @@ test("acknowledgements prevent a repeat and same-session upgrades remain distinc
  const a=pendingAchievementEvents([later,first,second],new Set(["event-1"]),"2026-11-03T00:00:00Z");
  assert.deepEqual(Array.from(a,item=>item.id),["event-2","event-3"]);
  assert.equal(achievementDetails(second).isUpgrade,true);
+ assert.match(achievementDetails(second).description,/20 performances recorded/);
  assert.equal(achievementDetails(second).level,"Level II");
 });
 test("bad baseline never triggers bogus first-login animation",()=>{
