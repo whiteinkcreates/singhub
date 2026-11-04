@@ -250,3 +250,32 @@
 .venue-editorial .follow-venue input {width:17px;height:17px;accent-color:var(--ve-pink);}
 .venue-editorial .ve-aside .gig-check-in {margin:15px 0 0;}
 .venue-editorial .ve-aside .gig-check-in-button {width:100%;min-height:48px;}
+
+/* Singer-first venue navigation: real next karaoke night before any editorial storytelling. */
+.venue-editorial .ve-hero-links{display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
+.venue-editorial .ve-hero-links .ve-hero-jump{margin-top:27px;}
+.venue-editorial .ve-hero-website{color:#d8faff;border-bottom-color:var(--ve-cyan);}
+.venue-editorial .ve-next-mic{
+ display:flex;align-items:center;justify-content:space-between;gap:22px;
+ padding:24px clamp(24px,6vw,100px);
+ border-top:1px solid rgba(0,200,255,.22);border-bottom:1px solid var(--ve-divider);
+ background:linear-gradient(90deg,#101d26,#0c1019);
+ scroll-margin-top:90px;
+}
+.venue-editorial .ve-next-mic h2{
+ margin:4px 0 3px;font-size:clamp(1.5rem,2.2vw,2.1rem);font-weight:800;
+}
+.venue-editorial .ve-next-mic p:not(.ve-overline){color:#e9edf5;font-size:1rem;}
+.venue-editorial .ve-next-mic a{
+ flex-shrink:0;font-size:.82rem;font-weight:800;text-decoration:none;
+ border:1px solid var(--ve-cyan);border-radius:8px;padding:12px 15px;
+ color:#c6f6ff;
+}
+.venue-editorial .ve-next-mic a:hover{background:rgba(0,200,255,.12);}
+.venue-editorial #ve-schedule{scroll-margin-top:100px;}
+@media(max-width:720px){
+ .venue-editorial .ve-next-mic{flex-direction:column;align-items:flex-start;gap:15px;padding:20px 24px;}
+ .venue-editorial .ve-next-mic a{width:100%;text-align:center;}
+ .venue-editorial .ve-hero-links{gap:5px 18px;}
+ .venue-editorial .ve-hero-links .ve-hero-jump{margin-top:18px;font-size:.79rem;}
+}
