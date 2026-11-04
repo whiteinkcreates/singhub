@@ -12,6 +12,7 @@ function loader(){
  const live=rows.map(row=>({...row,bio:row.slug==='dj-loy'?'New approved live profile':row.bio}));
  const imports={
  'node:fs':fs,'node:path':path,
+    'react':{cache:fn=>fn}, // Identity tests do not simulate the React request dispatcher.
  'next/cache':{unstable_cache:(fn,parts,options)=>{assert.equal(options.revalidate,900);return async(...args)=>{const key=JSON.stringify([parts,args]);keys.push(key);if(cache.has(key))return cache.get(key);const value=await fn(...args);cache.set(key,value);return value;};}},
  '@/lib/hostMedia.server':{getHostMediaOverrides:async()=>new Map([['dj-loy',{portraitUrl:'/fixture-portrait.webp',heroUrl:'/fixture-hero.webp'}]])},
  '@/lib/hostMedia':{HOST_DIRECTORY_MEDIA_KEY:'directory'},

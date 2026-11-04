@@ -1,3 +1,4 @@
+import { cache } from "react";
 import fs from "node:fs";
 import { unstable_cache } from "next/cache";
 import { getHostMediaOverrides } from "@/lib/hostMedia.server";
@@ -595,9 +596,10 @@ export async function getFeaturedHosts() {
   return (await getActiveHosts()).filter((host) => host.featured);
 }
 
-export async function getHostBySlug(slug: string) {
+// Metadata and the page share one host-directory load within a render only.
+export const getHostBySlug = cache(async (slug: string) => {
   return (await getActiveHosts()).find((host) => host.slug === slug);
-}
+});
 
 export function getTodayInLosAngeles(): HostWeekday {
   return getSanDiegoNightlifeWeekday() as HostWeekday;
