@@ -1,6 +1,6 @@
 # Open PR reconciliation — November 4, 2026
 
-Compared all 26 open PRs from both GitHub listing pages against main `46fae9b34de9d9818ec801e96c6d468428cf3370`. Git/API scope differs: Git fetch and push work; GitHub REST and GraphQL return Forbidden. The listing and PR #527 discussion were read through GitHub web pages. After the environment network change was published, GitHub API access was restored and the closure/replacement actions recorded below were completed. No merge to main, production deployment, or production database mutation is authorized or performed.
+Compared all 26 open PRs from both GitHub listing pages against main `46fae9b34de9d9818ec801e96c6d468428cf3370`. During the initial audit, Git fetch and push worked while GitHub REST and GraphQL returned Forbidden. The listing and PR #527 discussion were read through GitHub web pages. After the environment network change was published, GitHub API access was restored and the closure/replacement actions recorded below were completed. No merge to main, production deployment, or production database mutation is authorized or performed.
 
 Audit uses fetched PR heads, merge-base patches, current-file comparisons and Git merge-tree conflict checks. A clean merge is not a passing build or functional acceptance; conflict counts are against the recorded main, not predictions after future merges. Historical release claims are source evidence, not reverified production state.
 
@@ -183,7 +183,7 @@ Conflicts: `src/app/hotel/[slug]/page.tsx`, `src/components/hotel/HotelGuideExpe
 
 ## Closure boundary
 
-Close only #366, #360, #315 and #286 as superseded by the cited main implementations. Preserve their branches/history. Do not close #505/#508/#517 or #359/#365 until their validated replacement branches are published as reviewable PRs and linked. Do not close partially overlapping database/security work solely because UI pieces exist on main.
+The four superseded PRs and seven consolidated PRs listed below are now closed unmerged, after replacement PRs were created and linked. Original branches/history remain intact. Partially overlapping database/security work remains open; UI overlap alone does not justify discarding those changes.
 
 API access is required to execute closures and create/update PR descriptions. Prepared branch pushes do not establish that the PR metadata or CI checks were updated successfully. Live Google Sheet parity and Vercel CPU/quota telemetry require configured service access and remain separate release gates.
 
@@ -206,7 +206,7 @@ Canonical sync source inspection shows the GitHub sync workflow runs every two h
 
 ## Final boundaries
 
-No main merge, production deployment, production setting edit, hosted email-template edit or production database write was performed. No production SQL or canonical sync was run. Historical database/deployment statements in source PRs were retained as claims, not treated as newly verified. Local browser auth transport was intercepted; demo awards and the local admin password were fixture-only. CI/preview results are unverified until accessible.
+No main merge, production deployment, production setting edit, hosted email-template edit or production database write was performed. No production SQL or canonical sync was run. Historical database/deployment statements in source PRs were retained as claims, not treated as newly verified. Local browser auth transport was intercepted; demo awards and the local admin password were fixture-only. CI/preview observations after API access was restored are recorded below.
 
 ## Actions completed after environment publication
 
@@ -219,4 +219,4 @@ The published network configuration now enforces access to `api.github.com`; no 
 - Closed #505/#508/#517/#359/#365/#497/#503 unmerged as consolidated, after confirming all eleven heads still matched the audited SHAs.
 - Retained every original branch. Confirmed main remains `46fae9b34de9d9818ec801e96c6d468428cf3370`.
 
-#527's GitHub validation passes. Vercel preview builds for #529/#530/#531 report success; their GitHub validation jobs were still pending at this observation. Preview success is not production release or live-source parity acceptance. No main merge, production deployment or production database write was performed.
+#527, #529 and #530 pass GitHub validation; #529 also passes its canonical-data preflight/dry-run (publish is skipped). Vercel preview builds for #529/#530/#531 report success. #531's validation is still running, with no reported failure at this observation. Preview success is not production release or live-source parity acceptance. No main merge, production deployment or production database write was performed.
