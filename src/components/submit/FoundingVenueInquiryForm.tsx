@@ -42,7 +42,7 @@ export function FoundingVenueInquiryForm({
     }
 
     const payload = {
-      submissionType: "founding_venue_inquiry",
+      submissionType: "venue_partner_inquiry",
       venueName,
       neighborhood: getFormValue(formData, "neighborhood"),
       venueContact: [
@@ -58,7 +58,7 @@ export function FoundingVenueInquiryForm({
       sourceLink: selectedSlug ? `/venues/${selectedSlug}` : "/venues/premium",
       companyWebsite: getFormValue(formData, "company-website"),
       notes: [
-        `Founding Venue inquiry for ${venueName}`,
+        `Partner inquiry for ${venueName}`,
         `Selected listing: ${selectedSlug || "Not selected"}`,
         `Preferred contact: ${getFormValue(formData, "preferred-contact") || "No preference"}`,
         `Best time to connect: ${getFormValue(formData, "best-time") || "Not provided"}`,
@@ -86,7 +86,7 @@ export function FoundingVenueInquiryForm({
       }
 
       setSubmittedMessage(
-        `Thanks, ${contactName}. Your Founding Venue inquiry for ${venueName} is in. Corey will follow up personally.`,
+        `Thanks, ${contactName}. Your Partner inquiry for ${venueName} is in. Corey will follow up personally.`,
       );
       trackEvent("founding_venue_inquiry_submit", {
         venue_slug: selectedSlug || "not_listed",
@@ -116,13 +116,13 @@ export function FoundingVenueInquiryForm({
 
       <div className="mb-7 border-b border-white/10 pb-6">
         <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-300">
-          90-Day Founding Venue Pilot
+          SingHUB Partner | $59/month
         </p>
         <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">
           Tell us about your karaoke night
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-          This is an inquiry, not a payment form. SingHUB will review your current presence and follow up personally about fit, setup, and next steps.
+          This is a free review request, not a checkout. We will confirm what your venue needs and explain the $59/month standard plan before any payment or activation.
         </p>
       </div>
 
@@ -198,10 +198,10 @@ export function FoundingVenueInquiryForm({
 
       <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Sending inquiry..." : "Request Founding Venue Review"}
+          {isSubmitting ? "Sending inquiry..." : "Request Partner Review"}
         </Button>
         <p className="text-xs leading-5 text-slate-400">
-          No payment today. No long-term commitment. We will contact you before anything begins.
+          No payment today. We review the details and terms with you before activation.
         </p>
       </div>
     </form>
