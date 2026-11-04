@@ -172,12 +172,12 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
         <section className="venue-offers-end" aria-labelledby="venue-offers-end-title">
           <p className="venue-offers-eyebrow">WE&apos;D LOVE TO HEAR ABOUT YOUR ROOM</p>
           <h2 id="venue-offers-end-title">Show us what makes your place <span>your place.</span></h2>
-          <p>You don't need perfect photos, a marketing plan or an afternoon of paperwork. A few details will get the conversation started. We can handle the rest together.</p>
+          <p>You don&apos;t need perfect photos, a marketing plan or an afternoon of paperwork. A few details will get the conversation started. We can handle the rest together.</p>
           <div className="venue-offers-end-actions">
             <Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-solid">Tell us about your venue ↗</Link>
             <Link href={requestedVenue ? `/claim-listing?venue=${encodeURIComponent(requestedVenue)}` : "/claim-listing"} className="venue-offers-button venue-offers-outline">Update a free listing ↗</Link>
           </div>
-          <p className="mt-5 text-sm text-slate-300">When you're ready to enroll, you can review our <Link className="underline" href="/venue-partner-terms">Venue Partner Terms</Link> and <Link className="underline" href="/privacy">Privacy Policy</Link>. Payment is never required to request a listing correction.</p>
+          <p className="mt-5 text-sm text-slate-300">We review Partner terms with you before enrollment or billing. Read our <Link className="underline" href="/privacy">Privacy Policy</Link>. Payment is never required to request a listing correction.</p>
         </section>
       </div>
     </main>

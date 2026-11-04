@@ -18,3 +18,9 @@ test("Supabase email template sends one secure confirmation button without any O
  assert.match(email,/>Sign in to SingHUB<\/a>/);
  assert.match(email,/Subject: Your SingHUB sign-in link/);
 });
+
+test("support recovery guidance matches button-only sign-in",()=>{
+ const support=readFileSync("src/app/support/page.tsx","utf8");
+ assert.match(support,/tap the Sign in to SingHUB button/);
+ assert.doesNotMatch(support,/enter (?:its |the )?six-digit code/i);
+});

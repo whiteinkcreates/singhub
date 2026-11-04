@@ -1,5 +1,11 @@
 # SingHUB launch status
 
+## November 4 venue sales/support reconciliation (#497 / #503, not deployed)
+
+Stacked on the validated #505/#508/#517 account reconciliation. Combines free claim/correction intake, Partner inquiries, support reporting and protected real-venue sales tools. Keeps the $59 standard pricing disclosure, distinguishes enhanced examples from paid Partners and never activates paid rights from a claim. Restores main's every-submission owner notification behavior, including its fallback operator recipient, while preserving persistence-before-notification and success if optional email delivery fails. Button-only email recovery and the navigation font fallback remain intact. No links advertise the unmerged #501 terms route as available. #501/#502 policy drafts remain separate review work.
+
+Local validation: 25 tests pass, including mocked persistence/notification order/failure, legacy notification retention, category-only same-origin auth diagnostics and rejection of sensitive extra fields/non-object submissions. Production build/TypeScript and lint pass (zero errors, 52 warnings). Chromium tests at 390/1280px pass support submission (intercepted), free claims, public venue examples and the admin-protected sales kit. Local Basic Auth uses a fixture-only password. No real email, account, subscription, agreement, database write or production deployment occurred. Screenshot evidence is retained in `/workspace/singhub-review-evidence/sales-support`.
+
 ## November 4 account PR reconciliation (#505 / #508 / #517, not deployed)
 
 Combined current-main branch retains actual award tiers and earning criteria, safe action-preserving email return paths, button-only sign-in/template, and achievement reveal/history/acknowledgement. The achievements anchor belongs to history; there are no duplicate IDs. Account navigation uses a native SVG account symbol and bounded icon slots so unavailable Google icon fonts cannot widen phone layouts. The source email template does not change the hosted Supabase template. Existing migration files were retained, not executed; historical applied-state claims were not reverified.

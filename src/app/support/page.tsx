@@ -24,7 +24,7 @@ export default function SupportPage() {
     <SupportReportForm />
     <section className="mt-8 rounded-2xl border border-cyan-300/20 bg-cyan-300/5 p-5 text-sm leading-6 text-slate-300">
       <h2 className="font-bold text-white">Sign-in tip</h2>
-      <p className="mt-2">If a magic link opens in a different browser or an email app preview, the session may not finish. Return to the browser where you requested the email and enter the six-digit code from that same email. If it has expired, request a fresh one.</p>
+      <p className="mt-2">If a magic link opens in a different browser or an email app preview, the session may not finish. Request a fresh email from the browser you want to use, then tap the Sign in to SingHUB button in that email.</p>
       <p className="mt-2">Do not send passwords, sign-in codes, private QR codes, payment details, or screenshots containing them.</p>
     </section>
   </main>;

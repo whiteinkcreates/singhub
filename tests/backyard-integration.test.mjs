@@ -39,13 +39,17 @@ test('programmed extras do not leak days or turn amenities into schedule badges'
  assert.equal(plus.plusNight('unlisted',events,'Tuesday').eligible,false);
 });
 
-function routeFixture({webhookOk=true, emailOk=true}={}) {
+function routeFixture({webhookOk=true, emailOk=true,recipientSetting="owner@example.test"}={}) {
  const exports={},calls=[];
- const env={SINGHUB_SUBMISSIONS_WEBHOOK_URL:'https://inbox.example.test',SINGHUB_SUBMISSIONS_WEBHOOK_SECRET:'fixture',RESEND_API_KEY:'fixture',SINGHUB_SUBMISSIONS_TO:'owner@example.test',SINGHUB_SUBMISSIONS_FROM:'SingHUB <notify@example.test>'};
+ const env={SINGHUB_SUBMISSIONS_WEBHOOK_URL:'https://inbox.example.test',SINGHUB_SUBMISSIONS_WEBHOOK_SECRET:'fixture',RESEND_API_KEY:'fixture',SINGHUB_SUBMISSIONS_TO:recipientSetting,SINGHUB_SUBMISSIONS_FROM:'SingHUB <notify@example.test>'};
  const mockFetch=async(url,init)=>{calls.push({url,body:JSON.parse(init.body)});return url===env.SINGHUB_SUBMISSIONS_WEBHOOK_URL?new Response(JSON.stringify({ok:webhookOk}),{status:webhookOk?200:500}):new Response('{}',{status:emailOk?200:500});};
+ const alerts={};
+ vm.runInNewContext(ts.transpileModule(readFileSync('src/lib/operationalAlerts.server.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{
+  exports:alerts,require:()=>({}),process:{env},fetch:mockFetch,AbortSignal,console:{error(){}},
+ });
  vm.runInNewContext(ts.transpileModule(readFileSync('src/app/api/submit-listing/route.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{
-  exports,process:{env},console:{error(){}},require:id=>id==='@/lib/operationalAlerts.server'?{notifySingHubOperator:async(subject,text)=>{const sent=await mockFetch('https://api.resend.com/emails',{method:'POST',body:JSON.stringify({subject,text,to:['owner@example.test']})});return sent.ok;}}:{NextResponse:{json:Response.json}},
-  fetch:mockFetch,
+  exports,process:{env},console:{error(){}},require:id=>id==='@/lib/operationalAlerts.server'?alerts:{NextResponse:{json:Response.json}},
+  fetch:mockFetch,URL,
  });
  const submit=contact=>exports.POST(new Request('https://singhub.example.test/api/submit-listing',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({submissionType:'activity_search_request',notes:'Please find bowling in La Mesa this weekend.',submitterContact:contact,sourceLink:'/backyard'})}));
  const submitPayload=payload=>exports.POST(new Request('https://singhub.example.test/api/submit-listing',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)}));
@@ -56,7 +60,7 @@ test('normal optional email passes and request reaches inbox plus owner notifica
   const {calls,submit}=routeFixture();assert.equal((await submit(contact)).status,200);
   assert.equal(calls.length,2);assert.equal(calls[0].body.payload.submitterContact,contact);
   assert.equal(calls[1].url,'https://api.resend.com/emails');
-  assert.deepEqual(calls[1].body.to,['owner@example.test']);
+  assert.deepEqual(Array.from(calls[1].body.to),['owner@example.test','hello@singhub.app']);
   assert.match(calls[1].body.text,/bowling in La Mesa/);
  }
 });
@@ -95,4 +99,14 @@ test('invalid category and claim without contact are rejected before any externa
 test('all independent hero keys survive V2 integration',()=>{
  const {SITE_HERO_KEYS}=load('src/lib/hostMedia.ts');
  for(const key of ['singhub-backyard-hero','singhub-radar-hero','singhub-neighborhoods-hero','singhub-san-diego-karaoke-hero','singhub-partner-offers-hero'])assert.ok(SITE_HERO_KEYS.includes(key),key);
+});
+
+test('legacy venue listings still notify the operator when optional recipients are empty',async()=>{
+ const {calls,submitPayload}=routeFixture({recipientSetting:''});
+ const r=await submitPayload({submissionType:'venue_listing',venueName:'Example Venue',notes:'Verified details for review',submitterContact:'owner@example.com'});
+ assert.equal(r.status,200);assert.equal(calls.length,2);assert.deepEqual(Array.from(calls[1].body.to),['hello@singhub.app']);assert.match(calls[1].body.subject,/Venue listing/);
+});
+
+test('non-object submissions are rejected without persistence or notifications',async()=>{
+ for(const value of [null,[],7,'text']){const {calls,submitPayload}=routeFixture();assert.equal((await submitPayload(value)).status,400);assert.equal(calls.length,0);}
 });

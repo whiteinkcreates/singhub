@@ -121,7 +121,7 @@ export function FoundingVenueInquiryForm({
       <div className="mb-7 border-b border-white/10 pb-6">
         <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-300">
 
-          LET'S GET ACQUAINTED
+          LET&apos;S GET ACQUAINTED
 
         </p>
         <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">
@@ -209,7 +209,7 @@ export function FoundingVenueInquiryForm({
           {isSubmitting ? "Sending inquiry..." : "Send my venue details"}
         </Button>
         <p className="text-xs leading-5 text-slate-400">
-          No payment or agreement needed here. We'll follow up personally before anything begins.
+          No payment or agreement needed here. We&apos;ll follow up personally before anything begins.
 
         </p>
       </div>

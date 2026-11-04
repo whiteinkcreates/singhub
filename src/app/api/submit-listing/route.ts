@@ -27,6 +27,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid submission payload." }, { status: 400 });
   }
 
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    return NextResponse.json({ error: "Invalid submission payload." }, { status: 400 });
+  }
+
   if (cleanString(payload.companyWebsite)) {
     return NextResponse.json({ ok: true });
   }

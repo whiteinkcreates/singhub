@@ -5,7 +5,7 @@ import {trackEvent} from "@/lib/analytics";
 
 type Category = "sign_in" | "check_in_offer" | "listing" | "other";
 const labels:Record<Category,string> = {
-  sign_in: "Sign in, email link or code",
+  sign_in: "Sign-in or email link",
   check_in_offer: "Check-in, rewards or Partner Offer",
   listing: "Missing or incorrect venue / KJ info",
   other: "Something else",
