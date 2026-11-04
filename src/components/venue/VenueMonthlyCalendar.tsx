@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import type { VenueProgramEvent } from "@/lib/venueEnhancements";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -42,7 +42,7 @@ function prettyDate(date: string) {
     .format(new Date(date + "T12:00:00Z"));
 }
 
-/** Month-by-month venue programming. This never edits the canonical karaoke schedule. */
+/** Weekly-first venue programming. This never edits the canonical karaoke schedule. */
 export function VenueMonthlyCalendar({
   events, venueName, sourceUrl, partial = false,
 }: { events: VenueProgramEvent[]; venueName: string; sourceUrl?: string; partial?: boolean }) {
@@ -50,6 +50,20 @@ export function VenueMonthlyCalendar({
   const [month, setMonth] = useState(() => localToday().slice(0, 7));
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
+  const [showMonth, setShowMonth] = useState(false);
+  const [weekOffset, setWeekOffset] = useState(0);
+  const monthId = useId();
+  // Calendar arithmetic uses the venue date, never the viewer's timezone.
+  const weekStart = new Date(today + "T12:00:00Z");
+  weekStart.setUTCDate(weekStart.getUTCDate() - weekStart.getUTCDay() + weekOffset * 7);
+  const weekEnd = new Date(weekStart);
+  weekEnd.setUTCDate(weekStart.getUTCDate() + 6);
+  const weekFirst = weekStart.toISOString().slice(0, 10);
+  const weekLast = weekEnd.toISOString().slice(0, 10);
+  const weeklyEvents = useMemo(() => [...events]
+    .filter(event => event.date >= weekFirst && event.date <= weekLast)
+    .sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title)),
+  [events, weekFirst, weekLast]);
   const monthEvents = useMemo(
     () => [...events].filter(item => item.date.startsWith(month))
       .sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title)),
@@ -76,12 +90,33 @@ export function VenueMonthlyCalendar({
     setShowAll(false);
   }
 
-  return <section className="section partner-calendar" aria-label={venueName + " monthly events"}>
+  return <section className="section partner-calendar" aria-label={venueName + " events"}>
     <div className="section-heading">
-      <h2>{partial ? "Upcoming dates on the board" : "Full month lineup"}</h2>
+      <h2>{partial ? "Upcoming dates on the board" : showMonth ? "Full month lineup" : "This week at " + venueName}</h2>
       {sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">Venue calendar ↗</a> : null}
     </div>
-    <div className="calendar-shell">
+    {!showMonth && <div className="calendar-shell">
+      <div className="calendar-toolbar" aria-label="Choose event week">
+        <button type="button" onClick={() => setWeekOffset(value => value - 1)} aria-label="Previous week">‹</button>
+        <strong aria-live="polite">{prettyDate(weekFirst)} – {prettyDate(weekLast)}</strong>
+        <button type="button" onClick={() => setWeekOffset(value => value + 1)} aria-label="Next week">›</button>
+      </div>
+      <div className="calendar-results">
+        {!weeklyEvents.length ? <p>No dates listed for this week. Check with the venue for current programming.</p> : weeklyEvents.map((event, index) => <article className="calendar-event" key={event.date + event.title + index}>
+          <div><time dateTime={event.date}>{prettyDate(event.date)}</time><strong>{event.title}</strong></div>
+          <span className={"calendar-kind kind-" + eventCategory(event)}>{CATEGORY_LABELS[eventCategory(event)] || "Event"}</span>
+          <p>{[event.time, event.detail].filter(Boolean).join(" · ")}</p>
+          {event.sourceUrl && event.sourceUrl !== sourceUrl ? <a href={event.sourceUrl} target="_blank" rel="noopener noreferrer">Event details ↗</a> : null}
+        </article>)}
+      </div>
+    </div>}
+    <button type="button" aria-expanded={showMonth} aria-controls={monthId} onClick={() => {
+      setShowMonth(value => !value);
+      setMonth(weekFirst.slice(0, 7));
+      setSelectedDate(null);
+      setShowAll(false);
+    }}>{showMonth ? "Show this week" : partial ? "Open listed dates calendar" : "Open full month calendar"}</button>
+    {showMonth && <div className="calendar-shell" id={monthId}>
       <div className="calendar-toolbar">
         <button type="button" onClick={() => moveMonth(-1)} aria-label="Previous month">‹</button>
         <strong aria-live="polite">{monthLabel}</strong>
@@ -115,7 +150,7 @@ export function VenueMonthlyCalendar({
           {event.sourceUrl && event.sourceUrl !== sourceUrl ? <a href={event.sourceUrl} target="_blank" rel="noopener noreferrer">Event details ↗</a> : null}
         </article>)}
       </div>
-    </div>
+    </div>}
     <p className="calendar-disclaimer">{partial ? "Selected dates from the venue schedule. More dates may be added, and a blank day does not mean the venue has no events. Confirm current details with the venue." : "Lineup and admission may change. Check with the venue before heading out."}</p>
   </section>;
 }

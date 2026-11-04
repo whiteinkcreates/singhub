@@ -81,6 +81,10 @@ jobs:
         if: startsWith(github.head_ref, 'fix/hotel-media-')
         run: node tests/hotel-media-delete-browser.mjs --prepare
 
+      - name: Prepare isolated weekly/month calendar fixture
+        if: startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || startsWith(github.head_ref, 'reconcile/weekly-calendar-')
+        run: node tests/partner-weekly-calendar-browser.mjs --prepare
+
       - name: Build
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-')) && 'http://127.0.0.1:3101' || '' }}
@@ -435,3 +439,16 @@ jobs:
           name: singhub-account-signin-qa
           path: .account-signin-qa
           include-hidden-files: true
+
+      - name: Validate weekly/month calendars and partial schedule safeguards
+        if: startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || startsWith(github.head_ref, 'reconcile/weekly-calendar-')
+        run: |
+          npx playwright install --with-deps chromium
+          npm run start -- --port 3100 > /tmp/weekly-calendar-server.log 2>&1 &
+          calendar_server_pid=$!
+          trap 'kill "$calendar_server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:3100/weekly-calendar-qa > /dev/null; then break; fi
+            sleep 1
+          done
+          node tests/partner-weekly-calendar-browser.mjs

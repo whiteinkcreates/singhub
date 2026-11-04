@@ -1,5 +1,11 @@
 # SingHUB launch status
 
+## November 4 weekly calendar reconciliation (#359 / #365, not deployed)
+
+Ports the overlapping weekly-first calendar work onto current main rather than replacing the old component wholesale. Retains main's partial-calendar prop/disclaimer and category-dot classification, uses the venue's San Diego calendar date, and gives each expandable calendar a unique control target. Partial calendars say "Open listed dates calendar" and never claim a complete monthly schedule. Current Living Board profile integration is unchanged. Includes the same navigation-font fallback fix as the account reconciliation so phone validation works without external icon fonts.
+
+Local validation: 13 regression tests, production build/TypeScript and lint (zero errors, 51 warnings) pass. Chromium checks pass weekly/month expansion, previous/next week navigation, category colors, separate control IDs and partial-schedule messaging at 390/1280px, without horizontal overflow or runtime errors. Synthetic fixture source was removed after validation; CI prepares it before build. Screenshots are retained outside the checkout in `/workspace/singhub-review-evidence/calendar`. No main merge, production deployment, canonical schedule edits or database writes.
+
 ## October 25 Merch Table menu link
 
 Adds Merch Table to the shared desktop More menu and mobile More menu, linking directly to https://whiteinkcreates.com/pages/singhub-merch-table. Menu-only change on current main after #469; no homepage, account, Shopify theme or canonical data changes. Source validation and production verification are recorded in the associated PR.
