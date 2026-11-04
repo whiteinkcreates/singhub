@@ -491,28 +491,31 @@ function rowToHost(row: HostSourceRow): HostProfile {
   };
 }
 
-// Public pages use the versioned canonical TSV by default. Live Sheets reads are
-// opt-in only, preventing quota failures from cascading across venue/host routes.
-// Set HOST_PROFILES_LIVE_SHEETS=true only when a reviewed sync workflow requires it.
-const getSheetRows = unstable_cache(async function fetchHostSheetRows() {
-  if (process.env.HOST_PROFILES_LIVE_SHEETS !== "true") return null;
-  const sheetId = getSourceSheetId();
-  const sheetTab = getSourceTab(
-    "hosts",
-    "GOOGLE_SHEET_HOSTS_TAB",
-    "GOOGLE_SHEET_KJ_PROFILES_TAB",
-  );
+// Cache successful live rows by workbook and tab. Throwing on refresh failure
+// lets Next retain the previous successful value instead of caching a null
+// fallback over newer public profile fields.
+const getCachedSheetRows = unstable_cache(
+  async (sheetId: string, sheetTab: string) =>
+    getGoogleSheetRows(sheetId, sheetTab, "A:AE"),
+  ["singhub-host-sheet-rows-v3"],
+  { revalidate: 900 },
+);
 
+async function getSheetRows(): Promise<GoogleSheetRow[] | null> {
+  // Explicit emergency override only; retain live source parity by default.
+  if (process.env.HOST_PROFILES_LIVE_SHEETS === "false") return null;
   try {
-    const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:AE");
-    return rows as GoogleSheetRow[] | null;
+    return await getCachedSheetRows(
+      getSourceSheetId(),
+      getSourceTab("hosts", "GOOGLE_SHEET_HOSTS_TAB", "GOOGLE_SHEET_KJ_PROFILES_TAB"),
+    );
   } catch (error) {
     if (!(error instanceof GoogleSheetsConfigurationError)) {
-      console.error("Failed to fetch host profiles from Google Sheets", error);
+      console.error("Failed to fetch host profiles from Google Sheets; using canonical snapshot", error);
     }
     return null;
   }
-}, ["singhub-host-sheet-rows-v2"], { revalidate: 3600 });
+}
 
 function getFallbackRows() {
   if (!fs.existsSync(FALLBACK_DATA_PATH)) return [];

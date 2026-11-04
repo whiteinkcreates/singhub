@@ -1,5 +1,11 @@
 # SingHUB launch status
 
+## November 4 runtime request reduction (PR #527, not deployed)
+
+Retains the consolidated KJ profile corrections from #528. Replaces the unverified TSV-default strategy with live host rows cached for 15 minutes by workbook/tab; explicit `HOST_PROFILES_LIVE_SHEETS=false` remains an emergency snapshot override. Successful live reads retain all public fields and media overrides. Failed refreshes throw inside the Next cache so an existing good value is retained; a cold failure falls back to the canonical snapshot without caching null over the live source.
+
+Warm instances reuse OAuth tokens until one minute before expiry, coalesce concurrent exchanges/identical Sheet requests, and pause upstream retries for one minute after failure. Both external fetches have ten-second deadlines. Mocked concurrency, quota recovery, token expiry/401, live-field freshness, source isolation, media rendering data and identity-hold tests pass. This demonstrates request reduction in controlled tests, not a measured Vercel CPU reduction. Live Sheet parity, actual project quota/CPU telemetry and preview acceptance require configured service access. Local validation: 23 tests, data/asset guardrails, production build/TypeScript and lint (51 existing warnings, zero errors) pass. Local production-mode HTTP checks passed for hosts, two KJ profiles, JT’s venue, sitemap and account; five unauthenticated admin requests were rejected. No production database records, production settings or deployment were changed.
+
 ## October 25 Merch Table menu link
 
 Adds Merch Table to the shared desktop More menu and mobile More menu, linking directly to https://whiteinkcreates.com/pages/singhub-merch-table. Menu-only change on current main after #469; no homepage, account, Shopify theme or canonical data changes. Source validation and production verification are recorded in the associated PR.
