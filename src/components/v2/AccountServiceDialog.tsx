@@ -3,7 +3,7 @@ import {useEffect,useRef,useState,type FormEvent} from 'react';
 import type {VenueListing} from '@/types';
 import {accountClient,sendAccountLink} from '@/lib/v2/singerAccount';
 import {nightlifeDate} from '@/lib/tourStops';
-import {safeNextPath} from '@/lib/authRedirect';
+import {safeNextPath,accountEmailReturnPath} from '@/lib/authRedirect';
 import type {useSingerAccount} from './useSingerAccount';
 export function AccountServiceDialog({state,venues,request,onClose,onMessage}:{state:ReturnType<typeof useSingerAccount>;venues:VenueListing[];request:'alias'|'signin'|'signup'|'performance'|null;onClose:()=>void;onMessage:(message:string)=>void}){
  const [performedOn,setPerformedOn]=useState('');
@@ -20,11 +20,8 @@ export function AccountServiceDialog({state,venues,request,onClose,onMessage}:{s
 
  async function verifyEmailCode(){if(!sentEmail||!/^[0-9]{6}$/.test(otp))return;setPending(true);setMessage('');try{const {error}=await accountClient().auth.verifyOtp({email:sentEmail,token:otp,type:'email'});if(error)throw error;setMessage('Email verified! Signing you in…');await state.refresh();onClose();const params=new URLSearchParams(location.search);const next=params.get('next');if(next)location.assign(safeNextPath(next,location.origin));}catch(error){setMessage(error instanceof Error?error.message:'That code was not accepted. Check the code or request a new one.');}finally{setPending(false);}}
  async function submit(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=new FormData(event.currentTarget);setPending(true);setMessage('');try{
-  if(!state.user){const params=new URLSearchParams(location.search);
-   const slug=params.get('followHost');
-   const wanted=params.get('next');
-   const next=slug&&/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)?'/hosts/'+slug:wanted?safeNextPath(wanted,location.origin):
-    params.has('signin')||params.has('signup')?'/account':location.pathname+location.search;
+  if(!state.user){
+   const next=accountEmailReturnPath(location.pathname,location.search,location.hash,location.origin);
    const submittedEmail=String(form.get('email')||'').trim();await sendAccountLink(submittedEmail,next);setSentEmail(submittedEmail);setOtp('');setSent(true);setMessage('Check your inbox for your secure SingHUB sign-in link. If you don’t see it, check your spam or junk folder. Open the link in the same browser you started with.');return;}
   const client=accountClient();if(request==='alias'){const {error}=await client.from('singer_profiles').upsert({user_id:state.user.id,karaoke_alias:String(form.get('alias')||'').trim()||null,updated_at:new Date().toISOString()});if(error)throw error;onMessage('Karaoke alias saved.');}
   if(request==='performance'){

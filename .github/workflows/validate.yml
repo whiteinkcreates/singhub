@@ -70,11 +70,11 @@ jobs:
         run: node tests/star-share-browser.mjs --prepare
 
       - name: Verify My SingHUB account loading and identity changes
-        if: startsWith(github.head_ref, 'fix/my-jacket-')
-        run: node --test tests/singer-account-loading.test.mjs
+        if: startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-')
+        run: node --test tests/singer-account-loading.test.mjs tests/auth-redirect-achievements.test.mjs
 
       - name: Prepare isolated My Jacket earned patch export fixture
-        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-'))
+        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-'))
         run: node tests/jacket-share-browser.mjs --prepare
 
       - name: Prepare isolated hotel media editor fixture
@@ -169,11 +169,11 @@ jobs:
           path: /tmp/backyard-integration-qa
 
       - name: Install browser for My Jacket export QA
-        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-'))
+        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-'))
         run: npx playwright install --with-deps chromium
 
       - name: Test My Jacket patch catalog and real downloaded social PNGs
-        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-'))
+        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-'))
         run: |
           npm run start -- --port 3100 > /tmp/jacket-qa-server.log 2>&1 &
           server_pid=$!
@@ -185,7 +185,7 @@ jobs:
           node tests/jacket-share-browser.mjs
 
       - name: Save My Jacket export QA images
-        if: always() && (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-'))
+        if: always() && (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-'))
         uses: actions/upload-artifact@v4
         with:
           name: my-jacket-share-qa

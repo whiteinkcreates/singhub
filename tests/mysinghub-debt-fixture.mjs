@@ -21,7 +21,7 @@ createServer(async(req,res)=>{
   if(song.song_title==='Rejected song'){res.writeHead(400);res.end('{"message":"Performance could not be saved."}');return;}
   songs.push({...song,id:'song-'+songs.length,created_at:new Date().toISOString()});res.writeHead(201);res.end('');return;
  }
- let rows=table==='singer_performances'?songs:table==='singer_venue_visits'?visits:table==='singer_profiles'?[{karaoke_alias:'Fixture Singer'}]:table==='singer_achievements'?[{id:'award-first',badge_key:'first_gig',badge_name:'First Gig',awarded_at:'2026-10-17',award_note:null}]:[];
+ let rows=table==='singer_performances'?songs:table==='singer_venue_visits'?visits:table==='singer_profiles'?[{karaoke_alias:'Fixture Singer'}]:table==='singer_achievements'?[{id:'award-first',badge_key:'first_gig',badge_name:'First Gig',level:1,awarded_at:'2026-10-17',award_note:null}]:[];
  const owner=url.searchParams.get('user_id');if(owner&&owner!=='eq.'+user.id)rows=[];
  res.setHeader('Content-Range','0-'+Math.max(0,rows.length-1)+'/'+rows.length);
  if(req.method==='HEAD'){res.end();return;}
