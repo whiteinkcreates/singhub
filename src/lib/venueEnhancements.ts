@@ -56,6 +56,8 @@ export type VenueEnhancement = {
   weeklySpecials: VenueSpecial[];
   dailyDeals: VenueDailyDeal[];
   venueEvents?: VenueProgramEvent[];
+  /** When true, calendar has source-backed dates but is not the venue's entire monthly program. */
+  venueEventsPartial?: boolean;
   eventCalendarUrl?: string;
   singHere?: SingHereConfig;
   singhubOffer?: SingHubOffer;
