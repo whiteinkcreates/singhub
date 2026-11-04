@@ -44,8 +44,8 @@ function prettyDate(date: string) {
 
 /** Month-by-month venue programming. This never edits the canonical karaoke schedule. */
 export function VenueMonthlyCalendar({
-  events, venueName, sourceUrl,
-}: { events: VenueProgramEvent[]; venueName: string; sourceUrl?: string }) {
+  events, venueName, sourceUrl, partial = false,
+}: { events: VenueProgramEvent[]; venueName: string; sourceUrl?: string; partial?: boolean }) {
   const [today] = useState(localToday);
   const [month, setMonth] = useState(() => localToday().slice(0, 7));
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -78,7 +78,7 @@ export function VenueMonthlyCalendar({
 
   return <section className="section partner-calendar" aria-label={venueName + " monthly events"}>
     <div className="section-heading">
-      <h2>Full month lineup</h2>
+      <h2>{partial ? "Upcoming dates on the board" : "Full month lineup"}</h2>
       {sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">Venue calendar ↗</a> : null}
     </div>
     <div className="calendar-shell">
@@ -116,6 +116,6 @@ export function VenueMonthlyCalendar({
         </article>)}
       </div>
     </div>
-    <p className="calendar-disclaimer">Lineup and admission may change. Check with the venue before heading out.</p>
+    <p className="calendar-disclaimer">{partial ? "Selected dates from the venue schedule. More dates may be added, and a blank day does not mean the venue has no events. Confirm current details with the venue." : "Lineup and admission may change. Check with the venue before heading out."}</p>
   </section>;
 }
