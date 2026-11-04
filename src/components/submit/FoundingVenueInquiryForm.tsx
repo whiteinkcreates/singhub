@@ -35,9 +35,9 @@ export function FoundingVenueInquiryForm({
     const email = getFormValue(formData, "email");
     const karaokeDetails = getFormValue(formData, "karaoke-details");
 
-    if (!venueName || !contactName || !email || !karaokeDetails) {
+    if (!venueName || !contactName || !email) {
       setSubmittedMessage("");
-      setErrorMessage("Please include the venue, your name, email, and current karaoke details.");
+      setErrorMessage("Please include your venue name and how we can reach you.");
       return;
     }
 
@@ -58,11 +58,13 @@ export function FoundingVenueInquiryForm({
       sourceLink: selectedSlug ? `/venues/${selectedSlug}` : "/venues/premium",
       companyWebsite: getFormValue(formData, "company-website"),
       notes: [
-        `Partner inquiry for ${venueName}`,
+
+        `Venue Partner conversation for ${venueName}`,
+
         `Selected listing: ${selectedSlug || "Not selected"}`,
         `Preferred contact: ${getFormValue(formData, "preferred-contact") || "No preference"}`,
         `Best time to connect: ${getFormValue(formData, "best-time") || "Not provided"}`,
-        `Current karaoke details:\n${karaokeDetails}`,
+        `Current karaoke details:\n${karaokeDetails || "Not provided"}`,
         `Promotion goals:\n${getFormValue(formData, "promotion-goals") || "Not provided"}`,
         `Additional notes:\n${getFormValue(formData, "notes") || "None"}`,
       ].join("\n\n"),
@@ -86,7 +88,9 @@ export function FoundingVenueInquiryForm({
       }
 
       setSubmittedMessage(
-        `Thanks, ${contactName}. Your Partner inquiry for ${venueName} is in. Corey will follow up personally.`,
+
+        `Thanks, ${contactName}. Your Venue Partner conversation for ${venueName} is in. Corey will follow up personally.`,
+
       );
       trackEvent("founding_venue_inquiry_submit", {
         venue_slug: selectedSlug || "not_listed",
@@ -116,13 +120,17 @@ export function FoundingVenueInquiryForm({
 
       <div className="mb-7 border-b border-white/10 pb-6">
         <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-300">
-          SingHUB Partner | $59/month
+
+          LET'S GET ACQUAINTED
+
         </p>
         <h2 className="mt-2 text-2xl font-black text-white sm:text-3xl">
-          Tell us about your karaoke night
+          Tell us about your venue
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">
-          This is a free review request, not a checkout. We will confirm what your venue needs and explain the $59/month standard plan before any payment or activation.
+
+          A few details are all we need to start. We can sort out photos, flyers and the extras together afterward.
+
         </p>
       </div>
 
@@ -166,15 +174,14 @@ export function FoundingVenueInquiryForm({
         <FormField label="Best time to connect" name="best-time" placeholder="Weekday mornings, after 2pm..." />
 
         <TextAreaField
-          label="Current karaoke night(s)"
+          label="Karaoke nights (if you know the details)"
           name="karaoke-details"
-          helper="Days, approximate times, host or KJ, and anything that regularly changes."
-          required
+          helper="Optional. We can help verify days, times and the KJ together."
         />
         <TextAreaField
-          label="What would you most like to promote?"
+          label="What would you love more people to know about?"
           name="promotion-goals"
-          helper="A slower night, a new host, specials, private rooms, a specific crowd, or general awareness."
+          helper="Maybe a karaoke night, live music, food, specials or just the feel of your place."
         />
         <TextAreaField
           label="Anything else we should know?"
@@ -198,10 +205,12 @@ export function FoundingVenueInquiryForm({
 
       <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Sending inquiry..." : "Request Partner Review"}
+
+          {isSubmitting ? "Sending inquiry..." : "Send my venue details"}
         </Button>
         <p className="text-xs leading-5 text-slate-400">
-          No payment today. We review the details and terms with you before activation.
+          No payment or agreement needed here. We'll follow up personally before anything begins.
+
         </p>
       </div>
     </form>

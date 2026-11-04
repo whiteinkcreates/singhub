@@ -32,17 +32,21 @@ export default async function ClaimListingPage({
           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-fuchsia-300 via-cyan-300 to-red-400" />
           <div className="relative max-w-4xl">
             <p className="text-xs font-black uppercase tracking-[0.28em] text-cyan-300 sm:text-sm">
-              SINGHUB PARTNER
+
+              SingHUB Venue Partnerships
+
             </p>
             <h1 className="mt-4 text-4xl font-black leading-tight text-white md:text-6xl">
               Let&apos;s make your karaoke night easier to find.
             </h1>
             <p className="mt-5 max-w-3xl text-base leading-7 text-slate-300 md:text-lg md:leading-8">
-              Ask about the $59/month SingHUB Partner plan. We will review your venue, discuss your calendar and promotional goals, and confirm setup and terms before any payment.
+
+              Tell us a little about your venue. We&apos;ll check how your listing looks today, hear what you want people to discover, and follow up personally. No pressure to purchase anything.
             </p>
             <div className="mt-6 flex flex-wrap gap-2 text-xs font-bold uppercase tracking-[0.14em] text-slate-200 sm:text-sm">
-              <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-2">$59/month standard rate</span>
-              <span className="rounded-full border border-fuchsia-300/30 bg-fuchsia-300/10 px-3 py-2">No payment today</span>
+              <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-2">Your listing stays free</span>
+              <span className="rounded-full border border-fuchsia-300/30 bg-fuchsia-300/10 px-3 py-2">No payment or commitment</span>
+
               <span className="rounded-full border border-red-300/30 bg-red-400/10 px-3 py-2">Personal follow-up</span>
             </div>
           </div>
