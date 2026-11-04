@@ -1,4 +1,5 @@
 import { eventRunsOnNight } from "@/lib/eventOccurrence";
+import { applySeasonalKaraokeHours } from "@/lib/seasonalKaraokeHours";
 import fs from "node:fs";
 import path from "node:path";
 import { connection } from "next/server";
@@ -112,6 +113,7 @@ export async function getKaraokeEventData(): Promise<{
     .filter((row) => !getOptionalValue(row.archive_reason))
     .filter((row) => !getOptionalValue(row.duplicate_of))
     .map(rowToKaraokeEventListing)
+    .map(event => applySeasonalKaraokeHours(event))
     .filter((event) => event.venueSlug && event.karaokeDay)
     .filter((event) => event.activeStatus === "active")
     .filter((event) => !event.generated);
