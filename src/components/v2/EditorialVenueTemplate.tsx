@@ -122,7 +122,7 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
       })}</div>:<div className="ve-pending"><span aria-hidden="true">✳</span><p><strong>Next karaoke dates are being verified.</strong> Check with the venue before planning a night around the mic.</p></div>}
      </section>
 
-     {dates.length>0?<div className="ve-calendar-wrap"><p className="ve-overline">03 / THE WHOLE LINEUP</p><VenueMonthlyCalendar events={dates} venueName={venue.venueName} sourceUrl={enhancement?.eventCalendarUrl}/></div>:null}
+     {dates.length>0?<div className="ve-calendar-wrap"><p className="ve-overline">03 / UPCOMING EVENTS</p><VenueMonthlyCalendar events={dates} venueName={venue.venueName} sourceUrl={enhancement?.eventCalendarUrl} partial={enhancement?.venueEventsPartial===true}/></div>:null}
 
      {gallery.length>1?<section className="ve-gallery" aria-labelledby="ve-gallery-title">
       <p className="ve-overline">THE ROOM / IN PICTURES</p>
