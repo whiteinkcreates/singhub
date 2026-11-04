@@ -1,5 +1,11 @@
 # SingHUB launch status
 
+## November 4 account PR reconciliation (#505 / #508 / #517, not deployed)
+
+Combined current-main branch retains actual award tiers and earning criteria, safe action-preserving email return paths, button-only sign-in/template, and achievement reveal/history/acknowledgement. The achievements anchor belongs to history; there are no duplicate IDs. Account navigation uses a native SVG account symbol and bounded icon slots so unavailable Google icon fonts cannot widen phone layouts. The source email template does not change the hosted Supabase template. Existing migration files were retained, not executed; historical applied-state claims were not reverified.
+
+Local validation: 16 focused tests pass, production build and TypeScript pass, lint has zero errors and 52 warnings (one additional existing-PR image warning). System Chromium acceptance passes sign-in/signup, navigation, expired callbacks and external-redirect rejection at 360/390/768/1440px; achievement presentation/replay at 360/390/1440px and reduced motion; actual jacket portrait and earned-award PNG exports at 390/1440px. Browser auth requests are intercepted and awards are synthetic. No real email, user, award or receipt was created. Review evidence is retained outside the checkout in `/workspace/singhub-review-evidence/account`. Live member acceptance and hosted email/template activation remain release gates. No main merge or production deployment.
+
 ## October 25 Merch Table menu link
 
 Adds Merch Table to the shared desktop More menu and mobile More menu, linking directly to https://whiteinkcreates.com/pages/singhub-merch-table. Menu-only change on current main after #469; no homepage, account, Shopify theme or canonical data changes. Source validation and production verification are recorded in the associated PR.
