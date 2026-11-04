@@ -41,7 +41,15 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
  const selectedPhoto=gallery[photoIndex]||gallery[0];
  const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:singHereForHostNight(venue.slug,events,weekday,enhancement?.singHere)});
  const isPartner=enhancement?.partnerConfirmed===true;
- const activeOffer=isPartner&&enhancement?.singhubOffer?.enabled&&(!enhancement.singhubOffer.days?.length||enhancement.singhubOffer.days.some(day=>day.toLowerCase()===weekday.toLowerCase()))?enhancement.singhubOffer:undefined;
+ // A venue may participate in an approved check-in offer without being a paid Partner.
+ const activeOffer=enhancement?.enabled&&enhancement?.singhubOffer?.enabled&&(!enhancement.singhubOffer.days?.length||enhancement.singhubOffer.days.some(day=>day.toLowerCase()===weekday.toLowerCase()))?enhancement.singhubOffer:undefined;
+ const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+ const currentDay=days.findIndex(day=>day.toLowerCase()===weekday.toLowerCase());
+ const regularUpcoming=events.filter(event=>event.recurring||/weekly/i.test(event.recurrencePattern||""))
+  .map(event=>({event,offset:(days.findIndex(day=>day.toLowerCase()===event.karaokeDay.toLowerCase())-currentDay+7)%7}))
+  .filter(entry=>entry.offset>=0&&entry.offset<7)
+  .sort((a,b)=>a.offset-b.offset)[0]?.event;
+ const nextMicNight=row.tonight||regularUpcoming;
  const isLiveMarket=getMarketConfig(venue.metro)?.status==="live";
  const dates=(enhancement?.venueEvents||[]).filter(item=>item.date>=inSanDiegoToday()).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
  const standout=(enhancement?.standoutFeatures||venue.enhancementStandoutFeatures||[]).filter(Boolean).slice(0,5);
@@ -76,7 +84,7 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
      <p className="ve-kicker ve-kicker-accent">{venueVibe}</p>
      <h1 id="venue-name">{venue.venueName}</h1>
      <div className="ve-hero-meta"><span>{row.trust.replace(/^✓\s*/,"")}</span>{row.tags.slice(0,3).map(tag=><span key={tag}>{tag}</span>)}</div>
-     <a className="ve-hero-jump" href="#ve-programming">Discover the lineup <span aria-hidden="true">↘</span></a>
+     <div className="ve-hero-links"><a className="ve-hero-jump" href="#ve-next-mic">See the karaoke schedule <span aria-hidden="true">↘</span></a>{venue.website?<a className="ve-hero-jump ve-hero-website" href={venue.website} target="_blank" rel="noopener noreferrer">Official website <span aria-hidden="true">↗</span></a>:null}</div>
     </div>
    </section>
 
@@ -88,15 +96,16 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
      {venue.instagram?<a href={venue.instagram} target="_blank" rel="noopener noreferrer">Instagram ↗</a>:null}
     </div>
    </div>
-
-   {(tagline||story||standout.length>0)?<section className="ve-story" aria-labelledby="ve-story-title">
-     <div className="ve-story-copy">
-      <p className="ve-overline">01 / THE PLACE</p>
-      <h2 id="ve-story-title">{tagline||"A little more about the room."}</h2>
-      {story?<p className="ve-story-body">{story}</p>:null}
+   <section className="ve-next-mic" id="ve-next-mic" aria-labelledby="ve-next-mic-title">
+     <div>
+       <p className="ve-overline">ON THE MIC</p>
+       <h2 id="ve-next-mic-title">{row.tonight?"Karaoke tonight":nextMicNight?"Next regular karaoke":"Karaoke dates being verified"}</h2>
+       <p>{nextMicNight?<><strong>{nextMicNight.karaokeDay}</strong>{" · "+publicEventTimeLabel(nextMicNight)}{usable(nextMicNight.hostName)?" · "+nextMicNight.hostName:""}</>:"Check with the venue for its current karaoke schedule."}</p>
      </div>
-     {standout.length>0?<aside className="ve-reasons"><p className="ve-overline">THE STANDOUTS</p><ol>{standout.map((item,index)=><li key={item}><span>{String(index+1).padStart(2,"0")}</span><strong>{item}</strong></li>)}</ol></aside>:null}
-    </section>:null}
+     <a href="#ve-schedule">Full weekly schedule <span aria-hidden="true">↓</span></a>
+   </section>
+
+
 
    <div className="ve-content-grid" id="ve-programming">
     <div className="ve-main">
@@ -128,9 +137,9 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
       <p className="ve-overline">{row.tonight?"TONIGHT / LIVE ON THE MIC":"PLAN YOUR VISIT"}</p>
       <h2 id="ve-tonight-title">{row.tonight?"You're up next.":venue.venueType==="private_room"?"Your own room.":"Find your mic."}</h2>
       <div className="ve-tonight-info">
-       <span>{row.tonight?"Karaoke tonight":"Karaoke information"}</span>
-       <strong>{row.tonight?publicEventTimeLabel(row.tonight):venue.venueType==="private_room"?"Book with the venue":"Next night pending"}</strong>
-       <p>{row.tonight?(usable(row.tonight.hostName)?"Hosted by "+row.tonight.hostName:"Host details pending"):"Current dates and hosts are being checked."}</p>
+       <span>{row.tonight?"Karaoke tonight":nextMicNight?"Next regular night":"Karaoke information"}</span>
+       <strong>{nextMicNight?nextMicNight.karaokeDay+" · "+publicEventTimeLabel(nextMicNight):venue.venueType==="private_room"?"Book with the venue":"Schedule being verified"}</strong>
+       <p>{nextMicNight?(usable(nextMicNight.hostName)?"Hosted by "+nextMicNight.hostName:"Host details pending"):"Check the venue for dates and host details."}</p>
       </div>
       <button className="ve-singhere" type="button" aria-label="Open SingHERE signup information" data-toast="SingHERE flow opened"><SingHereMark alt="SingHERE" /></button>
       {isLiveMarket?<TourStopCheckIn venueSlug={venue.slug} venueName={venue.venueName} offer={activeOffer}/>:null}
@@ -141,6 +150,15 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
      {roomDetails.length>0?<section className="ve-amenities"><p className="ve-overline">WHAT YOU’LL FIND</p><h3>Around the room.</h3><ul>{roomDetails.map(item=><li key={item}>{item}</li>)}</ul></section>:null}
     </aside>
    </div>
+
+   {(tagline||story||standout.length>0)?<section className="ve-story" aria-labelledby="ve-story-title">
+     <div className="ve-story-copy">
+      <p className="ve-overline">01 / THE PLACE</p>
+      <h2 id="ve-story-title">{tagline||"A little more about the room."}</h2>
+      {story?<p className="ve-story-body">{story}</p>:null}
+     </div>
+     {standout.length>0?<aside className="ve-reasons"><p className="ve-overline">THE STANDOUTS</p><ol>{standout.map((item,index)=><li key={item}><span>{String(index+1).padStart(2,"0")}</span><strong>{item}</strong></li>)}</ol></aside>:null}
+    </section>:null}
 
    {specials.length>0?<section className="ve-specials"><p className="ve-overline">MORE REASONS TO GO</p><h2>Specials on the board.</h2><div className="ve-specials-list">{specials.map((item,index)=><article key={index}><strong>{item.title}</strong>{item.price?<b>{item.price}</b>:null}{item.detail?<p>{item.detail}</p>:null}</article>)}</div></section>:null}
 
