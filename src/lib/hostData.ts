@@ -491,7 +491,11 @@ function rowToHost(row: HostSourceRow): HostProfile {
   };
 }
 
+// Public pages use the versioned canonical TSV by default. Live Sheets reads are
+// opt-in only, preventing quota failures from cascading across venue/host routes.
+// Set HOST_PROFILES_LIVE_SHEETS=true only when a reviewed sync workflow requires it.
 const getSheetRows = unstable_cache(async function fetchHostSheetRows() {
+  if (process.env.HOST_PROFILES_LIVE_SHEETS !== "true") return null;
   const sheetId = getSourceSheetId();
   const sheetTab = getSourceTab(
     "hosts",
@@ -508,7 +512,7 @@ const getSheetRows = unstable_cache(async function fetchHostSheetRows() {
     }
     return null;
   }
-}, ["singhub-host-sheet-rows-v1"], { revalidate: 900 });
+}, ["singhub-host-sheet-rows-v2"], { revalidate: 3600 });
 
 function getFallbackRows() {
   if (!fs.existsSync(FALLBACK_DATA_PATH)) return [];
