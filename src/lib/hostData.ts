@@ -1,3 +1,4 @@
+import { cache } from "react";
 import fs from "node:fs";
 import { unstable_cache } from "next/cache";
 import { getHostMediaOverrides } from "@/lib/hostMedia.server";
@@ -452,6 +453,8 @@ function rowToHost(row: HostSourceRow): HostProfile {
     bookingLink: getCellAny(row, ["booking_link", "Booking Link"]),
     signupLink: getCellAny(row, ["signup_link", "Signup Link"]),
     bio: getCellAny(row, ["bio", "Bio"]),
+    rotationPolicy: getCellAny(row, ["rotation_policy", "Rotation Policy", "KJ Rotation Rules"]),
+    singerGuidelines: getCellAny(row, ["singer_guidelines", "Singer Guidelines", "KJ House Rules"]),
     vibeTags: parseList(getCellAny(row, ["vibe_tags", "Vibe Tags"])),
     primaryAreas: parseList(
       getCellAny(row, ["primary_areas", "Primary Areas"]),
@@ -491,24 +494,31 @@ function rowToHost(row: HostSourceRow): HostProfile {
   };
 }
 
-const getSheetRows = unstable_cache(async function fetchHostSheetRows() {
-  const sheetId = getSourceSheetId();
-  const sheetTab = getSourceTab(
-    "hosts",
-    "GOOGLE_SHEET_HOSTS_TAB",
-    "GOOGLE_SHEET_KJ_PROFILES_TAB",
-  );
+// Cache successful live rows by workbook and tab. Throwing on refresh failure
+// lets Next retain the previous successful value instead of caching a null
+// fallback over newer public profile fields.
+const getCachedSheetRows = unstable_cache(
+  async (sheetId: string, sheetTab: string) =>
+    getGoogleSheetRows(sheetId, sheetTab, "A:AZ"),
+  ["singhub-host-sheet-rows-v3"],
+  { revalidate: 900 },
+);
 
+async function getSheetRows(): Promise<GoogleSheetRow[] | null> {
+  // Explicit emergency override only; retain live source parity by default.
+  if (process.env.HOST_PROFILES_LIVE_SHEETS === "false") return null;
   try {
-    const rows = await getGoogleSheetRows(sheetId, sheetTab, "A:AE");
-    return rows as GoogleSheetRow[] | null;
+    return await getCachedSheetRows(
+      getSourceSheetId(),
+      getSourceTab("hosts", "GOOGLE_SHEET_HOSTS_TAB", "GOOGLE_SHEET_KJ_PROFILES_TAB"),
+    );
   } catch (error) {
     if (!(error instanceof GoogleSheetsConfigurationError)) {
-      console.error("Failed to fetch host profiles from Google Sheets", error);
+      console.error("Failed to fetch host profiles from Google Sheets; using canonical snapshot", error);
     }
     return null;
   }
-}, ["singhub-host-sheet-rows-v1"], { revalidate: 900 });
+}
 
 function getFallbackRows() {
   if (!fs.existsSync(FALLBACK_DATA_PATH)) return [];
@@ -569,7 +579,7 @@ export async function getHosts({includeMedia=true}: {includeMedia?:boolean} = {}
       heroPlacement: settings?.heroPlacement,
       directoryHeroPlacement: directory?.heroPlacement,
       houseRules: settings?.houseRules,
-      rotationPolicy: settings?.rotationPolicy,
+      rotationPolicy: settings?.rotationPolicy?.trim() || host.rotationPolicy,
       heroImageUrl: settings?.heroUrl || undefined,
       heroImageAlt: settings?.heroAlt,
       heroPosition: settings?.heroPosition,
@@ -588,9 +598,10 @@ export async function getFeaturedHosts() {
   return (await getActiveHosts()).filter((host) => host.featured);
 }
 
-export async function getHostBySlug(slug: string) {
+// Metadata and the page share one host-directory load within a render only.
+export const getHostBySlug = cache(async (slug: string) => {
   return (await getActiveHosts()).find((host) => host.slug === slug);
-}
+});
 
 export function getTodayInLosAngeles(): HostWeekday {
   return getSanDiegoNightlifeWeekday() as HostWeekday;

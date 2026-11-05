@@ -94,3 +94,27 @@
 @media(min-width:681px) and (max-width:860px){
 .v2-venue-offers[data-scroll-page] [data-page-surface].venue-offers-sheet{width:calc(100% - 30px);max-width:none;margin:-28px auto 0;padding:32px 20px 96px;background:#050609}
 }
+
+/* Partner-facing presentation: quiet surfaces, editorial rhythm, restrained neon. */
+.v2-venue-offers .venue-offers-hero-copy{background:linear-gradient(110deg,rgba(5,12,19,.9),rgba(5,12,19,.66));border:1px solid rgba(255,255,255,.16);border-radius:22px;backdrop-filter:blur(12px)}
+.v2-venue-offers .venue-offers-hero h1{font-size:clamp(3rem,5.9vw,6rem);line-height:.98;letter-spacing:-.025em}
+.v2-venue-offers .venue-offers-sheet>section{scroll-margin-top:100px}
+.v2-venue-offers .venue-offers-intro{padding:18px 0 0}
+.v2-venue-offers .venue-offers-journey{padding:clamp(24px,4vw,44px);border:1px solid #253947;background:linear-gradient(145deg,#10202b,#0d141b 65%);border-radius:24px}
+.v2-venue-offers .venue-offers-journey h2{font-size:clamp(2.5rem,5vw,4.6rem);line-height:1;margin:0 0 28px}
+.v2-venue-offers .venue-offers-journey-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.v2-venue-offers .venue-offers-journey-grid article{border-top:1px solid #4a6577;padding-top:19px}
+.v2-venue-offers .venue-offers-journey-grid span{font-size:.8rem;letter-spacing:.14em;color:#72dfff;font-weight:800}
+.v2-venue-offers .venue-offers-journey-grid h3{font-size:clamp(1.6rem,2.5vw,2.3rem);margin:16px 0 12px}
+.v2-venue-offers .venue-offers-journey-grid p{color:#bdccd5;line-height:1.6;margin:0;font-size:.96rem}
+.v2-venue-offers .venue-offers-gentle-cta{margin-top:30px;display:flex;gap:20px;justify-content:space-between;align-items:center;flex-wrap:wrap;border-top:1px solid #ffffff21;padding-top:23px}
+.v2-venue-offers .venue-offers-gentle-cta strong{font-size:1.12rem}
+.v2-venue-offers .venue-offers-gentle-cta p{color:#b6c7d0;margin:7px 0 0}
+.v2-venue-offers .venue-offers-plans{gap:18px}
+.v2-venue-offers .venue-offers-plan{border-radius:20px;background:#101922;border-color:#314452;box-shadow:none}
+.v2-venue-offers .venue-offers-partner{background:linear-gradient(145deg,#182131,#171520);border-color:#a84983}
+.v2-venue-offers .venue-offers-founding{border-radius:12px;border-color:#42445a;background:#ffffff08}
+.v2-venue-offers .venue-offers-compare{border-top:1px solid #324957}
+.v2-venue-offers .venue-offers-end{border:1px solid #375262;border-top:3px solid #00c8ff;border-radius:22px;background:linear-gradient(145deg,#17232e,#0d151f)}
+.v2-venue-offers .venue-offers-end h2 span{color:#77ddf8}
+@media(max-width:720px){.v2-venue-offers .venue-offers-journey-grid{grid-template-columns:1fr}.v2-venue-offers .venue-offers-journey{padding:24px 20px}.v2-venue-offers .venue-offers-hero-copy{border-radius:14px}}

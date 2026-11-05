@@ -81,6 +81,10 @@ export async function PUT(request: Request) {
 
     if (profile.eventCalendarUrl && !/^https?:\/\//i.test(profile.eventCalendarUrl)) return NextResponse.json({ error: "Venue calendar URL must begin with https:// or http://." }, { status: 400 });
 
+    if (profile.singHere?.rotationPolicy !== undefined && (typeof profile.singHere.rotationPolicy !== "string" || profile.singHere.rotationPolicy.length > 1200)) {
+      return NextResponse.json({ error: "KJ rotation policy must be 1200 characters or fewer." }, { status: 400 });
+    }
+
     if (profile.singerSignupUrl && !/^https?:\/\//i.test(profile.singerSignupUrl)) {
       return NextResponse.json({ error: "Singer signup URL must start with https:// or http://." }, { status: 400 });
     }

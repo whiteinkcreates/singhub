@@ -229,14 +229,14 @@ export function VenuePartnerDemo({
           ],
           [
             "Promotional support",
-            "Eligibility for SingHUB roundups, spotlights, and relevant discovery placements during the pilot.",
+            "Eligibility for SingHUB roundups, spotlights, and relevant discovery placements where available and appropriate.",
           ],
           [
             "Priority updates",
             "Direct support when schedules, KJs, specials, or event details change.",
           ],
           [
-            "Pilot reporting",
+            "Engagement insights",
             "Available profile-view, outbound-click, and engagement signals packaged into a useful venue conversation.",
           ],
         ].map(([title, body]) => (
@@ -252,7 +252,7 @@ export function VenuePartnerDemo({
 
       <section className="rounded-[2rem] border border-fuchsia-300/35 bg-slate-950 p-6 text-center shadow-2xl shadow-fuchsia-950/25 md:p-10">
         <p className="text-xs font-black uppercase tracking-[0.24em] text-fuchsia-200">
-          Founding Venue Pilot
+          SingHUB Partner
         </p>
         <h2 className="mt-3 text-3xl font-black text-white md:text-5xl">
           Build the version that actually represents {selectedVenue.venueName}.
@@ -262,10 +262,10 @@ export function VenuePartnerDemo({
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3 text-xs font-black uppercase tracking-[0.14em]">
           <span className="rounded-full border border-white/15 px-4 py-2 text-white">
-            90 days
+            Free venue review
           </span>
           <span className="rounded-full border border-fuchsia-300/35 bg-fuchsia-300/10 px-4 py-2 text-fuchsia-100">
-            $149 founding pilot
+            $59/month Partner plan
           </span>
           <span className="rounded-full border border-cyan-300/35 bg-cyan-300/10 px-4 py-2 text-cyan-100">
             Hands-on setup

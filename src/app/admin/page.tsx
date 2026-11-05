@@ -60,9 +60,9 @@ const tools = [
   {
     href: "/admin/venue-comparison",
     eyebrow: "Venue Partnerships",
-    title: "Venue Sales Comparison",
+    title: "Venue Sales Kit",
     description:
-      "Compare any venue's current free presence with a Founding Venue preview, including every enhanced-field opportunity.",
+      "Choose real venues, copy tailored share links and outreach, and follow an in-person close checklist.",
   },
 ];
 
