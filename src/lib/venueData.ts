@@ -109,26 +109,40 @@ function normalizeVenueType(value: string | undefined): VenueType {
   return "live_bar";
 }
 
+// Public TSV/JSON files are immutable within a deployment. Parse them once
+// per server instance instead of doing filesystem I/O on every visitor request.
+let cachedCoordinates: CoordinateMap | undefined;
+let cachedFallbackRows: VenueSourceRow[] | undefined;
+let cachedSlugAliases: Map<string, string> | undefined;
+
 function loadCoordinates(): CoordinateMap {
-  if (!fs.existsSync(COORDINATES_PATH)) return {};
+  if (cachedCoordinates) return cachedCoordinates;
+  if (!fs.existsSync(COORDINATES_PATH)) return (cachedCoordinates = {});
   try {
-    return JSON.parse(fs.readFileSync(COORDINATES_PATH, "utf8")) as CoordinateMap;
+    cachedCoordinates = JSON.parse(fs.readFileSync(COORDINATES_PATH, "utf8")) as CoordinateMap;
   } catch (error) {
     console.error("Failed to load venue coordinate fallbacks", error);
-    return {};
+    cachedCoordinates = {};
   }
+  return cachedCoordinates;
 }
 
-function getFallbackRows() {
-  if (!fs.existsSync(DATA_PATH)) return [] as VenueSourceRow[];
-  return parseTsv(fs.readFileSync(DATA_PATH, "utf8")).map((row: TsvRow) => row as VenueSourceRow);
+function getFallbackRows(): VenueSourceRow[] {
+  if (cachedFallbackRows) return cachedFallbackRows;
+  cachedFallbackRows = !fs.existsSync(DATA_PATH)
+    ? []
+    : parseTsv(fs.readFileSync(DATA_PATH, "utf8")).map((row: TsvRow) => row as VenueSourceRow);
+  return cachedFallbackRows;
 }
 
 function getCanonicalSlug(slug: string) {
-  if (!fs.existsSync(SLUG_ALIASES_PATH)) return slug;
-  const aliases = parseTsv(fs.readFileSync(SLUG_ALIASES_PATH, "utf8"));
-  const match = aliases.find((row) => row.old_slug === slug);
-  return match?.canonical_slug || slug;
+  if (!cachedSlugAliases) {
+    const aliases = fs.existsSync(SLUG_ALIASES_PATH)
+      ? parseTsv(fs.readFileSync(SLUG_ALIASES_PATH, "utf8"))
+      : [];
+    cachedSlugAliases = new Map(aliases.map((row) => [row.old_slug, row.canonical_slug]));
+  }
+  return cachedSlugAliases.get(slug) || slug;
 }
 
 // Cache the shared public enhancement snapshot across requests. Admin edits may
