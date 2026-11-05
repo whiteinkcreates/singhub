@@ -27,6 +27,7 @@ function loader({rotationPolicy,mediaPolicy,guidelines}={}){
 }
 test('live fields remain default, successful reads are cached, and media overrides survive',async()=>{
  const l=loader();for(let i=0;i<3;i++){const host=(await l.read()).find(h=>h.slug==='dj-loy');assert.equal(host.bio,'New approved live profile');assert.equal(host.profileImageUrl,'/fixture-portrait.webp');assert.equal(host.heroImageUrl,'/fixture-hero.webp');}
+ assert.equal((await l.read()).find(h=>h.slug==='art-ruiz').signupLink,'https://www.karafun.com/068874/');
  assert.equal(l.calls(),1);l.book('different-workbook');await l.read();assert.equal(l.calls(),2);assert.notEqual(l.keys[0],l.keys.at(-1));
 });
 test('failure falls back without poisoning the successful-read cache',async()=>{
