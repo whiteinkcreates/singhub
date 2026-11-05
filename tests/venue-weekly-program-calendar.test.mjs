@@ -37,6 +37,14 @@ const special=[
 const list=(startDate,endDate,extras={})=>venueCalendarOccurrences({datedEvents:special,weeklyProgramming:weekly,karaokeEvents:karaoke,startDate,endDate,...extras});
 const titles=items=>items.map(x=>x.date+" "+x.title);
 
+test("a KJ branded Karaoke event uses its official name without duplicate wording",()=>{
+  const items=list("2026-11-01","2026-11-07",{
+    karaokeEvents:karaoke.map(item=>({...item,hostName:"Famously Slutty Karaoke"})),
+  });
+  assert.equal(items.filter(item=>item.title==="Famously Slutty Karaoke").length,2);
+  assert.equal(items.some(item=>item.title.startsWith("Karaoke with Famously")),false);
+});
+
 test("a weekly venue calendar includes canonical karaoke and regular non-karaoke programming",()=>{
   const items=list("2026-11-01","2026-11-07");
   assert.deepEqual(JSON.parse(JSON.stringify(titles(items))),[
