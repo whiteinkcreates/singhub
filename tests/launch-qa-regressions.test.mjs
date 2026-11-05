@@ -77,3 +77,35 @@ test("McGuffie's is public while the retired Navajo Live slug stays hidden",()=>
  assert.equal(isPublicVenue({id:'venue-0025',venueName:"McGuffie's Live",slug:'mcguffies-live'}),true);
  assert.equal(isPublicVenue({id:'venue-0025',venueName:'Navajo Live',slug:'navajo-live'}),false);
 });
+
+test('expanded mobile and desktop menus dismiss when the page behind them moves',()=>{
+ for(const file of ['AppNavigation.tsx','SiteHeader.tsx']){
+  const code=readFileSync(new URL('../src/components/layout/'+file,import.meta.url),'utf8');
+  assert.match(code,/document\.addEventListener\("scroll", dismissOutsideMenu, true\)/);
+  assert.match(code,/document\.addEventListener\("touchmove", dismissOutsideMenu/);
+  assert.match(code,/document\.addEventListener\("pointerdown", dismissOutsideMenu\)/);
+  assert.match(code,/!menu\.contains\(target\)/);
+  assert.match(code,/menu\.open = false/);
+ }
+});
+
+test('Cheers has a verified seasonal 8:30 PM karaoke start on Monday and Wednesday',()=>{
+ const rows=(name)=>{
+  const [header,...lines]=readFileSync(new URL('../public/data/'+name,import.meta.url),'utf8').trimEnd().split(/\r?\n/);
+  const fields=header.split('\t');
+  return lines.map(line=>Object.fromEntries(line.split('\t').map((value,i)=>[fields[i],value])));
+ };
+ const venue=rows('venues.tsv').find(v=>v.slug==='cheers-bar-san-diego');
+ assert.ok(venue,'Cheers must remain in the canonical venue index');
+ assert.equal(venue.karaoke_day,'Monday, Wednesday');
+ assert.equal(venue.start_time,'8:30 PM');
+ assert.match(venue.description,/shorter-day months/);
+ const events=rows('events_by_night.tsv').filter(e=>e.venue_slug==='cheers-bar-san-diego'&&e.active_status==='active');
+ assert.deepEqual(events.map(e=>e.karaoke_day).sort(),['Monday','Wednesday']);
+ for(const event of events){
+  assert.equal(event.start_time,'8:30 PM');
+  assert.equal(event.end_time,'1:00 AM');
+  assert.match(event.event_notes,/Seasonal shorter-day start time is 8:30 PM/);
+  assert.match(event.source_2,/2026-11-05/);
+ }
+});
