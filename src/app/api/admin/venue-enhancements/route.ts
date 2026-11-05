@@ -101,6 +101,23 @@ export async function PUT(request: Request) {
       }
     }
 
+    if (profile.weeklyProgramming !== undefined) {
+      const days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+      const categories=["karaoke","live_music","game","trivia","bingo","sports","community","special"];
+      if (!Array.isArray(profile.weeklyProgramming) || profile.weeklyProgramming.length > 30 ||
+        profile.weeklyProgramming.some(item => !item || !days.includes(item.day) ||
+          typeof item.title !== "string" || !item.title.trim() || item.title.length > 140 ||
+          (item.time !== undefined && (typeof item.time !== "string" || item.time.length > 40)) ||
+          (item.detail !== undefined && (typeof item.detail !== "string" || item.detail.length > 240)) ||
+          (item.category !== undefined && !categories.includes(item.category)) ||
+          (item.sourceUrl !== undefined && (typeof item.sourceUrl !== "string" || !/^https?:\/\//i.test(item.sourceUrl) || item.sourceUrl.length > 800)))) {
+        return NextResponse.json({ error: "One or more recurring venue programs are invalid." }, { status: 400 });
+      }
+    }
+    if (profile.venueEventsPartial !== undefined && typeof profile.venueEventsPartial !== "boolean") {
+      return NextResponse.json({ error: "Partial calendar status must be a boolean." }, { status: 400 });
+    }
+
     if (profile.eventCalendarUrl && !/^https?:\/\//i.test(profile.eventCalendarUrl)) return NextResponse.json({ error: "Venue calendar URL must begin with https:// or http://." }, { status: 400 });
 
     if (profile.singHere?.rotationPolicy !== undefined && (typeof profile.singHere.rotationPolicy !== "string" || profile.singHere.rotationPolicy.length > 1200)) {
