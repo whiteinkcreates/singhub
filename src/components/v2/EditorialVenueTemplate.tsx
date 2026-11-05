@@ -32,7 +32,7 @@ const inSanDiegoToday=()=>{
 function upcomingDate(date:string){
  return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",timeZone:"UTC"}).format(new Date(date+"T12:00:00Z"));
 }
-export function EditorialVenueTemplate({venue,events,enhancement,weekday,singersSay,posts=[]}:VenueTemplateProps){
+export function EditorialVenueTemplate({venue,events,kjHosts=[],enhancement,weekday,singersSay,posts=[]}:VenueTemplateProps){
  const root=useRef<HTMLDivElement>(null);
  const viewerInitials=useViewerInitials();
  const row=makeVenueRow(venue,events,weekday,enhancement);
@@ -40,7 +40,7 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
  const gallery=[...(heroUrl?[{url:heroUrl,alt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName,placement:enhancement?.heroPlacement||venue.bannerImagePlacement}]:[]),...(enhancement?.gallery||[]).filter(item=>item.url!==heroUrl)];
  const [photoIndex,setPhotoIndex]=useState(0);
  const selectedPhoto=gallery[photoIndex]||gallery[0];
- const singHereConfig=singHereForHostNight(venue.slug,events,weekday,enhancement?.singHere);
+ const singHereConfig=singHereForHostNight(venue.slug,events,weekday,enhancement?.singHere,kjHosts);
  const signupDestination=resolveSingHere(singHereConfig,{privateRoom:venue.venueType==="private_room",externalSignupUrl:enhancement?.singerSignupUrl,venueWebsite:venue.website}).url;
  const hasOnlineSignup=Boolean(signupDestination)&&venue.venueType!=="private_room";
  const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:singHereConfig});
