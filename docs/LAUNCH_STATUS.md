@@ -1,5 +1,13 @@
 # SingHUB launch status
 
+## November 4 SingHERE/KJ rules reconciliation (#335 / #344, not deployed)
+
+Reconciles remaining host-confirmed rotation guidance, optional canonical singer guidelines, editor save/load/dirty tracking and signup URL validation on top of #527. Retains current host-night signup/tip links, the direct performance/account handoff, host identity holds, canonical KJ corrections and Following UI. Current navigation/footer and host-guideline styling satisfy the older #335 presentation goals; they are not replaced with the old layouts. The unique Following helper and SQL are retained as source reference only; no schema changes or notifications are activated.
+
+Live host fetch now includes A:AZ: the old A:AE range excluded the committed signup_link field at AF. This is covered by a range regression and does not change schedules or host IDs. Live Google parity and production CPU/quota telemetry remain unverified.
+
+Local validation: 26 tests pass, including API policy round-trip/rejection with mocked persistence, canonical/media precedence, signup URL validation, current handoffs, owner-scoped Following and #527 regressions. Production build/TypeScript and lint pass (zero errors, 51 existing warnings). Chromium checks at 390/1280px verify confirmed/blank policies, credentialed signup rejection, current tip links, direct performance handoff and the legacy dialog. Only synthetic fixture data was used. No production write, SQL execution, main merge or production deployment.
+
 ## November 4 runtime request reduction (PR #527, not deployed)
 
 Retains the consolidated KJ profile corrections from #528. Replaces the unverified TSV-default strategy with live host rows cached for 15 minutes by workbook/tab; explicit `HOST_PROFILES_LIVE_SHEETS=false` remains an emergency snapshot override. Successful live reads retain all public fields and media overrides. Failed refreshes throw inside the Next cache so an existing good value is retained; a cold failure falls back to the canonical snapshot without caching null over the live source.

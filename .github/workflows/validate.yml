@@ -84,6 +84,10 @@ jobs:
         if: startsWith(github.head_ref, 'fix/hotel-media-')
         run: node tests/hotel-media-delete-browser.mjs --prepare
 
+      - name: Prepare isolated SingHERE KJ fixture
+        if: startsWith(github.head_ref, 'reconcile/singhere-kj-')
+        run: node tests/singhere-kj-browser.mjs --prepare
+
       - name: Build
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-')) && 'http://127.0.0.1:3101' || '' }}
@@ -438,3 +442,19 @@ jobs:
           name: singhub-account-signin-qa
           path: .account-signin-qa
           include-hidden-files: true
+
+      - name: Verify confirmed KJ policy reconciliation
+        run: node --test tests/singhere-kj-reconciliation.test.mjs tests/singhere-policy-api.test.mjs tests/following-foundation.test.mjs
+
+      - name: Verify SingHERE policies, tips and account handoff in browser
+        if: startsWith(github.head_ref, 'reconcile/singhere-kj-')
+        run: |
+          npx playwright install --with-deps chromium
+          npm run start -- --port 3100 > /tmp/singhere-kj-server.log 2>&1 &
+          kj_server_pid=$!
+          trap 'kill "$kj_server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:3100/singhere-kj-qa > /dev/null; then break; fi
+            sleep 1
+          done
+          node tests/singhere-kj-browser.mjs

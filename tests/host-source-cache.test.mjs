@@ -6,19 +6,19 @@ import ts from 'typescript';
 import {test} from 'node:test';
 
 function parseTsv(text){const [head,...lines]=text.trimEnd().split(/\r?\n/);const keys=head.split('\t');return lines.map(line=>Object.fromEntries(keys.map((key,i)=>[key,line.split('\t')[i]||''])));}
-function loader(){
+function loader({rotationPolicy,mediaPolicy,guidelines}={}){
  const exports={},env={};let calls=0,fail=false,book='canonical';const cache=new Map();const keys=[];
  const rows=parseTsv(fs.readFileSync('public/data/kj_profiles.tsv','utf8'));
- const live=rows.map(row=>({...row,bio:row.slug==='dj-loy'?'New approved live profile':row.bio}));
+ const live=rows.map(row=>({...row,bio:row.slug==='dj-loy'?'New approved live profile':row.bio,rotation_policy:rotationPolicy,singer_guidelines:guidelines}));
  const imports={
  'node:fs':fs,'node:path':path,
     'react':{cache:fn=>fn}, // Identity tests do not simulate the React request dispatcher.
  'next/cache':{unstable_cache:(fn,parts,options)=>{assert.equal(options.revalidate,900);return async(...args)=>{const key=JSON.stringify([parts,args]);keys.push(key);if(cache.has(key))return cache.get(key);const value=await fn(...args);cache.set(key,value);return value;};}},
- '@/lib/hostMedia.server':{getHostMediaOverrides:async()=>new Map([['dj-loy',{portraitUrl:'/fixture-portrait.webp',heroUrl:'/fixture-hero.webp'}]])},
+ '@/lib/hostMedia.server':{getHostMediaOverrides:async()=>new Map([['dj-loy',{portraitUrl:'/fixture-portrait.webp',heroUrl:'/fixture-hero.webp',rotationPolicy:mediaPolicy}]])},
  '@/lib/hostMedia':{HOST_DIRECTORY_MEDIA_KEY:'directory'},
  '@/lib/eventData':{getKaraokeEventListings:async()=>[]},
  '@/lib/nightlifeTime':{getSanDiegoNightlifeWeekday:()=> 'Tuesday'},
- '@/lib/googleSheets':{getGoogleSheetRows:async()=>{calls++;if(fail)throw new Error('429');return live;},GoogleSheetsConfigurationError:class extends Error{}},
+ '@/lib/googleSheets':{getGoogleSheetRows:async(_book,_tab,range)=>{assert.equal(range,"A:AZ","include AF signup links and optional public profile fields");calls++;if(fail)throw new Error('429');return live;},GoogleSheetsConfigurationError:class extends Error{}},
  '@/lib/sourceOfTruth':{getSourceSheetId:()=>book,getSourceTab:()=> 'hosts'},
  '@/lib/tsv':{parseTsv},'@/lib/venueData':{getVenueListings:async()=>[]},
  };
@@ -34,4 +34,10 @@ test('failure falls back without poisoning the successful-read cache',async()=>{
 });
 test('explicit offline override bypasses Sheets without removing canonical KJ corrections',async()=>{
  const l=loader();l.env.HOST_PROFILES_LIVE_SHEETS='false';const hosts=await l.read();assert.equal(l.calls(),0);assert.match(hosts.find(h=>h.slug==='will').bio,/Friday and Sunday/);assert.equal(hosts.some(h=>h.slug==='james'),false);
+});
+
+test('canonical guidelines survive blank media settings and explicit media policy takes precedence',async()=>{
+ const canonical=(await loader({rotationPolicy:'Host-confirmed order',mediaPolicy:'  ',guidelines:'Please be ready when called.'}).read()).find(h=>h.slug==='dj-loy');
+ assert.equal(canonical.rotationPolicy,'Host-confirmed order');assert.equal(canonical.singerGuidelines,'Please be ready when called.');
+ const override=(await loader({rotationPolicy:'Canonical order',mediaPolicy:' Updated host policy '}).read()).find(h=>h.slug==='dj-loy');assert.equal(override.rotationPolicy,'Updated host policy');
 });

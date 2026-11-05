@@ -453,6 +453,8 @@ function rowToHost(row: HostSourceRow): HostProfile {
     bookingLink: getCellAny(row, ["booking_link", "Booking Link"]),
     signupLink: getCellAny(row, ["signup_link", "Signup Link"]),
     bio: getCellAny(row, ["bio", "Bio"]),
+    rotationPolicy: getCellAny(row, ["rotation_policy", "Rotation Policy", "KJ Rotation Rules"]),
+    singerGuidelines: getCellAny(row, ["singer_guidelines", "Singer Guidelines", "KJ House Rules"]),
     vibeTags: parseList(getCellAny(row, ["vibe_tags", "Vibe Tags"])),
     primaryAreas: parseList(
       getCellAny(row, ["primary_areas", "Primary Areas"]),
@@ -497,7 +499,7 @@ function rowToHost(row: HostSourceRow): HostProfile {
 // fallback over newer public profile fields.
 const getCachedSheetRows = unstable_cache(
   async (sheetId: string, sheetTab: string) =>
-    getGoogleSheetRows(sheetId, sheetTab, "A:AE"),
+    getGoogleSheetRows(sheetId, sheetTab, "A:AZ"),
   ["singhub-host-sheet-rows-v3"],
   { revalidate: 900 },
 );
@@ -577,7 +579,7 @@ export async function getHosts({includeMedia=true}: {includeMedia?:boolean} = {}
       heroPlacement: settings?.heroPlacement,
       directoryHeroPlacement: directory?.heroPlacement,
       houseRules: settings?.houseRules,
-      rotationPolicy: settings?.rotationPolicy,
+      rotationPolicy: settings?.rotationPolicy?.trim() || host.rotationPolicy,
       heroImageUrl: settings?.heroUrl || undefined,
       heroImageAlt: settings?.heroAlt,
       heroPosition: settings?.heroPosition,
