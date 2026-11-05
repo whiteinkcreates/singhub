@@ -1,7 +1,9 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import type { VenueProgramEvent } from "@/lib/venueEnhancements";
+import type {VenueProgramEvent,VenueWeeklyProgram} from "@/lib/venueEnhancements";
+import type {KaraokeEventListing} from "@/types";
+import {venueCalendarOccurrences} from "@/lib/venueCalendarOccurrences";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const CATEGORY_LABELS: Record<string, string> = {
@@ -44,8 +46,8 @@ function prettyDate(date: string) {
 
 /** Weekly-first venue programming. This never edits the canonical karaoke schedule. */
 export function VenueMonthlyCalendar({
-  events, venueName, sourceUrl, partial = false,
-}: { events: VenueProgramEvent[]; venueName: string; sourceUrl?: string; partial?: boolean }) {
+  events, venueName, sourceUrl, partial = false, weeklyProgramming = [], karaokeEvents = [],
+}: { events: VenueProgramEvent[]; venueName: string; sourceUrl?: string; partial?: boolean; weeklyProgramming?: VenueWeeklyProgram[]; karaokeEvents?: KaraokeEventListing[] }) {
   const [today] = useState(localToday);
   const [month, setMonth] = useState(() => localToday().slice(0, 7));
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -60,15 +62,16 @@ export function VenueMonthlyCalendar({
   weekEnd.setUTCDate(weekStart.getUTCDate() + 6);
   const weekFirst = weekStart.toISOString().slice(0, 10);
   const weekLast = weekEnd.toISOString().slice(0, 10);
-  const weeklyEvents = useMemo(() => [...events]
-    .filter(event => event.date >= weekFirst && event.date <= weekLast)
-    .sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title)),
-  [events, weekFirst, weekLast]);
-  const monthEvents = useMemo(
-    () => [...events].filter(item => item.date.startsWith(month))
-      .sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title)),
-    [events, month],
-  );
+  const weeklyEvents = useMemo(() => venueCalendarOccurrences({
+    datedEvents:events, weeklyProgramming, karaokeEvents, startDate:weekFirst, endDate:weekLast,
+  }), [events, weeklyProgramming, karaokeEvents, weekFirst, weekLast]);
+  const monthEvents = useMemo(() => {
+    const firstDate=month+"-01";
+    const lastDate=new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5,7)),0)).toISOString().slice(0,10);
+    return venueCalendarOccurrences({
+      datedEvents:events, weeklyProgramming, karaokeEvents, startDate:firstDate, endDate:lastDate,
+    });
+  }, [events, weeklyProgramming, karaokeEvents, month]);
   const eventsByDate = useMemo(() => {
     const map = new Map<string, VenueProgramEvent[]>();
     for (const event of monthEvents) map.set(event.date, [...(map.get(event.date) || []), event]);
@@ -92,7 +95,7 @@ export function VenueMonthlyCalendar({
 
   return <section className="section partner-calendar" aria-label={venueName + " events"}>
     <div className="section-heading">
-      <h2>{partial ? "Upcoming dates on the board" : showMonth ? "Full month lineup" : "This week at " + venueName}</h2>
+      <h2>{showMonth ? (partial ? "Dates on the calendar" : "Full month lineup") : "This week at " + venueName}</h2>
       {sourceUrl ? <a href={sourceUrl} target="_blank" rel="noopener noreferrer">Venue calendar ↗</a> : null}
     </div>
     {!showMonth && <div className="calendar-shell">
@@ -151,6 +154,6 @@ export function VenueMonthlyCalendar({
         </article>)}
       </div>
     </div>}
-    <p className="calendar-disclaimer">{partial ? "Selected dates from the venue schedule. More dates may be added, and a blank day does not mean the venue has no events. Confirm current details with the venue." : "Lineup and admission may change. Check with the venue before heading out."}</p>
+    <p className="calendar-disclaimer">{partial ? "Regular programs and selected special dates are shown. This is not the venue's complete event calendar. Confirm any changes or cancellations with the venue." : "Lineup and admission may change. Check with the venue before heading out."}</p>
   </section>;
 }
