@@ -484,7 +484,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       terms: singhubOffer.terms?.trim() || undefined,
       days: singhubOffer.days?.length ? singhubOffer.days : undefined,
     },
-  }), [about, mottoText, mottoLabel, mottoCustomLabel, mottoAttribution, businessHours, amenities, dailyDeals, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereRotationPolicy, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
+  }), [about, mottoText, mottoLabel, mottoCustomLabel, mottoAttribution, businessHours, amenities, dailyDeals, venueEvents, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereRotationPolicy, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const isDirty = JSON.stringify(output) !== baselineSignature;
   const currentIndex = venues.findIndex(venue => venue.slug === slug);
@@ -594,7 +594,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
 
             <section className="md:col-span-2 rounded-2xl border border-fuchsia-300/20 bg-fuchsia-300/[0.035] p-4">
               <p className={labelClass}>Venue motto / house philosophy (optional)</p>
-              <p className="mt-2 text-sm text-slate-400">Use the venue's own words. Leave blank when the venue hasn't supplied a genuine quote.</p>
+              <p className="mt-2 text-sm text-slate-400">Use the venue&apos;s own words. Leave blank when the venue hasn&apos;t supplied a genuine quote.</p>
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <label className={labelClass}>Section heading
                   <select className={fieldClass} value={mottoLabel} onChange={event=>setMottoLabel(event.target.value as VenueMottoLabel)}>
