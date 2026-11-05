@@ -499,7 +499,7 @@ const getCachedSheetRows = unstable_cache(
   async (sheetId: string, sheetTab: string) =>
     getGoogleSheetRows(sheetId, sheetTab, "A:AZ"),
   ["singhub-host-sheet-rows-v3"],
-  { revalidate: 900 },
+  { revalidate: 3600 },
 );
 
 async function getSheetRows(): Promise<GoogleSheetRow[] | null> {
