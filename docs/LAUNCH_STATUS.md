@@ -1,5 +1,13 @@
 # SingHUB launch status
 
+## November 4 authorized main merge and production release
+
+Corey explicitly approved main merges and their automatic Vercel production deployment in this session. #527 merged at c486fc5; no production SQL or manual database record writes were authorized or performed. The remaining validated account, calendar, sales/support and KJ policy changes are combined in #531 to land their overlapping history together. #529/#530/#532 heads are retained in the combined ancestry. #530's earlier published ref was incorrect; it was repaired without force-pushing and its actual calendar changes are included in this combined validation.
+
+Combined validation on current main: production build/TypeScript and lint pass (52 warnings, zero errors). Broad test run: 153 pass and six fail; all six failures reproduce on current main (stale Radar copy expectation and five historical CSS-provenance checks), so no new test failures were introduced. All six browser suites pass against the combined production build: account/callback, achievement/reduced motion, actual jacket PNG exports, sales/support/admin gate, weekly/partial calendars and SingHERE policies/tips/performance handoff. Fixtures are synthetic and were removed after local checks; CI prepares them before build. No live email, account, receipt, subscription, award or database mutation was made during validation. Locked brand assets from #533 remain intact. Evidence is retained at `/workspace/singhub-review-evidence/merge-release`.
+
+Production deployment state and actual live CPU/quota impact remain separate observations; passing preview/build checks do not establish real-user acceptance or live Google field parity. Hosted email templates and production SQL are unchanged by this release.
+
 ## November 4 venue sales/support reconciliation (#497 / #503, not deployed)
 
 Stacked on the validated #505/#508/#517 account reconciliation. Combines free claim/correction intake, Partner inquiries, support reporting and protected real-venue sales tools. Keeps the $59 standard pricing disclosure, distinguishes enhanced examples from paid Partners and never activates paid rights from a claim. Restores main's every-submission owner notification behavior, including its fallback operator recipient, while preserving persistence-before-notification and success if optional email delivery fails. Button-only email recovery and the navigation font fallback remain intact. No links advertise the unmerged #501 terms route as available. #501/#502 policy drafts remain separate review work.

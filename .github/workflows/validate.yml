@@ -94,11 +94,11 @@ jobs:
         run: node tests/hotel-media-delete-browser.mjs --prepare
 
       - name: Prepare isolated weekly/month calendar fixture
-        if: startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || startsWith(github.head_ref, 'reconcile/weekly-calendar-')
+        if: startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || (startsWith(github.head_ref, 'reconcile/weekly-calendar-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))
         run: node tests/partner-weekly-calendar-browser.mjs --prepare
 
       - name: Prepare isolated SingHERE KJ fixture
-        if: startsWith(github.head_ref, 'reconcile/singhere-kj-')
+        if: (startsWith(github.head_ref, 'reconcile/singhere-kj-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))
         run: node tests/singhere-kj-browser.mjs --prepare
 
       - name: Build
@@ -479,30 +479,30 @@ jobs:
           node tests/venue-sales-support-browser.mjs
 
       - name: Validate weekly/month calendars and partial schedule safeguards
-        if: startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || startsWith(github.head_ref, 'reconcile/weekly-calendar-')
+        if: startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || (startsWith(github.head_ref, 'reconcile/weekly-calendar-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))
         run: |
           npx playwright install --with-deps chromium
-          npm run start -- --port 3100 > /tmp/weekly-calendar-server.log 2>&1 &
+          npm run start -- --port 3124 > /tmp/weekly-calendar-server.log 2>&1 &
           calendar_server_pid=$!
           trap 'kill "$calendar_server_pid"' EXIT
           for attempt in $(seq 1 30); do
-            if curl --silent --fail http://127.0.0.1:3100/weekly-calendar-qa > /dev/null; then break; fi
+            if curl --silent --fail http://127.0.0.1:3124/weekly-calendar-qa > /dev/null; then break; fi
             sleep 1
           done
-          node tests/partner-weekly-calendar-browser.mjs
+          QA_BASE_URL=http://127.0.0.1:3124 node tests/partner-weekly-calendar-browser.mjs
 
       - name: Verify confirmed KJ policy reconciliation
         run: node --test tests/singhere-kj-reconciliation.test.mjs tests/singhere-policy-api.test.mjs tests/following-foundation.test.mjs
 
       - name: Verify SingHERE policies, tips and account handoff in browser
-        if: startsWith(github.head_ref, 'reconcile/singhere-kj-')
+        if: (startsWith(github.head_ref, 'reconcile/singhere-kj-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))
         run: |
           npx playwright install --with-deps chromium
-          npm run start -- --port 3100 > /tmp/singhere-kj-server.log 2>&1 &
+          npm run start -- --port 3125 > /tmp/singhere-kj-server.log 2>&1 &
           kj_server_pid=$!
           trap 'kill "$kj_server_pid"' EXIT
           for attempt in $(seq 1 30); do
-            if curl --silent --fail http://127.0.0.1:3100/singhere-kj-qa > /dev/null; then break; fi
+            if curl --silent --fail http://127.0.0.1:3125/singhere-kj-qa > /dev/null; then break; fi
             sleep 1
           done
-          node tests/singhere-kj-browser.mjs
+          QA_BASE_URL=http://127.0.0.1:3125 node tests/singhere-kj-browser.mjs
