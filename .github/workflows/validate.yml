@@ -34,6 +34,9 @@ jobs:
       - name: Verify SingBOARD flyer extraction and profile-attribution safeguards
         run: node --test tests/singboard-living-board.test.mjs
 
+      - name: Verify bounded live host reads and token reuse
+        run: node --test tests/google-sheets-runtime.test.mjs tests/host-source-cache.test.mjs
+
       - name: Verify pending KJ identity and untimed verified schedule reconciliation
         run: node --test tests/venue-kj-reconciliation.test.mjs
 
@@ -89,6 +92,10 @@ jobs:
       - name: Prepare isolated hotel media editor fixture
         if: startsWith(github.head_ref, 'fix/hotel-media-')
         run: node tests/hotel-media-delete-browser.mjs --prepare
+
+      - name: Prepare isolated weekly/month calendar fixture
+        if: startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || startsWith(github.head_ref, 'reconcile/weekly-calendar-')
+        run: node tests/partner-weekly-calendar-browser.mjs --prepare
 
       - name: Build
         env:
@@ -466,3 +473,16 @@ jobs:
         run: |
           npx playwright install --with-deps chromium
           node tests/venue-sales-support-browser.mjs
+
+      - name: Validate weekly/month calendars and partial schedule safeguards
+        if: startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || startsWith(github.head_ref, 'reconcile/weekly-calendar-')
+        run: |
+          npx playwright install --with-deps chromium
+          npm run start -- --port 3100 > /tmp/weekly-calendar-server.log 2>&1 &
+          calendar_server_pid=$!
+          trap 'kill "$calendar_server_pid"' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:3100/weekly-calendar-qa > /dev/null; then break; fi
+            sleep 1
+          done
+          node tests/partner-weekly-calendar-browser.mjs
