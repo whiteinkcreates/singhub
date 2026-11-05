@@ -23,7 +23,7 @@ function loader(){
  '@/lib/tsv':{parseTsv},'@/lib/venueData':{getVenueListings:async()=>[]},
  };
  vm.runInNewContext(ts.transpileModule(fs.readFileSync('src/lib/hostData.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,esModuleInterop:true}}).outputText,{exports,require:id=>imports[id],process:{env,cwd:process.cwd},console:{error(){}}});
- return {read:exports.getActiveHosts,env,calls:()=>calls,keys,book:value=>{book=value;},fail:value=>{fail=value;}};
+ return {read:exports.getActiveHosts,forVenue:exports.getVenueHostLinks,env,calls:()=>calls,keys,book:value=>{book=value;},fail:value=>{fail=value;}};
 }
 test('live fields remain default, successful reads are cached, and media overrides survive',async()=>{
  const l=loader();for(let i=0;i<3;i++){const host=(await l.read()).find(h=>h.slug==='dj-loy');assert.equal(host.bio,'New approved live profile');assert.equal(host.profileImageUrl,'/fixture-portrait.webp');assert.equal(host.heroImageUrl,'/fixture-hero.webp');}
@@ -35,4 +35,17 @@ test('failure falls back without poisoning the successful-read cache',async()=>{
 });
 test('explicit offline override bypasses Sheets without removing canonical KJ corrections',async()=>{
  const l=loader();l.env.HOST_PROFILES_LIVE_SHEETS='false';const hosts=await l.read();assert.equal(l.calls(),0);assert.match(hosts.find(h=>h.slug==='will').bio,/Friday and Sunday/);assert.equal(hosts.some(h=>h.slug==='james'),false);
+});
+
+test('venue profile links include only hosts matching the verified venue event',async()=>{
+ const l=loader();
+ const matches=await l.forVenue([{hostId:'will',hostName:'Will'}]);
+ assert.ok(matches.some(host=>host.hostId==='will'),'linked host is retained');
+ assert.ok(!matches.some(host=>host.hostId==='art-ruiz'),'unrelated host is excluded');
+ assert.ok(matches.every(host=>!('bio' in host)&&!('schedule' in host)),'venue pages receive minimal host projections');
+});
+test('a venue with no identified host does not load the host directory',async()=>{
+ const l=loader();
+ assert.deepEqual(await l.forVenue([]),[]);
+ assert.equal(l.calls(),0);
 });
