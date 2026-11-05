@@ -297,6 +297,12 @@ function AdminPreview({ venue, profile, mode }: { venue?: VenueOption; profile: 
       <div className="relative p-4">
         {profile.logoImageUrl ? <div className="absolute -top-10 right-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-300/60 bg-[#071019] p-2"><PositionedImage placement={profile.logoPlacement} src={profile.logoImageUrl} alt={profile.logoImageAlt || "Venue logo preview"} className="h-full w-full object-contain" /></div> : null}
         <h3 className="pr-24 text-2xl font-black text-white">{venue.name}</h3><p className="mt-1 text-xs text-slate-400">{venue.neighborhood || venue.city}</p>{profile.tagline ? <p className="mt-3 text-sm leading-6 text-slate-200">{profile.tagline}</p> : null}
+        {profile.mottoText?.trim() ? <div className="mt-5 border-l-2 border-fuchsia-400 pl-4">
+          <p className="text-[10px] font-black uppercase tracking-widest text-cyan-300">{profile.mottoLabel==="Something Else"?(profile.mottoCustomLabel?.trim()||"In Their Own Words"):(profile.mottoLabel||"In Their Own Words")}</p>
+          <blockquote className="mt-2 text-xl font-bold text-white">“{profile.mottoText.trim()}”</blockquote>
+          {profile.mottoAttribution?.trim()?<p className="mt-2 text-xs text-slate-400">{profile.mottoAttribution}</p>:null}
+        </div> : null}
+        {profile.businessHours?.length ? <p className="mt-4 text-xs text-slate-300">Bar hours saved for {profile.businessHours.length} day{profile.businessHours.length===1?"":"s"}. Shown in Good to Know.</p> : null}
         <div className="mt-4 grid grid-cols-3 gap-2"><div className="rounded-xl border border-fuchsia-300/25 p-2 text-center text-[10px] font-black text-fuchsia-100">Directions</div>{profile.phone ? <div className="rounded-xl border border-white/10 p-2 text-center text-[10px] font-black text-slate-200">Call</div> : null}{profile.menuUrl ? <div className="rounded-xl border border-white/10 p-2 text-center text-[10px] font-black text-slate-200">Menu</div> : null}</div>
         <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.035] p-3"><p className="text-[10px] font-black uppercase tracking-[0.16em] text-fuchsia-300">Tonight at {venue.name}</p><p className="mt-2 text-xs text-slate-400">Live profile uses the canonical karaoke schedule plus today&apos;s saved specials.</p></div>
       </div>
@@ -665,11 +671,13 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
                   {DAYS.map(day=><label key={day} className="text-xs font-bold text-slate-300">{day}
                     <input className={fieldClass} maxLength={80} value={businessHours.find(item=>item.day===day)?.hours || ""}
                       placeholder="e.g. 11 AM–2 AM or Closed"
-                      onChange={event=>setBusinessHours(current=>{
-                        const others=current.filter(item=>item.day!==day);
+                      onChange={event=>{
                         const hours=event.target.value;
-                        return hours.trim()?[...others,{day,hours}]:others;
-                      })} />
+                        setBusinessHours(current=>{
+                          const others=current.filter(item=>item.day!==day);
+                          return hours.trim()?[...others,{day,hours}]:others;
+                        });
+                      }} />
                   </label>)}
                 </div>
               </div>
