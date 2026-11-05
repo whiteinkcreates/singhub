@@ -1,5 +1,9 @@
 # SingHUB launch status
 
+## November 4 merged release evidence
+
+Explicit merge and automatic-production-deployment approval was received. #527 merged at c486fc5 and Vercel reports its Production deployment successful. #529/#530/#531/#532 are merged at bd6915f after combined build, lint, browser and GitHub validation. Original source heads and consolidated KJ corrections are preserved. No production SQL, manual database record writes or hosted email-template changes were performed. Production deployment of bd6915f is being observed separately from source merge and functional/live quota acceptance. Detailed evidence is in OPEN_PR_AUDIT_2026-11-04.md and `/workspace/singhub-review-evidence/merge-release`.
+
 ## November 4 authorized main merge and production release
 
 Corey explicitly approved main merges and their automatic Vercel production deployment in this session. #527 merged at c486fc5; no production SQL or manual database record writes were authorized or performed. The remaining validated account, calendar, sales/support and KJ policy changes are combined in #531 to land their overlapping history together. #529/#530/#532 heads are retained in the combined ancestry. #530's earlier published ref was incorrect; it was repaired without force-pushing and its actual calendar changes are included in this combined validation.
