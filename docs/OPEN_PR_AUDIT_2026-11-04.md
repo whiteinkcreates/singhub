@@ -26,9 +26,9 @@ Audit uses fetched PR heads, merge-base patches, current-file comparisons and Gi
 | [#360](https://github.com/whiteinkcreates/singhub/pull/360) | Discover map: official SH pins and Night/Street toggle; purple Tour Stop treatment | Closed unmerged as superseded | 4 |
 | [#359](https://github.com/whiteinkcreates/singhub/pull/359) | Enhanced venue: This Week calendar with full-month expansion and SingBOARD posts | Consolidated in #530 | 2 |
 | [#358](https://github.com/whiteinkcreates/singhub/pull/358) | SingBOARD verified venue/KJ self-posting, categories, cross-posts and review queue | Retain unique residuals; group with #368 | 5 |
-| [#344](https://github.com/whiteinkcreates/singhub/pull/344) | Reconcile SingHERE and confirmed KJ rules with current venue editor | Retain residuals; group with #335 | 3 |
+| [#344](https://github.com/whiteinkcreates/singhub/pull/344) | Reconcile SingHERE and confirmed KJ rules with current venue editor | Consolidated in #532; closed unmerged | 3 |
 | [#341](https://github.com/whiteinkcreates/singhub/pull/341) | Founding Eight achievements UI rollout (four badges live in DB) | Retain separately | 3 |
-| [#335](https://github.com/whiteinkcreates/singhub/pull/335) | Tighten navigation and SingHERE, add verified KJ rules and Following foundation | Retain residuals; group with #344 | 9 |
+| [#335](https://github.com/whiteinkcreates/singhub/pull/335) | Tighten navigation and SingHERE, add verified KJ rules and Following foundation | Consolidated in #532; closed unmerged | 9 |
 | [#319](https://github.com/whiteinkcreates/singhub/pull/319) | Honor Pal Joey's October date-specific karaoke schedules | Retain historical work; no current schedule change | 0 |
 | [#315](https://github.com/whiteinkcreates/singhub/pull/315) | Tighten SingBOARD mobile composition | Closed unmerged as superseded | 0 |
 | [#294](https://github.com/whiteinkcreates/singhub/pull/294) | Add venue hero fallback opt-out | Retain; rebase narrowly | 3 |
@@ -137,7 +137,7 @@ Fetched head: `e1541b12ec8193c6105b5bf3c2e2e098a8fe9ecf`. Verified contributor s
 
 Conflicts: `src/app/api/singboard/publish/route.ts`, `src/app/hosts/[slug]/page.tsx`, `src/app/venues/[slug]/page.tsx`, `src/components/host/HostProfileTemplate.tsx`, `src/lib/singboard/repository.ts`.
 
-### #344: Retain residuals; group with #335
+### #344: Consolidated in #532; closed unmerged
 
 Fetched head: `5bd7ce8d58aff1981b20f53d39ec088e76ae8ba9`. Reconciliation branch adds stronger URL validation and KJ rotation policy handling. Main #469 and later host-specific signup/tip changes cover part of the goal, but unique validation behavior is not a redundant styling change. Three conflicts; retain modern signed-out/account actions.
 
@@ -149,7 +149,7 @@ Fetched head: `e1a8a77d09401db83bbd0783c796d054b4022c39`. Nomination/moderation 
 
 Conflicts: `src/app/admin/page.tsx`, `src/components/v2/MyJacket.tsx`, `src/components/v2/MySingHubTemplate.tsx`.
 
-### #335: Retain residuals; group with #344
+### #335: Consolidated in #532; closed unmerged
 
 Fetched head: `90e7a7d20e670b30220d9a413d380f69133733ad`. Following foundation and simplified navigation largely exist on main, including later SingHERE changes. Nine conflicts; avoid merging old navigation and dialogs wholesale. Compare residual KJ rules/rotation and SQL against #344 before retiring either.
 
@@ -220,3 +220,13 @@ The published network configuration now enforces access to `api.github.com`; no 
 - Retained every original branch. Confirmed main remains `46fae9b34de9d9818ec801e96c6d468428cf3370`.
 
 #527, #529 and #530 pass GitHub validation; #529 also passes its canonical-data preflight/dry-run (publish is skipped). Vercel preview builds for #529/#530/#531 report success. #531's validation is still running, with no reported failure at this observation. Preview success is not production release or live-source parity acceptance. No main merge, production deployment or production database write was performed.
+
+## Next engineering pass after repeated environment publications
+
+The repeated environment publications did not advance code. On resuming engineering, #531 was confirmed successful, completing CI validation for the original four workstreams at their then-current heads. Main remained `46fae9b34de9d9818ec801e96c6d468428cf3370`.
+
+A new source defect was found: live host reads used A:AE, excluding the committed signup_link field in AF. #527 now includes fix `05ddb17`, reading A:AZ, with range and Art Ruiz signup regression assertions; all 32 focused tests pass. Live Google field parity and actual Vercel CPU/quota telemetry remain unverified.
+
+Draft [#532](https://github.com/whiteinkcreates/singhub/pull/532) consolidates #335/#344 on top of #527. It preserves modern navigation, Following UI, tips, signup destinations, performance/account handoff and canonical identity holds. Remaining optional host-confirmed policy/editor/guidance changes are reconciled; Following helper/SQL remain reference-only. No SQL was applied. Local production build/TypeScript, 26 tests, lint (zero errors, 51 warnings) and Chromium at 390/1280px pass. #335/#344 were closed unmerged after confirming their heads still matched the audited commits and linking #532; original branches remain retained.
+
+#527 and #532 CI are rerunning for the new commits; source/local checks are not a claim of production readiness. No environment settings were changed or republished in this engineering pass. No main merge, production deployment or production database write occurred.
