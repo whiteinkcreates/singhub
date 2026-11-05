@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 import fs from "node:fs";
 import path from "node:path";
@@ -130,13 +131,24 @@ function getCanonicalSlug(slug: string) {
   return match?.canonical_slug || slug;
 }
 
-async function loadEnhancementMedia() {
-  const map = new Map<string, EnhancementMediaRow["profile"]>();
-  try {
+// Cache the shared public enhancement snapshot across requests. Admin edits may
+// take up to five minutes to appear in directory cards; the individual venue
+// enhancement endpoint still reads its own current record directly.
+const getCachedEnhancementRows = unstable_cache(
+  async (): Promise<EnhancementMediaRow[]> => {
     const supabase = createAdminClient();
     const { data, error } = await supabase.from("venue_enhancements").select("slug,profile");
     if (error) throw error;
-    for (const row of (data || []) as EnhancementMediaRow[]) map.set(row.slug, row.profile);
+    return (data || []) as EnhancementMediaRow[];
+  },
+  ["singhub-public-venue-enhancement-rows-v1"],
+  { revalidate: 300 },
+);
+
+async function loadEnhancementMedia() {
+  const map = new Map<string, EnhancementMediaRow["profile"]>();
+  try {
+    for (const row of await getCachedEnhancementRows()) map.set(row.slug, row.profile);
   } catch (error) {
     console.error("Venue enhancement media read failed", error);
   }
