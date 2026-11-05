@@ -3,6 +3,7 @@ import { applySeasonalKaraokeHours } from "@/lib/seasonalKaraokeHours";
 import fs from "node:fs";
 import path from "node:path";
 import { connection } from "next/server";
+import { cache } from "react";
 import { getSanDiegoNightlifeWeekday } from "@/lib/nightlifeTime";
 import type { KaraokeEventListing } from "@/types";
 import { parseTsv, type TsvRow } from "@/lib/tsv";
@@ -84,10 +85,15 @@ function getFallbackLastSynced() {
   return fs.statSync(EVENTS_DATA_PATH).mtime.toISOString();
 }
 
-function getFallbackRows() {
-  if (!fs.existsSync(EVENTS_DATA_PATH)) return [];
+let cachedEventRows: EventSourceRow[] | undefined;
+
+// Event snapshots are packaged with each deployment; seasonal time overrides
+// are still applied per read, so only the immutable source parsing is cached.
+function getFallbackRows(): EventSourceRow[] {
+  if (cachedEventRows) return cachedEventRows;
+  if (!fs.existsSync(EVENTS_DATA_PATH)) return (cachedEventRows = []);
   const content = fs.readFileSync(EVENTS_DATA_PATH, "utf8");
-  return parseTsv(content).map((row: TsvRow) => row as EventSourceRow);
+  return (cachedEventRows = parseTsv(content).map((row: TsvRow) => row as EventSourceRow));
 }
 
 function eventRunsToday(event: KaraokeEventListing, today: string) {
@@ -134,9 +140,10 @@ export async function getKaraokeEventData(): Promise<{
   };
 }
 
-export async function getKaraokeEventListings(): Promise<KaraokeEventListing[]> {
+// Reuse the event projection across all loaders during a single page render.
+export const getKaraokeEventListings = cache(async (): Promise<KaraokeEventListing[]> => {
   return (await getKaraokeEventData()).events;
-}
+});
 
 export async function getKaraokeEventsHostingToday(): Promise<KaraokeEventListing[]> {
   await connection();
