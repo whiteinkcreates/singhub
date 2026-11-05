@@ -12,6 +12,8 @@ export type VenueMottoLabel = (typeof VENUE_MOTTO_LABELS)[number];
 /** Opening hours are separate from the canonical karaoke schedule. Blank means unverified. */
 export type VenueBusinessHours = { day: string; hours: string };
 export type VenueProgramEvent = { title: string; date: string; time?: string; detail?: string; recurring?: boolean; category?: "karaoke" | "live_music" | "game" | "trivia" | "bingo" | "sports" | "community" | "special"; sourceUrl?: string; };
+/** Approved recurring venue programming, distinct from the canonical karaoke schedule. */
+export type VenueWeeklyProgram = { day: string; title: string; time?: string; detail?: string; category?: VenueProgramEvent["category"]; sourceUrl?: string; };
 export type SingHubOffer = { enabled: boolean; title: string; detail?: string; terms?: string; days?: string[]; presentationMode?: "staff_code" | "one_time"; };
 export type SingHereConfig = {
   mode?: "instructions" | "external";
@@ -68,6 +70,7 @@ export type VenueEnhancement = {
   weeklySpecials: VenueSpecial[];
   dailyDeals: VenueDailyDeal[];
   venueEvents?: VenueProgramEvent[];
+  weeklyProgramming?: VenueWeeklyProgram[];
   /** When true, calendar has source-backed dates but is not the venue's entire monthly program. */
   venueEventsPartial?: boolean;
   eventCalendarUrl?: string;
