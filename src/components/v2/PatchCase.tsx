@@ -1,7 +1,7 @@
 "use client";
 import {useState} from "react";
 import type {Achievement} from "@/lib/v2/singerAccount";
-import {PATCH_RULES} from "@/lib/v2/patchCatalog";
+import {PATCH_RULES,achievementLevelLabel} from "@/lib/v2/patchCatalog";
 
 /** The case is the current achievement catalog, never a hard-coded fake badge list. */
 export function PatchCase({awards}:{awards:Achievement[]}) {
@@ -24,13 +24,13 @@ export function PatchCase({awards}:{awards:Achievement[]}) {
          aria-pressed={selected===rule.key} onClick={()=>setSelected(rule.key)}>
            <span className="patch-case-icon" aria-hidden="true">{isEarned?"★":"☆"}</span>
            <b>{rule.name}</b>
-           <span>{isEarned?"Earned · "+rule.category:"Not yet earned · "+rule.category}</span>
+           <span>{award?"Earned · "+achievementLevelLabel(award.level)+" · "+rule.category:"Not yet earned · "+rule.category}</span>
            <small>{rule.howToEarn}</small>
          </button>;
      })}
    </div>
    {current&&<div className="patch-case-detail" role="status">
-     <strong>{current.name}{earned.has(current.key)?" · Earned":" · Locked"}</strong>
+     <strong>{current.name}{earned.has(current.key)?" · "+achievementLevelLabel(earned.get(current.key)!.level)+" · Earned":" · Locked"}</strong>
      <p>{current.howToEarn}</p>
    </div>}
    <div className="patch-rule">{awards.length} earned of {rules.length} available achievements. Performance Stars remain separate on your jacket sleeves.</div>

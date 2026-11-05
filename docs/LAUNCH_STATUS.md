@@ -1,5 +1,39 @@
 # SingHUB launch status
 
+## November 4 authorized main merge and production release
+
+Corey explicitly approved main merges and their automatic Vercel production deployment in this session. #527 merged at c486fc5; no production SQL or manual database record writes were authorized or performed. The remaining validated account, calendar, sales/support and KJ policy changes are combined in #531 to land their overlapping history together. #529/#530/#532 heads are retained in the combined ancestry. #530's earlier published ref was incorrect; it was repaired without force-pushing and its actual calendar changes are included in this combined validation.
+
+Combined validation on current main: production build/TypeScript and lint pass (52 warnings, zero errors). Broad test run: 153 pass and six fail; all six failures reproduce on current main (stale Radar copy expectation and five historical CSS-provenance checks), so no new test failures were introduced. All six browser suites pass against the combined production build: account/callback, achievement/reduced motion, actual jacket PNG exports, sales/support/admin gate, weekly/partial calendars and SingHERE policies/tips/performance handoff. Fixtures are synthetic and were removed after local checks; CI prepares them before build. No live email, account, receipt, subscription, award or database mutation was made during validation. Locked brand assets from #533 remain intact. Evidence is retained at `/workspace/singhub-review-evidence/merge-release`.
+
+Production deployment state and actual live CPU/quota impact remain separate observations; passing preview/build checks do not establish real-user acceptance or live Google field parity. Hosted email templates and production SQL are unchanged by this release.
+
+## November 4 venue sales/support reconciliation (#497 / #503, not deployed)
+
+Stacked on the validated #505/#508/#517 account reconciliation. Combines free claim/correction intake, Partner inquiries, support reporting and protected real-venue sales tools. Keeps the $59 standard pricing disclosure, distinguishes enhanced examples from paid Partners and never activates paid rights from a claim. Restores main's every-submission owner notification behavior, including its fallback operator recipient, while preserving persistence-before-notification and success if optional email delivery fails. Button-only email recovery and the navigation font fallback remain intact. No links advertise the unmerged #501 terms route as available. #501/#502 policy drafts remain separate review work.
+
+Local validation: 25 tests pass, including mocked persistence/notification order/failure, legacy notification retention, category-only same-origin auth diagnostics and rejection of sensitive extra fields/non-object submissions. Production build/TypeScript and lint pass (zero errors, 52 warnings). Chromium tests at 390/1280px pass support submission (intercepted), free claims, public venue examples and the admin-protected sales kit. Local Basic Auth uses a fixture-only password. No real email, account, subscription, agreement, database write or production deployment occurred. Screenshot evidence is retained in `/workspace/singhub-review-evidence/sales-support`.
+
+## November 4 account PR reconciliation (#505 / #508 / #517, not deployed)
+
+Combined current-main branch retains actual award tiers and earning criteria, safe action-preserving email return paths, button-only sign-in/template, and achievement reveal/history/acknowledgement. The achievements anchor belongs to history; there are no duplicate IDs. Account navigation uses a native SVG account symbol and bounded icon slots so unavailable Google icon fonts cannot widen phone layouts. The source email template does not change the hosted Supabase template. Existing migration files were retained, not executed; historical applied-state claims were not reverified.
+
+Local validation: 16 focused tests pass, production build and TypeScript pass, lint has zero errors and 52 warnings (one additional existing-PR image warning). System Chromium acceptance passes sign-in/signup, navigation, expired callbacks and external-redirect rejection at 360/390/768/1440px; achievement presentation/replay at 360/390/1440px and reduced motion; actual jacket portrait and earned-award PNG exports at 390/1440px. Browser auth requests are intercepted and awards are synthetic. No real email, user, award or receipt was created. Review evidence is retained outside the checkout in `/workspace/singhub-review-evidence/account`. Live member acceptance and hosted email/template activation remain release gates. No main merge or production deployment.
+
+## November 4 weekly calendar reconciliation (#359 / #365, not deployed)
+
+Ports the overlapping weekly-first calendar work onto current main rather than replacing the old component wholesale. Retains main's partial-calendar prop/disclaimer and category-dot classification, uses the venue's San Diego calendar date, and gives each expandable calendar a unique control target. Partial calendars say "Open listed dates calendar" and never claim a complete monthly schedule. Current Living Board profile integration is unchanged. Includes the same navigation-font fallback fix as the account reconciliation so phone validation works without external icon fonts.
+
+Local validation: 13 regression tests, production build/TypeScript and lint (zero errors, 51 warnings) pass. Chromium checks pass weekly/month expansion, previous/next week navigation, category colors, separate control IDs and partial-schedule messaging at 390/1280px, without horizontal overflow or runtime errors. Synthetic fixture source was removed after validation; CI prepares it before build. Screenshots are retained outside the checkout in `/workspace/singhub-review-evidence/calendar`. No main merge, production deployment, canonical schedule edits or database writes.
+
+## November 4 SingHERE/KJ rules reconciliation (#335 / #344, not deployed)
+
+Reconciles remaining host-confirmed rotation guidance, optional canonical singer guidelines, editor save/load/dirty tracking and signup URL validation on top of #527. Retains current host-night signup/tip links, the direct performance/account handoff, host identity holds, canonical KJ corrections and Following UI. Current navigation/footer and host-guideline styling satisfy the older #335 presentation goals; they are not replaced with the old layouts. The unique Following helper and SQL are retained as source reference only; no schema changes or notifications are activated.
+
+Live host fetch now includes A:AZ: the old A:AE range excluded the committed signup_link field at AF. This is covered by a range regression and does not change schedules or host IDs. Live Google parity and production CPU/quota telemetry remain unverified.
+
+Local validation: 26 tests pass, including API policy round-trip/rejection with mocked persistence, canonical/media precedence, signup URL validation, current handoffs, owner-scoped Following and #527 regressions. Production build/TypeScript and lint pass (zero errors, 51 existing warnings). Chromium checks at 390/1280px verify confirmed/blank policies, credentialed signup rejection, current tip links, direct performance handoff and the legacy dialog. Only synthetic fixture data was used. No production write, SQL execution, main merge or production deployment.
+
 ## November 4 runtime request reduction (PR #527, not deployed)
 
 Retains the consolidated KJ profile corrections from #528. Replaces the unverified TSV-default strategy with live host rows cached for 15 minutes by workbook/tab; explicit `HOST_PROFILES_LIVE_SHEETS=false` remains an emergency snapshot override. Successful live reads retain all public fields and media overrides. Failed refreshes throw inside the Next cache so an existing good value is retained; a cold failure falls back to the canonical snapshot without caching null over the live source.

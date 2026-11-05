@@ -12,3 +12,9 @@ export const PATCH_RULES: readonly PatchRule[] = [
   {key:"sing_along_superstar",name:"Sing-Along Superstar",howToEarn:"Receive 3 independent witnessed nominations for the same venue and night, then SingHUB admin approval.",category:"Community"},
   {key:"cheer_captain",name:"Cheer Captain",howToEarn:"Receive 3 independent witnessed nominations for supporting singers at the same venue and night, then SingHUB admin approval.",category:"Community"},
 ];
+
+/** Display only. The database remains the source of truth for award levels. */
+export function achievementLevelLabel(level:number):string {
+ const roman=["I","II","III","IV","V"];
+ return "Level "+(Number.isInteger(level)&&level>=1&&level<=roman.length?roman[level-1]:String(level));
+}

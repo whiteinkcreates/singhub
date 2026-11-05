@@ -3,6 +3,7 @@ import {useEffect,useRef,useState,type CSSProperties} from "react";
 import {toPng} from "html-to-image";
 import {MyJacket} from "./MyJacket";
 import type {Achievement} from "@/lib/v2/singerAccount";
+import {PATCH_RULES,achievementLevelLabel} from "@/lib/v2/patchCatalog";
 
 /** Real award records only. These are typographic share cards, not unapproved patch illustrations. */
 type DisplayPatch={name:string;className:string};
@@ -54,7 +55,7 @@ export function JacketShareStudio({alias,awards,skin,patches,performanceStars,re
    {n>0&&<div className="jacket-share-awards">
      {awards.map(award=><button type="button" className="button" key={award.id} disabled={!ready||Boolean(busy)}
        onClick={()=>void exportNode(cards.current[award.id],"singhub-"+safeOwner+"-"+safeName(award.badge_name)+".png",award.id)}>
-       {busy===award.id?"Preparing…":"Award card: "+award.badge_name}
+       {busy===award.id?"Preparing…":"Award card: "+award.badge_name+" · "+achievementLevelLabel(award.level)}
      </button>)}
    </div>}
    {!n&&<p className="jacket-share-note">As soon as you earn a patch, its award card will appear here.</p>}
@@ -74,10 +75,10 @@ export function JacketShareStudio({alias,awards,skin,patches,performanceStars,re
        <div style={{borderTop:"2px solid rgba(255,255,255,.2)",paddingTop:20}}>
          <div style={{fontSize:28,fontWeight:900,letterSpacing:3,color:"#ff6bcc",marginBottom:12}}>EARNED ACHIEVEMENTS</div>
          <div style={{display:"grid",gridTemplateColumns:n>8?"repeat(4,1fr)":"repeat(2,1fr)",gap:10}}>
-           {(n?awards:[{id:"empty",badge_name:"Your first patch is waiting",badge_key:"",awarded_at:""}]).map(a=>
+           {(n?awards:[{id:"empty",badge_name:"Your first patch is waiting",badge_key:"",awarded_at:"",level:1}]).map(a=>
              <div key={a.id} style={{minHeight:n>10?48:76,display:"flex",alignItems:"center",gap:12,border:"1px solid rgba(111,232,248,.45)",borderRadius:10,background:"rgba(2,11,29,.85)",padding:"10px 14px",boxSizing:"border-box"}}>
                <span style={{fontSize:n>10?22:34,color:"#ffcf49"}}>★</span>
-               <div style={{fontSize:n>10?15:20,fontWeight:900}}>{a.badge_name}</div>
+               <div style={{fontSize:n>10?15:20,fontWeight:900}}>{a.badge_name}{" · "}{achievementLevelLabel(a.level)}</div>
              </div>
            )}
          </div>
@@ -87,9 +88,11 @@ export function JacketShareStudio({alias,awards,skin,patches,performanceStars,re
      {awards.map(award=><div key={award.id} ref={el=>{cards.current[award.id]=el;}}
        style={{...panelStyle,display:"flex",flexDirection:"column",justifyContent:"space-between",alignItems:"center",textAlign:"center"}}>
        <img src={logo} alt="" style={{width:350,height:"auto"}}/>
-       <div style={{fontSize:26,letterSpacing:8,fontWeight:900,color:"#92eafd"}}>ACHIEVEMENT UNLOCKED</div>
+       <div style={{fontSize:26,letterSpacing:8,fontWeight:900,color:"#92eafd"}}>{award.level>1?"ACHIEVEMENT LEVEL UP":"ACHIEVEMENT UNLOCKED"}</div>
        <div style={{width:500,height:500,borderRadius:80,border:"14px solid #f933ac",boxShadow:"0 0 90px rgba(255,34,172,.35),inset 0 0 70px rgba(25,205,240,.22)",display:"grid",placeItems:"center",fontSize:300,color:"#ffcf49",background:"#101b30"}}>★</div>
        <div style={{fontSize:82,fontWeight:900,lineHeight:1,textTransform:"uppercase"}}>{award.badge_name}</div>
+       <div style={{fontSize:42,fontWeight:900,letterSpacing:3,color:"#ffcf49"}}>{achievementLevelLabel(award.level)}</div>
+       <div style={{fontSize:25,lineHeight:1.3,color:"#b8e5f5",maxWidth:840}}>{PATCH_RULES.find(rule=>rule.key===award.badge_key)?.howToEarn||"Previously awarded SingHUB patch."}</div>
        <div style={{fontSize:32,color:"#b8e5f5"}}>{owner} · My SingHUB</div>
        <div style={{fontSize:21,letterSpacing:4,color:"#c4b9d7"}}>SINGHUB.APP · KARAOKE COMMUNITY</div>
      </div>)}
