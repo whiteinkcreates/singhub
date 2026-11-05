@@ -2,7 +2,7 @@
 
 ## November 4 merged release evidence
 
-Explicit merge and automatic-production-deployment approval was received. #527 merged at c486fc5 and Vercel reports its Production deployment successful. #529/#530/#531/#532 are merged at bd6915f after combined build, lint, browser and GitHub validation. Original source heads and consolidated KJ corrections are preserved. No production SQL, manual database record writes or hosted email-template changes were performed. Production deployment of bd6915f is being observed separately from source merge and functional/live quota acceptance. Detailed evidence is in OPEN_PR_AUDIT_2026-11-04.md and `/workspace/singhub-review-evidence/merge-release`.
+Explicit merge and automatic-production-deployment approval was received. #527 merged at c486fc5 and Vercel reports its Production deployment successful. #529/#530/#531/#532 are merged at bd6915f after combined build, lint, browser and GitHub validation. Original source heads and consolidated KJ corrections are preserved. No production SQL, manual database record writes or hosted email-template changes were performed. Vercel Production deployment 7565755598 for bd6915f reports success. Functional/live quota acceptance remains a separate observation. Detailed evidence is in OPEN_PR_AUDIT_2026-11-04.md and `/workspace/singhub-review-evidence/merge-release`.
 
 ## November 4 authorized main merge and production release
 
