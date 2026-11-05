@@ -13,8 +13,9 @@ try{
  browser=await chromium.launch({args:['--no-sandbox']});
  for(const width of [360,390,768,1440]){
   const page=await browser.newPage({viewport:{width,height:900}});
+  page.setDefaultTimeout(15_000);page.setDefaultNavigationTimeout(20_000);
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  const response=await page.goto(base+'/account',{waitUntil:'networkidle'});
+  const response=await page.goto(base+'/account',{waitUntil:'domcontentloaded'});
   assert.equal(response.status(),200,'account route at '+width);
   await page.getByRole('button',{name:'Sign in',exact:true}).waitFor();
   assert.ok(await page.getByRole('button',{name:'Create account',exact:true}).isVisible(),'signup above fold');
@@ -27,22 +28,43 @@ try{
   assert.ok(await dialog.isVisible(),'sign-in modal visible');
   assert.match(await dialog.innerText(),/Sign in to My SingHUB/i);
   assert.ok(await dialog.getByRole('textbox',{name:'Email address'}).isVisible());
+  if(width===390){
+   // Stub only the outbound request; no real email is delivered or user created.
+   const headers={
+    'Access-Control-Allow-Origin':'*',
+    'Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info',
+    'Access-Control-Allow-Methods':'POST, OPTIONS',
+    'Content-Type':'application/json',
+   };
+   await page.route('**/auth/v1/otp*',async route=>{
+    await route.fulfill({status:route.request().method()==='OPTIONS'?204:200,headers,body:route.request().method()==='OPTIONS'?'':'{}'});
+   });
+   await dialog.getByRole('textbox',{name:'Email address'}).fill('qa@example.invalid');
+   await dialog.getByRole('button',{name:'Email my sign-in link'}).click();
+   await dialog.getByRole('button',{name:'Link sent · Check your email'}).waitFor();
+   assert.match(await dialog.innerText(),/tap.*Sign in to SingHUB/i,'button-only email guidance');
+   assert.equal(await dialog.locator('#singhub-email-otp').count(),0,'no manual code field');
+   assert.equal(await dialog.getByRole('button',{name:'Verify code & sign in'}).count(),0,'no code verification button');
+   assert.ok(await dialog.getByRole('button',{name:'Send a new link or change email'}).isVisible(),'link recovery available');
+  }
   await dialog.getByRole('button',{name:'Close account action'}).click();
   await page.getByRole('button',{name:'Create account',exact:true}).click();
   assert.match(await dialog.innerText(),/Create your My SingHUB account/i);
   assert.ok(await dialog.getByRole('textbox',{name:'Email address'}).isVisible());
   await dialog.getByRole('button',{name:'Close account action'}).click();
-  await page.goto(base+'/account?signin=1&next=%2Fvenues%2Fredwing-bar-grill',{waitUntil:'networkidle'});
+  await page.goto(base+'/account?signin=1&next=%2Fvenues%2Fredwing-bar-grill',{waitUntil:'domcontentloaded'});
   await dialog.waitFor({state:'visible'});
   await dialog.getByRole('button',{name:'Close account action'}).click();
-  await page.goto(base+'/auth/callback?next=%2Faccount',{waitUntil:'networkidle'});
+  await page.goto(base+'/auth/callback?next=%2Faccount',{waitUntil:'domcontentloaded'});
   assert.equal(new URL(page.url()).pathname,'/account');
   assert.equal(new URL(page.url()).searchParams.get('authError'),'missing_code');
-  assert.match(await dialog.innerText(),/expired or could not be completed/i);
-  await page.goto(base+'/auth/callback?next=https%3A%2F%2Funtrusted.example',{waitUntil:'networkidle'});
+  await dialog.getByText(/expired or did not open correctly/i).waitFor();
+  assert.match(await dialog.innerText(),/expired or did not open correctly/i);
+  await page.goto(base+'/auth/callback?next=https%3A%2F%2Funtrusted.example',{waitUntil:'domcontentloaded'});
   assert.ok(['localhost','127.0.0.1'].includes(new URL(page.url()).hostname),'external redirect is rejected');
   assert.equal(new URL(page.url()).pathname,'/account','unsafe redirect rejected');
   assert.deepEqual(errors,[],'browser runtime errors at '+width);
+  console.log('Account entry and callback checks passed at '+width+'px');
   await page.close();
  }
  console.log('4 responsive account sign-in/signup, nav, expired callback and open-redirect checks passed.');

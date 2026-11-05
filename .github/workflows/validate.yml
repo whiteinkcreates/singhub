@@ -37,11 +37,20 @@ jobs:
       - name: Verify pending KJ identity and untimed verified schedule reconciliation
         run: node --test tests/venue-kj-reconciliation.test.mjs
 
+      - name: Confirm account sign-in and achievement return paths
+        run: node --test tests/auth-button-only.test.mjs tests/auth-redirect-achievements.test.mjs
+
+      - name: Test achievement reveal baseline, history, and privacy guards
+        run: node --test tests/achievement-reveal.test.mjs
+
       - name: Verify canonical reconciliation and nightlife behavior
         run: node --test tests/tip-chair-foundation.test.mjs tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs tests/hotel-package.test.mjs tests/hotel-photo-rights.test.mjs tests/hotel-media-delete.test.mjs
 
+      - name: Verify support intake and auth diagnostics
+        run: node --test tests/backyard-integration.test.mjs tests/auth-incident-route.test.mjs
+
       - name: Verify Backyard integration behavior
-        if: startsWith(github.head_ref, 'review/backyard-v2-integration-')
+        if: startsWith(github.head_ref, 'review/backyard-v2-integration-') || startsWith(github.head_ref, 'feature/venue-claim-support-')
         run: node --test tests/backyard-integration.test.mjs
 
       - name: Verify TourStops and Partner offer redemption
@@ -70,11 +79,11 @@ jobs:
         run: node tests/star-share-browser.mjs --prepare
 
       - name: Verify My SingHUB account loading and identity changes
-        if: startsWith(github.head_ref, 'fix/my-jacket-')
-        run: node --test tests/singer-account-loading.test.mjs
+        if: startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))
+        run: node --test tests/singer-account-loading.test.mjs tests/auth-redirect-achievements.test.mjs
 
       - name: Prepare isolated My Jacket earned patch export fixture
-        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-'))
+        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-')))
         run: node tests/jacket-share-browser.mjs --prepare
 
       - name: Prepare isolated hotel media editor fixture
@@ -83,8 +92,8 @@ jobs:
 
       - name: Build
         env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-')) && 'http://127.0.0.1:3101' || '' }}
-          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-')) && 'qa-public-key' || '' }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-') || startsWith(github.head_ref, 'fix/account-email-button-only-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))) && 'http://127.0.0.1:3101' || '' }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ (startsWith(github.head_ref, 'feat/gig-stubs-') || startsWith(github.head_ref, 'feat/tour-stops') || startsWith(github.head_ref, 'fix/gps-checkin-') || startsWith(github.head_ref, 'fix/hotel-hero-') || startsWith(github.head_ref, 'fix/mysinghub-') || startsWith(github.head_ref, 'fix/account-email-button-only-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))) && 'qa-public-key' || '' }}
         run: npm run build
 
       - name: Install browser for My SingHUB acceptance
@@ -169,11 +178,11 @@ jobs:
           path: /tmp/backyard-integration-qa
 
       - name: Install browser for My Jacket export QA
-        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-'))
+        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-')))
         run: npx playwright install --with-deps chromium
 
       - name: Test My Jacket patch catalog and real downloaded social PNGs
-        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-'))
+        if: (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-')))
         run: |
           npm run start -- --port 3100 > /tmp/jacket-qa-server.log 2>&1 &
           server_pid=$!
@@ -185,7 +194,7 @@ jobs:
           node tests/jacket-share-browser.mjs
 
       - name: Save My Jacket export QA images
-        if: always() && (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-'))
+        if: always() && (startsWith(github.head_ref, 'feat/my-jacket-') || startsWith(github.head_ref, 'fix/my-jacket-') || startsWith(github.head_ref, 'feature/achievement-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-')))
         uses: actions/upload-artifact@v4
         with:
           name: my-jacket-share-qa
@@ -421,17 +430,39 @@ jobs:
           include-hidden-files: true
 
       - name: Install browser for account entry QA
-        if: startsWith(github.head_ref, 'fix/account-signin-')
+        if: (startsWith(github.head_ref, 'fix/account-signin-') || startsWith(github.head_ref, 'fix/account-email-button-only-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-')))
         run: npx playwright install --with-deps chromium
 
       - name: Verify signed-out account entry, signup, and callback redirects
-        if: startsWith(github.head_ref, 'fix/account-signin-')
+        if: (startsWith(github.head_ref, 'fix/account-signin-') || startsWith(github.head_ref, 'fix/account-email-button-only-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-')))
         run: node tests/account-signin-browser.mjs
 
       - name: Save account entry screenshots
-        if: always() && startsWith(github.head_ref, 'fix/account-signin-')
+        if: always() && (startsWith(github.head_ref, 'fix/account-signin-') || startsWith(github.head_ref, 'fix/account-email-button-only-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-')))
         uses: actions/upload-artifact@v4
         with:
           name: singhub-account-signin-qa
           path: .account-signin-qa
           include-hidden-files: true
+
+      - name: Install browser for achievement presentation QA
+        if: (startsWith(github.head_ref, 'feat/achievement-reveal-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-')))
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify First Gig and Level Up animations at phone and desktop sizes
+        if: (startsWith(github.head_ref, 'feat/achievement-reveal-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-')))
+        run: node tests/achievement-reveal-browser.mjs
+
+      - name: Save achievement presentation review screenshots
+        if: always() && (startsWith(github.head_ref, 'feat/achievement-reveal-') || (startsWith(github.head_ref, 'reconcile/account-') || startsWith(github.head_ref, 'reconcile/venue-sales-')))
+        uses: actions/upload-artifact@v4
+        with:
+          name: achievement-reveal-qa
+          path: .achievement-reveal-qa
+          include-hidden-files: true
+
+      - name: Validate free claims, support and venue sales workflow
+        if: startsWith(github.head_ref, 'reconcile/venue-sales-')
+        run: |
+          npx playwright install --with-deps chromium
+          node tests/venue-sales-support-browser.mjs

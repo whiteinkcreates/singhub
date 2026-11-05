@@ -7,7 +7,7 @@
 .primary a { padding:10px 13px; color:#9ba5b3; font-size:.87rem; font-weight:700; white-space:nowrap; }
 .primary a:hover,.primary a[aria-current="page"] { color:white; box-shadow:inset 0 -2px #ff19a8; }
 .account { display:flex; justify-content:flex-end; align-items:center; gap:10px; font-size:.84rem; font-weight:700; white-space:nowrap; }
-.account i { display:grid; place-items:center; width:36px; height:36px; border:1px solid #45505e; border-radius:50%; background:#101319; font-size:24px; font-style:normal; }
+.account i { overflow:hidden; flex-shrink:0; display:grid; place-items:center; width:36px; height:36px; border:1px solid #45505e; border-radius:50%; background:#101319; font-size:24px; font-style:normal; }
 .account[aria-current="page"] i { border-color:#ff19a8; color:#ff19a8; }
 .header a:focus-visible,.mobile a:focus-visible { outline:2px solid #00c8ff; outline-offset:3px; }
 .more {position:relative;color:#9ba5b3;font-size:.87rem;font-weight:700;align-self:center;}
@@ -33,7 +33,7 @@
  .account { justify-self:end; }
  .mobile { position:fixed; bottom:0; left:0; right:0; z-index:60; display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); padding:7px 4px max(7px,env(safe-area-inset-bottom)); border-top:1px solid #292f39; background:rgba(9,11,15,.97); backdrop-filter:blur(16px); color:#9ba5b3; font-family:"Barlow",sans-serif; }
  .mobile a { display:grid; justify-items:center; align-content:center; gap:4px; min-height:48px; font-size:10px; font-weight:700; white-space:nowrap; }
- .mobile i { font-size:22px; font-style:normal; }
+ .mobile i { display:block; width:1em; height:1em; overflow:hidden; line-height:1; font-size:22px; font-style:normal; }
  .mobile a[aria-current="page"] { color:#ff19a8; }
  :global(body:has([data-app-navigation])) { padding-bottom:74px; }
 }
