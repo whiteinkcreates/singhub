@@ -109,7 +109,7 @@ export async function PUT(request: Request) {
           typeof item.title !== "string" || !item.title.trim() || item.title.length > 140 ||
           (item.time !== undefined && (typeof item.time !== "string" || item.time.length > 40)) ||
           (item.detail !== undefined && (typeof item.detail !== "string" || item.detail.length > 240)) ||
-          (item.category !== undefined && !categories.includes(item.category)) ||
+          (item.category !== undefined && (!categories.includes(item.category) || item.category === "karaoke")) ||
           (item.sourceUrl !== undefined && (typeof item.sourceUrl !== "string" || !/^https?:\/\//i.test(item.sourceUrl) || item.sourceUrl.length > 800)))) {
         return NextResponse.json({ error: "One or more recurring venue programs are invalid." }, { status: 400 });
       }
