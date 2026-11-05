@@ -497,7 +497,7 @@ function rowToHost(row: HostSourceRow): HostProfile {
 // fallback over newer public profile fields.
 const getCachedSheetRows = unstable_cache(
   async (sheetId: string, sheetTab: string) =>
-    getGoogleSheetRows(sheetId, sheetTab, "A:AE"),
+    getGoogleSheetRows(sheetId, sheetTab, "A:AZ"),
   ["singhub-host-sheet-rows-v3"],
   { revalidate: 900 },
 );

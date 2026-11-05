@@ -18,7 +18,7 @@ function loader(){
  '@/lib/hostMedia':{HOST_DIRECTORY_MEDIA_KEY:'directory'},
  '@/lib/eventData':{getKaraokeEventListings:async()=>[]},
  '@/lib/nightlifeTime':{getSanDiegoNightlifeWeekday:()=> 'Tuesday'},
- '@/lib/googleSheets':{getGoogleSheetRows:async()=>{calls++;if(fail)throw new Error('429');return live;},GoogleSheetsConfigurationError:class extends Error{}},
+ '@/lib/googleSheets':{getGoogleSheetRows:async(_book,_tab,range)=>{assert.equal(range,"A:AZ","include AF signup links and optional public profile fields");calls++;if(fail)throw new Error('429');return live;},GoogleSheetsConfigurationError:class extends Error{}},
  '@/lib/sourceOfTruth':{getSourceSheetId:()=>book,getSourceTab:()=> 'hosts'},
  '@/lib/tsv':{parseTsv},'@/lib/venueData':{getVenueListings:async()=>[]},
  };
@@ -27,6 +27,7 @@ function loader(){
 }
 test('live fields remain default, successful reads are cached, and media overrides survive',async()=>{
  const l=loader();for(let i=0;i<3;i++){const host=(await l.read()).find(h=>h.slug==='dj-loy');assert.equal(host.bio,'New approved live profile');assert.equal(host.profileImageUrl,'/fixture-portrait.webp');assert.equal(host.heroImageUrl,'/fixture-hero.webp');}
+ assert.equal((await l.read()).find(h=>h.slug==='art-ruiz').signupLink,'https://www.karafun.com/068874/');
  assert.equal(l.calls(),1);l.book('different-workbook');await l.read();assert.equal(l.calls(),2);assert.notEqual(l.keys[0],l.keys.at(-1));
 });
 test('failure falls back without poisoning the successful-read cache',async()=>{
