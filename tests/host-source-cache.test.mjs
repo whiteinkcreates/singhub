@@ -46,6 +46,6 @@ test('venue profile links include only hosts matching the verified venue event',
 });
 test('a venue with no identified host does not load the host directory',async()=>{
  const l=loader();
- assert.deepEqual(await l.forVenue([]),[]);
+ assert.equal((await l.forVenue([])).length,0);
  assert.equal(l.calls(),0);
 });
