@@ -32,6 +32,24 @@ export function SiteHeader() {
     closeMobileMenu();
   }, [pathname]);
 
+  useEffect(() => {
+    const dismissOutsideMenu = (event: Event) => {
+      const menu = mobileMenuRef.current;
+      const target = event.target;
+      if (menu?.open && target instanceof Node && !menu.contains(target)) {
+        menu.open = false;
+      }
+    };
+    document.addEventListener("scroll", dismissOutsideMenu, true);
+    document.addEventListener("touchmove", dismissOutsideMenu, {passive:true});
+    document.addEventListener("pointerdown", dismissOutsideMenu);
+    return () => {
+      document.removeEventListener("scroll", dismissOutsideMenu, true);
+      document.removeEventListener("touchmove", dismissOutsideMenu);
+      document.removeEventListener("pointerdown", dismissOutsideMenu);
+    };
+  }, []);
+
   if (pathname.startsWith("/hotelexperience/")) return null;
 
   return (
