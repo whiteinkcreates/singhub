@@ -6,6 +6,7 @@ import {useRef,useState} from "react";
 import {PositionedImage} from "@/components/media/PositionedImage";
 import {SingHereMark} from "@/components/brand/SingHereMark";
 import {singHereForHostNight} from "@/lib/singHereHostNight";
+import {resolveSingHere} from "@/lib/singHere";
 import {getMarketConfig} from "@/lib/markets";
 import {eventRunsOnNight,scheduleQualification} from "@/lib/eventOccurrence";
 import {makeVenueRow,usable,publicEventTimeLabel} from "@/lib/v2/presentation";
@@ -31,7 +32,7 @@ const inSanDiegoToday=()=>{
 function upcomingDate(date:string){
  return new Intl.DateTimeFormat("en-US",{month:"short",day:"numeric",timeZone:"UTC"}).format(new Date(date+"T12:00:00Z"));
 }
-export function EditorialVenueTemplate({venue,events,enhancement,weekday,singersSay,posts=[]}:VenueTemplateProps){
+export function EditorialVenueTemplate({venue,events,kjHosts=[],enhancement,weekday,singersSay,posts=[]}:VenueTemplateProps){
  const root=useRef<HTMLDivElement>(null);
  const viewerInitials=useViewerInitials();
  const row=makeVenueRow(venue,events,weekday,enhancement);
@@ -39,7 +40,10 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
  const gallery=[...(heroUrl?[{url:heroUrl,alt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName,placement:enhancement?.heroPlacement||venue.bannerImagePlacement}]:[]),...(enhancement?.gallery||[]).filter(item=>item.url!==heroUrl)];
  const [photoIndex,setPhotoIndex]=useState(0);
  const selectedPhoto=gallery[photoIndex]||gallery[0];
- const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:singHereForHostNight(venue.slug,events,weekday,enhancement?.singHere)});
+ const singHereConfig=singHereForHostNight(venue.slug,events,weekday,enhancement?.singHere,kjHosts);
+ const signupDestination=resolveSingHere(singHereConfig,{privateRoom:venue.venueType==="private_room",externalSignupUrl:enhancement?.singerSignupUrl,venueWebsite:venue.website}).url;
+ const hasOnlineSignup=Boolean(signupDestination)&&venue.venueType!=="private_room";
+ const actions=useV2Actions(root,{venue,events,singerSignupUrl:enhancement?.singerSignupUrl,singHere:singHereConfig});
  const isPartner=enhancement?.partnerConfirmed===true;
  // A venue may participate in an approved check-in offer without being a paid Partner.
  const activeOffer=enhancement?.enabled&&enhancement?.singhubOffer?.enabled&&(!enhancement.singhubOffer.days?.length||enhancement.singhubOffer.days.some(day=>day.toLowerCase()===weekday.toLowerCase()))?enhancement.singhubOffer:undefined;
@@ -65,6 +69,11 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
  ].filter((entry):entry is [string,string]=>Boolean(entry[1]));
  const story=enhancement?.about||venue.description;
  const tagline=enhancement?.tagline||venue.enhancementTagline;
+ const mottoText=enhancement?.mottoText?.trim();
+ const mottoHeading=enhancement?.mottoLabel==="Something Else" ? (enhancement.mottoCustomLabel?.trim()||"In Their Own Words") : (enhancement?.mottoLabel||"In Their Own Words");
+ const barHours=(enhancement?.businessHours||[])
+  .filter(item=>item.day&&item.hours?.trim())
+  .sort((a,b)=>["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].indexOf(a.day)-["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].indexOf(b.day));
  const photoIsVenueImage=Boolean(heroUrl);
  const venueVibe=venue.venueType==="private_room"?"PRIVATE KARAOKE":venue.venueType==="event_producer"?"KARAOKE EVENTS":"KARAOKE + NIGHTLIFE";
 
@@ -135,13 +144,13 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
     <aside className="ve-aside">
      <section className="ve-tonight" aria-labelledby="ve-tonight-title">
       <p className="ve-overline">{row.tonight?"TONIGHT / LIVE ON THE MIC":"PLAN YOUR VISIT"}</p>
-      <h2 id="ve-tonight-title">{row.tonight?"You're up next.":venue.venueType==="private_room"?"Your own room.":"Find your mic."}</h2>
+      <h2 id="ve-tonight-title">{venue.venueType==="private_room"?"Book your room.":row.tonight?(hasOnlineSignup?"Let's get you signed up.":"How to join tonight."):hasOnlineSignup?"Join the karaoke list.":"Plan your karaoke night."}</h2>
       <div className="ve-tonight-info">
        <span>{row.tonight?"Karaoke tonight":nextMicNight?"Next regular night":"Karaoke information"}</span>
        <strong>{nextMicNight?nextMicNight.karaokeDay+" · "+publicEventTimeLabel(nextMicNight):venue.venueType==="private_room"?"Book with the venue":"Schedule being verified"}</strong>
        <p>{nextMicNight?(usable(nextMicNight.hostName)?"Hosted by "+nextMicNight.hostName:"Host details pending"):"Check the venue for dates and host details."}</p>
       </div>
-      <button className="ve-singhere" type="button" aria-label="Open SingHERE signup information" data-toast="SingHERE flow opened"><SingHereMark alt="SingHERE" /></button>
+      <button className={"ve-singhere"+(hasOnlineSignup?" ve-singhere-linked":"")} type="button" aria-label={hasOnlineSignup?"Open SingHERE online signup":"Open SingHERE signup instructions"} data-toast="SingHERE flow opened"><SingHereMark alt="SingHERE" /></button>
       {isLiveMarket?<TourStopCheckIn venueSlug={venue.slug} venueName={venue.venueName} offer={activeOffer}/>:null}
       <div className="ve-actions"><button type="button" data-toast="Venue saved">Save</button><button type="button" data-toast="Share options opened">Share ↗</button></div>
      </section>
@@ -156,6 +165,11 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
       <p className="ve-overline">01 / THE PLACE</p>
       <h2 id="ve-story-title">{tagline||"A little more about the room."}</h2>
       {story?<p className="ve-story-body">{story}</p>:null}
+      {mottoText?<figure className="ve-motto">
+        <figcaption className="ve-overline">{mottoHeading}</figcaption>
+        <blockquote>“{mottoText}”</blockquote>
+        {enhancement?.mottoAttribution?.trim()?<p>{enhancement.mottoAttribution}</p>:null}
+      </figure>:null}
      </div>
      {standout.length>0?<aside className="ve-reasons"><p className="ve-overline">THE STANDOUTS</p><ol>{standout.map((item,index)=><li key={item}><span>{String(index+1).padStart(2,"0")}</span><strong>{item}</strong></li>)}</ol></aside>:null}
     </section>:null}
@@ -165,7 +179,10 @@ export function EditorialVenueTemplate({venue,events,enhancement,weekday,singers
    {posts.length>0?<section className="ve-board"><div><p className="ve-overline">FROM SINGBOARD</p><h2>From the venue.</h2></div><div className="ve-board-items">{posts.map(post=><a href={"/events/"+post.id} key={post.id}><span>EVENT / COMMUNITY</span><strong>{post.title}</strong><p>{post.detail}</p><b aria-hidden="true">↗</b></a>)}</div></section>:null}
 
    <section className="ve-bottom" aria-label="Venue information">
-    <div><p className="ve-overline">GOOD TO KNOW</p><h2>Before you head out.</h2><div className="ve-details">{quickFacts.map(([key,value])=><div key={key}><span>{key}</span><strong>{value}</strong></div>)}</div></div>
+    <div><p className="ve-overline">GOOD TO KNOW</p><h2>Before you head out.</h2><div className="ve-details">
+      {barHours.length>0?<div className="ve-hours-row"><span>Bar hours</span><ul className="ve-hours-list">{barHours.map(item=><li key={item.day}><span>{item.day}</span><strong>{item.hours}</strong></li>)}</ul></div>:null}
+      {quickFacts.map(([key,value])=><div key={key}><span>{key}</span><strong>{value}</strong></div>)}
+    </div></div>
     {Boolean(singersSay?.totalResponses||events.length)?<div className="ve-singer-voice"><p className="ve-overline">THE COMMUNITY</p><h2>Singers say.</h2><VenueFeedback venue={venue} events={events} summary={singersSay}/></div>:null}
    </section>
    <footer className="ve-footer"><span>SingHUB / {venue.neighborhood}</span><span>{row.verification}</span><Link href="/find-karaoke">More venues ↗</Link></footer>

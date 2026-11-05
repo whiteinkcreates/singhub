@@ -10,11 +10,14 @@ import { parseVenueCalendarImport, mergeVenueCalendarEvents } from "@/lib/venueE
 import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 import {
   HOTEL_VIBE_OPTIONS,
+  VENUE_MOTTO_LABELS,
   VENUE_FACT_OPTIONS,
   VENUE_STANDOUT_OPTIONS,
   type HeroPosition,
   type VenueDailyDeal,
   type VenueEnhancement,
+  type VenueBusinessHours,
+  type VenueMottoLabel,
   type VenueGalleryItem,
   type VenueProgramEvent,
   type VenueSpecial,
@@ -50,6 +53,11 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     featuredPriority,
     tagline: "",
     about: "",
+    mottoText: "",
+    mottoLabel: "In Their Own Words",
+    mottoCustomLabel: "",
+    mottoAttribution: "",
+    businessHours: [],
     phone: "",
     menuUrl: "",
     singerSignupUrl: "",
@@ -100,6 +108,11 @@ function loadedProfileSignature(profile: VenueEnhancement, venue?: VenueOption):
     featuredPriority: featured ? Math.max(1, Math.min(99, featuredPriority || 10)) : undefined,
     tagline: profile.tagline?.trim() || undefined,
     about: profile.about?.trim() || undefined,
+    mottoText: profile.mottoText?.trim() || undefined,
+    mottoLabel: profile.mottoText?.trim() ? (profile.mottoLabel || "In Their Own Words") : undefined,
+    mottoCustomLabel: profile.mottoText?.trim() && profile.mottoLabel === "Something Else" ? profile.mottoCustomLabel?.trim() || undefined : undefined,
+    mottoAttribution: profile.mottoText?.trim() ? profile.mottoAttribution?.trim() || undefined : undefined,
+    businessHours: (profile.businessHours || []).filter(item => item.day && item.hours.trim()),
     phone: profile.phone?.trim() || undefined,
     menuUrl: profile.menuUrl?.trim() || undefined,
     singerSignupUrl: profile.singerSignupUrl?.trim() || undefined,
@@ -284,6 +297,12 @@ function AdminPreview({ venue, profile, mode }: { venue?: VenueOption; profile: 
       <div className="relative p-4">
         {profile.logoImageUrl ? <div className="absolute -top-10 right-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-300/60 bg-[#071019] p-2"><PositionedImage placement={profile.logoPlacement} src={profile.logoImageUrl} alt={profile.logoImageAlt || "Venue logo preview"} className="h-full w-full object-contain" /></div> : null}
         <h3 className="pr-24 text-2xl font-black text-white">{venue.name}</h3><p className="mt-1 text-xs text-slate-400">{venue.neighborhood || venue.city}</p>{profile.tagline ? <p className="mt-3 text-sm leading-6 text-slate-200">{profile.tagline}</p> : null}
+        {profile.mottoText?.trim() ? <div className="mt-5 border-l-2 border-fuchsia-400 pl-4">
+          <p className="text-[10px] font-black uppercase tracking-widest text-cyan-300">{profile.mottoLabel==="Something Else"?(profile.mottoCustomLabel?.trim()||"In Their Own Words"):(profile.mottoLabel||"In Their Own Words")}</p>
+          <blockquote className="mt-2 text-xl font-bold text-white">“{profile.mottoText.trim()}”</blockquote>
+          {profile.mottoAttribution?.trim()?<p className="mt-2 text-xs text-slate-400">{profile.mottoAttribution}</p>:null}
+        </div> : null}
+        {profile.businessHours?.length ? <p className="mt-4 text-xs text-slate-300">Bar hours saved for {profile.businessHours.length} day{profile.businessHours.length===1?"":"s"}. Shown in Good to Know.</p> : null}
         <div className="mt-4 grid grid-cols-3 gap-2"><div className="rounded-xl border border-fuchsia-300/25 p-2 text-center text-[10px] font-black text-fuchsia-100">Directions</div>{profile.phone ? <div className="rounded-xl border border-white/10 p-2 text-center text-[10px] font-black text-slate-200">Call</div> : null}{profile.menuUrl ? <div className="rounded-xl border border-white/10 p-2 text-center text-[10px] font-black text-slate-200">Menu</div> : null}</div>
         <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.035] p-3"><p className="text-[10px] font-black uppercase tracking-[0.16em] text-fuchsia-300">Tonight at {venue.name}</p><p className="mt-2 text-xs text-slate-400">Live profile uses the canonical karaoke schedule plus today&apos;s saved specials.</p></div>
       </div>
@@ -300,6 +319,11 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [featuredPriority, setFeaturedPriority] = useState(initialProfile.featuredPriority ?? initialVenue?.featuredPriority ?? 10);
   const [tagline, setTagline] = useState(initialProfile.tagline || "");
   const [about, setAbout] = useState(initialProfile.about || "");
+  const [mottoText, setMottoText] = useState(initialProfile.mottoText || "");
+  const [mottoLabel, setMottoLabel] = useState<VenueMottoLabel>(initialProfile.mottoLabel || "In Their Own Words");
+  const [mottoCustomLabel, setMottoCustomLabel] = useState(initialProfile.mottoCustomLabel || "");
+  const [mottoAttribution, setMottoAttribution] = useState(initialProfile.mottoAttribution || "");
+  const [businessHours, setBusinessHours] = useState<VenueBusinessHours[]>(initialProfile.businessHours || []);
   const [phone, setPhone] = useState(initialProfile.phone || "");
   const [singerSignupUrl, setSingerSignupUrl] = useState(initialProfile.singerSignupUrl || "");
   const [menuUrl, setMenuUrl] = useState(initialProfile.menuUrl || "");
@@ -346,6 +370,11 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setFeaturedPriority(profile.featuredPriority ?? venue?.featuredPriority ?? 10);
     setTagline(profile.tagline || "");
     setAbout(profile.about || "");
+    setMottoText(profile.mottoText || "");
+    setMottoLabel(profile.mottoLabel || "In Their Own Words");
+    setMottoCustomLabel(profile.mottoCustomLabel || "");
+    setMottoAttribution(profile.mottoAttribution || "");
+    setBusinessHours(profile.businessHours || []);
     setPhone(profile.phone || "");
     setMenuUrl(profile.menuUrl || "");
     setSingerSignupUrl(profile.singerSignupUrl || "");
@@ -415,6 +444,11 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     featuredPriority: featured ? Math.max(1, Math.min(99, featuredPriority || 10)) : undefined,
     tagline: tagline.trim() || undefined,
     about: about.trim() || undefined,
+    mottoText: mottoText.trim() || undefined,
+    mottoLabel: mottoText.trim() ? mottoLabel : undefined,
+    mottoCustomLabel: mottoText.trim() && mottoLabel === "Something Else" ? mottoCustomLabel.trim() || undefined : undefined,
+    mottoAttribution: mottoText.trim() ? mottoAttribution.trim() || undefined : undefined,
+    businessHours: businessHours.filter(item => item.day && item.hours.trim()),
     phone: phone.trim() || undefined,
     menuUrl: menuUrl.trim() || undefined,
     singerSignupUrl: singerSignupUrl.trim() || undefined,
@@ -450,7 +484,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       terms: singhubOffer.terms?.trim() || undefined,
       days: singhubOffer.days?.length ? singhubOffer.days : undefined,
     },
-  }), [about, amenities, dailyDeals, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereRotationPolicy, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
+  }), [about, mottoText, mottoLabel, mottoCustomLabel, mottoAttribution, businessHours, amenities, dailyDeals, venueEvents, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereRotationPolicy, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const isDirty = JSON.stringify(output) !== baselineSignature;
   const currentIndex = venues.findIndex(venue => venue.slug === slug);
@@ -558,6 +592,27 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             <label className={`${labelClass} md:col-span-2`}>Tagline<input className={fieldClass} value={tagline} onChange={(event) => setTagline(event.target.value)} /></label>
             <label className={`${labelClass} md:col-span-2`}>About<textarea className={`${fieldClass} min-h-28`} value={about} onChange={(event) => setAbout(event.target.value)} /></label>
 
+            <section className="md:col-span-2 rounded-2xl border border-fuchsia-300/20 bg-fuchsia-300/[0.035] p-4">
+              <p className={labelClass}>Venue motto / house philosophy (optional)</p>
+              <p className="mt-2 text-sm text-slate-400">Use the venue&apos;s own words. Leave blank when the venue hasn&apos;t supplied a genuine quote.</p>
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <label className={labelClass}>Section heading
+                  <select className={fieldClass} value={mottoLabel} onChange={event=>setMottoLabel(event.target.value as VenueMottoLabel)}>
+                    {VENUE_MOTTO_LABELS.map(label=><option key={label} value={label}>{label}</option>)}
+                  </select>
+                </label>
+                {mottoLabel==="Something Else"?<label className={labelClass}>Custom heading
+                  <input className={fieldClass} maxLength={80} value={mottoCustomLabel} onChange={event=>setMottoCustomLabel(event.target.value)} placeholder="e.g. Our Promise" />
+                </label>:null}
+                <label className={`${labelClass} md:col-span-2`}>Motto / quote
+                  <textarea className={`${fieldClass} min-h-20`} maxLength={240} value={mottoText} onChange={event=>setMottoText(event.target.value)} placeholder="Open Hearts and Open Minds." />
+                </label>
+                <label className={`${labelClass} md:col-span-2`}>Attribution (optional)
+                  <input className={fieldClass} maxLength={120} value={mottoAttribution} onChange={event=>setMottoAttribution(event.target.value)} placeholder="The Richardson family's philosophy" />
+                </label>
+              </div>
+            </section>
+
             <section className="md:col-span-2 overflow-hidden rounded-[1.75rem] border border-fuchsia-300/20 bg-[radial-gradient(circle_at_top_left,rgba(236,72,153,.12),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,.10),transparent_34%),rgba(0,0,0,.18)] p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
@@ -609,6 +664,23 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
               <p className="mt-2 text-sm leading-6 text-slate-400">Choose factual venue traits. These are separate from Singers Say.</p>
               <div className="mt-4 flex flex-wrap gap-2">{VENUE_FACT_OPTIONS.map((fact) => { const active = selectedFacts.has(fact); return <button key={fact} type="button" onClick={() => toggleFact(fact)} className={`rounded-full border px-3 py-2 text-xs font-bold transition ${active ? "border-cyan-300/60 bg-cyan-300/15 text-cyan-100" : "border-white/10 bg-white/[0.03] text-slate-400 hover:border-white/25 hover:text-white"}`}>{venueFactIconName(fact) ? <VenueSemanticIcon name={venueFactIconName(fact)!} className="mr-1.5 inline h-4 w-4 align-text-bottom" /> : null}{fact}</button>; })}</div>
               <details className="mt-4"><summary className="cursor-pointer text-xs font-bold text-slate-500">Add custom facts</summary><textarea className={`${fieldClass} min-h-24`} value={amenities.join("\n")} onChange={(event) => setAmenities(event.target.value.split("\n").map((item) => item.trim()).filter(Boolean))} placeholder="One fact per line" /></details>
+              <div className="mt-5 border-t border-white/10 pt-5">
+                <p className={labelClass}>Bar opening hours</p>
+                <p className="mt-2 text-sm text-slate-400">Separate from karaoke hours. Enter confirmed hours by day. Leave unknown days blank, and only type Closed when verified.</p>
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  {DAYS.map(day=><label key={day} className="text-xs font-bold text-slate-300">{day}
+                    <input className={fieldClass} maxLength={80} value={businessHours.find(item=>item.day===day)?.hours || ""}
+                      placeholder="e.g. 11 AM–2 AM or Closed"
+                      onChange={event=>{
+                        const hours=event.target.value;
+                        setBusinessHours(current=>{
+                          const others=current.filter(item=>item.day!==day);
+                          return hours.trim()?[...others,{day,hours}]:others;
+                        });
+                      }} />
+                  </label>)}
+                </div>
+              </div>
             </section>
 
             <section className="md:col-span-2 rounded-2xl border border-cyan-300/15 bg-cyan-300/[0.035] p-4">

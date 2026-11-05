@@ -279,3 +279,19 @@
  .venue-editorial .ve-hero-links{gap:5px 18px;}
  .venue-editorial .ve-hero-links .ve-hero-jump{margin-top:18px;font-size:.79rem;}
 }
+
+/* Venue-supplied words, optional opening hours, and active online signup. */
+.venue-editorial .ve-motto {margin:40px 0 0;padding:23px 0 10px 27px;border-left:3px solid var(--ve-pink);}
+.venue-editorial .ve-motto figcaption {color:var(--ve-cyan);letter-spacing:.15em;}
+.venue-editorial .ve-motto blockquote {margin:17px 0 0;font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-size:clamp(2.2rem,3.8vw,4.5rem);line-height:1.04;font-weight:750;letter-spacing:-.01em;}
+.venue-editorial .ve-motto p {margin-top:14px;color:var(--ve-muted);font-size:.83rem;}
+.venue-editorial .ve-details .ve-hours-row {align-items:start;}
+.venue-editorial .ve-hours-list {display:grid;gap:7px;margin:0;padding:0;list-style:none;}
+.venue-editorial .ve-hours-list li {display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(255,255,255,.07);padding:4px 0;font-size:.83rem;}
+.venue-editorial .ve-hours-list li:last-child {border-bottom:0;}
+.venue-editorial .ve-hours-list li span {color:var(--ve-muted);}
+.venue-editorial .ve-hours-list li strong {text-align:right;white-space:normal;}
+.venue-editorial .ve-singhere-linked {border-color:rgba(0,200,255,.75);box-shadow:0 0 0 1px rgba(0,200,255,.22),0 0 18px rgba(0,200,255,.25);animation:ve-signup-ready 3s ease-in-out infinite;}
+.venue-editorial .ve-singhere-linked:hover,.venue-editorial .ve-singhere-linked:focus-visible {border-color:var(--ve-cyan);box-shadow:0 0 0 2px rgba(0,200,255,.35),0 0 30px rgba(0,200,255,.42);}
+@keyframes ve-signup-ready {0%,100% {box-shadow:0 0 0 1px rgba(0,200,255,.18),0 0 14px rgba(0,200,255,.2);}50% {box-shadow:0 0 0 1px rgba(0,200,255,.35),0 0 27px rgba(0,200,255,.38);}}
+@media (prefers-reduced-motion:reduce) {.venue-editorial .ve-singhere-linked {animation:none;}}
