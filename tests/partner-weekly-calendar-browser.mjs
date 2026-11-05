@@ -39,10 +39,10 @@ try{
   await calendar.getByRole('button',{name:'Previous week'}).click();
   await calendar.getByText('Theme Karaoke',{exact:true}).waitFor();
   const partial=page.getByRole('region',{name:'Partial Partner events',exact:true});
-  await partial.getByRole('heading',{name:'Upcoming dates on the board'}).waitFor();
-  assert.match(await partial.innerText(),/blank day does not mean the venue has no events/);
+  await partial.getByRole('heading',{name:'This week at Partial Partner'}).waitFor();
+  assert.match(await partial.innerText(),/not the venue's complete event calendar/);
   await partial.getByRole('button',{name:'Open listed dates calendar'}).click();
-  assert.equal(await partial.getByRole('heading',{name:'Full month lineup'}).count(),0,'partial calendar never claims complete schedule');
+  assert.equal(await partial.getByRole('heading',{name:'Dates on the calendar'}).count(),1,'partial calendar never claims complete schedule');
   const ids=await page.locator('[aria-controls]').evaluateAll(nodes=>nodes.map(node=>node.getAttribute('aria-controls')));
   assert.equal(new Set(ids).size,ids.length,'separate calendar controls have unique targets');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+3),'no horizontal overflow');

@@ -94,7 +94,7 @@ jobs:
         run: node tests/hotel-media-delete-browser.mjs --prepare
 
       - name: Prepare isolated weekly/month calendar fixture
-        if: startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || (startsWith(github.head_ref, 'reconcile/weekly-calendar-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))
+        if: startsWith(github.head_ref, 'feat/venue-recurring-weekly-calendar') || startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || (startsWith(github.head_ref, 'reconcile/weekly-calendar-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))
         run: node tests/partner-weekly-calendar-browser.mjs --prepare
 
       - name: Prepare isolated SingHERE KJ fixture
@@ -479,7 +479,7 @@ jobs:
           node tests/venue-sales-support-browser.mjs
 
       - name: Validate weekly/month calendars and partial schedule safeguards
-        if: startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || (startsWith(github.head_ref, 'reconcile/weekly-calendar-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))
+        if: startsWith(github.head_ref, 'feat/venue-recurring-weekly-calendar') || startsWith(github.head_ref, 'feat/partner-weekly-calendar-') || (startsWith(github.head_ref, 'reconcile/weekly-calendar-') || startsWith(github.head_ref, 'reconcile/venue-sales-'))
         run: |
           npx playwright install --with-deps chromium
           npm run start -- --port 3124 > /tmp/weekly-calendar-server.log 2>&1 &
@@ -490,6 +490,9 @@ jobs:
             sleep 1
           done
           QA_BASE_URL=http://127.0.0.1:3124 node tests/partner-weekly-calendar-browser.mjs
+
+      - name: Verify recurring calendar materialization
+        run: node --test tests/venue-weekly-program-calendar.test.mjs
 
       - name: Verify confirmed KJ policy reconciliation
         run: node --test tests/singhere-kj-reconciliation.test.mjs tests/singhere-policy-api.test.mjs tests/following-foundation.test.mjs

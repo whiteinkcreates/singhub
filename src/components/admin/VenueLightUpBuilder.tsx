@@ -20,6 +20,7 @@ import {
   type VenueMottoLabel,
   type VenueGalleryItem,
   type VenueProgramEvent,
+  type VenueWeeklyProgram,
   type VenueSpecial,
   type SingHubOffer,
 } from "@/lib/venueEnhancements";
@@ -72,6 +73,8 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     weeklySpecials: [],
     dailyDeals: [],
     venueEvents: [],
+    weeklyProgramming: [],
+    venueEventsPartial: false,
     eventCalendarUrl: "",
     vibeTags: [],
     foodSummary: "",
@@ -128,6 +131,8 @@ function loadedProfileSignature(profile: VenueEnhancement, venue?: VenueOption):
     weeklySpecials: (profile.weeklySpecials || []).filter(special => special.title.trim()),
     dailyDeals: (profile.dailyDeals || []).filter(deal => deal.title.trim()),
     venueEvents: (profile.venueEvents || []).filter(item => item.title.trim() && item.date),
+    weeklyProgramming: (profile.weeklyProgramming || []).filter(item=>item.day&&item.title.trim()),
+    venueEventsPartial: profile.venueEventsPartial === true,
     eventCalendarUrl: profile.eventCalendarUrl?.trim() || undefined,
     gallery: profile.gallery || [],
     vibeTags: profile.vibeTags || [],
@@ -181,6 +186,37 @@ function SpecialEditor({ specials, onChange }: { specials: VenueSpecial[]; onCha
   );
 }
 
+
+
+function WeeklyProgrammingEditor({programs,onChange}:{
+  programs:VenueWeeklyProgram[];
+  onChange:(items:VenueWeeklyProgram[])=>void;
+}){
+  function patch(index:number,delta:Partial<VenueWeeklyProgram>){
+    onChange(programs.map((item,i)=>i===index?{...item,...delta}:item));
+  }
+  return <section className="md:col-span-2 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.035] p-4">
+    <div className="flex flex-wrap items-start justify-between gap-3">
+      <div><p className="text-xs font-black uppercase tracking-[0.16em] text-cyan-300">This week at the venue</p>
+        <p className="mt-2 text-sm leading-6 text-slate-400">Recurring trivia, BBQs, music and community events. Karaoke is automatically included from the separately verified karaoke schedule. Do not duplicate it here.</p>
+      </div>
+      <button type="button" className="rounded-full border border-cyan-300/40 px-3 py-2 text-xs font-black text-cyan-100" onClick={()=>onChange([...programs,{day:"Thursday",title:"",category:"trivia"}])}>+ Add weekly event</button>
+    </div>
+    <div className="mt-4 space-y-3">
+      {programs.map((item,index)=><div key={index} className="grid gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 md:grid-cols-[8rem_1fr_8rem_auto]">
+        <select aria-label="Recurring event weekday" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" value={item.day} onChange={e=>patch(index,{day:e.target.value})}>{DAYS.map(day=><option key={day}>{day}</option>)}</select>
+        <input aria-label="Recurring event title" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" maxLength={140} placeholder="Trivia with Estevan" value={item.title} onChange={e=>patch(index,{title:e.target.value})}/>
+        <input aria-label="Recurring event time" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" maxLength={40} placeholder="8:30 PM" value={item.time||""} onChange={e=>patch(index,{time:e.target.value||undefined})}/>
+        <button type="button" className="rounded-xl border border-rose-300/20 px-3 py-2 font-black text-rose-200" aria-label="Remove recurring event" onClick={()=>onChange(programs.filter((_,i)=>i!==index))}>×</button>
+        <select aria-label="Recurring event category" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" value={item.category||"community"} onChange={e=>patch(index,{category:e.target.value as VenueWeeklyProgram["category"]})}>
+          <option value="trivia">Trivia</option><option value="community">Community / BBQ</option><option value="live_music">Live music</option><option value="bingo">Bingo</option><option value="game">Games</option><option value="sports">Sports</option><option value="special">Other</option>
+        </select>
+        <input aria-label="Recurring event details" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white md:col-span-3" maxLength={240} placeholder="Optional details and terms" value={item.detail||""} onChange={e=>patch(index,{detail:e.target.value||undefined})}/>
+      </div>)}
+      {!programs.length?<p className="text-sm text-slate-500">No recurring non-karaoke programming yet.</p>:null}
+    </div>
+  </section>;
+}
 
 function EventEditor({ events, onChange, calendarUrl, onCalendarUrlChange }: {
   events: VenueProgramEvent[];
@@ -340,6 +376,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [weeklySpecials, setWeeklySpecials] = useState<VenueSpecial[]>(initialProfile.weeklySpecials || []);
   const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);
   const [venueEvents, setVenueEvents] = useState<VenueProgramEvent[]>(initialProfile.venueEvents || []);
+  const [weeklyProgramming, setWeeklyProgramming] = useState<VenueWeeklyProgram[]>(initialProfile.weeklyProgramming || []);
+  const [venueEventsPartial, setVenueEventsPartial] = useState(initialProfile.venueEventsPartial === true);
   const [eventCalendarUrl, setEventCalendarUrl] = useState(initialProfile.eventCalendarUrl || "");
   const [vibeTags, setVibeTags] = useState(initialProfile.vibeTags || []);
   const [foodSummary, setFoodSummary] = useState(initialProfile.foodSummary || "");
@@ -391,6 +429,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setWeeklySpecials(profile.weeklySpecials || []);
     setDailyDeals(profile.dailyDeals || []);
     setVenueEvents(profile.venueEvents || []);
+    setWeeklyProgramming(profile.weeklyProgramming || []);
+    setVenueEventsPartial(profile.venueEventsPartial === true);
     setEventCalendarUrl(profile.eventCalendarUrl || "");
     setVibeTags(profile.vibeTags || []);
     setFoodSummary(profile.foodSummary || "");
@@ -462,6 +502,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     weeklySpecials: weeklySpecials.filter((special) => special.title.trim()),
     dailyDeals: dailyDeals.filter((deal) => deal.title.trim()),
     venueEvents: venueEvents.filter((item) => item.title.trim() && item.date),
+    weeklyProgramming: weeklyProgramming.filter(item=>item.day&&item.title.trim()),
+    venueEventsPartial,
     eventCalendarUrl: eventCalendarUrl.trim() || undefined,
     gallery,
     vibeTags,
@@ -484,7 +526,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       terms: singhubOffer.terms?.trim() || undefined,
       days: singhubOffer.days?.length ? singhubOffer.days : undefined,
     },
-  }), [about, mottoText, mottoLabel, mottoCustomLabel, mottoAttribution, businessHours, amenities, dailyDeals, venueEvents, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereRotationPolicy, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
+  }), [about, mottoText, mottoLabel, mottoCustomLabel, mottoAttribution, businessHours, amenities, dailyDeals, venueEvents, weeklyProgramming, venueEventsPartial, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereRotationPolicy, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const isDirty = JSON.stringify(output) !== baselineSignature;
   const currentIndex = venues.findIndex(venue => venue.slug === slug);
@@ -705,6 +747,11 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             </section>
 
             <VenueOfferEditor slug={slug} partnerEnabled={enabled} offer={singhubOffer} onChange={setSinghubOffer} />
+            <WeeklyProgrammingEditor programs={weeklyProgramming} onChange={setWeeklyProgramming}/>
+            <label className="md:col-span-2 flex items-start gap-3 rounded-xl border border-white/10 p-4 text-sm text-slate-300">
+              <input type="checkbox" className="mt-1" checked={venueEventsPartial} onChange={event=>setVenueEventsPartial(event.target.checked)}/>
+              <span><strong className="block text-white">Monthly events are a partial listing</strong>Check this unless all special dates have been verified. Weekly programming still appears normally, but the calendar will not claim to show every one-off event.</span>
+            </label>
             <EventEditor events={venueEvents} onChange={setVenueEvents} calendarUrl={eventCalendarUrl} onCalendarUrlChange={setEventCalendarUrl} />
             <SpecialEditor specials={weeklySpecials} onChange={setWeeklySpecials} />
             <DailyDealEditor deals={dailyDeals} onChange={setDailyDeals} />
