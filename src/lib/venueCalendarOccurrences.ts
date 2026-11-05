@@ -35,10 +35,10 @@ export function venueCalendarOccurrences({
       // Specific dated karaoke announcements override a standard recurrence for this date.
       if(onDate.some(item=>item.category==="karaoke"||/karaoke/i.test(item.title)))continue;
       const host=usable(karaoke.hostName);
-      const title=host?"Karaoke with "+host:"Karaoke";
+      const title=host && /\\bkaraoke\\b/i.test(host)?host:host?"Karaoke with "+host:"Karaoke";
       const time=publicEventTimeLabel(karaoke);
       if(result.some(item=>item.date===iso&&item.title===title))continue;
-      result.push({date:iso,title,time:time==="Time pending"?undefined:time,detail:host?"Hosted by "+host:undefined,category:"karaoke",recurring:true});
+      result.push({date:iso,title,time:time==="Time pending"?undefined:time,category:"karaoke",recurring:true});
     }
   }
   return result.sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
