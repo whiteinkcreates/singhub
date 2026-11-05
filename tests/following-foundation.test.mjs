@@ -1,0 +1,8 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+import ts from 'typescript';
+function fixture(user={id:'fixture-owner',is_anonymous:false}){const exports={},calls=[];const query=new Proxy({}, {get:(_,name)=>name==='then'?(resolve=>Promise.resolve({data:[],error:null}).then(resolve)):(...args)=>{calls.push([name,...args]);return query;}});const client={auth:{getUser:async()=>({data:{user},error:null})},from:table=>{calls.push(['from',table]);return query;}};vm.runInNewContext(ts.transpileModule(readFileSync('src/lib/v2/following.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{exports,require:()=>({accountClient:()=>client})});return {api:exports,calls};}
+test('following writes and reads derive their owner from the authenticated user',async()=>{const f=fixture();await f.api.followEntity({type:'host',id:'fixture-host',slug:'fixture-host',name:'Fixture KJ',userId:'other-user'});assert.equal(f.calls.find(c=>c[0]==='upsert')[1].user_id,'fixture-owner');await f.api.listFollowing();await f.api.unfollowEntity({type:'host',id:'fixture-host'});assert.equal(f.calls.filter(c=>c[0]==='eq'&&c[1]==='user_id'&&c[2]==='fixture-owner').length,2);});
+test('signed-out and anonymous follows never query or mutate a table',async()=>{for(const user of [null,{id:'fixture-anon',is_anonymous:true}]){const f=fixture(user);await assert.rejects(f.api.followEntity({type:'host',id:'fixture-host',slug:'fixture-host',name:'Fixture KJ'}),/Sign in/);assert.equal(f.calls.length,0);}});

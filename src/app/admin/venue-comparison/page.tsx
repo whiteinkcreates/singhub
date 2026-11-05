@@ -1,45 +1,19 @@
-import { VenueComparisonExportShell } from "@/components/admin/VenueComparisonExportShell";
-import { VenueShareImageExport } from "@/components/admin/VenueShareImageExport";
-import { getKaraokeEventListings } from "@/lib/eventData";
 import { getVenueListings } from "@/lib/venueData";
+import { getPublicVenues } from "@/lib/publicVenueFilters";
+import { VenueSalesKit } from "@/components/admin/VenueSalesKit";
 
-export const metadata = {
-  title: "Venue Comparison | SingHUB Admin",
-  description: "Internal sales preview for standard and Founding Venue profiles.",
-  robots: {
-    index: false,
-    follow: false,
-  },
-};
+export const dynamic = "force-dynamic";
+export const metadata = { title: "Venue Sales Kit | SingHUB Admin", robots: { index: false, follow: false } };
 
-export default async function AdminVenueComparisonPage() {
-  const [venues, events] = await Promise.all([
-    getVenueListings(),
-    getKaraokeEventListings(),
-  ]);
-
-  const sortedVenues = [...venues].sort((a, b) =>
-    a.venueName.localeCompare(b.venueName),
-  );
-
-  return (
-    <main className="mx-auto max-w-7xl px-4 py-10 text-white">
-      <section className="max-w-4xl">
-        <p className="text-sm font-bold uppercase tracking-[0.3em] text-cyan-300">
-          SingHUB Admin
-        </p>
-        <h1 className="mt-3 text-4xl font-black md:text-6xl">
-          Venue Sales Comparison
-        </h1>
-        <p className="mt-4 max-w-3xl text-slate-300">
-          Pick any venue and compare its standard SingHUB presence with a
-          Founding Venue preview. Missing enhanced fields stay visible so the
-          opportunity is easy to show during a sales conversation.
-        </p>
-      </section>
-
-      <VenueComparisonExportShell venues={sortedVenues} events={events} />
-      <VenueShareImageExport venues={sortedVenues} events={events} />
-    </main>
-  );
+export default async function VenueSalesPage() {
+  const venues = getPublicVenues(await getVenueListings())
+    .filter(v => v.venueType === "live_bar")
+    .sort((a,b) => a.venueName.localeCompare(b.venueName))
+    .map(v => ({slug:v.slug, name:v.venueName, neighborhood:v.neighborhood, city:v.city, enhanced:v.profileTier === "premium"}));
+  return <main className="mx-auto max-w-6xl px-4 py-12 text-white">
+    <p className="text-xs font-black uppercase tracking-[.2em] text-cyan-200">SingHUB / Venue Partnerships</p>
+    <h1 className="mt-3 text-4xl font-black md:text-6xl">Venue Sales Kit</h1>
+    <p className="mt-4 max-w-3xl text-slate-300">One place to select a real venue, share the For Venues page, prepare a personal message and track the steps of an in-person conversation. Replaces the old simulated sales comparison.</p>
+    <VenueSalesKit venues={venues}/>
+  </main>;
 }

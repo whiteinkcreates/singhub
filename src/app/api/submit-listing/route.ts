@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { notifySingHubOperator } from "@/lib/operationalAlerts.server";
 
 function cleanString(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -26,11 +27,35 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid submission payload." }, { status: 400 });
   }
 
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    return NextResponse.json({ error: "Invalid submission payload." }, { status: 400 });
+  }
+
   if (cleanString(payload.companyWebsite)) {
     return NextResponse.json({ ok: true });
   }
 
-  const isActivityRequest=cleanString(payload.submissionType)==="activity_search_request";
+  const submissionType=cleanString(payload.submissionType) || inferSubmissionType(payload);
+  if(["support_request","venue_claim_request","claim_update","venue_partner_inquiry"].includes(submissionType)){
+    const origin=request.headers.get("origin");
+    if(origin&&origin!==new URL(request.url).origin)
+      return NextResponse.json({error:"Cross-site submissions are not allowed."},{status:403});
+  }
+  const isActivityRequest=submissionType==="activity_search_request";
+  const isSupportRequest=submissionType==="support_request";
+  const isClaimRequest=submissionType==="venue_claim_request"||submissionType==="claim_update";
+  const isPartnerInquiry=submissionType==="venue_partner_inquiry";
+  if(isSupportRequest||isClaimRequest||isPartnerInquiry){
+    const email=cleanString(payload.submitterContact);
+    const notes=cleanString(payload.notes);
+    const validEmail=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(notes.length<15||notes.length>2500||email.length>200||
+      (email&&!validEmail.test(email))||
+      (!email&&!isSupportRequest)||
+      (isSupportRequest&&!["sign_in","check_in_offer","listing","other"].includes(cleanString(payload.supportCategory)))||
+      ((isClaimRequest||isPartnerInquiry)&&!cleanString(payload.venueName)))
+      return NextResponse.json({error:"Please check the details and contact information before sending."},{status:400});
+  }
   if(isActivityRequest){
     const notes=cleanString(payload.notes);
     const email=cleanString(payload.submitterContact);
@@ -63,7 +88,7 @@ export async function POST(request: Request) {
 
   const enrichedPayload = {
     ...payload,
-    submissionType: cleanString(payload.submissionType) || inferSubmissionType(payload),
+    submissionType,
     userAgent: request.headers.get("user-agent") || "",
     sourcePath: request.headers.get("referer") || "",
   };
@@ -98,56 +123,30 @@ export async function POST(request: Request) {
       );
     }
 
-    // Send an owner notification only after the inbox webhook confirms persistence.
+    // Preserve main's notifications for every saved submission, including legacy
+    // listings, while adding the new support and claim categories.
     {
-      const apiKey=process.env.RESEND_API_KEY;
-      const configuredRecipients=(process.env.SINGHUB_SUBMISSIONS_TO||"").split(",").map(value=>value.trim()).filter(Boolean);
-      // Always include the operator inbox, even if the optional recipient setting is empty.
-      const recipients=[...new Set([...configuredRecipients,"hello@singhub.app"])];
-      const from=process.env.SINGHUB_SUBMISSIONS_FROM||"SingHUB Alerts <notifications@singhub.app>";
-      if(apiKey){
-        try{
-          const sent=await fetch("https://api.resend.com/emails",{
-            method:"POST",
-            headers:{"Authorization":"Bearer "+apiKey,"Content-Type":"application/json"},
-            body:JSON.stringify({
-              from,to:recipients,
-              subject: isActivityRequest
-                ? "SingHUB: new Other activity request"
-                : "SingHUB submission: " + (
-                    enrichedPayload.submissionType === "founding_venue_inquiry" ? "Partner inquiry" :
-                    enrichedPayload.submissionType === "claim_update" ? "Listing correction" :
-                    "Venue listing"
-                  ) + " | " + (cleanString(payload.venueName).slice(0,80) || "Unspecified venue"),
-              text: isActivityRequest
-                ? ["A visitor asked SingHUB to research an activity.","",cleanString(payload.notes),"","Reply contact: "+(cleanString(payload.submitterContact)||"Not provided"),"Source: "+cleanString(payload.sourceLink),"Next step: research venues, verify sources, and consider a new Backyard category."].join("\n")
-                : [
-                    "A new SingHUB submission was saved.",
-                    "Type: " + cleanString(enrichedPayload.submissionType),
-                    "Venue: " + (cleanString(payload.venueName) || "Not specified"),
-                    "Name: " + (cleanString(payload.submitterName) || "Not provided"),
-                    "Contact: " + (cleanString(payload.submitterContact) || cleanString(payload.venueContact) || "Not provided"),
-                    "Host/KJ: " + (cleanString(payload.hostName) || "Not provided"),
-                    "Days: " + (Array.isArray(payload.karaokeDays) ? payload.karaokeDays.map(cleanString).filter(Boolean).join(", ") : "Not provided"),
-                    "Time: " + ([cleanString(payload.startTime),cleanString(payload.endTime)].filter(Boolean).join(" - ") || "Not provided"),
-                    "Website: " + (cleanString(payload.venueWebsite) || "Not provided"),
-                    "Instagram: " + (cleanString(payload.venueInstagram) || "Not provided"),
-                    "Source: " + (cleanString(payload.sourceLink) || "Not provided"),
-                    "",
-                    "Details:",
-                    cleanString(payload.notes).slice(0,3000) || "No notes. Review the inbox for the full submission.",
-                    "",
-                    "Submissions inbox: https://docs.google.com/spreadsheets/d/1xLKts71EXlI5u61z44NPkba_OBeAxH1aefLcQsVRYrc/edit#gid=300000004",
-                  ].join("\n")
-            })
-          });
-          if(!sent.ok){
-            const failure=await sent.json().catch(()=>({})) as {name?:unknown;message?:unknown};
-            const detail=typeof failure.message==="string"?failure.message.slice(0,500).replace(/re_[A-Za-z0-9_]+/g,"[redacted]").replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi,"[email]"):"No provider error detail";
-            console.error("Submission email notification failed",sent.status,typeof failure.name==="string"?failure.name:"unknown",detail);
-          }
-        }catch(error){console.error("Submission notification transport failed",error);}
-      } else console.error("Submission notification lacks RESEND_API_KEY");
+      const label = isSupportRequest ? "support: " + (cleanString(payload.supportCategory) === "sign_in" ? "sign-in problem" : "new problem report")
+        : isPartnerInquiry || submissionType === "founding_venue_inquiry" ? "Partner inquiry"
+        : submissionType === "venue_claim_request" ? "venue claim requires verification"
+        : isClaimRequest ? "Listing correction"
+        : isActivityRequest ? "new Other activity request" : "Venue listing";
+      await notifySingHubOperator("SingHUB " + label, [
+        "A new SingHUB submission was saved.",
+        "Type: " + submissionType,
+        "Venue: " + (cleanString(payload.venueName) || "Not specified"),
+        "Name: " + (cleanString(payload.submitterName) || "Not provided"),
+        "Contact: " + (cleanString(payload.submitterContact) || cleanString(payload.venueContact) || "Not provided"),
+        "Host/KJ: " + (cleanString(payload.hostName) || "Not provided"),
+        "Days: " + (Array.isArray(payload.karaokeDays) ? payload.karaokeDays.map(cleanString).filter(Boolean).join(", ") : "Not provided"),
+        "Time: " + ([cleanString(payload.startTime), cleanString(payload.endTime)].filter(Boolean).join(" - ") || "Not provided"),
+        "Website: " + (cleanString(payload.venueWebsite) || "Not provided"),
+        "Instagram: " + (cleanString(payload.venueInstagram) || "Not provided"),
+        "Source: " + (cleanString(payload.sourceLink) || "Not provided"),
+        "Details:", cleanString(payload.notes).slice(0, 3000) || "Review the inbox for details.",
+        "Review before modifying public data or granting venue authority.",
+      ].join("\n"));
+
     }
     return NextResponse.json({ ok: true });
   } catch (error) {

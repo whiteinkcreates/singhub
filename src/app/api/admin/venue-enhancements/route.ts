@@ -5,7 +5,7 @@ import {
   getPersistedVenueEnhancement,
   saveVenueEnhancement,
 } from "@/lib/venueEnhancements.server";
-import type { VenueEnhancement } from "@/lib/venueEnhancements";
+import { VENUE_MOTTO_LABELS, type VenueEnhancement } from "@/lib/venueEnhancements";
 
 export const dynamic = "force-dynamic";
 
@@ -79,7 +79,50 @@ export async function PUT(request: Request) {
       if (invalidEvent) return NextResponse.json({ error: "One or more upcoming events are invalid." }, { status: 400 });
     }
 
+    if (profile.mottoLabel !== undefined && !VENUE_MOTTO_LABELS.includes(profile.mottoLabel)) {
+      return NextResponse.json({ error: "Choose a valid venue motto heading." }, { status: 400 });
+    }
+    if ([profile.mottoText, profile.mottoAttribution, profile.mottoCustomLabel].some(
+      (value) => value !== undefined && (typeof value !== "string" || value.length > 240)
+    )) {
+      return NextResponse.json({ error: "Venue motto fields must be text under 240 characters." }, { status: 400 });
+    }
+    if (profile.mottoText?.trim() && profile.mottoLabel === "Something Else" && !profile.mottoCustomLabel?.trim()) {
+      return NextResponse.json({ error: "Enter a custom heading for the venue motto." }, { status: 400 });
+    }
+    if (profile.businessHours !== undefined) {
+      const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      if (!Array.isArray(profile.businessHours) || profile.businessHours.length > 7 ||
+          profile.businessHours.some((item) => !item || typeof item.day !== "string" ||
+            !days.includes(item.day) || typeof item.hours !== "string" ||
+            !item.hours.trim() || item.hours.length > 80) ||
+          new Set(profile.businessHours.map((item) => item.day)).size !== profile.businessHours.length) {
+        return NextResponse.json({ error: "Enter valid, unique daily opening hours (80 characters maximum per day)." }, { status: 400 });
+      }
+    }
+
+    if (profile.weeklyProgramming !== undefined) {
+      const days=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+      const categories=["karaoke","live_music","game","trivia","bingo","sports","community","special"];
+      if (!Array.isArray(profile.weeklyProgramming) || profile.weeklyProgramming.length > 30 ||
+        profile.weeklyProgramming.some(item => !item || !days.includes(item.day) ||
+          typeof item.title !== "string" || !item.title.trim() || item.title.length > 140 ||
+          (item.time !== undefined && (typeof item.time !== "string" || item.time.length > 40)) ||
+          (item.detail !== undefined && (typeof item.detail !== "string" || item.detail.length > 240)) ||
+          (item.category !== undefined && (!categories.includes(item.category) || item.category === "karaoke")) ||
+          (item.sourceUrl !== undefined && (typeof item.sourceUrl !== "string" || !/^https?:\/\//i.test(item.sourceUrl) || item.sourceUrl.length > 800)))) {
+        return NextResponse.json({ error: "One or more recurring venue programs are invalid." }, { status: 400 });
+      }
+    }
+    if (profile.venueEventsPartial !== undefined && typeof profile.venueEventsPartial !== "boolean") {
+      return NextResponse.json({ error: "Partial calendar status must be a boolean." }, { status: 400 });
+    }
+
     if (profile.eventCalendarUrl && !/^https?:\/\//i.test(profile.eventCalendarUrl)) return NextResponse.json({ error: "Venue calendar URL must begin with https:// or http://." }, { status: 400 });
+
+    if (profile.singHere?.rotationPolicy !== undefined && (typeof profile.singHere.rotationPolicy !== "string" || profile.singHere.rotationPolicy.length > 1200)) {
+      return NextResponse.json({ error: "KJ rotation policy must be 1200 characters or fewer." }, { status: 400 });
+    }
 
     if (profile.singerSignupUrl && !/^https?:\/\//i.test(profile.singerSignupUrl)) {
       return NextResponse.json({ error: "Singer signup URL must start with https:// or http://." }, { status: 400 });

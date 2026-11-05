@@ -453,6 +453,8 @@ function rowToHost(row: HostSourceRow): HostProfile {
     bookingLink: getCellAny(row, ["booking_link", "Booking Link"]),
     signupLink: getCellAny(row, ["signup_link", "Signup Link"]),
     bio: getCellAny(row, ["bio", "Bio"]),
+    rotationPolicy: getCellAny(row, ["rotation_policy", "Rotation Policy", "KJ Rotation Rules"]),
+    singerGuidelines: getCellAny(row, ["singer_guidelines", "Singer Guidelines", "KJ House Rules"]),
     vibeTags: parseList(getCellAny(row, ["vibe_tags", "Vibe Tags"])),
     primaryAreas: parseList(
       getCellAny(row, ["primary_areas", "Primary Areas"]),
@@ -577,7 +579,7 @@ export async function getHosts({includeMedia=true}: {includeMedia?:boolean} = {}
       heroPlacement: settings?.heroPlacement,
       directoryHeroPlacement: directory?.heroPlacement,
       houseRules: settings?.houseRules,
-      rotationPolicy: settings?.rotationPolicy,
+      rotationPolicy: settings?.rotationPolicy?.trim() || host.rotationPolicy,
       heroImageUrl: settings?.heroUrl || undefined,
       heroImageAlt: settings?.heroAlt,
       heroPosition: settings?.heroPosition,

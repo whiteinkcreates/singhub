@@ -10,13 +10,17 @@ import { parseVenueCalendarImport, mergeVenueCalendarEvents } from "@/lib/venueE
 import { VenueSemanticIcon, venueFactIconName } from "@/components/venue/VenueSemanticIcon";
 import {
   HOTEL_VIBE_OPTIONS,
+  VENUE_MOTTO_LABELS,
   VENUE_FACT_OPTIONS,
   VENUE_STANDOUT_OPTIONS,
   type HeroPosition,
   type VenueDailyDeal,
   type VenueEnhancement,
+  type VenueBusinessHours,
+  type VenueMottoLabel,
   type VenueGalleryItem,
   type VenueProgramEvent,
+  type VenueWeeklyProgram,
   type VenueSpecial,
   type SingHubOffer,
 } from "@/lib/venueEnhancements";
@@ -50,6 +54,11 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     featuredPriority,
     tagline: "",
     about: "",
+    mottoText: "",
+    mottoLabel: "In Their Own Words",
+    mottoCustomLabel: "",
+    mottoAttribution: "",
+    businessHours: [],
     phone: "",
     menuUrl: "",
     singerSignupUrl: "",
@@ -64,6 +73,8 @@ function emptyProfile(featured = false, featuredPriority?: number): VenueEnhance
     weeklySpecials: [],
     dailyDeals: [],
     venueEvents: [],
+    weeklyProgramming: [],
+    venueEventsPartial: false,
     eventCalendarUrl: "",
     vibeTags: [],
     foodSummary: "",
@@ -100,6 +111,11 @@ function loadedProfileSignature(profile: VenueEnhancement, venue?: VenueOption):
     featuredPriority: featured ? Math.max(1, Math.min(99, featuredPriority || 10)) : undefined,
     tagline: profile.tagline?.trim() || undefined,
     about: profile.about?.trim() || undefined,
+    mottoText: profile.mottoText?.trim() || undefined,
+    mottoLabel: profile.mottoText?.trim() ? (profile.mottoLabel || "In Their Own Words") : undefined,
+    mottoCustomLabel: profile.mottoText?.trim() && profile.mottoLabel === "Something Else" ? profile.mottoCustomLabel?.trim() || undefined : undefined,
+    mottoAttribution: profile.mottoText?.trim() ? profile.mottoAttribution?.trim() || undefined : undefined,
+    businessHours: (profile.businessHours || []).filter(item => item.day && item.hours.trim()),
     phone: profile.phone?.trim() || undefined,
     menuUrl: profile.menuUrl?.trim() || undefined,
     singerSignupUrl: profile.singerSignupUrl?.trim() || undefined,
@@ -115,6 +131,8 @@ function loadedProfileSignature(profile: VenueEnhancement, venue?: VenueOption):
     weeklySpecials: (profile.weeklySpecials || []).filter(special => special.title.trim()),
     dailyDeals: (profile.dailyDeals || []).filter(deal => deal.title.trim()),
     venueEvents: (profile.venueEvents || []).filter(item => item.title.trim() && item.date),
+    weeklyProgramming: (profile.weeklyProgramming || []).filter(item=>item.day&&item.title.trim()),
+    venueEventsPartial: profile.venueEventsPartial === true,
     eventCalendarUrl: profile.eventCalendarUrl?.trim() || undefined,
     gallery: profile.gallery || [],
     vibeTags: profile.vibeTags || [],
@@ -128,6 +146,7 @@ function loadedProfileSignature(profile: VenueEnhancement, venue?: VenueOption):
       url: singHereMode === "external" ? profile.singHere?.url?.trim() || undefined : undefined,
       instructions: (profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.").trim() || undefined,
       linkLabel: (profile.singHere?.linkLabel || "Join the list").trim() || undefined,
+      rotationPolicy: profile.singHere?.rotationPolicy?.trim() || undefined,
     },
     singhubOffer: {
       enabled: singhubOffer.enabled,
@@ -167,6 +186,37 @@ function SpecialEditor({ specials, onChange }: { specials: VenueSpecial[]; onCha
   );
 }
 
+
+
+function WeeklyProgrammingEditor({programs,onChange}:{
+  programs:VenueWeeklyProgram[];
+  onChange:(items:VenueWeeklyProgram[])=>void;
+}){
+  function patch(index:number,delta:Partial<VenueWeeklyProgram>){
+    onChange(programs.map((item,i)=>i===index?{...item,...delta}:item));
+  }
+  return <section className="md:col-span-2 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.035] p-4">
+    <div className="flex flex-wrap items-start justify-between gap-3">
+      <div><p className="text-xs font-black uppercase tracking-[0.16em] text-cyan-300">This week at the venue</p>
+        <p className="mt-2 text-sm leading-6 text-slate-400">Recurring trivia, BBQs, music and community events. Karaoke is automatically included from the separately verified karaoke schedule. Do not duplicate it here.</p>
+      </div>
+      <button type="button" className="rounded-full border border-cyan-300/40 px-3 py-2 text-xs font-black text-cyan-100" onClick={()=>onChange([...programs,{day:"Thursday",title:"",category:"trivia"}])}>+ Add weekly event</button>
+    </div>
+    <div className="mt-4 space-y-3">
+      {programs.map((item,index)=><div key={index} className="grid gap-2 rounded-2xl border border-white/10 bg-black/20 p-3 md:grid-cols-[8rem_1fr_8rem_auto]">
+        <select aria-label="Recurring event weekday" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" value={item.day} onChange={e=>patch(index,{day:e.target.value})}>{DAYS.map(day=><option key={day}>{day}</option>)}</select>
+        <input aria-label="Recurring event title" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" maxLength={140} placeholder="Trivia with Estevan" value={item.title} onChange={e=>patch(index,{title:e.target.value})}/>
+        <input aria-label="Recurring event time" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" maxLength={40} placeholder="8:30 PM" value={item.time||""} onChange={e=>patch(index,{time:e.target.value||undefined})}/>
+        <button type="button" className="rounded-xl border border-rose-300/20 px-3 py-2 font-black text-rose-200" aria-label="Remove recurring event" onClick={()=>onChange(programs.filter((_,i)=>i!==index))}>×</button>
+        <select aria-label="Recurring event category" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white" value={item.category||"community"} onChange={e=>patch(index,{category:e.target.value as VenueWeeklyProgram["category"]})}>
+          <option value="trivia">Trivia</option><option value="community">Community / BBQ</option><option value="live_music">Live music</option><option value="bingo">Bingo</option><option value="game">Games</option><option value="sports">Sports</option><option value="special">Other</option>
+        </select>
+        <input aria-label="Recurring event details" className="rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white md:col-span-3" maxLength={240} placeholder="Optional details and terms" value={item.detail||""} onChange={e=>patch(index,{detail:e.target.value||undefined})}/>
+      </div>)}
+      {!programs.length?<p className="text-sm text-slate-500">No recurring non-karaoke programming yet.</p>:null}
+    </div>
+  </section>;
+}
 
 function EventEditor({ events, onChange, calendarUrl, onCalendarUrlChange }: {
   events: VenueProgramEvent[];
@@ -283,6 +333,12 @@ function AdminPreview({ venue, profile, mode }: { venue?: VenueOption; profile: 
       <div className="relative p-4">
         {profile.logoImageUrl ? <div className="absolute -top-10 right-4 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-cyan-300/60 bg-[#071019] p-2"><PositionedImage placement={profile.logoPlacement} src={profile.logoImageUrl} alt={profile.logoImageAlt || "Venue logo preview"} className="h-full w-full object-contain" /></div> : null}
         <h3 className="pr-24 text-2xl font-black text-white">{venue.name}</h3><p className="mt-1 text-xs text-slate-400">{venue.neighborhood || venue.city}</p>{profile.tagline ? <p className="mt-3 text-sm leading-6 text-slate-200">{profile.tagline}</p> : null}
+        {profile.mottoText?.trim() ? <div className="mt-5 border-l-2 border-fuchsia-400 pl-4">
+          <p className="text-[10px] font-black uppercase tracking-widest text-cyan-300">{profile.mottoLabel==="Something Else"?(profile.mottoCustomLabel?.trim()||"In Their Own Words"):(profile.mottoLabel||"In Their Own Words")}</p>
+          <blockquote className="mt-2 text-xl font-bold text-white">“{profile.mottoText.trim()}”</blockquote>
+          {profile.mottoAttribution?.trim()?<p className="mt-2 text-xs text-slate-400">{profile.mottoAttribution}</p>:null}
+        </div> : null}
+        {profile.businessHours?.length ? <p className="mt-4 text-xs text-slate-300">Bar hours saved for {profile.businessHours.length} day{profile.businessHours.length===1?"":"s"}. Shown in Good to Know.</p> : null}
         <div className="mt-4 grid grid-cols-3 gap-2"><div className="rounded-xl border border-fuchsia-300/25 p-2 text-center text-[10px] font-black text-fuchsia-100">Directions</div>{profile.phone ? <div className="rounded-xl border border-white/10 p-2 text-center text-[10px] font-black text-slate-200">Call</div> : null}{profile.menuUrl ? <div className="rounded-xl border border-white/10 p-2 text-center text-[10px] font-black text-slate-200">Menu</div> : null}</div>
         <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.035] p-3"><p className="text-[10px] font-black uppercase tracking-[0.16em] text-fuchsia-300">Tonight at {venue.name}</p><p className="mt-2 text-xs text-slate-400">Live profile uses the canonical karaoke schedule plus today&apos;s saved specials.</p></div>
       </div>
@@ -299,6 +355,11 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [featuredPriority, setFeaturedPriority] = useState(initialProfile.featuredPriority ?? initialVenue?.featuredPriority ?? 10);
   const [tagline, setTagline] = useState(initialProfile.tagline || "");
   const [about, setAbout] = useState(initialProfile.about || "");
+  const [mottoText, setMottoText] = useState(initialProfile.mottoText || "");
+  const [mottoLabel, setMottoLabel] = useState<VenueMottoLabel>(initialProfile.mottoLabel || "In Their Own Words");
+  const [mottoCustomLabel, setMottoCustomLabel] = useState(initialProfile.mottoCustomLabel || "");
+  const [mottoAttribution, setMottoAttribution] = useState(initialProfile.mottoAttribution || "");
+  const [businessHours, setBusinessHours] = useState<VenueBusinessHours[]>(initialProfile.businessHours || []);
   const [phone, setPhone] = useState(initialProfile.phone || "");
   const [singerSignupUrl, setSingerSignupUrl] = useState(initialProfile.singerSignupUrl || "");
   const [menuUrl, setMenuUrl] = useState(initialProfile.menuUrl || "");
@@ -315,6 +376,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [weeklySpecials, setWeeklySpecials] = useState<VenueSpecial[]>(initialProfile.weeklySpecials || []);
   const [dailyDeals, setDailyDeals] = useState<VenueDailyDeal[]>(initialProfile.dailyDeals || []);
   const [venueEvents, setVenueEvents] = useState<VenueProgramEvent[]>(initialProfile.venueEvents || []);
+  const [weeklyProgramming, setWeeklyProgramming] = useState<VenueWeeklyProgram[]>(initialProfile.weeklyProgramming || []);
+  const [venueEventsPartial, setVenueEventsPartial] = useState(initialProfile.venueEventsPartial === true);
   const [eventCalendarUrl, setEventCalendarUrl] = useState(initialProfile.eventCalendarUrl || "");
   const [vibeTags, setVibeTags] = useState(initialProfile.vibeTags || []);
   const [foodSummary, setFoodSummary] = useState(initialProfile.foodSummary || "");
@@ -326,6 +389,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
   const [singHereUrl, setSingHereUrl] = useState(initialProfile.singHere?.url || "");
   const [singHereInstructions, setSingHereInstructions] = useState(initialProfile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");
   const [singHereLinkLabel, setSingHereLinkLabel] = useState(initialProfile.singHere?.linkLabel || "Join the list");
+  const [singHereRotationPolicy, setSingHereRotationPolicy] = useState(initialProfile.singHere?.rotationPolicy || "");
   const [singhubOffer, setSinghubOffer] = useState<SingHubOffer>(initialProfile.singhubOffer || { enabled: false, title: "", detail: "", terms: "", days: [] });
   const [previewMode, setPreviewMode] = useState<PreviewMode>("open");
   const [saving, setSaving] = useState(false);
@@ -344,6 +408,11 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setFeaturedPriority(profile.featuredPriority ?? venue?.featuredPriority ?? 10);
     setTagline(profile.tagline || "");
     setAbout(profile.about || "");
+    setMottoText(profile.mottoText || "");
+    setMottoLabel(profile.mottoLabel || "In Their Own Words");
+    setMottoCustomLabel(profile.mottoCustomLabel || "");
+    setMottoAttribution(profile.mottoAttribution || "");
+    setBusinessHours(profile.businessHours || []);
     setPhone(profile.phone || "");
     setMenuUrl(profile.menuUrl || "");
     setSingerSignupUrl(profile.singerSignupUrl || "");
@@ -360,6 +429,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setWeeklySpecials(profile.weeklySpecials || []);
     setDailyDeals(profile.dailyDeals || []);
     setVenueEvents(profile.venueEvents || []);
+    setWeeklyProgramming(profile.weeklyProgramming || []);
+    setVenueEventsPartial(profile.venueEventsPartial === true);
     setEventCalendarUrl(profile.eventCalendarUrl || "");
     setVibeTags(profile.vibeTags || []);
     setFoodSummary(profile.foodSummary || "");
@@ -371,6 +442,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     setSingHereUrl(profile.singHere?.url || "");
     setSingHereInstructions(profile.singHere?.instructions || "Head up to the KJ and ask to join the karaoke list.");
     setSingHereLinkLabel(profile.singHere?.linkLabel || "Join the list");
+    setSingHereRotationPolicy(profile.singHere?.rotationPolicy || "");
     setSinghubOffer(profile.singhubOffer || { enabled: false, title: "", detail: "", terms: "", days: [] });
   }
 
@@ -412,6 +484,11 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     featuredPriority: featured ? Math.max(1, Math.min(99, featuredPriority || 10)) : undefined,
     tagline: tagline.trim() || undefined,
     about: about.trim() || undefined,
+    mottoText: mottoText.trim() || undefined,
+    mottoLabel: mottoText.trim() ? mottoLabel : undefined,
+    mottoCustomLabel: mottoText.trim() && mottoLabel === "Something Else" ? mottoCustomLabel.trim() || undefined : undefined,
+    mottoAttribution: mottoText.trim() ? mottoAttribution.trim() || undefined : undefined,
+    businessHours: businessHours.filter(item => item.day && item.hours.trim()),
     phone: phone.trim() || undefined,
     menuUrl: menuUrl.trim() || undefined,
     singerSignupUrl: singerSignupUrl.trim() || undefined,
@@ -425,6 +502,8 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
     weeklySpecials: weeklySpecials.filter((special) => special.title.trim()),
     dailyDeals: dailyDeals.filter((deal) => deal.title.trim()),
     venueEvents: venueEvents.filter((item) => item.title.trim() && item.date),
+    weeklyProgramming: weeklyProgramming.filter(item=>item.day&&item.title.trim()),
+    venueEventsPartial,
     eventCalendarUrl: eventCalendarUrl.trim() || undefined,
     gallery,
     vibeTags,
@@ -438,6 +517,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       url: singHereMode === "external" ? singHereUrl.trim() || undefined : undefined,
       instructions: singHereInstructions.trim() || undefined,
       linkLabel: singHereLinkLabel.trim() || undefined,
+      rotationPolicy: singHereRotationPolicy.trim() || undefined,
     },
     singhubOffer: {
       enabled: singhubOffer.enabled,
@@ -446,7 +526,7 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
       terms: singhubOffer.terms?.trim() || undefined,
       days: singhubOffer.days?.length ? singhubOffer.days : undefined,
     },
-  }), [about, amenities, dailyDeals, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
+  }), [about, mottoText, mottoLabel, mottoCustomLabel, mottoAttribution, businessHours, amenities, dailyDeals, venueEvents, weeklyProgramming, venueEventsPartial, eventCalendarUrl, enabled, partnerConfirmed, featured, featuredPriority, foodSummary, gallery, heroImageAlt, heroImageUrl, heroPosition, heroPlacement, logoPlacement, logoImageAlt, logoImageUrl, menuUrl, singerSignupUrl, phone, standoutFeatures, singersSay, singersSaySource, singersSayUpdatedAt, singHereInstructions, singHereLinkLabel, singHereMode, singHereRotationPolicy, singHereUrl, singhubOffer, tagline, vibeTags, weeklySpecials, whyHere]);
 
   const isDirty = JSON.stringify(output) !== baselineSignature;
   const currentIndex = venues.findIndex(venue => venue.slug === slug);
@@ -554,6 +634,27 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
             <label className={`${labelClass} md:col-span-2`}>Tagline<input className={fieldClass} value={tagline} onChange={(event) => setTagline(event.target.value)} /></label>
             <label className={`${labelClass} md:col-span-2`}>About<textarea className={`${fieldClass} min-h-28`} value={about} onChange={(event) => setAbout(event.target.value)} /></label>
 
+            <section className="md:col-span-2 rounded-2xl border border-fuchsia-300/20 bg-fuchsia-300/[0.035] p-4">
+              <p className={labelClass}>Venue motto / house philosophy (optional)</p>
+              <p className="mt-2 text-sm text-slate-400">Use the venue&apos;s own words. Leave blank when the venue hasn&apos;t supplied a genuine quote.</p>
+              <div className="mt-4 grid gap-4 md:grid-cols-2">
+                <label className={labelClass}>Section heading
+                  <select className={fieldClass} value={mottoLabel} onChange={event=>setMottoLabel(event.target.value as VenueMottoLabel)}>
+                    {VENUE_MOTTO_LABELS.map(label=><option key={label} value={label}>{label}</option>)}
+                  </select>
+                </label>
+                {mottoLabel==="Something Else"?<label className={labelClass}>Custom heading
+                  <input className={fieldClass} maxLength={80} value={mottoCustomLabel} onChange={event=>setMottoCustomLabel(event.target.value)} placeholder="e.g. Our Promise" />
+                </label>:null}
+                <label className={`${labelClass} md:col-span-2`}>Motto / quote
+                  <textarea className={`${fieldClass} min-h-20`} maxLength={240} value={mottoText} onChange={event=>setMottoText(event.target.value)} placeholder="Open Hearts and Open Minds." />
+                </label>
+                <label className={`${labelClass} md:col-span-2`}>Attribution (optional)
+                  <input className={fieldClass} maxLength={120} value={mottoAttribution} onChange={event=>setMottoAttribution(event.target.value)} placeholder="The Richardson family's philosophy" />
+                </label>
+              </div>
+            </section>
+
             <section className="md:col-span-2 overflow-hidden rounded-[1.75rem] border border-fuchsia-300/20 bg-[radial-gradient(circle_at_top_left,rgba(236,72,153,.12),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,.10),transparent_34%),rgba(0,0,0,.18)] p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
@@ -605,6 +706,23 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
               <p className="mt-2 text-sm leading-6 text-slate-400">Choose factual venue traits. These are separate from Singers Say.</p>
               <div className="mt-4 flex flex-wrap gap-2">{VENUE_FACT_OPTIONS.map((fact) => { const active = selectedFacts.has(fact); return <button key={fact} type="button" onClick={() => toggleFact(fact)} className={`rounded-full border px-3 py-2 text-xs font-bold transition ${active ? "border-cyan-300/60 bg-cyan-300/15 text-cyan-100" : "border-white/10 bg-white/[0.03] text-slate-400 hover:border-white/25 hover:text-white"}`}>{venueFactIconName(fact) ? <VenueSemanticIcon name={venueFactIconName(fact)!} className="mr-1.5 inline h-4 w-4 align-text-bottom" /> : null}{fact}</button>; })}</div>
               <details className="mt-4"><summary className="cursor-pointer text-xs font-bold text-slate-500">Add custom facts</summary><textarea className={`${fieldClass} min-h-24`} value={amenities.join("\n")} onChange={(event) => setAmenities(event.target.value.split("\n").map((item) => item.trim()).filter(Boolean))} placeholder="One fact per line" /></details>
+              <div className="mt-5 border-t border-white/10 pt-5">
+                <p className={labelClass}>Bar opening hours</p>
+                <p className="mt-2 text-sm text-slate-400">Separate from karaoke hours. Enter confirmed hours by day. Leave unknown days blank, and only type Closed when verified.</p>
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  {DAYS.map(day=><label key={day} className="text-xs font-bold text-slate-300">{day}
+                    <input className={fieldClass} maxLength={80} value={businessHours.find(item=>item.day===day)?.hours || ""}
+                      placeholder="e.g. 11 AM–2 AM or Closed"
+                      onChange={event=>{
+                        const hours=event.target.value;
+                        setBusinessHours(current=>{
+                          const others=current.filter(item=>item.day!==day);
+                          return hours.trim()?[...others,{day,hours}]:others;
+                        });
+                      }} />
+                  </label>)}
+                </div>
+              </div>
             </section>
 
             <section className="md:col-span-2 rounded-2xl border border-cyan-300/15 bg-cyan-300/[0.035] p-4">
@@ -623,11 +741,17 @@ export function VenueLightUpBuilder({ initialSlug, initialProfile, venues }: Ven
                 {singHereMode==="external"?<label className={labelClass}>Signup URL<input className={fieldClass} value={singHereUrl} onChange={(event)=>setSingHereUrl(event.target.value)} placeholder="Existing venue or KJ signup link"/></label>:null}
                 <label className={`${labelClass} md:col-span-2`}>Popup instructions<textarea className={`${fieldClass} min-h-20`} value={singHereInstructions} onChange={(event)=>setSingHereInstructions(event.target.value)}/></label>
                 {singHereMode==="external"?<label className={labelClass}>Button label<input className={fieldClass} value={singHereLinkLabel} onChange={(event)=>setSingHereLinkLabel(event.target.value)} placeholder="Join the list"/></label>:null}
+                <label className={`${labelClass} md:col-span-2`}>KJ rotation policy (optional, host-confirmed only)<textarea className={`${fieldClass} min-h-20`} value={singHereRotationPolicy} maxLength={1200} onChange={(event)=>setSingHereRotationPolicy(event.target.value)} placeholder="Leave blank unless the current KJ confirms the rules for this venue."/><span className="mt-2 block text-xs font-normal normal-case tracking-normal text-slate-500">Only publish rules confirmed by this venue’s current KJ. Blank means no rotation claim appears publicly.</span></label>
               </div>
               <p className="mt-3 text-xs text-slate-500">Future SingHUB-hosted signup can plug into this same action without changing the public SingHERE experience.</p>
             </section>
 
             <VenueOfferEditor slug={slug} partnerEnabled={enabled} offer={singhubOffer} onChange={setSinghubOffer} />
+            <WeeklyProgrammingEditor programs={weeklyProgramming} onChange={setWeeklyProgramming}/>
+            <label className="md:col-span-2 flex items-start gap-3 rounded-xl border border-white/10 p-4 text-sm text-slate-300">
+              <input type="checkbox" className="mt-1" checked={venueEventsPartial} onChange={event=>setVenueEventsPartial(event.target.checked)}/>
+              <span><strong className="block text-white">Monthly events are a partial listing</strong>Check this unless all special dates have been verified. Weekly programming still appears normally, but the calendar will not claim to show every one-off event.</span>
+            </label>
             <EventEditor events={venueEvents} onChange={setVenueEvents} calendarUrl={eventCalendarUrl} onCalendarUrlChange={setEventCalendarUrl} />
             <SpecialEditor specials={weeklySpecials} onChange={setWeeklySpecials} />
             <DailyDealEditor deals={dailyDeals} onChange={setDailyDeals} />
