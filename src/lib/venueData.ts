@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type {ResponsiveImagePlacement} from '@/lib/imagePlacement';
 import fs from "node:fs";
 import path from "node:path";
@@ -188,7 +189,9 @@ function rowToVenueListing(row: VenueSourceRow, fallback: VenueSourceRow | undef
   };
 }
 
-export async function getVenueListings(): Promise<VenueListing[]> {
+// Request-scoped: share parsing/media reads across metadata, hosts and page
+// rendering without making admin media edits stale across requests.
+export const getVenueListings = cache(async (): Promise<VenueListing[]> => {
   const fallbackRows = getFallbackRows();
   const coordinates = loadCoordinates();
   const enhancementMedia = await loadEnhancementMedia();
@@ -236,7 +239,7 @@ export async function getVenueListings(): Promise<VenueListing[]> {
       };
     })
     .filter((venue) => venue.id && venue.venueName && venue.slug);
-}
+});
 
 export async function getFeaturedVenueListings(): Promise<VenueListing[]> {
   return (await getVenueListings())

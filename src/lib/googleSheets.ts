@@ -24,7 +24,7 @@ function valuesToRows(values: string[][]): GoogleSheetRow[] {
     );
 }
 
-async function getAccessToken() {
+async function requestAccessToken() {
   const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
@@ -56,6 +56,7 @@ async function getAccessToken() {
       assertion: `${unsignedToken}.${signature}`,
     }),
     cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
   });
 
   if (!response.ok) {
@@ -67,10 +68,38 @@ async function getAccessToken() {
     throw new Error("Google auth response did not include an access token.");
   }
 
-  return tokenResponse.access_token;
+  return { token: tokenResponse.access_token, expiresAt: Date.now() + Math.max(0, Number((tokenResponse as { expires_in?: number }).expires_in ?? 3600) - 60) * 1000 };
 }
 
-export async function getGoogleSheetRows(sheetId: string, sheetTab: string, columnRange = "A:AZ") {
+// One token refresh per warm instance, including concurrent cold requests. Never
+// include a credential or token in a persistent cache key or log.
+let token: { token: string; expiresAt: number } | undefined;
+let tokenRequest: ReturnType<typeof requestAccessToken> | undefined;
+async function getAccessToken() {
+  if (token && token.expiresAt > Date.now()) return token.token;
+  tokenRequest ??= requestAccessToken().then(value => (token = value)).finally(() => { tokenRequest = undefined; });
+  return (await tokenRequest).token;
+}
+
+const pending = new Map<string, Promise<GoogleSheetRow[]>>();
+const retryAfter = new Map<string, number>();
+
+export function getGoogleSheetRows(sheetId: string, sheetTab: string, columnRange = "A:AZ") {
+  const key = JSON.stringify([sheetId, sheetTab, columnRange]);
+  const existing = pending.get(key);
+  if (existing) return existing;
+  if ((retryAfter.get(key) ?? 0) > Date.now()) {
+    return Promise.reject(new Error("Google Sheets reads temporarily paused after an upstream failure."));
+  }
+  const request = fetchGoogleSheetRows(sheetId, sheetTab, columnRange)
+    .then(rows => { retryAfter.delete(key); return rows; })
+    .catch(error => { retryAfter.set(key, Date.now() + 60_000); throw error; })
+    .finally(() => { pending.delete(key); });
+  pending.set(key, request);
+  return request;
+}
+
+async function fetchGoogleSheetRows(sheetId: string, sheetTab: string, columnRange: string) {
   const accessToken = await getAccessToken();
 
   const range = encodeURIComponent(`'${sheetTab}'!${columnRange}`);
@@ -79,10 +108,12 @@ export async function getGoogleSheetRows(sheetId: string, sheetTab: string, colu
     {
       headers: { Authorization: `Bearer ${accessToken}` },
       next: { revalidate: 300 },
+      signal: AbortSignal.timeout(10_000),
     },
   );
 
   if (!response.ok) {
+    if (response.status === 401) token = undefined;
     throw new Error(`Google Sheets API responded with ${response.status}`);
   }
 
