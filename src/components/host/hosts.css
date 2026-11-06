@@ -41,3 +41,11 @@
  .host-directory-hero .host-hero-photo{object-position:77% center!important;}
  .host-directory-hero::before{background:linear-gradient(90deg,rgba(2,5,12,.82),rgba(2,5,12,.2) 78%),linear-gradient(0deg,rgba(2,5,12,.6),transparent 55%);}
 }
+
+/* Keep decorative icon ligatures and link labels bounded when webfonts fail. */
+.host-system .host-icon{display:inline-block;width:1em;height:1em;overflow:hidden;white-space:nowrap}
+.host-profile-body>*{min-width:0}
+.host-profile-body h2,.host-gig-place h3,.host-link-grid .host-button{overflow-wrap:anywhere}
+.host-link-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.host-link-grid .host-button{min-width:0}
+@media(min-width:951px) and (max-width:1250px){.host-link-grid{grid-template-columns:minmax(0,1fr)}}
