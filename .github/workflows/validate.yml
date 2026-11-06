@@ -57,7 +57,7 @@ jobs:
         run: node --test tests/backyard-integration.test.mjs
 
       - name: Verify TourStops and Partner offer redemption
-        run: node --test tests/gig-stubs.test.mjs tests/venue-offers.test.mjs tests/venue-checkins.test.mjs tests/location-attempts.test.mjs
+        run: node --test tests/gig-stubs.test.mjs tests/venue-offers.test.mjs tests/admin-perks-page.test.mjs tests/venue-checkins.test.mjs tests/location-attempts.test.mjs
 
       - name: Prepare isolated My Tour map and song-log UI fixture
         if: (startsWith(github.head_ref, 'fix/my-tour-') || startsWith(github.head_ref, 'fix/dark-maps-'))

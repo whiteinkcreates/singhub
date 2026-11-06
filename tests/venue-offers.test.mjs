@@ -114,3 +114,51 @@ test('staff-code offers cannot enter one-time presentation endpoint',async()=>{
  const result=await api.changeVenueOfferPresentation({userId:'staff-user',venueSlug:'one',action:'open'});
  assert.equal(result.status,409);
 });
+
+test('admin perk reporting separates singer presentation from staff-verified redemption',()=>{
+ const source=readFileSync('src/lib/adminPerkReporting.ts','utf8');
+ const exports={};
+ vm.runInNewContext(ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports});
+ const event=(venue,mode,presented,redeemed)=>({
+  venue_slug:venue,offer_title:'$1 off one drink',presentation_mode:mode,
+  unlocked_at:'2026-11-05T20:00:00Z',presentation_started_at:presented?'2026-11-05T20:01:00Z':null,
+  presented_at:presented?'2026-11-05T20:02:00Z':null,
+  redeemed_at:redeemed?'2026-11-05T20:03:00Z':null
+ });
+ const result=exports.summarizePerks([
+  event('deanos-pub','one_time',true,false),
+  event('deanos-pub','one_time',true,false),
+  event('deanos-pub','one_time',true,false),
+  event('deanos-pub','one_time',false,false),
+  event('other-venue','staff_code',false,true),
+  event('other-venue','staff_code',false,false),
+ ]);
+ const deanos=result.get('deanos-pub'),other=result.get('other-venue');
+ assert.equal(deanos.unlocks,4);
+ assert.equal(deanos.screenPresentations,3);
+ assert.equal(deanos.staffRedemptions,0);
+ assert.equal(other.staffRedemptions,1);
+ assert.equal(other.screenPresentations,0);
+ assert.equal(exports.reportRatio(3,4),'75%');
+ assert.equal(exports.reportRatio(0,0),'—');
+});
+test('admin perks dashboard is admin-gated, privacy-preserving and discoverable',()=>{
+ const page=readFileSync('src/app/admin/perks/page.tsx','utf8');
+ const admin=readFileSync('src/app/admin/page.tsx','utf8');
+ assert.match(page,/await requireAdminAuthorization\(\)/);
+ assert.match(page,/venue_offer_unlocks/);
+ assert.match(page,/singer_venue_checkins/);
+ assert.match(page,/Screen presentations/);
+ assert.match(page,/Staff redemptions/);
+ assert.doesNotMatch(page,/redemption_code|user_id|token_hash/);
+ assert.match(admin,/href: "\/admin\/perks"/);
+ assert.doesNotMatch(admin,/href: "\/admin\/daily-mic"/);
+});
+
+test('admin report detects an API cap below its requested limit instead of showing complete totals',()=>{
+ const exports={};vm.runInNewContext(ts.transpileModule(readFileSync('src/lib/adminPerkReporting.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports});
+ assert.equal(exports.hasIncompleteRows({count:2000,data:Array(1000).fill({})}),true);
+ assert.equal(exports.hasIncompleteRows({count:4,data:Array(4).fill({})}),false);
+ assert.equal(exports.hasIncompleteRows({count:0,data:[]}),false);
+ assert.equal(exports.hasIncompleteRows({count:null,data:[]}),true);
+});

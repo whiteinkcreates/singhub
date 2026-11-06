@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 const tools = [
+  { href: "/admin/perks", eyebrow: "Partner Performance", title: "Perks & Redemptions", description: "Compare check-ins, unlocked perks, one-time presentations, and staff-confirmed redemptions across venues. See active offers even before activity begins." },
   { href: "/admin/monthlymic", eyebrow: "Community Events", title: "MonthlyMic RSVPs", description: "View November 18 registrations, group sizes, JustDuet interest, and attendee details." },
   { href: "/admin/main-heroes", eyebrow: "Site Appearance", title: "Main Page Heroes", description: "Upload and replace Discover, Venues, My SingHUB, and SingBOARD main hero images without touching host profile media." },
   { href: "/admin/venue-activity", eyebrow: "Venue Intelligence", title: "Venue Activity", description: "Compare recorded Performance Stars, Tour Stop visits, and check-ins by venue, with singer breakdowns and direct edit links." },
@@ -14,13 +15,6 @@ const tools = [
   { href: "/admin/checkin-health", eyebrow: "Singer Experience", title: "GPS Check-in Health", description: "See which venue and Tour Stop GPS buttons work or fail, failure reasons, and recurring reliability issues without collecting coordinates." },
   { href: "/admin/hosts", eyebrow: "Karaoke Hosts", title: "Host Media", description: "Upload portraits and hero images, choose focal points, and save media for host profiles and trading cards." },
   { href: "/admin/hotels", eyebrow: "Hotel Partnerships", title: "Hotel Media", description: "Choose or upload hotel hero images, preview desktop and mobile crops, and save hotel media settings." },
-  {
-    href: "/admin/daily-mic",
-    eyebrow: "Social Acquisition",
-    title: "Daily Mic Generator",
-    description:
-      "Turn today’s poll into a branded feed or story card, generate stronger captions, and send people straight to /vote.",
-  },
   {
     href: "/admin/scout",
     eyebrow: "Discovery",

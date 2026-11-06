@@ -402,6 +402,15 @@ export function getProfileCompletionLevel(
   return hasEnhancedFields ? "enhanced" : "basic";
 }
 
+// Owner-provided public links recovered from unmerged c737655 (2026-10-21).
+// Only fill missing links for this stable host identity; current live values win.
+const RECOVERED_HOST_LINKS: Readonly<Partial<Record<string, { signupLink: string; tipLink: string }>>> = {
+  "bryon-bea": {
+    signupLink: "https://www.karafun.com/089042",
+    tipLink: "https://venmo.com/u/bryon_bea",
+  },
+};
+
 function rowToHost(row: HostSourceRow): HostProfile {
   const hostName =
     getCellAny(row, [
@@ -420,6 +429,8 @@ function rowToHost(row: HostSourceRow): HostProfile {
       getCellAny(row, ["instagram_handle", "Instagram Handle"]),
   );
 
+  const hostId = getCellAny(row, ["host_id", "Host ID"]) || slug;
+  const recoveredLinks = RECOVERED_HOST_LINKS[hostId];
   const baseHost = {
     status: normalizeStatus(getCellAny(row, ["status", "Status"])),
     entityType: normalizeEntityType(
@@ -433,7 +444,7 @@ function rowToHost(row: HostSourceRow): HostProfile {
       "Affiliation ID",
       "KJ Group / Affiliation",
     ]),
-    hostId: getCellAny(row, ["host_id", "Host ID"]) || slug,
+    hostId,
     slug,
     hostName,
     publicDisplayName,
@@ -449,9 +460,9 @@ function rowToHost(row: HostSourceRow): HostProfile {
     ),
     tiktokUrl: getCellAny(row, ["tiktok_url", "TikTok URL"]),
     websiteUrl: getCellAny(row, ["website_url", "Website URL"]),
-    tipLink: getCellAny(row, ["tip_link", "Tip Link"]),
+    tipLink: getCellAny(row, ["tip_link", "Tip Link"]) || recoveredLinks?.tipLink,
     bookingLink: getCellAny(row, ["booking_link", "Booking Link"]),
-    signupLink: getCellAny(row, ["signup_link", "Signup Link"]),
+    signupLink: getCellAny(row, ["signup_link", "Signup Link"]) || recoveredLinks?.signupLink,
     bio: getCellAny(row, ["bio", "Bio"]),
     rotationPolicy: getCellAny(row, ["rotation_policy", "Rotation Policy", "KJ Rotation Rules"]),
     singerGuidelines: getCellAny(row, ["singer_guidelines", "Singer Guidelines", "KJ House Rules"]),
@@ -607,7 +618,7 @@ const getCachedVenueHostLinks = unstable_cache(
       tipLink: host.tipLink,
       signupLink: host.signupLink,
     })),
-  ["singhub-public-venue-host-links-v1"],
+  ["singhub-public-venue-host-links-v2"],
   { revalidate: 300 },
 );
 

@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+import vm from 'node:vm';
+import {createRequire} from 'node:module';
+import ts from 'typescript';
+import {test} from 'node:test';
+import {renderToStaticMarkup} from 'react-dom/server';
+const require=createRequire(import.meta.url);
+function compile(file,imports){const exports={};vm.runInNewContext(ts.transpileModule(readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true}}).outputText,{exports,require:id=>imports[id]??require(id),console,URL,Intl});return exports;}
+const metrics=compile('src/lib/adminPerkReporting.ts',{});
+export async function renderReport({authorized=true,cap=1000,error=false,params={}}={}){
+ const queries=[];let authorizations=0;
+ const event=(mode,presented=false,redeemed=false)=>({venue_slug:'deanos-pub',offer_title:'Fixture offer',presentation_mode:mode,nightlife_date:'2026-11-06',unlocked_at:'2026-11-06T20:00:00Z',presentation_started_at:presented?'2026-11-06T20:01:00Z':null,presented_at:presented?'2026-11-06T20:02:00Z':null,redeemed_at:redeemed?'2026-11-06T20:03:00Z':null});
+ const tables={venue_offer_unlocks:[event('one_time',true),event('one_time',true),event('one_time',true),event('one_time')],singer_venue_checkins:[{venue_slug:'deanos-pub',checked_in_on:'2026-11-06'}],venue_enhancements:[{slug:'deanos-pub',profile:{enabled:true,singhubOffer:{enabled:true,title:'Fixture offer'}}},{slug:'deanos-east',profile:{enabled:true,singhubOffer:{enabled:true,title:'Fixture zero activity'}}},{slug:'invalid',profile:{enabled:true,singhubOffer:{enabled:true,title:''}}}]};
+ const db={from(table){assert.equal(authorizations,1,'private query before authorization');const q={table,filters:[],limit:1000};queries.push(q);const chain={select(columns){q.columns=columns;return chain;},gte(key,value){q.filters.push([key,value]);return chain;},order(){return chain;},limit(value){q.limit=value;return chain;},then(resolve,reject){let rows=tables[table].filter(row=>q.filters.every(([key,value])=>row[key]>=value));return Promise.resolve({data:rows.slice(0,Math.min(cap,q.limit)),count:rows.length,error:error?{message:'Fixture read failed'}:null}).then(resolve,reject);}};return chain;}};
+ const page=compile('src/app/admin/perks/page.tsx',{'next/link':{__esModule:true,default:({href,children,...props})=>require('react').createElement('a',{href,...props},children)},'@/lib/supabase/admin':{createAdminClient:()=>db},'@/lib/adminAuthorization':{requireAdminAuthorization:async()=>{authorizations++;if(!authorized)throw new Error('Fixture unauthorized');}},'@/lib/venueData':{getVenueListings:async()=>[{slug:'deanos-pub',venueName:"Deano's Pub",neighborhood:'La Mesa'},{slug:'deanos-east',venueName:"Deano's East",city:'Santee'}]},'@/lib/adminPerkReporting':metrics});
+ const html=renderToStaticMarkup(await page.default({searchParams:Promise.resolve({period:'all',...params})}));return {html,queries,authorizations};
+}
+test('actual admin page shows 4 unlocks, 3 presentations, zero staff redemptions and zero-activity offers',async()=>{const r=await renderReport();assert.match(r.html,/Deano&#x27;s Pub/);assert.match(r.html,/Deano&#x27;s East/);assert.match(r.html,/75%/);assert.match(r.html,/Active venue perks<\/p><strong[^>]*>2<\/strong>/);assert.match(r.html,/0 staff-code/);assert.match(r.html,/Fixture zero activity/);assert.doesNotMatch(r.html,/invalid<|may be incomplete/);for(const q of r.queries)assert.doesNotMatch(q.columns,/user_id|redemption_code|token_hash/);});
+test('actual admin page warns about project row caps and withholds all metrics on query errors',async()=>{assert.match((await renderReport({cap:1})).html,/Displayed totals may be incomplete/);const r=await renderReport({error:true});assert.match(r.html,/Report unavailable/);assert.doesNotMatch(r.html,/Perks unlocked/);});
+test('authorization runs before private report reads',async()=>{await assert.rejects(renderReport({authorized:false}),/unauthorized/);});
+if(process.argv.includes('--preview')){mkdirSync('/tmp/singhub-perks-preview',{recursive:true});for(const [name,options] of [['complete',{}],['capped',{cap:1}],['error',{error:true}]])writeFileSync('/tmp/singhub-perks-preview/'+name+'.html',(await renderReport(options)).html);console.log('Wrote actual page renders with synthetic read-only fixtures.');}
