@@ -133,6 +133,7 @@ export default async function VenueActivityPage({ searchParams }: {
       </p>
       <div className="mt-4 flex flex-wrap gap-3">
         <Link href="/admin/singers" className="rounded-full border border-white/15 px-4 py-2 text-sm font-bold text-cyan-200">Singer Activity →</Link>
+        <Link href="/admin/perks" className="rounded-full border border-white/15 px-4 py-2 text-sm font-bold text-cyan-200">Perks & Redemptions →</Link>
         <Link href="/admin/light-up-venues" className="rounded-full border border-white/15 px-4 py-2 text-sm font-bold text-cyan-200">Edit venue profiles →</Link>
       </div>
     </header>
