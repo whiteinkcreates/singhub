@@ -11,13 +11,13 @@ const DEMO_IMAGE_URL =
 const DEMO_ENRICHMENTS: Record<string, Partial<VenueListing>> = {
   "cheers-bar-san-diego": {
     description:
-      "A long-running University Heights neighborhood bar open to all, with pool, jukebox, daily drink specials, and karaoke Mondays and Wednesdays with Ed and Katie.",
+      "Family-owned University Heights bar since 1983, in a building with roots dating to 1913. Find karaoke Mondays and Wednesdays, Thursday trivia with Estevan, pool, jukebox, patio, and the original neon sign from Diablos.",
     specials:
-      "Daily drink specials on premiums, wells, and beer. Karaoke nights include drink specials all night.",
+      "No routine drink specials; occasional event-specific promotions.",
     foodHighlights:
-      "Free burgers and hot dogs Sundays from 1-5 PM with a drink purchase.",
+      "Customer appreciation BBQ every Sunday starting at 1 PM: burgers, hot dogs, and sides included with a drink purchase. A Cheers tradition for over 20 years.",
     drinkHighlights:
-      "Daily specials on premium pours, wells, and beer.",
+      "Stiff, wallet-friendly drinks; occasional event-specific offers.",
     reservationLink: "https://cheerssandiego.com/events",
   },
   "redwing-bar-grill": {
