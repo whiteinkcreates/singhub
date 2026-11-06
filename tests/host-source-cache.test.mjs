@@ -13,7 +13,7 @@ function loader({rotationPolicy,mediaPolicy,guidelines}={}){
  const imports={
  'node:fs':fs,'node:path':path,
     'react':{cache:fn=>fn}, // Identity tests do not simulate the React request dispatcher.
- 'next/cache':{unstable_cache:(fn,parts,options)=>{assert.equal(options.revalidate,900);return async(...args)=>{const key=JSON.stringify([parts,args]);keys.push(key);if(cache.has(key))return cache.get(key);const value=await fn(...args);cache.set(key,value);return value;};}},
+ 'next/cache':{unstable_cache:(fn,parts,options)=>{assert.equal(options.revalidate,parts[0]==='singhub-host-sheet-rows-v3'?3600:300);return async(...args)=>{const key=JSON.stringify([parts,args]);keys.push(key);if(cache.has(key))return cache.get(key);const value=await fn(...args);cache.set(key,value);return value;};}},
  '@/lib/hostMedia.server':{getHostMediaOverrides:async()=>new Map([['dj-loy',{portraitUrl:'/fixture-portrait.webp',heroUrl:'/fixture-hero.webp',rotationPolicy:mediaPolicy}]])},
  '@/lib/hostMedia':{HOST_DIRECTORY_MEDIA_KEY:'directory'},
  '@/lib/eventData':{getKaraokeEventListings:async()=>[]},
@@ -23,7 +23,7 @@ function loader({rotationPolicy,mediaPolicy,guidelines}={}){
  '@/lib/tsv':{parseTsv},'@/lib/venueData':{getVenueListings:async()=>[]},
  };
  vm.runInNewContext(ts.transpileModule(fs.readFileSync('src/lib/hostData.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,esModuleInterop:true}}).outputText,{exports,require:id=>imports[id],process:{env,cwd:process.cwd},console:{error(){}}});
- return {read:exports.getActiveHosts,env,calls:()=>calls,keys,book:value=>{book=value;},fail:value=>{fail=value;}};
+ return {read:exports.getActiveHosts,forVenue:exports.getVenueHostLinks,env,calls:()=>calls,keys,book:value=>{book=value;},fail:value=>{fail=value;}};
 }
 test('live fields remain default, successful reads are cached, and media overrides survive',async()=>{
  const l=loader();for(let i=0;i<3;i++){const host=(await l.read()).find(h=>h.slug==='dj-loy');assert.equal(host.bio,'New approved live profile');assert.equal(host.profileImageUrl,'/fixture-portrait.webp');assert.equal(host.heroImageUrl,'/fixture-hero.webp');}
@@ -41,4 +41,17 @@ test('canonical guidelines survive blank media settings and explicit media polic
  const canonical=(await loader({rotationPolicy:'Host-confirmed order',mediaPolicy:'  ',guidelines:'Please be ready when called.'}).read()).find(h=>h.slug==='dj-loy');
  assert.equal(canonical.rotationPolicy,'Host-confirmed order');assert.equal(canonical.singerGuidelines,'Please be ready when called.');
  const override=(await loader({rotationPolicy:'Canonical order',mediaPolicy:' Updated host policy '}).read()).find(h=>h.slug==='dj-loy');assert.equal(override.rotationPolicy,'Updated host policy');
+});
+
+test('venue profile links include only hosts matching the verified venue event',async()=>{
+ const l=loader();
+ const matches=await l.forVenue([{hostId:'will',hostName:'Will'}]);
+ assert.ok(matches.some(host=>host.hostId==='will'),'linked host is retained');
+ assert.ok(!matches.some(host=>host.hostId==='art-ruiz'),'unrelated host is excluded');
+ assert.ok(matches.every(host=>!('bio' in host)&&!('schedule' in host)),'venue pages receive minimal host projections');
+});
+test('a venue with no identified host does not load the host directory',async()=>{
+ const l=loader();
+ assert.equal((await l.forVenue([])).length,0);
+ assert.equal(l.calls(),0);
 });

@@ -501,7 +501,7 @@ const getCachedSheetRows = unstable_cache(
   async (sheetId: string, sheetTab: string) =>
     getGoogleSheetRows(sheetId, sheetTab, "A:AZ"),
   ["singhub-host-sheet-rows-v3"],
-  { revalidate: 900 },
+  { revalidate: 3600 },
 );
 
 async function getSheetRows(): Promise<GoogleSheetRow[] | null> {
@@ -592,6 +592,41 @@ export async function getHosts({includeMedia=true}: {includeMedia?:boolean} = {}
 
 export async function getActiveHosts(options?: {includeMedia?:boolean}) {
   return (await getHosts(options)).filter((host) => isActiveStatus(host.status));
+}
+
+export type VenueHostLink = Pick<HostProfile, "hostId" | "hostName" | "publicDisplayName" | "tipLink" | "signupLink">;
+
+// Public venue pages only need links and display names, not complete KJ
+// profiles or media. Cache this lightweight projection across requests.
+const getCachedVenueHostLinks = unstable_cache(
+  async (): Promise<VenueHostLink[]> =>
+    (await getActiveHosts({ includeMedia: false })).map((host) => ({
+      hostId: host.hostId,
+      hostName: host.hostName,
+      publicDisplayName: host.publicDisplayName,
+      tipLink: host.tipLink,
+      signupLink: host.signupLink,
+    })),
+  ["singhub-public-venue-host-links-v1"],
+  { revalidate: 300 },
+);
+
+// Preserve ambiguous-name protection in singHereForHostNight by keeping every
+// exact name match, rather than selecting a single arbitrary host.
+export async function getVenueHostLinks(
+  events: readonly KaraokeEventListing[],
+): Promise<VenueHostLink[]> {
+  const eventHostIds = new Set(events.map((event) => event.hostId).filter(Boolean));
+  const eventHostNames = new Set(
+    events.map((event) => event.hostName?.trim().toLowerCase()).filter(Boolean),
+  );
+  if (!eventHostIds.size && !eventHostNames.size) return [];
+  return (await getCachedVenueHostLinks()).filter(
+    (host) =>
+      eventHostIds.has(host.hostId) ||
+      eventHostNames.has(host.hostName.trim().toLowerCase()) ||
+      eventHostNames.has(host.publicDisplayName.trim().toLowerCase()),
+  );
 }
 
 export async function getFeaturedHosts() {

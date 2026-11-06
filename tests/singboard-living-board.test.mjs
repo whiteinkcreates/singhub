@@ -78,3 +78,17 @@ test("mobile SingBOARD uses full-height stage with uncropped image fit", () => {
   assert.doesNotMatch(css,/--main-hero-height:clamp\(/);
   assert.doesNotMatch(css,/\.sb-page \[data-page-hero\] \[data-hero-copy\]\.sb-hero__copy\s*\{\s*width:min\(390px/);
 });
+
+test("public venue reads never archive SingBOARD flyers as a side effect", () => {
+  const repository=readFileSync(new URL("../src/lib/singboard/repository.ts",import.meta.url),"utf8");
+  const publicReads=repository.slice(repository.indexOf("export async function getActiveSingBoardFlyers"),repository.indexOf("export async function getSingBoardEvent"));
+  const venuePage=readFileSync(new URL("../src/app/venues/[slug]/page.tsx",import.meta.url),"utf8");
+  assert.doesNotMatch(publicReads,/\.update\(/,"GET requests must not perform archive writes");
+  assert.match(publicReads,/\.gte\("event_date",sanDiegoDate\(\)\)/,"expired flyers are excluded at read time");
+  assert.match(publicReads,/getActiveVenueSingBoardFlyers/);
+  assert.match(publicReads,/\.eq\("venue_slug",venueSlug\)/);
+  assert.match(publicReads,/\.ilike\("venue_name",venueName\)/);
+  assert.match(publicReads,/\.eq\("review_status","verified"\)/);
+  assert.match(venuePage,/getActiveVenueSingBoardFlyers\(venue\.slug, venue\.venueName\)/);
+  assert.doesNotMatch(venuePage,/getActiveSingBoardFlyers\(\)/);
+});

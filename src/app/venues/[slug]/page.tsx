@@ -2,7 +2,7 @@ import { getPublicNflAffiliations } from '@/lib/nflAffiliations';
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
+import { getActiveVenueSingBoardFlyers } from "@/lib/singboard/repository";
 import { VenueProfile } from "@/components/venue/VenueProfile";
 import { getKaraokeEventsByVenueSlug } from "@/lib/eventData";
 import {applyKjSubs} from "@/lib/kjSubstitutions";
@@ -14,7 +14,7 @@ import {
 } from "@/lib/seoStructuredData";
 import { getPersistedVenueEnhancement } from "@/lib/venueEnhancements.server";
 import { getVenueListingBySlug, getVenueListings } from "@/lib/venueData";
-import {getActiveHosts} from "@/lib/hostData";
+import { getVenueHostLinks } from "@/lib/hostData";
 
 type VenuePageProps = { params: Promise<{ slug: string }> };
 
@@ -75,15 +75,15 @@ export default async function VenuePage({ params }: VenuePageProps) {
   const venue = await getVenueListingBySlug(canonicalSlug);
   if (!venue || !isPublicVenue(venue)) notFound();
 
-  const [events, enhancement, singersSay, posts, kjHosts] = await Promise.all([
+  const [events, enhancement, singersSay, posts] = await Promise.all([
     getKaraokeEventsByVenueSlug(venue.slug),
     getPersistedVenueEnhancement(venue.slug),
     getSingersSaySummary(venue.id),
-    getActiveSingBoardFlyers().catch(() => []),
-    getActiveHosts({includeMedia:false}),
+    getActiveVenueSingBoardFlyers(venue.slug, venue.venueName).catch(() => []),
   ]);
 
   const currentEvents=applyKjSubs(events,venue.slug);
+  const kjHosts = await getVenueHostLinks(currentEvents);
   return (
     <>
       <JsonLd
@@ -99,7 +99,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
           ],
         }}
       />
-      <VenueProfile nflAffiliations={getPublicNflAffiliations().filter(a=>a.venueId===venue.id)} venue={venue} events={currentEvents} kjHosts={kjHosts.map(h=>({hostId:h.hostId,hostName:h.hostName,publicDisplayName:h.publicDisplayName,tipLink:h.tipLink,signupLink:h.signupLink}))} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.reviewStatus === "verified" && (post.venueSlug === venue.slug || (!post.venueSlug && post.venue.toLowerCase() === venue.venueName.toLowerCase())))} />
+      <VenueProfile nflAffiliations={getPublicNflAffiliations().filter(a=>a.venueId===venue.id)} venue={venue} events={currentEvents} kjHosts={kjHosts} enhancement={enhancement} singersSay={singersSay} posts={posts.filter(post => post.reviewStatus === "verified" && (post.venueSlug === venue.slug || (!post.venueSlug && post.venue.toLowerCase() === venue.venueName.toLowerCase())))} />
     </>
   );
 }

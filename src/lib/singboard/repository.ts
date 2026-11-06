@@ -41,7 +41,47 @@ function sanDiegoDate(){const parts=new Intl.DateTimeFormat("en-CA",{timeZone:"A
 function canonicalVenueSlug(slug:string|null|undefined){if(slug==="the-mesa-la-mesa"||slug==="the-mesa-college-area")return "the-mesa";return slug||undefined}
 function mapPost(row:SingBoardPostRow){return {id:row.id,postType:(row.post_type||"image") as SingBoardPostType,title:row.title,venue:row.venue_name,neighborhood:row.neighborhood,region:row.region as SingBoardRegion,detail:row.detail||"",x:Number(row.x),y:Number(row.y),rotation:Number(row.rotation),imageUrl:row.image_url||undefined,noteText:row.note_text||undefined,noteColor:row.note_color as SingBoardNoteColor|undefined,eventDate:row.event_date,startTime:row.start_time||undefined,hostName:row.host_name||undefined,linkUrl:row.link_url||undefined,venueSlug:canonicalVenueSlug(row.venue_slug),hostId:row.host_id||undefined,category:row.category||undefined,reviewStatus:row.review_status||undefined}}
 
-export async function getActiveSingBoardFlyers():Promise<PersistedSingBoardPost[]> {const supabase=createAdminClient();const today=sanDiegoDate();const{error:archiveError}=await supabase.from("singboard_flyers").update({status:"archived",archived_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("status","active").lt("event_date",today);if(archiveError)throw new Error(`Failed to archive expired SingBOARD posts: ${archiveError.message}`);const{data,error}=await supabase.from("singboard_flyers").select("id,post_type,title,venue_name,neighborhood,region,detail,image_url,note_text,note_color,event_date,start_time,host_name,link_url,venue_slug,host_id,category,review_status,x,y,rotation").eq("status","active").order("pinned_at",{ascending:true});if(error)throw new Error(`Failed to load SingBOARD posts: ${error.message}`);return(data||[]).map(row=>({...mapPost(row as SingBoardPostRow),pinned:true as const}))}
+// Public reads must never archive records: render-time writes multiply with traffic.
+// An expired flyer is excluded by event_date, and getSingBoardEvent already treats
+// expired events as archived when displaying their detail pages.
+const PUBLIC_FLYER_COLUMNS = "id,post_type,title,venue_name,neighborhood,region,detail,image_url,note_text,note_color,event_date,start_time,host_name,link_url,venue_slug,host_id,category,review_status,x,y,rotation";
+
+export async function getActiveSingBoardFlyers():Promise<PersistedSingBoardPost[]> {
+  const supabase=createAdminClient();
+  const {data,error}=await supabase.from("singboard_flyers")
+    .select(PUBLIC_FLYER_COLUMNS)
+    .eq("status","active")
+    .gte("event_date",sanDiegoDate())
+    .order("pinned_at",{ascending:true});
+  if(error)throw new Error(`Failed to load SingBOARD posts: ${error.message}`);
+  return(data||[]).map(row=>({...mapPost(row as SingBoardPostRow),pinned:true as const}));
+}
+
+// A venue visit reads only posts associated with that venue, including legacy
+// posts that were saved with the venue name but no canonical slug.
+export async function getActiveVenueSingBoardFlyers(venueSlug:string,venueName:string):Promise<PersistedSingBoardPost[]> {
+  const supabase=createAdminClient();
+  const today=sanDiegoDate();
+  const base=()=>supabase.from("singboard_flyers").select(PUBLIC_FLYER_COLUMNS)
+    .eq("status","active")
+    .eq("review_status","verified")
+    .gte("event_date",today);
+  const [bySlug,byName]=await Promise.all([
+    base().eq("venue_slug",venueSlug),
+    base().ilike("venue_name",venueName),
+  ]);
+  if(bySlug.error)throw new Error(`Failed to load venue SingBOARD posts: ${bySlug.error.message}`);
+  if(byName.error)throw new Error(`Failed to load legacy venue SingBOARD posts: ${byName.error.message}`);
+  const posts=new Map<string,PersistedSingBoardPost>();
+  for(const row of [...(bySlug.data||[]),...(byName.data||[])]) {
+    const post={...mapPost(row as SingBoardPostRow),pinned:true as const};
+    if(post.venueSlug===venueSlug||(!post.venueSlug&&post.venue.toLowerCase()===venueName.toLowerCase())) {
+      posts.set(post.id,post);
+    }
+  }
+  return [...posts.values()].sort((a,b)=>a.eventDate.localeCompare(b.eventDate));
+}
+
 export async function getSingBoardEvent(id:string):Promise<SingBoardEvent|null>{const supabase=createAdminClient();const{data,error}=await supabase.from("singboard_flyers").select("id,post_type,title,venue_name,neighborhood,region,detail,image_url,note_text,note_color,event_date,start_time,host_name,link_url,venue_slug,host_id,category,review_status,poster_id,x,y,rotation,status").eq("id",id).maybeSingle();if(error)throw new Error(`Failed to load SingBOARD event: ${error.message}`);if(!data)return null;const row=data as SingBoardPostRow;const status=(row.status==="archived"||row.event_date<sanDiegoDate())?"archived":"active";const{data:poster}=await supabase.from("singboard_posters").select("display_name,poster_type,venue_id,host_id").eq("id",data.poster_id).maybeSingle();return {...mapPost(row),status,posterName:poster?.poster_type==="admin"?"SingHUB":poster?.display_name||undefined,posterType:poster?.poster_type as SingBoardPosterType|undefined,posterVenueId:poster?.venue_id||undefined,posterHostId:poster?.host_id||undefined}}
 export async function recordSingBoardEventMetric(flyerId:string,metricType:SingBoardMetricType){const supabase=createAdminClient();const{error}=await supabase.from("singboard_event_metrics").insert({flyer_id:flyerId,metric_type:metricType});if(error)console.error(`Failed to record SingBOARD metric ${metricType}:`,error.message)}
 
