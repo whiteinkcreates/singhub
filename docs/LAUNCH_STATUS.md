@@ -1,5 +1,11 @@
 # SingHUB launch status
 
+## November 6 Foundation Pass catch-up reconciliation
+
+Combined #541/#534 on current main `1f3eaa4`, preserving Foundation caches, venue-scoped read-only SingBOARD, seasonal Cheers hours, verified schedules and consolidated KJ identities. Restored Bryon.Bea signup/tip links from owner commit c737655; current nonblank live links win, and venue signup is scheduled-night dependent rather than geofenced. Admin Perks & Redemptions stays authorized before private reads, distinguishes singer screen presentations from staff redemption, and now warns when the project cap truncates below the requested limit.
+
+Local validation: 43 focused tests, build/TypeScript, data/asset checks and lint pass (zero errors, 51 warnings). Actual report markup rendered with read-only synthetic fixtures at 390/1280 px passes complete/capped/error previews; this does not establish live venue metrics. No production SQL, record writes or upstream Sheet edits. Source/CI/deployment remain separate evidence. See [fresh open-PR reconciliation](OPEN_PR_AUDIT_2026-11-06.md) for dispositions, retained unique work and remaining gates; #542 schedules stay separate.
+
 ## November 4 authorized main merge and production release
 
 Corey explicitly approved main merges and their automatic Vercel production deployment in this session. #527 merged at c486fc5; no production SQL or manual database record writes were authorized or performed. The remaining validated account, calendar, sales/support and KJ policy changes are combined in #531 to land their overlapping history together. #529/#530/#532 heads are retained in the combined ancestry. #530's earlier published ref was incorrect; it was repaired without force-pushing and its actual calendar changes are included in this combined validation.

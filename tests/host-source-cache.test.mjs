@@ -6,10 +6,10 @@ import ts from 'typescript';
 import {test} from 'node:test';
 
 function parseTsv(text){const [head,...lines]=text.trimEnd().split(/\r?\n/);const keys=head.split('\t');return lines.map(line=>Object.fromEntries(keys.map((key,i)=>[key,line.split('\t')[i]||''])));}
-function loader({rotationPolicy,mediaPolicy,guidelines}={}){
+function loader({rotationPolicy,mediaPolicy,guidelines,bryonSignup,bryonTip}={}){
  const exports={},env={};let calls=0,fail=false,book='canonical';const cache=new Map();const keys=[];
  const rows=parseTsv(fs.readFileSync('public/data/kj_profiles.tsv','utf8'));
- const live=rows.map(row=>({...row,bio:row.slug==='dj-loy'?'New approved live profile':row.bio,rotation_policy:rotationPolicy,singer_guidelines:guidelines}));
+ const live=rows.map(row=>({...row,bio:row.slug==='dj-loy'?'New approved live profile':row.bio,rotation_policy:rotationPolicy,singer_guidelines:guidelines,...(row.host_id==='bryon-bea'?{signup_link:bryonSignup===undefined?row.signup_link:bryonSignup,tip_link:bryonTip===undefined?row.tip_link:bryonTip}:{})}));
  const imports={
  'node:fs':fs,'node:path':path,
     'react':{cache:fn=>fn}, // Identity tests do not simulate the React request dispatcher.
@@ -54,4 +54,23 @@ test('a venue with no identified host does not load the host directory',async()=
  const l=loader();
  assert.equal((await l.forVenue([])).length,0);
  assert.equal(l.calls(),0);
+});
+
+test('recovered Bryon links work with blank live fields and reach the scoped venue projection',async()=>{
+ const l=loader({bryonSignup:'',bryonTip:''});const host=(await l.read()).find(h=>h.hostId==='bryon-bea');
+ assert.equal(host.signupLink,'https://www.karafun.com/089042');assert.equal(host.tipLink,'https://venmo.com/u/bryon_bea');
+ const links=await l.forVenue([{hostName:'Bryon.Bea'}]);assert.equal(links.length,1);assert.equal(links[0].signupLink,host.signupLink);
+});
+test('new live Bryon links take precedence over the recovered historical links',async()=>{
+ const l=loader({bryonSignup:'https://queue.example.test/new',bryonTip:'https://tips.example.test/new'});const host=(await l.read()).find(h=>h.hostId==='bryon-bea');
+ assert.equal(host.signupLink,'https://queue.example.test/new');assert.equal(host.tipLink,'https://tips.example.test/new');
+});
+
+test('Bryon signup is available for his scheduled night without location gating and absent on unrelated nights',async()=>{
+ const occurrence={};vm.runInNewContext(ts.transpileModule(fs.readFileSync('src/lib/eventOccurrence.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports:occurrence});
+ const flow={};vm.runInNewContext(ts.transpileModule(fs.readFileSync('src/lib/singHereHostNight.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports:flow,require:()=>occurrence});
+ const event={hostName:'Bryon.Bea',karaokeDay:'Wednesday',activeStatus:'active',recurring:true};const hosts=await loader({bryonSignup:'',bryonTip:''}).forVenue([event]);
+ const scheduled=flow.singHereForHostNight('the-mesa',[event],'Wednesday',undefined,hosts);
+ assert.equal(scheduled.url,'https://www.karafun.com/089042');assert.equal(scheduled.kjTips[0].url,'https://venmo.com/u/bryon_bea');
+ assert.equal(flow.singHereForHostNight('the-mesa',[event],'Thursday',undefined,hosts).url,undefined);
 });

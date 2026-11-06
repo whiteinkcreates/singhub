@@ -154,3 +154,11 @@ test('admin perks dashboard is admin-gated, privacy-preserving and discoverable'
  assert.match(admin,/href: "\/admin\/perks"/);
  assert.doesNotMatch(admin,/href: "\/admin\/daily-mic"/);
 });
+
+test('admin report detects an API cap below its requested limit instead of showing complete totals',()=>{
+ const exports={};vm.runInNewContext(ts.transpileModule(readFileSync('src/lib/adminPerkReporting.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{exports});
+ assert.equal(exports.hasIncompleteRows({count:2000,data:Array(1000).fill({})}),true);
+ assert.equal(exports.hasIncompleteRows({count:4,data:Array(4).fill({})}),false);
+ assert.equal(exports.hasIncompleteRows({count:0,data:[]}),false);
+ assert.equal(exports.hasIncompleteRows({count:null,data:[]}),true);
+});
