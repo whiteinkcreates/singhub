@@ -1,4 +1,4 @@
-"venue_id","venue_slug","venue_name","neighborhood","OSM_nearby_candidate_count","rank","food_business","direct_distance_miles_NOT_walk_route","osm_hours_UNVERIFIED","osm_after_midnight_tag_UNVERIFIED","openstreetmap_source","publication_status"
+"venue_id","venue_slug","venue_name","neighborhood","OSM_nearby_candidate_count","rank","food_business","direct_distance_miles_NOT_walk_route","osm_hours_UNVERIFIED","osm_midnight_or_later_tag_UNVERIFIED","openstreetmap_source","publication_status"
 "venue-0051","1-fifth-avenue","#1 Fifth Avenue","Hillcrest","68","1","Parma Cucina Italiana","0.033","","not_confirmed","https://www.openstreetmap.org/node/5031667123","CANDIDATE_DO_NOT_PUBLISH"
 "venue-0051","1-fifth-avenue","#1 Fifth Avenue","Hillcrest","68","2","Kiki Sushi","0.066","","not_confirmed","https://www.openstreetmap.org/node/2117212905","CANDIDATE_DO_NOT_PUBLISH"
 "venue-0051","1-fifth-avenue","#1 Fifth Avenue","Hillcrest","68","3","Roberto's Taco Shop","0.084","Mo-We, Su 07:00-22:00; Th-Sa 07:00-24:00","tagged_possible_late","https://www.openstreetmap.org/node/353135502","CANDIDATE_DO_NOT_PUBLISH"
