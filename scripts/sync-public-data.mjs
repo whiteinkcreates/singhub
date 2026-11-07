@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { validatePublicData, formatValidationResult, validBannerImageUrl } from "./check-public-data.mjs";
 import { fetchGoogleSheetRows } from "./google-sheets-api.mjs";
+import { staleVerifiedChanges, VENUE_FACT_FIELDS, EVENT_FACT_FIELDS } from "./canonical-recency.mjs";
 
 const ROOT = process.cwd();
 const SOURCE_CONFIG = JSON.parse(
@@ -799,6 +800,7 @@ function reportMarkdown(report, venues, events) {
     section("Public Venues Missing Coordinates", report.publicVenuesMissingCoordinates),
     section("Closed/Hidden/Archived Rows Excluded", report.closedHiddenWouldExport),
     section("Stable Venue Identity Changes", report.stableVenueIdentityChanges),
+    section("Older Source Facts Replacing Newer Published Corrections", report.staleVerifiedChanges),
     section(
       "Unapproved Hand-Entered Event Removals",
       report.unapprovedHandEnteredRemovals,
@@ -935,6 +937,7 @@ async function main() {
     publicVenuesMissingCoordinates: [],
     closedHiddenWouldExport: [],
     stableVenueIdentityChanges: [],
+    staleVerifiedChanges: [],
     unapprovedHandEnteredRemovals: [],
   };
 
@@ -969,6 +972,10 @@ async function main() {
     );
 
   hydrateVenueSchedules(venues, events);
+  report.staleVerifiedChanges = [
+    ...staleVerifiedChanges(readPublicRows("venues.tsv"), venues, {idColumn: "id", fields: VENUE_FACT_FIELDS}),
+    ...staleVerifiedChanges(readPublicRows("events_by_night.tsv"), events, {idColumn: "event_id", fields: EVENT_FACT_FIELDS}),
+  ].map(change => `${change.id}: published ${change.publishedDate}, candidate ${change.candidateDate || "missing/invalid verification date"}; changed ${change.fields.join(", ")}`);
   reportMissingEventRows(venues, events, report);
   reportVenueValidation(venues, report);
 
@@ -1079,6 +1086,10 @@ async function main() {
     sourceFailures.push(
       `${report.stableVenueIdentityChanges.length} stable venue ID(s) map to a different venue identity than the committed snapshot.`,
     );
+  }
+  if (report.staleVerifiedChanges.length) {
+    console.error(`::error title=Stale canonical facts::${report.staleVerifiedChanges.length} candidate rows would overwrite newer published corrections. Reconcile canonical source facts before publishing; see the validation report.`);
+    sourceFailures.push(`${report.staleVerifiedChanges.length} candidate row(s) would replace newer published facts with older or undated evidence. Reconcile canonical rows before publishing.`);
   }
   if (report.unapprovedHandEnteredRemovals.length) {
     sourceFailures.push(
