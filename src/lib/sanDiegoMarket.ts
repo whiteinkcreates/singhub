@@ -26,6 +26,7 @@ const SAN_DIEGO_REGION_CITIES = new Set([
   "alpine",
   "ramona",
   "valley center",
+  "fallbrook",
 ]);
 
 function normalize(value: string | undefined) {
