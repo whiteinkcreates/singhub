@@ -151,3 +151,16 @@ test('collection counts distinct owner nights, excludes pending/foreign rows, an
  const repeat=await (await api.GET(new Request('https://singhub.app/api/tour-stops',{headers:{Authorization:'Bearer test-token'}}))).json();
  assert.equal(repeat.nightsPerformed,2);
 });
+
+
+test('Deano’s on-site coordinates remain inside check-in radius while the superseded pin rejects them',()=>{
+ const [header,...rows]=readFileSync('public/data/venues.tsv','utf8').trim().split(/\r?\n/).map(line=>line.split('\t'));
+ const row=rows.find(cells=>cells[header.indexOf('slug')]==='deanos-pub');
+ assert.ok(row);
+ const venue={latitude:Number(row[header.indexOf('latitude')]),longitude:Number(row[header.indexOf('longitude')])};
+ // Corey’s on-site measurement, source and canonical backfill recorded in merged #523.
+ const onSite={latitude:32.77563686977407,longitude:-117.02808214995181,accuracy:25};
+ assert.equal(helpers.locationMatch(onSite,venue),true);
+ assert.equal(helpers.locationMatch(onSite,{latitude:32.7754,longitude:-117.0327}),false);
+ assert.equal(helpers.locationMatch({...onSite,accuracy:151},venue),false,'accuracy requirements remain enforced');
+});

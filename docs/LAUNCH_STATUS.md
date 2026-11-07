@@ -1,10 +1,16 @@
 # SingHUB launch status
 
+## November 6 protection against stale canonical rollback
+
+Read-only diagnostic audit on 513e9c4 identifies validated-candidate snapshot drift. The failed scheduled publication run 42326751078 reached Create automated data pull request and left candidate 441941b on automation/data-sync-42326751078-1. Comparing that actual candidate finds Cheers' November 5 8:30 PM correction would be replaced with November 2 8 PM facts: one venue and two events. Do not auto-publish that snapshot or repair token permissions first and assume it is safe.
+
+The recency guard rejects changed published schedule/host/location facts when candidate verification predates the published correction or loses its verification date. New rows, newer/equal dated facts, unchanged facts, numeric-coordinate formatting and prose-only edits remain eligible; existing archival/identity checks remain responsible for removals. Emit actionable validation report entries and a safe count annotation before the publication gate. No source dates are fabricated, no canonical data is rewritten, and pending #542 listings stay pending. Canonical source reconciliation and automation-token access are still required; do not suppress the red data audit.
+
 ## November 6 canonical audit diagnostics follow-up
 
 After #541/#534 merged as 0ada415, Validate SingHUB and Vercel Production deployment 7613589951 succeeded. Separate Data integrity audit 42315333019 failed, as did pre-release Foundation-main runs 42289119071/42264604479. Continued-on-error step conclusions do not expose original failures; external log downloads are blocked in this environment. The diagnostics branch surfaces original outcomes in API-visible error annotations and a job summary, retaining fail-closed enforcement. It distinguishes actual candidate drift from unavailable/failed candidate generation. Six executions of the actual workflow enforcement script pass for success, individual failures, skipped and missing outcomes. No canonical files, source access, thresholds, production records or GPS rules changed.
 
-Listings #542 remain pending at Corey's request. GPS issue #522 remains unresolved pending trusted storefront-pin evidence; do not guess coordinates, expand the radius or change verified/self-reported distinctions.
+Listings #542 remain pending at Corey's request. History reconciliation found GPS issue #522's pin correction already merged in #523 on November 3 from Corey's on-site measurement. Main and the current automation candidate both retain 32.77563686977407, -117.02808214995181. Add a regression for that on-site reading; physical-device acceptance remains distinct. Do not change coordinates, radius or verified/self-reported distinctions.
 
 ## November 6 Foundation Pass catch-up reconciliation
 
