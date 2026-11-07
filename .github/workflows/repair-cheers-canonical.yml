@@ -1,0 +1,48 @@
+name: Repair verified Cheers canonical facts
+on:
+  pull_request:
+    paths:
+      - .github/workflows/repair-cheers-canonical.yml
+      - scripts/repair-cheers-canonical.mjs
+      - scripts/google-sheets-api.mjs
+      - tests/cheers-canonical-repair.test.mjs
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: Apply the owner-authorized three-row Cheers correction
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: cheers-canonical-repair
+  cancel-in-progress: false
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Test fixed-scope repair safeguards
+        run: node --test tests/cheers-canonical-repair.test.mjs
+      - name: Read, check and repair only approved Cheers cells
+        env:
+          GOOGLE_SERVICE_ACCOUNT_EMAIL: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_EMAIL }}
+          GOOGLE_PRIVATE_KEY: ${{ secrets.GOOGLE_PRIVATE_KEY }}
+          GOOGLE_SHEETS_ID: ${{ secrets.GOOGLE_SHEETS_ID }}
+          APPLY: ${{ inputs.apply }}
+        run: |
+          if [ "$APPLY" = "true" ]; then
+            node scripts/repair-cheers-canonical.mjs --apply
+          else
+            node scripts/repair-cheers-canonical.mjs
+          fi
+      - name: Retain public-data plan and read-back result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cheers-canonical-repair
+          path: cheers-canonical-repair-*.json
+          if-no-files-found: warn

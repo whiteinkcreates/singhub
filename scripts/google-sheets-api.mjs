@@ -2,7 +2,7 @@ import { createSign } from "node:crypto";
 
 const SHEETS_SCOPE = "https://www.googleapis.com/auth/spreadsheets.readonly";
 
-async function getAccessToken() {
+export async function getAccessToken(scope = SHEETS_SCOPE) {
   const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
@@ -17,7 +17,7 @@ async function getAccessToken() {
   const payload = Buffer.from(
     JSON.stringify({
       iss: clientEmail,
-      scope: SHEETS_SCOPE,
+      scope,
       aud: "https://oauth2.googleapis.com/token",
       exp: now + 3600,
       iat: now,

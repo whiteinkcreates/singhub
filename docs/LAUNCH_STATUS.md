@@ -1,5 +1,9 @@
 # SingHUB launch status
 
+## November 6 explicitly authorized Cheers source repair
+
+Corey instructed “make the cheers changes.” Use the existing GitHub Actions Google service-account secrets in a fixed-scope, manual repair workflow; local cloud has no Google credential binding. Default and PR execution are read-only. Explicit apply dispatch requests the Sheets edit scope, reads the venue and Monday/Wednesday rows by stable ID, validates known old values/identity/weekday, rechecks for concurrent edits, writes only planned single cells in one batch, and reads every changed cell back. Preserve unknown/newer facts and refuse unexpected source versions. Existing readers retain their default readonly OAuth scope. Test dry-run/no writes, sparse row addresses, duplicate IDs, unknown facts, concurrency, denied edits, unchanged other cells and idempotency. No claim of an applied source repair until the actual write/read-back run succeeds. No pending listings or production database records are included.
+
 ## November 6 protection against stale canonical rollback
 
 Read-only diagnostic audit on 513e9c4 identifies validated-candidate snapshot drift. The failed scheduled publication run 42326751078 reached Create automated data pull request and left candidate 441941b on automation/data-sync-42326751078-1. Comparing that actual candidate finds Cheers' November 5 8:30 PM correction would be replaced with November 2 8 PM facts: one venue and two events. Do not auto-publish that snapshot or repair token permissions first and assume it is safe.
