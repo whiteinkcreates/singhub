@@ -96,18 +96,38 @@ jobs:
 
       - name: Enforce audit result
         if: always()
+        env:
+          FRESHNESS_OUTCOME: ${{ steps.freshness.outcome }}
+          DRYRUN_OUTCOME: ${{ steps.dryrun.outcome }}
+          DRIFT_OUTCOME: ${{ steps.drift.outcome }}
         run: |
+          # continue-on-error reports a successful conclusion even when the step's
+          # outcome failed. Surface the original outcomes in API-visible annotations.
+          {
+            echo '## Canonical data audit'
+            echo '| Guardrail | Outcome |'
+            echo '| --- | --- |'
+            printf '| One-time event freshness | %s |\n' "$FRESHNESS_OUTCOME"
+            printf '| Candidate generation | %s |\n' "$DRYRUN_OUTCOME"
+            printf '| Published snapshot parity | %s |\n' "$DRIFT_OUTCOME"
+            echo ''
+            echo 'Candidate reports remain in the singhub-data-integrity-audit artifact. No records are changed by this audit.'
+          } >> "$GITHUB_STEP_SUMMARY"
           failed=0
-          if [ "${{ steps.freshness.outcome }}" != "success" ]; then
-            echo "One-time event freshness guardrail failed."
+          if [ "$FRESHNESS_OUTCOME" != "success" ]; then
+            echo "::error title=Canonical freshness failed::One-time event freshness did not pass. Check expired public one-time events and source access; no rows were archived automatically."
             failed=1
           fi
-          if [ "${{ steps.dryrun.outcome }}" != "success" ]; then
-            echo "Canonical sync guardrails failed."
+          if [ "$DRYRUN_OUTCOME" != "success" ]; then
+            echo "::error title=Canonical candidate failed::Read-only candidate generation did not pass. Inspect source access and validation reports; do not publish a partial snapshot."
             failed=1
           fi
-          if [ "${{ steps.drift.outcome }}" != "success" ]; then
-            echo "Committed public snapshot is not synchronized with canonical data."
+          if [ "$DRIFT_OUTCOME" != "success" ]; then
+            if [ "$DRYRUN_OUTCOME" = "success" ]; then
+              echo "::error title=Canonical snapshot drift::Committed public files differ from the validated canonical candidate. Reconcile the candidate before publishing."
+            else
+              echo "::error title=Canonical parity unverified::Candidate generation did not pass, so snapshot parity cannot be established. This is not confirmation of canonical drift."
+            fi
             failed=1
           fi
           exit "$failed"
