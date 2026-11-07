@@ -15,7 +15,7 @@ export function planCheersRepair(snapshots,tabs){
   const [headers=[],...rows]=snapshots[type];
   const column=(aliases,required=true)=>{const found=headers.map(clean).map((name,i)=>aliases.includes(name)?i:-1).filter(i=>i>=0);if(found.length!==1){if(!required&&!found.length)return -1;throw Error('Missing or ambiguous canonical column: '+aliases.join('/'));}return found[0];};
   const idAt=column(type==='venues'?['venue_id','id']:['event_id']);
-  const startAt=column(['start_time']);const dateAt=column(['last_verified']);
+  const startAt=column(['start_time'],type==='events');const dateAt=column(['last_verified']);
   const slugAt=column(type==='venues'?['venue_slug','slug']:['venue_slug']);
   for(const id of IDS[type]){
    const matches=rows.map((row,i)=>({row,i})).filter(({row})=>clean(row[idAt])===id);
@@ -23,13 +23,14 @@ export function planCheersRepair(snapshots,tabs){
    const {row,i}=matches[0];
    if(clean(row[slugAt])!=='cheers-bar-san-diego')throw Error('Unexpected Cheers venue identity for '+id);
    const currentStart=clean(row[startAt]);const currentDate=clean(row[dateAt]);
-   if(['8:30 PM','8:30PM','20:30'].includes(currentStart)&&/^\d{4}-\d{2}-\d{2}$/.test(currentDate)&&currentDate>=VERIFIED)continue;
-   if(!['8:00 PM','8 PM','20:00','8:30 PM'].includes(currentStart)||!['2026-11-02',VERIFIED].includes(currentDate))throw Error('Unexpected current start/date for '+id+'; refusing to overwrite unreviewed facts.');
-   const changes=new Map([[startAt,'8:30 PM'],[dateAt,VERIFIED]]);
+   if((startAt<0||['8:30 PM','8:30PM','20:30'].includes(currentStart))&&/^\d{4}-\d{2}-\d{2}$/.test(currentDate)&&currentDate>=VERIFIED)continue;
+   if((startAt>=0&&!['8:00 PM','8 PM','20:00','8:30 PM'].includes(currentStart))||!['2026-11-02',VERIFIED].includes(currentDate))throw Error('Unexpected current start/date for '+id+'; refusing to overwrite unreviewed facts.');
+   const changes=new Map([[dateAt,VERIFIED]]);
+   if(startAt>=0)changes.set(startAt,'8:30 PM');
    const sourceAt=column(['source_secondary','source_2'],false);
    if(sourceAt>=0){const existing=clean(row[sourceAt]);changes.set(sourceAt,existing.includes('seasonal start-time update 2026-11-05')?existing:existing?existing+'; Corey direct seasonal start-time update 2026-11-05':PROVENANCE);}
    if(type==='venues'){
-    changes.set(column(['description']),'Cheers on Adams Ave is a University Heights gay dive bar with Famously Slutty Karaoke, hosted by Ed & Katie every Monday and Wednesday. During the shorter-day months, karaoke begins at 8:30 PM. End times are flexible, and karaoke may continue until closing when the room is busy.');
+    changes.set(column(['public_description','description']),'Cheers on Adams Ave is a University Heights gay dive bar with Famously Slutty Karaoke, hosted by Ed & Katie every Monday and Wednesday. During the shorter-day months, karaoke begins at 8:30 PM. End times are flexible, and karaoke may continue until closing when the room is busy.');
    }else{
     const day=id.endsWith('monday')?'Monday':'Wednesday';
     if(clean(row[column(['karaoke_day'])])!==day)throw Error('Unexpected weekday for '+id);
