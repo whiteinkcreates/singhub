@@ -1,5 +1,11 @@
 # SingHUB launch status
 
+## November 6 canonical audit diagnostics follow-up
+
+After #541/#534 merged as 0ada415, Validate SingHUB and Vercel Production deployment 7613589951 succeeded. Separate Data integrity audit 42315333019 failed, as did pre-release Foundation-main runs 42289119071/42264604479. Continued-on-error step conclusions do not expose original failures; external log downloads are blocked in this environment. The diagnostics branch surfaces original outcomes in API-visible error annotations and a job summary, retaining fail-closed enforcement. It distinguishes actual candidate drift from unavailable/failed candidate generation. Six executions of the actual workflow enforcement script pass for success, individual failures, skipped and missing outcomes. No canonical files, source access, thresholds, production records or GPS rules changed.
+
+Listings #542 remain pending at Corey's request. GPS issue #522 remains unresolved pending trusted storefront-pin evidence; do not guess coordinates, expand the radius or change verified/self-reported distinctions.
+
 ## November 6 Foundation Pass catch-up reconciliation
 
 Combined #541/#534 on current main `1f3eaa4`, preserving Foundation caches, venue-scoped read-only SingBOARD, seasonal Cheers hours, verified schedules and consolidated KJ identities. Restored Bryon.Bea signup/tip links from owner commit c737655; current nonblank live links win, and venue signup is scheduled-night dependent rather than geofenced. Admin Perks & Redemptions stays authorized before private reads, distinguishes singer screen presentations from staff redemption, and now warns when the project cap truncates below the requested limit.
