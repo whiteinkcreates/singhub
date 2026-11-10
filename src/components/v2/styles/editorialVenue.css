@@ -295,3 +295,11 @@
 .venue-editorial .ve-singhere-linked:hover,.venue-editorial .ve-singhere-linked:focus-visible {border-color:var(--ve-cyan);box-shadow:0 0 0 2px rgba(0,200,255,.35),0 0 30px rgba(0,200,255,.42);}
 @keyframes ve-signup-ready {0%,100% {box-shadow:0 0 0 1px rgba(0,200,255,.18),0 0 14px rgba(0,200,255,.2);}50% {box-shadow:0 0 0 1px rgba(0,200,255,.35),0 0 27px rgba(0,200,255,.38);}}
 @media (prefers-reduced-motion:reduce) {.venue-editorial .ve-singhere-linked {animation:none;}}
+
+
+/* A host's verified public bio belongs beside the karaoke schedule, not buried in venue history. */
+.venue-editorial .ve-kj-spotlight{margin:32px 0 34px;padding:24px clamp(20px,3vw,34px);border-left:3px solid var(--ve-pink);background:linear-gradient(100deg,rgba(255,57,139,.07),rgba(0,200,255,.035));}
+.venue-editorial .ve-kj-spotlight h2{margin:8px 0 12px;font-family:"Barlow Condensed",sans-serif;font-size:clamp(1.6rem,2.4vw,2.4rem);line-height:1.1;font-weight:800;}
+.venue-editorial .ve-kj-spotlight p:not(.ve-overline){max-width:67ch;color:var(--ve-muted);font-size:.96rem;line-height:1.7;}
+.venue-editorial .ve-kj-profile-link{display:inline-flex;gap:9px;align-items:center;margin-top:16px;padding-bottom:4px;border-bottom:1px solid var(--ve-cyan);font-weight:800;font-size:.85rem;color:var(--ve-cyan);text-decoration:none;}
+.venue-editorial .ve-kj-profile-link:hover{color:#fff;}

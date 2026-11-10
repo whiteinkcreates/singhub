@@ -30,7 +30,7 @@ export function VenueOfferEditor({slug,partnerEnabled,offer,onChange}:{slug:stri
    <div><p className={label}>SingHUB Offer</p><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">Unlock a venue offer with a SingHUB check-in on eligible nights. Karaoke is not required. Choose a one-time live presentation or staff-entered code.</p></div>
    <button type="button" onClick={()=>patch({enabled:!offer.enabled})} aria-pressed={offer.enabled} className={`relative h-8 w-14 shrink-0 rounded-full transition ${offer.enabled?"bg-fuchsia-400":"bg-slate-700"}`}><span className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${offer.enabled?"left-7":"left-1"}`}/></button>
   </div>
-  {!partnerEnabled&&offer.enabled?<p className="mt-3 rounded-xl border border-amber-300/20 bg-amber-300/[0.06] p-3 text-xs font-bold text-amber-100">Offer is configured, but it will not unlock publicly until Partner is on.</p>:null}
+  {!partnerEnabled&&offer.enabled?<p className="mt-3 rounded-xl border border-amber-300/20 bg-amber-300/[0.06] p-3 text-xs font-bold text-amber-100">Offer is configured, but it will not unlock publicly until the enhanced profile is enabled.</p>:null}
   <div className="mt-4 grid gap-4 md:grid-cols-2">
    <label className={label}>Offer headline<input className={input} value={offer.title} onChange={event=>patch({title:event.target.value})} placeholder="$1 off one drink"/></label>
    <label className={label}>Guest detail<input className={input} value={offer.detail||""} onChange={event=>patch({detail:event.target.value})} placeholder="Open your live offer and show it to your bartender."/></label>

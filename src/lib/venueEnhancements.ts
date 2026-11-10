@@ -13,7 +13,7 @@ export type VenueMottoLabel = (typeof VENUE_MOTTO_LABELS)[number];
 export type VenueBusinessHours = { day: string; hours: string };
 export type VenueProgramEvent = { title: string; date: string; time?: string; detail?: string; recurring?: boolean; category?: "karaoke" | "live_music" | "game" | "trivia" | "bingo" | "sports" | "community" | "special"; sourceUrl?: string; };
 /** Approved recurring venue programming, distinct from the canonical karaoke schedule. */
-export type VenueWeeklyProgram = { day: string; title: string; time?: string; detail?: string; category?: VenueProgramEvent["category"]; sourceUrl?: string; };
+export type VenueWeeklyProgram = { day: string; title: string; time?: string; detail?: string; category?: VenueProgramEvent["category"]; sourceUrl?: string; /** Individual dates to suppress the usual weekly occurrence (for holiday moves). */ skipDates?: string[]; };
 export type SingHubOffer = { enabled: boolean; title: string; detail?: string; terms?: string; days?: string[]; presentationMode?: "staff_code" | "one_time"; };
 export type SingHereConfig = {
   mode?: "instructions" | "external";

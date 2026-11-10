@@ -48,7 +48,7 @@ test('venue profile links include only hosts matching the verified venue event',
  const matches=await l.forVenue([{hostId:'will',hostName:'Will'}]);
  assert.ok(matches.some(host=>host.hostId==='will'),'linked host is retained');
  assert.ok(!matches.some(host=>host.hostId==='art-ruiz'),'unrelated host is excluded');
- assert.ok(matches.every(host=>!('bio' in host)&&!('schedule' in host)),'venue pages receive minimal host projections');
+ assert.ok(matches.every(host=>typeof host.slug==='string' && !('schedule' in host) && !('profileImageUrl' in host)),'venue pages receive scoped public host biography and links, without full schedules or media');
 });
 test('a venue with no identified host does not load the host directory',async()=>{
  const l=loader();

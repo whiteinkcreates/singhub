@@ -31,7 +31,7 @@ const partnerFeatures = [
   "Calendar for karaoke and additional venue events, when supplied and verified",
   "Food, drink, happy hour, specials and announcements on your venue profile",
   "Eligible events, flyers and promotions through SingBOARD",
-  "Optional venue-controlled check-in offers after staff redemption testing",
+  "Optional venue-controlled check-in offers and a visible discovery-list perk badge after staff redemption testing",
   "Priority help with schedule, KJ, photo and information updates",
   "Direct feedback on venue promotional needs",
   "Engagement summaries as data becomes available and is validated",

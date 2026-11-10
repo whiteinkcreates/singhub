@@ -61,6 +61,16 @@ test("dated specials appear alongside weekly programming in the month",()=>{
   assert.equal(items.filter(x=>x.title==="Thanksgiving Buffet").length,2);
   assert.ok(items.some(x=>x.date==="2026-11-26"&&x.category==="trivia"));
 });
+test("Thanksgiving trivia moves from Thursday to Tuesday without a duplicate on the holiday",()=>{
+  const items=list("2026-11-22","2026-11-28",{
+    datedEvents:[{date:"2026-11-24",title:"Trivia with Estevan",time:"8:30 PM",category:"trivia"}],
+    weeklyProgramming:weekly.map(item=>item.day==="Thursday"?{...item,skipDates:["2026-11-26"]}:item),
+  });
+  assert.ok(items.some(item=>item.date==="2026-11-24"&&item.title==="Trivia with Estevan"));
+  assert.equal(items.some(item=>item.date==="2026-11-26"&&item.title==="Trivia with Estevan"),false);
+  assert.equal(items.filter(item=>item.title==="Trivia with Estevan").length,1);
+});
+
 test("specific dated program overrides recurring occurrence with the same title",()=>{
   const items=list("2026-11-01","2026-11-07",{
     datedEvents:[{date:"2026-11-05",title:"Trivia with Estevan",time:"9 PM",category:"trivia"}],
