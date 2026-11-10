@@ -22,7 +22,7 @@ export {DAY_NAMES};
 
 /** Venue amenities remain visible in Backyard even without karaoke that day. */
 const AMENITY_OVERRIDES:Record<string,string[]>={
- "camels-bar-grill":["Pool table","Darts","Cornhole"],
+ "camels-bar-grill":["Pool table","Darts"],
  "hearth-house":["Arcade games","Pool tables","Darts"]
 };
 export function venueAmenities(slug:string):string[]{
