@@ -66,6 +66,10 @@
     .v2-discovery .venue-place { margin:7px 0 0; color:#c8ced7; font-size:.83rem; }
     .v2-discovery .tags { display:flex; flex-wrap:wrap; gap:7px 13px; margin-top:13px; color:var(--muted); font-size:.73rem; font-weight:650; }
     .v2-discovery .tags span:before { content:"·"; margin-right:5px; color:var(--pink); }
+    .v2-discovery .checkin-perk { display:inline-flex; align-items:center; flex-wrap:wrap; gap:6px; max-width:100%; margin-top:10px; padding:6px 9px; border:1px solid rgba(0,200,255,.42); border-radius:5px; background:rgba(0,200,255,.075); color:#a4edff; font-size:.75rem; line-height:1.3; }
+    .v2-discovery .checkin-perk strong { font-weight:900; }
+    .v2-discovery .checkin-perk-detail { color:#f7f8fb; font-weight:700; }
+    .v2-discovery .checkin-perk-detail:before { content:"·"; margin-right:6px; color:var(--pink); }
     .v2-discovery .venue-status { display:flex; flex-direction:column; justify-content:center; min-width:190px; padding:20px 22px 40px; border-left:1px solid var(--line); background:linear-gradient(145deg,rgba(255,25,168,.025),transparent),#0a0d12; }
     .v2-discovery .time-label { color:var(--pink); font-size:.69rem; font-weight:900; letter-spacing:.13em; text-transform:uppercase; }
     .v2-discovery .venue-time { display:block; margin-top:6px; font-family:var(--display); font-size:2rem; font-weight:800; line-height:1; }

@@ -13,7 +13,7 @@ const getCachedDiscoveryData = unstable_cache(async (weekday:string) => {
   const publicVenues=getSanDiegoPublicVenues(venues);const events=groupKaraokeEvents(eventData.events);
   const rows=publicVenues.map(venue=>makeVenueRow(venue,events[venue.slug]||[],weekday,getVenueEnhancement(venue.slug)));
   return {rows,weekday,status:eventData.status};
-}, ['singhub-public-discovery-rows-v1'], {revalidate:300});
+}, ['singhub-public-discovery-rows-v2'], {revalidate:300});
 
 export async function getDiscoveryData(){
   return getCachedDiscoveryData(getSanDiegoNightlifeWeekday());
