@@ -25,7 +25,7 @@ export function venueCalendarOccurrences({
     const weekday=WEEKDAYS[date.getUTCDay()];
     const onDate=explicit.filter(item=>item.date===iso);
     for(const program of weeklyProgramming){
-      if(program.day!==weekday || !program.title?.trim())continue;
+      if(program.day!==weekday || !program.title?.trim() || program.skipDates?.includes(iso))continue;
       // A dated entry with the same name can replace the standard recurring slot.
       if(onDate.some(item=>item.title.trim().toLowerCase()===program.title.trim().toLowerCase()))continue;
       result.push({date:iso,title:program.title,time:program.time,detail:program.detail,category:program.category||"community",sourceUrl:program.sourceUrl,recurring:true});
