@@ -25,7 +25,7 @@ test('Karaoke+ requires karaoke on selected day; Backyard amenities stay indepen
  const events=[event('Thursday'),event('Saturday')];
  assert.equal(plus.plusNight('camels-bar-grill',events,'Thursday').eligible,true);
  assert.equal(plus.plusNight('camels-bar-grill',events,'Wednesday').eligible,false);
- assert.ok(plus.venueAmenities('camels-bar-grill').includes('Cornhole'));
+ assert.equal(plus.venueAmenities('camels-bar-grill').includes('Cornhole'),false,'unverified cornhole must not be advertised');
  assert.equal(plus.scheduledExtrasOnDay('camels-bar-grill','Wednesday').length,0);
  assert.equal(plus.scheduledExtrasOnDay('camels-bar-grill','Thursday').length,0,'unconfirmed football cannot create a day badge');
  assert.equal(plus.scheduledExtrasOnDay('camels-bar-grill','Saturday')[0].status,'venue_published');
