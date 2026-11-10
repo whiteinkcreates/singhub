@@ -24,7 +24,7 @@ export const backyardVenueOffers:BackyardOffer[]=[
  {slug:"full-circle-saloon",activities:["football","basketball","live-music","pool-games","specials"],highlights:["Sports bar","Live music","Pool, darts and shuffleboard"],source:"https://fullcirclesaloon.com/"},
  {slug:"710-beach-club",activities:["trivia","live-music","specials"],highlights:["Trivia","Open mic","Saturday bands"],source:"https://www.710bc.com/events"},
  {slug:"mcguffies-live",activities:["live-music","bingo","pool-games"],highlights:["Live bands","Blues jams","Bingo tournaments"],source:"https://mcguffieslive.com/shows"},
- {slug:"camels-bar-grill",activities:["live-music","bingo","pool-games","football"],highlights:["Blues jam","Bingo","Pool table","Darts","Cornhole"],source:"https://camelsbarandgrill.com/"},
+ {slug:"camels-bar-grill",activities:["live-music","bingo","pool-games","football"],highlights:["Blues jam","Bingo","Pool table","Darts"],source:"https://camelsbarandgrill.com/"},
  {slug:"grand-comedy-club",activities:["trivia","bingo","live-music","comedy"],highlights:["Comedy and open mic","Trivia","Music bingo"],source:"https://www.grandcomedyclub.com/"},
  {slug:"hearth-house",activities:["trivia","live-music","pool-games","specials"],highlights:["Tuesday trivia","Thursday steak night","Sunday country music","Arcade games","Pool tables","Darts"],source:"https://hearthhousebar.com/happenings"},
  {slug:"urban-mos-bar-grill",activities:["bingo","trivia","live-music","specials"],highlights:["Drag brunch","Bingo","Trivia"],source:"https://urbanmos.com/events/"},
