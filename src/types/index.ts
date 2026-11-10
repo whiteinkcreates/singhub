@@ -53,6 +53,8 @@ export type VenueListing = {
   enhancementTagline?: string;
   enhancementAmenities?: string[];
   enhancementStandoutFeatures?: string[];
+  /** Public venue offer, advertised as a check-in perk in discovery lists. */
+  checkInPerk?: { title: string; days?: string[] };
 };
 
 export type KaraokeEventListing = {
