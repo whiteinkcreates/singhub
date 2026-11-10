@@ -64,13 +64,14 @@ export function makeVenueRow(venue:VenueListing,events:KaraokeEventListing[],wee
   const liveBandTonight=liveBandEvents.some(event=>today.includes(event));
   const tonightTags=[nightCount===7?'Seven nights':nightCount?nights:'',liveBandTonight?'Live band tonight':'',...everydayTags,usable(venue.agePolicy)].filter(Boolean).slice(0,4);
   const photo=venue.bannerImageUrl || enhancement?.heroImageUrl;
+  const checkInPerkTonight=Boolean(venue.checkInPerk && (!venue.checkInPerk.days?.length || venue.checkInPerk.days.some(day=>day.toLowerCase()===weekday.toLowerCase())));
   const liveBand=liveBandEvents[0];
-  const search=[venue.venueName,venue.neighborhood,venue.city,venue.description,kind,...tags,photo?'photos':'',venue.venueType==='private_room'?'private rooms':'public stage',...events.map(event=>event.hostName||''),liveBand?'live band':''].join(' ').toLowerCase().replaceAll('lgbtq+','lgbtq');
+  const search=[venue.venueName,venue.neighborhood,venue.city,venue.description,kind,...tags,photo?'photos':'',venue.venueType==='private_room'?'private rooms':'public stage',...events.map(event=>event.hostName||''),liveBand?'live band':'',venue.checkInPerk?'check-in perk '+venue.checkInPerk.title:''].join(' ').toLowerCase().replaceAll('lgbtq+','lgbtq');
   return {venue,events,tonight:today[0],nightCount,kind,rhythm,tags:tags.slice(0,4),tonightTags,liveBandTonight,photo,photoAlt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName,
     trust:verified?'✓ Verified karaoke':venue.listingStatus==='claimed'?'Updated listing':'Schedule awaiting verification',
     verification:date?(verified?'Verified ':'Updated ')+new Date(date.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}):'Verification date pending',
     verificationDate:date,tonightTime:today[0]?usable(today[0].startTime)||'Time pending':venue.venueType==='private_room'?'Reserve a room':'No confirmed karaoke tonight',
-    typicalStart:[...new Set(events.map(event=>usable(event.startTime)).filter(Boolean))].join(' / ')||'Time pending',liveBand,search};
+    typicalStart:[...new Set(events.map(event=>usable(event.startTime)).filter(Boolean))].join(' / ')||'Time pending',liveBand,checkInPerkTonight,search};
 }
 export function filterRows(rows:VenueRowData[],query:string,filter:string,mode:'tonight'|'week'|'directory',position?:{latitude:number;longitude:number}|null,startFilter:KaraokeStartFilter='any'){
   const term=query.trim().toLowerCase();const f=filter.toLowerCase();
