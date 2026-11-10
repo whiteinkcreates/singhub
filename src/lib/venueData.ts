@@ -33,6 +33,7 @@ type EnhancementMediaRow = {
     heroImageAlt?: string;
     heroPlacement?: ResponsiveImagePlacement;
     heroPosition?: "center" | "top" | "bottom" | "left" | "right";
+    singhubOffer?: { enabled?: boolean; title?: string; days?: string[] };
   } | null;
 };
 
@@ -235,6 +236,10 @@ export const getVenueListings = cache(async (): Promise<VenueListing[]> => {
 
       const featuredPriority = parseNumber(enhancement.featuredPriority) ?? undefined;
       const editorialVibes = enhancement.vibeTags?.map((tag) => tag.trim()).filter(Boolean) || [];
+      const offer = enhancement.singhubOffer;
+      const checkInPerk = enhancement.enabled && offer?.enabled === true && typeof offer.title === "string" && offer.title.trim()
+        ? { title: offer.title.trim(), days: Array.isArray(offer.days) ? offer.days.filter((day) => typeof day === "string" && day.trim()) : undefined }
+        : undefined;
       const withEditorial: VenueListing = {
         ...venue,
         isFeatured: typeof enhancement.featured === "boolean" ? enhancement.featured : venue.isFeatured,
@@ -250,6 +255,7 @@ export const getVenueListings = cache(async (): Promise<VenueListing[]> => {
         bannerImagePosition: enhancement.heroPosition || venue.bannerImagePosition,
         bannerImagePlacement: enhancement.heroPlacement,
         enhancementAmenities: enhancement.amenities?.filter(Boolean) || [],
+        checkInPerk,
       };
 
       if (!enhancement.enabled) return withEditorial;
