@@ -54,6 +54,7 @@ export function EditorialVenueTemplate({venue,events,kjHosts=[],enhancement,week
   .filter(entry=>entry.offset>=0&&entry.offset<7)
   .sort((a,b)=>a.offset-b.offset)[0]?.event;
  const nextMicNight=row.tonight||regularUpcoming;
+ const spotlightHost=kjHosts.find(host=>host.slug&&host.bio?.trim());
  const isLiveMarket=getMarketConfig(venue.metro)?.status==="live";
  const dates=(enhancement?.venueEvents||[]).filter(item=>item.date>=inSanDiegoToday()).sort((a,b)=>a.date.localeCompare(b.date)||a.title.localeCompare(b.title));
  const standout=(enhancement?.standoutFeatures||venue.enhancementStandoutFeatures||[]).filter(Boolean).slice(0,5);
@@ -130,6 +131,13 @@ export function EditorialVenueTemplate({venue,events,kjHosts=[],enhancement,week
        </article>;
       })}</div>:<div className="ve-pending"><span aria-hidden="true">✳</span><p><strong>Next karaoke dates are being verified.</strong> Check with the venue before planning a night around the mic.</p></div>}
      </section>
+
+     {spotlightHost?<section className="ve-kj-spotlight" aria-labelledby="ve-kj-spotlight-title">
+      <p className="ve-overline">BEHIND THE MIC</p>
+      <h2 id="ve-kj-spotlight-title">{spotlightHost.publicDisplayName}</h2>
+      <p>{spotlightHost.bio}</p>
+      <Link href={"/hosts/"+encodeURIComponent(spotlightHost.slug)} className="ve-kj-profile-link">Meet the karaoke hosts <span aria-hidden="true">↗</span></Link>
+     </section>:null}
 
      {(dates.length>0||events.length>0||Boolean(enhancement?.weeklyProgramming?.length))?<div className="ve-calendar-wrap"><p className="ve-overline">03 / THIS WEEK & BEYOND</p><VenueMonthlyCalendar events={dates} weeklyProgramming={enhancement?.weeklyProgramming} karaokeEvents={events} venueName={venue.venueName} sourceUrl={enhancement?.eventCalendarUrl} partial={enhancement?.venueEventsPartial===true}/></div>:null}
 
