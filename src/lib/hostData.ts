@@ -605,7 +605,7 @@ export async function getActiveHosts(options?: {includeMedia?:boolean}) {
   return (await getHosts(options)).filter((host) => isActiveStatus(host.status));
 }
 
-export type VenueHostLink = Pick<HostProfile, "hostId" | "hostName" | "publicDisplayName" | "tipLink" | "signupLink">;
+export type VenueHostLink = Pick<HostProfile, "hostId" | "slug" | "hostName" | "publicDisplayName" | "bio" | "tipLink" | "signupLink">;
 
 // Public venue pages only need links and display names, not complete KJ
 // profiles or media. Cache this lightweight projection across requests.
@@ -613,12 +613,14 @@ const getCachedVenueHostLinks = unstable_cache(
   async (): Promise<VenueHostLink[]> =>
     (await getActiveHosts({ includeMedia: false })).map((host) => ({
       hostId: host.hostId,
+      slug: host.slug,
       hostName: host.hostName,
       publicDisplayName: host.publicDisplayName,
+      bio: host.bio,
       tipLink: host.tipLink,
       signupLink: host.signupLink,
     })),
-  ["singhub-public-venue-host-links-v2"],
+  ["singhub-public-venue-host-links-v3"],
   { revalidate: 300 },
 );
 
