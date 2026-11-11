@@ -16,9 +16,17 @@ export type VenueSignalData = {
   visit?: VenueVisit;
   salute?: VenueSalute;
   singersSay?: string;
+  madHatterSays?: { note: string; observedAt?: string };
 };
 
 const venueSignalsBySlug: Record<string, VenueSignalData> = {
+  regal: {
+    visit: { by: "MadHatter", visitedAt: "October 2026" },
+    madHatterSays: {
+      observedAt: "October 2026",
+      note: "The pool table sits right in the middle of the action at The Regal, so unless you’ve claimed one of the few tables, you’re probably going to bump into somebody. Plenty of locals are happy to strike up a conversation, even if it starts with an ‘excuse me.’ The trickier part can be figuring out where you stand in the karaoke rotation. Updates aren’t always easy to come by, so don’t be shy about checking in with the host.",
+    },
+  },
   "cordova-bar": {
     visit: {
       by: "MadHatter",

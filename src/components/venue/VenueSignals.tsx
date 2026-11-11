@@ -104,7 +104,7 @@ export function VenueSignalBadges({ venue }: { venue: VenueListing }) {
 export function VenueSignalDetails({ venue }: { venue: VenueListing }) {
   const signalData = getVenueSignalData(venue);
 
-  if (!signalData.visit && !signalData.salute && !signalData.singersSay) {
+  if (!signalData.visit && !signalData.salute && !signalData.singersSay && !signalData.madHatterSays) {
     return null;
   }
 
@@ -118,6 +118,19 @@ export function VenueSignalDetails({ venue }: { venue: VenueListing }) {
           </div>
           <p className="mt-3 text-sm leading-6 text-slate-200">
             Visited {signalData.visit.visitedAt}. {signalData.visit.note}
+          </p>
+        </section>
+      )}
+
+      {signalData.madHatterSays && (
+        <section className="rounded-2xl border border-red-300/30 bg-red-300/[0.06] p-5">
+          <div className="flex flex-wrap items-center gap-2">
+            <MadHatterBadge compact />
+            <h2 className="text-lg font-black text-white">MadHatter Says</h2>
+          </div>
+          <p className="mt-3 text-base leading-7 text-slate-100">{signalData.madHatterSays.note}</p>
+          <p className="mt-3 text-xs leading-5 text-slate-400">
+            Firsthand SingHUB editorial observation{signalData.madHatterSays.observedAt ? ` · ${signalData.madHatterSays.observedAt}` : ""}. Experiences may vary by night.
           </p>
         </section>
       )}
