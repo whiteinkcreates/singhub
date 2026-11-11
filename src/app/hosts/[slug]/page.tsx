@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getActiveSingBoardFlyers } from "@/lib/singboard/repository";
 import { HostProfileTemplate } from "@/components/host/HostProfileTemplate";
+import { HostSingerTestimonials } from "@/components/host/HostSingerTestimonials";
 import { getActiveHosts, getHostBySlug } from "@/lib/hostData";
 import { getKaraokeEventListings } from "@/lib/eventData";
 
@@ -63,6 +64,7 @@ export default async function HostProfilePage({ params }: HostProfilePageProps) 
   const related = posts.filter(post => post.reviewStatus === "verified" && post.hostId === host.hostId);
   return <>
     <HostProfileTemplate host={host} upcomingGigs={upcomingGigs} />
+    <HostSingerTestimonials slug={host.slug} />
     {related.length>0&&<section className="mx-auto max-w-6xl px-4 py-8 text-white" aria-labelledby="kj-singboard-heading">
       <div className="mb-4 flex items-center justify-between gap-3"><h2 id="kj-singboard-heading" className="text-2xl font-black">On SingBOARD</h2><Link href="/singboard" className="text-sm font-bold text-cyan-300">Browse SingBOARD →</Link></div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{related.map(post=><Link key={post.id} href={`/events/${post.id}`} className="flex gap-3 rounded-2xl border border-white/15 bg-[#111827] p-3 hover:border-cyan-300/50">
