@@ -47,7 +47,7 @@ jobs:
         run: node --test tests/achievement-reveal.test.mjs
 
       - name: Verify canonical reconciliation and nightlife behavior
-        run: node --test tests/tip-chair-foundation.test.mjs tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs tests/hotel-package.test.mjs tests/hotel-photo-rights.test.mjs tests/hotel-media-delete.test.mjs
+        run: node --test tests/tip-chair-foundation.test.mjs tests/venue-engagement-layout.test.mjs tests/canonical-reconciliation.test.mjs tests/nightlife-time.test.mjs tests/launch-qa-regressions.test.mjs tests/hotel-plan-email.test.mjs tests/hotel-analytics.test.mjs tests/image-placement.test.mjs tests/hotel-package.test.mjs tests/hotel-photo-rights.test.mjs tests/hotel-media-delete.test.mjs
 
       - name: Verify support intake and auth diagnostics
         run: node --test tests/backyard-integration.test.mjs tests/auth-incident-route.test.mjs
