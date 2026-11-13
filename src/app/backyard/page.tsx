@@ -8,7 +8,6 @@ import {SITE_BACKYARD_HERO_KEY} from "@/lib/hostMedia";
 import {backyardActivities,backyardVenueOffers} from "@/lib/backyardActivities";
 import {getVenueListings} from "@/lib/venueData";
 import {getKaraokeEventListings,groupKaraokeEvents} from "@/lib/eventData";
-import {eventRunsOnNight} from "@/lib/eventOccurrence";
 import {getSanDiegoNightlifeWeekday} from "@/lib/nightlifeTime";
 import {backyardKaraokeOnDay} from "@/lib/backyardKaraokeDay";
 import {BackyardNeonMic} from "@/components/backyard/BackyardNeonMic";
