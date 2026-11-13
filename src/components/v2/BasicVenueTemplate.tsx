@@ -7,8 +7,7 @@ import {singHereForHostNight} from '@/lib/singHereHostNight';
 import Link from "next/link";
 import {TourStopCheckIn} from './TourStopCheckIn';
 import {TipAChair} from './TipAChair';
-import {FollowVenue} from './FollowVenue';
-import './styles/venueFollow.css';
+import {VenueQuickActions} from './VenueQuickActions';
 import './tipChair.css';
 import {VenueMonthlyCalendar} from '@/components/venue/VenueMonthlyCalendar';
 import {getMarketConfig} from '@/lib/markets';
@@ -55,6 +54,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 {isConfirmedPartner?<div className="venue-partner-badge"><img src="/images/singhub-v2/singhub-wordmark.png" alt="SingHUB" /><span>Partner</span></div>:null}
 <p className="subline" style={{"marginTop": "10px"}}>{venue.neighborhood+' · '+venue.address}</p>
 <div className="chips">{row.tags.map(tag=><span className="chip" key={tag}>{tag}</span>)}</div>
+<VenueQuickActions venueId={venue.id} venueSlug={venue.slug} venueName={venue.venueName} canFollow={getMarketConfig(venue.metro)?.status==='live'}/>
 </section>
 {isEnhanced&&(enhancement?.tagline||enhancement?.about)?<section className="section"><div className="section-heading"><h2>Why here</h2></div>{enhancement?.tagline?<strong className="partner-editorial-tagline">{enhancement.tagline}</strong>:null}{enhancement?.about?<p className="partner-editorial-about">{enhancement.about}</p>:null}</section>:null}
 <section className="section">
@@ -63,9 +63,8 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 <div className="event-row"><div><strong>{venue.venueType==='private_room'?'Reserve a room':'Karaoke'}</strong><div className="host">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Host details pending' : venue.venueType==='private_room'?'Contact the venue for room availability.':'No confirmed karaoke tonight'}</div></div><time className="event-time">{row.tonight ? publicEventTimeLabel(row.tonight) : row.tonightTime}</time></div>
 <button className="primary-action singhere-brand-action" aria-label={venue.venueType==='private_room'?'SingHERE private rooms':row.tonight?'SingHERE tonight':'SingHERE signup information'} data-toast="SingHERE flow would open here"><SingHereMark alt="" className="singhere-wordmark" /></button>
 </div>
+{getMarketConfig(venue.metro)?.status==='live'&&events.length>0?<TipAChair venueSlug={venue.slug}/>:null}
 {getMarketConfig(venue.metro)?.status==='live'&&<TourStopCheckIn venueSlug={venue.slug} venueName={venue.venueName} offer={activeOffer} />}
-{getMarketConfig(venue.metro)?.status==='live'&&<FollowVenue venueId={venue.id} venueSlug={venue.slug} venueName={venue.venueName}/>}{getMarketConfig(venue.metro)?.status==='live'&&events.length>0?<TipAChair venueSlug={venue.slug}/>:null}
-<div className="secondary-actions"><button data-toast="Directions opened">{"Directions"}</button><button data-toast="Venue saved">{"Save"}</button><button data-toast="Share sheet opened">{"Share"}</button></div>
 </section>
 <section className="section">
 <div className="section-heading"><h2>{"Regular schedule"}</h2></div>
