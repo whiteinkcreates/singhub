@@ -46,7 +46,7 @@ export function TipAChair({venueSlug}:{venueSlug:string}){
     <p className="tip-chair-count"><strong>{current?.going||0}</strong><span>chairs tipped</span></p>
    </div>
    <div className="tip-chair-actions">
-    <button type="button" disabled={saving} aria-pressed={current?.plan?.intent==='going'} onClick={()=>void save('going')}>I'm going</button>
+    <button type="button" disabled={saving} aria-pressed={current?.plan?.intent==='going'} onClick={()=>void save('going')}>I&apos;m going</button>
     <button type="button" disabled={saving} aria-pressed={current?.plan?.intent==='maybe'} onClick={()=>void save('maybe')}>Maybe</button>
     {current?.plan?<button className="tip-chair-clear" type="button" disabled={saving} onClick={()=>void save('none')}>Clear plan</button>:null}
    </div>
