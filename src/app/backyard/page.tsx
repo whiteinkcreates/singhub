@@ -7,6 +7,12 @@ import {getHostMediaSettings} from "@/lib/hostMedia.server";
 import {SITE_BACKYARD_HERO_KEY} from "@/lib/hostMedia";
 import {backyardActivities,backyardVenueOffers} from "@/lib/backyardActivities";
 import {getVenueListings} from "@/lib/venueData";
+import {getKaraokeEventListings,groupKaraokeEvents} from "@/lib/eventData";
+import {getSanDiegoNightlifeWeekday} from "@/lib/nightlifeTime";
+import {backyardKaraokeOnDay} from "@/lib/backyardKaraokeDay";
+import {BackyardNeonMic} from "@/components/backyard/BackyardNeonMic";
+import type {KaraokeEventListing} from "@/types";
+import "./backyard-mic.css";
 import {getSanDiegoPublicVenues} from "@/lib/sanDiegoMarket";
 import {OtherActivityRequest} from "@/components/backyard/OtherActivityRequest";
 import {getEarlyOpening} from "@/lib/earlyOpeningVenues";
@@ -21,14 +27,15 @@ export const metadata:Metadata={
  robots:{index:false,follow:true},
 };
 
-export default async function BackyardPage({searchParams}:{searchParams:Promise<{activity?:string;q?:string;day?:string}>}){
+export default async function BackyardPage({searchParams}:{searchParams:Promise<{activity?:string;q?:string;day?:string;karaoke?:string}>}){
  const params=await searchParams;
  const stages=backyardActivities;
  const current=stages.find(stage=>stage.slug===params.activity);
- const [hero,allVenues,ufcFeed]=await Promise.all([
+ const [hero,allVenues,ufcFeed,karaokeEvents]=await Promise.all([
    getHostMediaSettings(SITE_BACKYARD_HERO_KEY).catch(()=>null),
    getVenueListings(),
    current?.slug==="ufc"?getBackyardUfcFeed().catch((error)=>{console.error("Backyard UFC feed unavailable",error);return null;}):Promise.resolve(null),
+   getKaraokeEventListings(),
  ]);
  const venueBySlug=new Map(getSanDiegoPublicVenues(allVenues).map(venue=>[venue.slug,venue]));
  const ufcOffers:BackyardOffer[]=(ufcFeed?.venues||[]).filter(candidate=>venueBySlug.has(candidate.canonical_slug||"")).map(candidate=>({
@@ -36,14 +43,32 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
    source:candidate.source_url,ufcSource:candidate.source_url,
  }));
  const selectedDay=PLUS_DAYS.find(day=>day.toLowerCase()===params.day?.toLowerCase())||"all";
+ const tonightDay=getSanDiegoNightlifeWeekday();
+ const chosenKaraokeDay=selectedDay==="all"?tonightDay:selectedDay;
+ const isTonight=chosenKaraokeDay===tonightDay;
+ const karaokeOnly=params.karaoke==="1";
+ const karaokeLabel=isTonight?"Karaoke tonight":"Karaoke "+chosenKaraokeDay;
+ const eventsBySlug=groupKaraokeEvents(karaokeEvents);
+ const karaokeBySlug=new Map<string,KaraokeEventListing>();
+ for(const slug of venueBySlug.keys()){
+  const match=backyardKaraokeOnDay(eventsBySlug[slug]||[],selectedDay,tonightDay);
+  if(match)karaokeBySlug.set(slug,match);
+ }
+ const filterParams=new URLSearchParams();
+ if(current)filterParams.set("activity",current.slug);
+ if(params.q?.trim())filterParams.set("q",params.q.trim());
+ if(selectedDay!=="all")filterParams.set("day",selectedDay);
+ if(!karaokeOnly)filterParams.set("karaoke","1");
+ const karaokeToggleHref="/backyard?"+filterParams.toString()+"#backyard-results";
  const search=(params.q||"").trim().toLowerCase();
- const showResults=Boolean(current||search||selectedDay!=="all");
+ const showResults=Boolean(current||search||selectedDay!=="all"||karaokeOnly);
  const matchedHighlights=(offer:BackyardOffer)=>{
    if(current?.slug==="open-early")return offer.highlights.filter(title=>highlightIsCategory(title,"open-early"));
    return matchesPlusDay(offer,selectedDay).filter(match=>!current||highlightIsCategory(match.title,current.slug)).map(match=>match.title);
  };
  const matches=(current?.slug==="ufc"?ufcOffers:backyardVenueOffers).filter(offer=>(!current||offer.activities.includes(current.slug))&&venueBySlug.has(offer.slug)&&offer.slug!=="winstons-beach-club")
  .filter(offer=>matchedHighlights(offer).length>0)
+ .filter(offer=>!karaokeOnly||karaokeBySlug.has(offer.slug))
  .filter(offer=>{const venue=venueBySlug.get(offer.slug)!;return !search||[venue.venueName,venue.neighborhood,...matchedHighlights(offer)].join(" ").toLowerCase().includes(search)})
  .sort((a,b)=>venueBySlug.get(a.slug)!.venueName.localeCompare(venueBySlug.get(b.slug)!.venueName));
  return <main data-scroll-page="backyard" className="min-h-[100dvh] bg-[#050609] text-white">
@@ -76,6 +101,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
    </header>
    <form method="get" action="/backyard#backyard-results" className="flex flex-wrap gap-2" role="search">
     {current&&<input type="hidden" name="activity" value={current.slug}/>}
+    {karaokeOnly&&<input type="hidden" name="karaoke" value="1"/>}
     <label htmlFor="backyard-search" className="sr-only">Search activities</label>
     <input id="backyard-search" name="q" defaultValue={params.q||""} placeholder="Find an activity..." className="min-w-56 flex-1 rounded-xl border border-white/20 bg-white/[.06] px-4 py-3 text-white placeholder:text-slate-400"/>
     <label htmlFor="backyard-day" className="sr-only">Day to explore</label>
@@ -87,7 +113,7 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
    </form>
    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     {stages.filter(s=>(!params.q||[s.name,s.area,s.description].join(" ").toLowerCase().includes(params.q.toLowerCase()))&&(!current||s.slug===current.slug)).map(stage=>
-     <Link key={stage.slug} href={`/backyard?activity=${stage.slug}${selectedDay==="all"?"":"&day="+selectedDay}#backyard-results`} aria-current={current?.slug===stage.slug?"page":undefined} className="group overflow-hidden rounded-2xl border border-white/15 bg-[#101116] transition hover:border-fuchsia-300/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300">
+     <Link key={stage.slug} href={`/backyard?activity=${stage.slug}${selectedDay==="all"?"":"&day="+selectedDay}${karaokeOnly?"&karaoke=1":""}#backyard-results`} aria-current={current?.slug===stage.slug?"page":undefined} className="group overflow-hidden rounded-2xl border border-white/15 bg-[#101116] transition hover:border-fuchsia-300/60 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300">
       <div className="relative aspect-square overflow-hidden">
        <Image src={stage.image} alt="" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" className="object-cover transition-transform duration-300 motion-safe:group-hover:scale-105"/>
       </div>
@@ -127,12 +153,30 @@ export default async function BackyardPage({searchParams}:{searchParams:Promise<
         })}
       </div>
     </section>}
+    <div className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-fuchsia-400/20 bg-[#130e1a] px-3 py-3 sm:px-4">
+      <div>
+       <p className="text-sm font-bold text-white">Spot the mic after the game</p>
+       <p className="mt-1 text-xs text-slate-400">Based on listed karaoke schedules, not proof of a live performance.</p>
+      </div>
+      <Link data-testid="backyard-karaoke-toggle" href={karaokeToggleHref} aria-label={(karaokeOnly?"Show all venues":"Only show venues with ")+karaokeLabel.toLowerCase()} className={"inline-flex min-h-12 items-center gap-3 rounded-xl border px-3 py-1.5 text-sm font-extrabold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300 "+(karaokeOnly?"border-fuchsia-400/70 bg-fuchsia-950/45 text-fuchsia-100 shadow-[0_0_18px_rgba(245,61,172,0.1)]":"border-fuchsia-400/25 bg-[#231226] text-fuchsia-200 hover:border-fuchsia-400/65")}>
+       <BackyardNeonMic pulse={karaokeOnly&&isTonight}/>
+       <span>{karaokeLabel}</span>
+       <span className="rounded-md bg-white/10 px-2 py-1 text-[10px] tracking-widest">{karaokeOnly?"ON":"SHOW"}</span>
+      </Link>
+    </div>
     <p role="status" className="mt-5 text-xs font-bold text-cyan-200">{matches.length} {matches.length===1?"venue":"venues"} to explore</p>
     {matches.length?<div className="mt-5 grid gap-3 md:grid-cols-2">{matches.map(offer=>{const venue=venueBySlug.get(offer.slug)!;return <article key={offer.slug} className="rounded-xl border border-white/15 bg-slate-950/70 p-4">
       <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-widest text-fuchsia-300">{current?.name||"Backyard"}</p><h3 className="mt-1 text-xl font-black text-white">{venue.venueName}</h3>{getEarlyOpening(offer.slug)&&<p className="mt-1 text-xs font-extrabold text-cyan-200">OPEN EARLY · {getEarlyOpening(offer.slug)?.time}</p>}<p className="text-sm text-slate-400">{venue.neighborhood}</p></div><Link className="rounded-lg bg-cyan-300 px-3 py-2 text-xs font-black text-black" href={"/venues/"+venue.slug}>See venue →</Link></div>
+      {karaokeBySlug.has(offer.slug)&&<div data-testid="backyard-karaoke-badge" className="mt-4 flex items-center gap-3 rounded-xl border border-fuchsia-400/25 bg-gradient-to-r from-[#2c142a] to-[#101321] px-3 py-2.5">
+       <BackyardNeonMic pulse={isTonight}/>
+       <div className="min-w-0">
+        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-fuchsia-200">{karaokeLabel}</p>
+        <p className="mt-1 text-sm font-bold text-white">{karaokeBySlug.get(offer.slug)!.startTime||"Time TBD"}{karaokeBySlug.get(offer.slug)!.hostName?" · "+karaokeBySlug.get(offer.slug)!.hostName:""}</p>
+       </div>
+      </div>}
       <div className="mt-4 flex flex-wrap gap-2">{matchedHighlights(offer).slice(0,3).map(tag=><span key={tag} className="rounded-full border border-white/20 bg-white/[.06] px-3 py-1 text-xs text-slate-200">{tag}</span>)}</div>
       <p className="mt-3 text-xs text-slate-400">{current?.slug==="ufc"?"UFC viewing-location evidence on file. Confirm the specific fight with the venue. ":"Activities based on venue information. "}<a href={current?.slug==="ufc"&&offer.ufcSource?offer.ufcSource:offer.source} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">Check source ↗</a></p>
-    </article>})}</div>:<p className="mt-5 text-sm text-slate-300">No verified day-specific matches in our current listings. Try another day, activity, or clear your search.</p>}
+    </article>})}</div>:<p className="mt-5 text-sm text-slate-300">{karaokeOnly?"No venues in this activity currently have karaoke listed for "+chosenKaraokeDay+". Try another day or turn off the mic filter.":"No verified day-specific matches in our current listings. Try another day, activity, or clear your search."}</p>}
    </section>:<p className="text-sm text-slate-300">Choose an activity above to see matching venues.</p>}
    <OtherActivityRequest source="backyard"/>
    <div className="border-t border-white/15 pt-6 text-sm text-slate-400">Activity listings are not guarantees of specific broadcasts. UFC screenings are shown only when a dated venue claim is separately verified and approved.</div>
