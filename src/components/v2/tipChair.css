@@ -1,2 +1,21 @@
-.tip-chair{margin:20px 0;padding:20px;border:1px solid #355266;background:linear-gradient(135deg,#0f1f2c,#111520);border-radius:16px;color:#eef8ff}.tip-chair-head{display:flex;align-items:center;justify-content:space-between}.tip-chair-head span{font-size:.71rem;letter-spacing:.14em;color:#f37bbe}.tip-chair-head h3{font-size:1.6rem;font-weight:900;margin:3px 0 0}.tip-chair>p{margin:10px 0;color:#ced6e1;font-size:.88rem}.tip-chair a{color:#6fe7fc;font-weight:800}.tip-chair-fields{display:grid;gap:12px;margin-top:12px}.tip-chair-fields label{display:grid;gap:6px;font-size:.82rem}.tip-chair-fields select{width:100%;min-height:43px;border:1px solid #4a6b7a;border-radius:8px;background:#101923;color:white;padding:8px}.tip-chair-fields p{margin:0;font-size:.8rem}.tip-chair-fields p strong{font-size:1.6rem;color:#76e8fa}.tip-chair-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.tip-chair-actions button{min-height:44px;border:1px solid #465767;border-radius:10px;background:#172635;color:#fff;font-size:.76rem;font-weight:800;cursor:pointer}.tip-chair-actions button[aria-pressed=true]{border-color:#ff61ba;background:#68204e}.tip-chair-fields small{font-size:.7rem;line-height:1.5;color:#acbccc}
-.tip-chair-head .tip-chair-stool{display:block;flex:none;width:68px;height:68px;filter:drop-shadow(0 2px 5px rgba(245,44,166,.18))}@media(max-width:420px){.tip-chair-head .tip-chair-stool{width:55px;height:55px}}
+.tip-chair{margin:12px 0;padding:16px 18px;border:1px solid #355266;background:linear-gradient(135deg,#101d2a,#11151e);border-radius:14px;color:#eef8ff}
+.tip-chair-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.tip-chair-head>div{flex:none}
+.tip-chair-head span{font-size:.65rem;font-weight:800;letter-spacing:.12em;color:#f58bc7}
+.tip-chair-head h3{font-size:1.4rem;font-weight:900;line-height:1.1;margin:3px 0 0}
+.tip-chair-head>p{max-width:310px;font-size:.8rem;line-height:1.5;color:#b9c8d5;margin:0}
+.tip-chair-signin{display:inline-flex;align-items:center;min-height:40px;margin-top:12px;padding:8px 14px;border:1px solid #4fcde2;border-radius:9px;color:#adf5ff;font-weight:800;text-decoration:none;font-size:.84rem}
+.tip-chair-fields{display:grid;gap:11px;margin-top:13px}
+.tip-chair-night{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:14px}
+.tip-chair-fields label{display:grid;gap:6px;font-size:.75rem;color:#cbd6e1;font-weight:700}
+.tip-chair-fields select{width:100%;min-height:43px;border:1px solid #4a6b7a;border-radius:9px;background:#101923;color:white;padding:8px 12px;font-size:.84rem}
+.tip-chair-count{display:flex;align-items:center;gap:6px;margin:0 0 5px;white-space:nowrap}
+.tip-chair-count strong{font-size:1.35rem;color:#76e8fa;line-height:1}
+.tip-chair-count span{font-size:.71rem;color:#b7c8d5}
+.tip-chair-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tip-chair-actions button{min-height:41px;border:1px solid #506374;border-radius:9px;background:#172635;color:#f5f9ff;font-size:.8rem;font-weight:800;cursor:pointer;padding:8px 13px}
+.tip-chair-actions button[aria-pressed="true"]{border-color:#ff61ba;background:#68204e}
+.tip-chair-actions .tip-chair-clear{border:0;background:transparent;color:#aebdcc;font-size:.75rem;padding:8px}
+.tip-chair-fields small{font-size:.7rem;line-height:1.45;color:#aebdcc}
+.tip-chair-message{margin:10px 0 0;font-size:.76rem;color:#d1e5ef}
+@media(max-width:520px){.tip-chair-head{align-items:flex-start;flex-direction:column;gap:5px}.tip-chair-head>p{max-width:none}.tip-chair-night{gap:10px}.tip-chair-count span{max-width:55px;white-space:normal}.tip-chair-fields select{font-size:.8rem}}
