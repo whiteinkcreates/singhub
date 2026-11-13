@@ -13,7 +13,7 @@ const checks=[
   ['/venues/1st-street-bar-encinitas',/1st Street Bar/,null],
   ['/venues/katys-diner',/first.*last|last.*first/i,null],
   ['/hosts/all-mic-long',/Tony|Ginger/,null],
-  ['/hosts/rodney',/Werewolf/,/Hearth House/],
+  ['/hosts/rodney',/Hearth House[\s\S]*Werewolf|Werewolf[\s\S]*Hearth House/,null],
   ['/hosts/mikey-mic',/hosting nights are being confirmed/,/Affiliated with ALL MIC LONG/],
   ['/hosts/devyn-conover',/DJ Devyn/,/Tony.s Martini/],
   ['/hosts/danielle-dolphin',/Poway|Way Point/,null],
