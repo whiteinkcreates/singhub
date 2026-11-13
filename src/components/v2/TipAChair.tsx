@@ -50,7 +50,7 @@ export function TipAChair({venueSlug}:{venueSlug:string}){
     <button type="button" disabled={saving} aria-pressed={current?.plan?.intent==='maybe'} onClick={()=>void save('maybe')}>Maybe</button>
     {current?.plan?<button className="tip-chair-clear" type="button" disabled={saving} onClick={()=>void save('none')}>Clear plan</button>:null}
    </div>
-   <small>Only anonymous interest totals are shared. This isn't a reservation or a check-in.</small>
+   <small>Chairs are anonymous intentions, not confirmed attendance, a reservation or a check-in.</small>
   </div>:null}
   {message?<p className="tip-chair-message" role="status">{message}</p>:null}
  </section>;
