@@ -38,6 +38,6 @@ test('no separate follow card or oversized illustration reintroduced',()=>{
 test('No default Not going choice and no false alerts/attendance claims',()=>{
  assert.doesNotMatch(chair,/'Not going'/);
  assert.match(chair,/current\?\.plan\?<button className="tip-chair-clear"/);
- assert.match(chair,/This isn't a reservation or a check-in/);
+ assert.match(chair,/not confirmed attendance, a reservation or a check-in/);
  assert.match(follow,/No push or email alerts/);
 });
