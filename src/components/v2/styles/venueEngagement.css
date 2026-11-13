@@ -15,6 +15,7 @@
 .venue-follow-preferences input{width:18px;height:18px;accent-color:#f52aa6;flex:none}
 .venue-follow-preferences small{display:block;margin-top:8px;color:#b3bdca;font-size:.72rem;line-height:1.45}
 .venue-follow-status{display:block;margin-top:5px;font-size:.69rem;line-height:1.35;color:#9fd9e5}
+.venue-follow-status:not([role="alert"]){position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .venue-follow-status[role="alert"]{color:#ffc6c6}
 .v2-basic .venue-quick-actions{margin-top:18px}
 .venue-editorial .ve-quick-actions-rail{margin:0 auto;max-width:1500px;padding:16px clamp(24px,6vw,90px)}
