@@ -53,6 +53,20 @@ try {
   await page.getByRole('heading',{name:'Grand Comedy Club and Pizzeria',exact:true}).waitFor();
   assert.equal(await page.locator('article').count(),1);
   assert.match(await page.locator('article').innerText(),/Comedy and open mic/);
+  // Backyard karaoke indicators use the canonical nightly schedule, not a sports tag.
+  await page.goto(base+'/backyard?activity=football&day=Thursday',{waitUntil:'domcontentloaded'});
+  const redwing=page.locator('#backyard-results article').filter({has:page.getByRole('heading',{name:'Redwing Bar & Grill',exact:true})});
+  await redwing.getByTestId('backyard-karaoke-badge').waitFor();
+  const thursdayBadge=await redwing.getByTestId('backyard-karaoke-badge').innerText();
+  assert.match(thursdayBadge,/9:00 PM.*Ricky/i,'Thursday karaoke is 9 PM with Ricky after 7 PM trivia');
+  assert.doesNotMatch(thursdayBadge,/7:00 PM/,'7 PM is not Thursday karaoke');
+  await page.getByTestId('backyard-karaoke-toggle').click();
+  await page.waitForURL(url=>url.searchParams.get('karaoke')==='1'&&url.searchParams.get('day')==='Thursday');
+  const filteredCards=page.locator('#backyard-results article');
+  assert.ok(await filteredCards.count()>0,'filter retains Thursday karaoke venues');
+  assert.equal(await filteredCards.count(),await page.getByTestId('backyard-karaoke-badge').count(),'only venues with karaoke appear');
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'neon mic card has no horizontal overflow');
+  await page.screenshot({path:`/tmp/backyard-art-qa/karaoke-neon-${width}.png`,fullPage:true});
   await page.goto(base+'/backyard',{waitUntil:'domcontentloaded'});
   await page.getByRole('heading',{name:'What are you here for?'}).scrollIntoViewIfNeeded();
   await page.screenshot({path:`/tmp/backyard-art-qa/tiles-${width}.png`,fullPage:true});
