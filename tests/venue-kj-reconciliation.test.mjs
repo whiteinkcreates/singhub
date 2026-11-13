@@ -42,13 +42,13 @@ async function loadHosts({sheet=false, explicitRodney=false,rodneyName}={}) {
   return output.getActiveHosts({includeMedia:false});
 }
 
-for(const sheet of [false,true])test(`pending Rodney identity cannot attach Hearth House through ${sheet?'Sheets':'fallback'} loading`,async()=>{
+for(const sheet of [false,true])test(`confirmed Rodney identity attaches Hearth House through ${sheet?'Sheets':'fallback'} loading`,async()=>{
   for(const options of [{},{explicitRodney:true},{explicitRodney:true,rodneyName:''},{explicitRodney:true,rodneyName:'TBD'}]){
     const hosts=await loadHosts({sheet,...options});
     const gigs=host=>Object.values(host.schedule).flat();
     const rodney=hosts.find(host=>host.hostId==='rodney');
     assert.ok(gigs(rodney).some(gig=>gig.venueId==='werewolf'));
-    assert.ok(!gigs(rodney).some(gig=>gig.venueId==='hearth-house'));
+    assert.ok(gigs(rodney).some(gig=>gig.venueId==='hearth-house'));
     assert.ok(!hosts.some(host=>host.hostId==='james'));
     const company=gigs(hosts.find(host=>host.hostId==='all-mic-long'));
     for(const venue of ['gingers','tonys-martini-bar','kaminskis-sports-lounge'])assert.ok(company.some(gig=>gig.venueId===venue));

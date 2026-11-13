@@ -320,13 +320,7 @@ function attachCanonicalSchedules(
   for (const event of events) {
     // One-off events are shown with their specific dates, not as weekly recurring gigs.
     if (/^date:20\d{2}-\d{2}-\d{2}$/i.test(event.recurrencePattern || "")) continue;
-    // Corey has not confirmed whether Hearth House's Rodney is the Werewolf
-    // host. Keep the verified venue label, but defer all profile association.
-    // Remove this hold only after identity confirmation, with an explicit ID.
-    if (event.venueSlug === "hearth-house" &&
-      (cleanIdentity(event.hostName) === "rodney" || event.hostId === "rodney")) {
-      continue;
-    }
+    // Corey confirmed 2026-11-12 that Rodney at Hearth House and Werewolf is one host.
     const matchedHosts = new Set<HostProfile>();
 
     if (event.hostId) {
