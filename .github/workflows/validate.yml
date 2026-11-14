@@ -74,6 +74,9 @@ jobs:
       - name: Verify integrated venue engagement layout
         run: node --test tests/venue-engagement-layout.test.mjs
 
+      - name: Verify address-reviewed venue coordinates
+        run: node --test tests/venue-geocoordinates.test.mjs
+
       - name: Lint
         run: npm run lint
 
