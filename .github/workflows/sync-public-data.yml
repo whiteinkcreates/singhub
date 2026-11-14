@@ -116,7 +116,9 @@ jobs:
 
   publish:
     needs: preflight
-    if: github.event_name != 'pull_request' && needs.preflight.outputs.changed == 'true'
+    # Avoid a forced public-data publication from code/workflow pushes.
+    # Only scheduled or explicitly dispatched canonical syncs may publish.
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && needs.preflight.outputs.changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -124,16 +126,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Verify automation credential
+      - name: Verify built-in GitHub workflow credential
         env:
-          GH_TOKEN: ${{ secrets.SINGHUB_AUTOMATION_TOKEN }}
-        run: |
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::error::Repository secret SINGHUB_AUTOMATION_TOKEN is missing. See docs/DATA_SYNC_AUTOMATION.md."
-            exit 1
-          fi
-          # An authenticated read verifies the credential without creating test data.
-          gh api "repos/$GITHUB_REPOSITORY" --jq '.full_name'
+          GH_TOKEN: ${{ github.token }}
+        run: gh api "repos/$GITHUB_REPOSITORY" --jq '.full_name'
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -162,9 +158,9 @@ jobs:
       - name: Create automated data pull request
         id: data_pr
         env:
-          # PRs created with GITHUB_TOKEN require a human to approve their runs.
-          # Use a repository-scoped credential so normal PR validation starts.
-          GH_TOKEN: ${{ secrets.SINGHUB_AUTOMATION_TOKEN }}
+          # The built-in workflow token can create a PR when Actions PR creation is enabled.
+          # An explicit workflow_dispatch on its exact branch SHA runs validation.
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -177,11 +173,6 @@ jobs:
             echo "No public-facing data changes to publish."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
-          fi
-
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::error::Add the repository secret SINGHUB_AUTOMATION_TOKEN before publishing canonical changes. See docs/DATA_SYNC_AUTOMATION.md."
-            exit 1
           fi
 
           git add \
@@ -221,16 +212,20 @@ jobs:
         run: |
           # Wait for this exact commit's app validation, including lint/build.
           # Do not merge just because Vercel or a different check finished first.
+          # GITHUB_TOKEN PR events do not automatically trigger other workflows.
+          # Explicit workflow_dispatch is exempt from that limitation and executes
+          # the validation workflow on the exact candidate branch.
+          gh workflow run validate.yml --ref "$DATA_BRANCH"
           RUN_ID=""
           for attempt in $(seq 1 24); do
             RUN_ID=$(gh run list --workflow validate.yml \
-              --branch "$DATA_BRANCH" --event pull_request --commit "$DATA_SHA" \
+              --branch "$DATA_BRANCH" --event workflow_dispatch --commit "$DATA_SHA" \
               --json databaseId --jq '.[0].databaseId // empty')
             if [ -n "$RUN_ID" ]; then break; fi
             sleep 5
           done
           if [ -z "$RUN_ID" ]; then
-            echo "::error::PR validation did not start. Leave the PR open for investigation."
+            echo "::error::Dispatched validation did not start on the candidate commit. Leave the PR open."
             exit 1
           fi
           gh run watch "$RUN_ID" --exit-status --interval 10
