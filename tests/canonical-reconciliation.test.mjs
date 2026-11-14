@@ -39,8 +39,13 @@ test('Ramona and Valley Center are included in the San Diego County public marke
   const exports={};
   const source=readFileSync('src/lib/sanDiegoMarket.ts','utf8');
   vm.runInNewContext(ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports,require:()=>({isPublicVenue:()=>true})});
-  for(const city of ['Ramona','Valley Center','La Mesa']) assert.equal(exports.isSanDiegoRegionVenue({city}),true);
+  for(const city of ['Ramona','Valley Center','Fallbrook','La Mesa']) assert.equal(exports.isSanDiegoRegionVenue({city}),true);
   assert.equal(exports.isSanDiegoRegionVenue({city:'Boston'}),false);
+  // All public venues tagged to a local market must survive the app's geographic filter.
+  const sdMarkets=new Set(['Downtown','Central San Diego','Coastal San Diego','East County','South Bay','North County']);
+  const local=venues.filter(venue=>sdMarkets.has(venue.market));
+  assert.ok(local.length>=100,'unexpectedly low public San Diego inventory; review intentional removals');
+  for(const venue of local) assert.equal(exports.isSanDiegoRegionVenue({city:venue.city}),true,`${venue.id} ${venue.venue_name} (${venue.city}) is absent from San Diego discovery`);
 });
 
 test('JT Friday uses Corey-confirmed Will without changing the other nights',()=>{
