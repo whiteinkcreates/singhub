@@ -81,3 +81,15 @@ test('expired September one-time events are archived and JT copy matches Friday 
  assert.match(venues.find(v=>v.slug==='710-beach-club').food_highlights,/late menu/);
  assert.equal(venues.find(v=>v.slug==='the-north-bar-escondido').age_policy,'21+');
 });
+
+test('venue descriptions stay synchronized with November verified karaoke nights',()=>{
+ const bySlug=(slug)=>venues.find(venue=>venue.slug===slug);
+ assert.match(bySlug('flicks')?.description||'',/Monday karaoke starting at 9 PM/);
+ assert.match(bySlug('jimmy-os-del-mar')?.description||'',/Tuesday and Thursday karaoke/);
+ assert.match(bySlug('the-brass-rail')?.description||'',/Saturday daytime karaoke every week/);
+ assert.match(bySlug('the-brass-rail')?.description||'',/last-Tuesday-of-month karaoke/);
+ assert.match(bySlug('barley-sword-brewing-escondido')?.description||'',/second Thursday of each month/);
+ for(const slug of ['flicks','jimmy-os-del-mar','the-brass-rail','barley-sword-brewing-escondido']){
+  assert.match(bySlug(slug)?.source_3||'',/direct email|Operations email|GM direct email/);
+ }
+});
