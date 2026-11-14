@@ -1,5 +1,16 @@
 # SingHUB launch status
 
+## November 14 San Diego venue parity and Fallbrook visibility correction
+
+Investigation confirmed the review spreadsheet (`1xLK...`) is not the production canonical workbook. The actual `SingHUB Source of Truth` workbook (`1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc`) contains 138 venue IDs, with 118 `app_visible=TRUE`, all 118 present in the committed `public/data/venues.tsv`. Of these 118, 103 are tagged to a San Diego market. No canonical public venue ID was missing from the committed public roster.
+
+The remaining verified discovery defect is geographic: `src/lib/sanDiegoMarket.ts` omitted Fallbrook from its allowed cities, excluding three published Fallbrook venues from San Diego directory/discovery/map. `venue-0150` Katy's Diner also lacked GPS coordinates, preventing its map pin. The source canonical workbook's J1018/K1018 now contain 33.367093/-117.250538, sourced from the Roadtrippers map listing and cross-checked to Katy's Diner's official street address; provenance is recorded in source notes, not described as on-site GPS measurement.
+
+This fix branch adds Fallbrook to the site region filter and data validator, backfills the committed Katy's coordinates and coordinate fallback, and adds fail-closed checks: any published San Diego-market city missing from the discovery filter or lacking coordinates fails public-data validation; a regression compares all 103 local published venue records to the region filter. A floor of 100 locally published venues flags large accidental losses for explicit review.
+
+Branch code and TSV inspection shows 103/103 local records recognized by the amended filter and 103/103 with numeric coordinates; **CI, merge, deployment, and live browser acceptance are separate pending gates until independently verified**. No unverified venue/event was promoted to public status.
+
+
 ## November 6 explicitly authorized Cheers source repair
 
 Corey instructed “make the cheers changes.” Use the existing GitHub Actions Google service-account secrets in a fixed-scope, manual repair workflow; local cloud has no Google credential binding. Default and PR execution are read-only. Explicit apply dispatch requests the Sheets edit scope, reads the venue and Monday/Wednesday rows by stable ID, validates known old values/identity/weekday, rechecks for concurrent edits, writes only planned single cells in one batch, and reads every changed cell back. Preserve unknown/newer facts and refuse unexpected source versions. Existing readers retain their default readonly OAuth scope. Test dry-run/no writes, sparse row addresses, duplicate IDs, unknown facts, concurrency, denied edits, unchanged other cells and idempotency. No claim of an applied source repair until the actual write/read-back run succeeds. No pending listings or production database records are included.
