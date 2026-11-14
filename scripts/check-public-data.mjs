@@ -13,7 +13,12 @@ const SAN_DIEGO_REGION_CITIES = new Set([
   "imperial beach", "santee", "el cajon", "lakeside", "poway",
   "oceanside", "vista", "escondido", "carlsbad", "encinitas",
   "san marcos", "spring valley", "lemon grove", "coronado",
-  "solana beach", "del mar", "alpine", "ramona", "valley center",
+  "solana beach", "del mar", "alpine", "ramona", "valley center", "fallbrook",
+]);
+
+const SAN_DIEGO_PUBLIC_MARKETS = new Set([
+  "downtown", "central san diego", "coastal san diego",
+  "east county", "south bay", "north county",
 ]);
 
 function clean(value) {
@@ -81,7 +86,12 @@ function publicSchemaFailures(venues, events) {
     if (clean(venue.is_featured) && !booleanCell(venue.is_featured)) {
       failures.push(`${label}: is_featured must be boolean`);
     }
-    if (SAN_DIEGO_REGION_CITIES.has(clean(venue.city).toLowerCase())) {
+    const city = clean(venue.city).toLowerCase();
+    const isSanDiegoMarket = SAN_DIEGO_PUBLIC_MARKETS.has(clean(venue.market).toLowerCase());
+    if (isSanDiegoMarket && !SAN_DIEGO_REGION_CITIES.has(city)) {
+      failures.push(`${label}: San Diego public market city "${venue.city}" is missing from the discovery region city filter`);
+    }
+    if (isSanDiegoMarket || SAN_DIEGO_REGION_CITIES.has(city)) {
       const latitude = Number(venue.latitude);
       const longitude = Number(venue.longitude);
       if (
