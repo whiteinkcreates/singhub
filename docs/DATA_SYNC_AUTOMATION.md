@@ -1,17 +1,25 @@
-# Canonical sync workflow authentication
+# Canonical sync workflow authentication and safeguards
 
-GitHub requires approval for PR workflows created using the built-in GITHUB_TOKEN. The canonical sync previously created and immediately merged such a PR, expiring its unapproved validation run.
+The SingHUB canonical-to-public sync polls the primary `SingHUB Source of Truth` Google workbook and publishes **validated data only** through GitHub pull requests. It does not sync from the separate venue-review database.
 
-The sync now creates the PR using `SINGHUB_AUTOMATION_TOKEN`, waits for `Validate SingHUB` on the exact generated commit to succeed, and only then merges. Data guardrails, regression tests, lint/build validation, protected main and the merged-snapshot integrity audit remain enabled. A failed or missing validation leaves the PR open.
+## GitHub Actions authentication
 
-## One-time credential setup
+The prior `SINGHUB_AUTOMATION_TOKEN` fine-grained PAT failed on November 14, 2026, at `gh pr create` with `Resource not accessible by personal access token (createPullRequest)`. The pipeline now uses the repo-scoped built-in `GITHUB_TOKEN` with explicit `contents: write`, `pull-requests: write`, and `actions: write` permissions.
 
-Create a fine-grained GitHub personal access token for resource owner `whiteinkcreates`, restricted to the `singhub` repository. Grant repository permissions: Contents read-only, Pull requests read/write. Metadata read is automatic. The token is used only to create the PR; checkout, push, observing runs, merging and audit dispatch retain the built-in job token. Choose an expiration and renew the secret before it expires. A dedicated GitHub App installation token is an alternative for a future credential-lifecycle improvement.
+**Repository setting:** In Settings > Actions > General > Workflow permissions, **Allow GitHub Actions to create and approve pull requests** must be enabled. Without this setting, the job fails closed and does not publish a new snapshot. The unrelated, expiring `SINGHUB_AUTOMATION_TOKEN` is no longer used by this workflow. Do not paste credential values into chat or source.
 
-In repository Settings > Secrets and variables > Actions, add the token as a repository secret named `SINGHUB_AUTOMATION_TOKEN`. Never paste the token into chat or commit it.
+## Required validation gate
 
-Until the secret is configured, unchanged scheduled polls still succeed. A changed-data publish stops before pushing a branch with a specific missing-secret error. Do not activate this workflow change until credential setup is complete.
+GitHub intentionally does not start a normal `pull_request` workflow from a PR created using `GITHUB_TOKEN`. After creating the PR, the sync job explicitly dispatches `validate.yml` on **the exact new data branch**, finds the `workflow_dispatch` run for the candidate commit SHA, and waits for the complete workflow to succeed before squash-merging that exact SHA.
 
-## Acceptance
+A missing dispatch, wrong commit, failed validation, missing GitHub permission, or rejected PR leaves the PR unmerged. Source freshness, intentional removals, stable IDs, public-visibility, integrity and committed data minimum checks remain in place.
 
-After credential setup and merge, verify a changed-data sync creates a PR whose Validate SingHUB run starts without manual approval. Confirm the sync waits for that run to succeed, merges the same head SHA, and the subsequent integrity audit passes. Do not fabricate canonical changes just to exercise this flow. The expired historical run cannot be retried or turned green.
+## Trigger and source rules
+
+Scheduled source changes and a deliberate `workflow_dispatch` can publish through the guarded PR pipeline. Merely pushing source/workflow code on `main` does **not** publish a new canonical snapshot. This prevents a maintenance merge from unexpectedly advancing karaoke data.
+
+The exporter now preserves the canonical `market` field at the same TSV column position as the published data; dropping this field previously made all venue rows appear modified and risked erasing their market grouping.
+
+## Verify after activation
+
+A successful workflow source change must show: source preflight -> validated candidate -> data PR -> `validate.yml` workflow_dispatch on exact commit -> successful lint/build and data tests -> exact-SHA merge -> data integrity audit. The GitHub Workflow permissions setting must allow PR creation, and any remaining canonical drift must be reviewed before trusting automatic updates. Do not silently weaken the recency/removal guardrails to silence a failing audit.
