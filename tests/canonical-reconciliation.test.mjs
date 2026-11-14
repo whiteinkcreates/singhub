@@ -19,13 +19,26 @@ test('canonical media accepts existing local venue images and rejects missing or
   assert.equal(validBannerImageUrl('/images/venues/north-bar-taps.jpg?pretend=1'),false);
 });
 test('Pour House, Kimball and Brass Rail retain distinct canonical identities and schedules',()=>{
-  for(const [slug,id,days] of [['the-pour-house-oceanside','venue-0136',['Monday','Tuesday']],['kimball-coastal-eatery','venue-0137',['Thursday']],['the-brass-rail','venue-0138',['Thursday']]]) {
+  for(const [slug,id,days] of [['the-pour-house-oceanside','venue-0136',['Monday','Tuesday']],['kimball-coastal-eatery','venue-0137',['Thursday']],['the-brass-rail','venue-0138',['Thursday','Saturday','Tuesday']]]) {
     assert.equal(venues.find(v=>v.slug===slug)?.id,id);
     const schedule=events.filter(e=>e.venue_slug===slug);
     assert.deepEqual(schedule.map(e=>e.karaoke_day).sort(),days.sort());
     assert.ok(schedule.every(e=>e.venue_id===id&&e.generated==='FALSE'));
   }
 });
+test('November verified monthly karaoke is not silently promoted to weekly',()=>{
+ const brass=events.find(e=>e.event_id==='monthly-the-brass-rail-last-tuesday');
+ const barley=events.find(e=>e.event_id==='monthly-barley-sword-escondido-second-thursday');
+ const flicks=events.find(e=>e.event_id==='weekly-flicks-monday');
+ const jimmy=events.find(e=>e.event_id==='weekly-jimmy-os-del-mar-thursday');
+ assert.match(brass?.recurring||'',/last Tuesday monthly/i);
+ assert.match(barley?.recurring||'',/2nd Thursday monthly/i);
+ assert.equal(flicks?.start_time,'9:00 PM');
+ assert.equal(flicks?.end_time,'TBD');
+ assert.equal(jimmy?.start_time,'TBD');
+ assert.equal(jimmy?.end_time,'TBD');
+});
+
 test('newer 710 verification survives canonical reconciliation and stale Winston host credit does not',()=>{
   const schedule=events.filter(e=>e.venue_slug==='710-beach-club');
   assert.deepEqual(schedule.map(e=>e.karaoke_day).sort(),['Friday','Sunday','Thursday','Tuesday']);
