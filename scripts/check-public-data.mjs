@@ -13,7 +13,7 @@ const SAN_DIEGO_REGION_CITIES = new Set([
   "imperial beach", "santee", "el cajon", "lakeside", "poway",
   "oceanside", "vista", "escondido", "carlsbad", "encinitas",
   "san marcos", "spring valley", "lemon grove", "coronado",
-  "solana beach", "del mar", "alpine", "ramona", "valley center",
+  "solana beach", "del mar", "alpine", "ramona", "valley center", "fallbrook",
 ]);
 
 function clean(value) {
