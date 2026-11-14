@@ -10,6 +10,7 @@ const venueHeaders = [
   "venue_name",
   "slug",
   "city",
+  "market",
   "latitude",
   "longitude",
   "banner_image_url",
@@ -117,4 +118,23 @@ test("requires valid GPS coordinates for public San Diego County venues", () => 
   });
   const valid = validatePublicData({dataDir: validDir, skipMinimums: true});
   assert.equal(valid.passed, true);
+});
+
+test("rejects a public San Diego-market venue from an unrecognized city", () => {
+  const dataDir = writeFixture({
+    venue: {...validVenue, city: "Unlisted County Town", market: "North County", latitude: "33.4", longitude: "-117.3"},
+    event: validEvent,
+  });
+  const result = validatePublicData({dataDir, skipMinimums: true});
+  assert.equal(result.passed, false);
+  assert.match(result.failures.join(" "), /missing from the discovery region city filter/);
+});
+
+test("accepts a properly mapped and located Fallbrook venue", () => {
+  const dataDir = writeFixture({
+    venue: {...validVenue, city: "Fallbrook", market: "North County", latitude: "33.367093", longitude: "-117.250538"},
+    event: validEvent,
+  });
+  const result = validatePublicData({dataDir, skipMinimums: true});
+  assert.equal(result.passed, true);
 });
