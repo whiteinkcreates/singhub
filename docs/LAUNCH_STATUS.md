@@ -1,4 +1,8 @@
 # SingHUB launch status
+## November 14 scheduled canonical publication recovery (proposed)
+
+The November 14 scheduled publishing job reached `gh pr create` and failed with `Resource not accessible by personal access token`. A scoped workflow change replaces the PAT with GitHub Actions built-in token and explicitly dispatches the `validate.yml` workflow on the exact candidate branch/commit. The scheduled publishing path is limited to `schedule` or deliberate `workflow_dispatch`, not pushes of workflow code. The canonical exporter now preserves `market`, which was unintentionally dropped and caused all 118 venue lines to look different in audit comparisons. GitHub Settings > Actions > General must allow workflow PR creation for this to work. Until a real scheduled candidate passes end-to-end and the integrity audit becomes green, sync health is **not verified**.
+
 
 ## November 14 San Diego venue parity and Fallbrook visibility correction
 
