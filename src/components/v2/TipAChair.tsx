@@ -1,16 +1,6 @@
 'use client';
 import {useCallback,useEffect,useState} from 'react';
 import {accountClient} from '@/lib/v2/singerAccount';
-function TippedBarstoolIcon(){
- return <svg className="tip-chair-stool" width="68" height="68" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-  <g transform="rotate(24 40 40)" strokeLinecap="round" strokeLinejoin="round">
-   <ellipse cx="40" cy="19" rx="20" ry="6" fill="#F52CA6" stroke="#FF96D5" strokeWidth="3"/>
-   <path d="M24 21 17 67M56 21 63 67M30 42h20M22 55h36" stroke="#80E9F5" strokeWidth="5"/>
-   <path d="M21 68h-8m54 0h-8" stroke="#80E9F5" strokeWidth="4"/>
-  </g>
-  <path d="M10 66h16" stroke="#F52CA6" strokeWidth="3" strokeLinecap="round"/>
- </svg>;
-}
 type Night={date:string;going:number;plan:{intent:'going'|'maybe'}|null};
 export function TipAChair({venueSlug}:{venueSlug:string}){
  const [nights,setNights]=useState<Night[]>([]);
@@ -40,23 +30,28 @@ export function TipAChair({venueSlug}:{venueSlug:string}){
    const {data}=await accountClient().auth.getSession();if(!data.session)throw new Error('Sign in to plan your karaoke night.');
    const res=await fetch('/api/venue-plans',{method:'PUT',headers:{Authorization:'Bearer '+data.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({venueSlug,date:selected,intent})});
    const result=await res.json();if(!res.ok)throw new Error(result.error||'Could not save your plan.');
-   setMessage(intent==='none'?'Your chair is no longer tipped.':intent==='going'?'Chair tipped! You can change your mind anytime.':'Saved as Maybe.');
+   setMessage(intent==='none'?'Plan cleared.':intent==='going'?'Chair tipped! You can change your mind anytime.':'Saved as Maybe.');
    await load();
   }catch(error){setMessage(error instanceof Error?error.message:'Could not save your plan.');}
   finally{setSaving(false);}
  }
  return <section aria-label="Tip a Chair" className="tip-chair">
-  <div className="tip-chair-head"><div><span>UPCOMING KARAOKE</span><h3>Tip a Chair</h3></div><TippedBarstoolIcon/></div>
-  <p>Thinking of going? Let other SingHUB singers know there is interest in this night.</p>
-  {!signedIn&&!loading?<a href="/account?signin=1">Sign in to tip a chair →</a>:null}
-  {loading?<p role="status">Loading upcoming nights…</p>:null}
-  {signedIn&&!loading&&!nights.length?<p>Upcoming karaoke dates are being confirmed.</p>:null}
+  <div className="tip-chair-head"><div><span>UPCOMING KARAOKE</span><h3>Tip a Chair</h3></div><p>Thinking of going? Show some interest in this night.</p></div>
+  {!signedIn&&!loading?<a className="tip-chair-signin" href="/account?signin=1">Sign in to tip a chair</a>:null}
+  {loading?<p className="tip-chair-message" role="status">Loading upcoming nights…</p>:null}
+  {signedIn&&!loading&&!nights.length?<p className="tip-chair-message">Upcoming karaoke dates are being confirmed.</p>:null}
   {signedIn&&nights.length>0?<div className="tip-chair-fields">
-   <label>Night <select value={selected} onChange={e=>setSelected(e.target.value)}>{nights.map(n=><option key={n.date} value={n.date}>{new Date(n.date+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric',timeZone:'UTC'})}</option>)}</select></label>
-   <p><strong>{current?.going||0}</strong> chairs tipped by SingHUB members</p>
-   <div className="tip-chair-actions">{(['going','maybe','none'] as const).map(intent=><button key={intent} type="button" disabled={saving} aria-pressed={(current?.plan?.intent||'none')===intent} onClick={()=>void save(intent)}>{intent==='going'?"I'm going":intent==='maybe'?'Maybe':'Not going'}</button>)}</div>
-   <small>Your plan is private by default. Totals are anonymous SingHUB intentions, not confirmed attendance or a venue capacity forecast.</small>
+   <div className="tip-chair-night">
+    <label>Night <select value={selected} onChange={e=>setSelected(e.target.value)}>{nights.map(n=><option key={n.date} value={n.date}>{new Date(n.date+'T12:00:00Z').toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric',timeZone:'UTC'})}</option>)}</select></label>
+    <p className="tip-chair-count"><strong>{current?.going||0}</strong><span>chairs tipped</span></p>
+   </div>
+   <div className="tip-chair-actions">
+    <button type="button" disabled={saving} aria-pressed={current?.plan?.intent==='going'} onClick={()=>void save('going')}>I&apos;m going</button>
+    <button type="button" disabled={saving} aria-pressed={current?.plan?.intent==='maybe'} onClick={()=>void save('maybe')}>Maybe</button>
+    {current?.plan?<button className="tip-chair-clear" type="button" disabled={saving} onClick={()=>void save('none')}>Clear plan</button>:null}
+   </div>
+   <small>Chairs are anonymous intentions, not confirmed attendance, a reservation or a check-in.</small>
   </div>:null}
-  {message?<p role="status">{message}</p>:null}
+  {message?<p className="tip-chair-message" role="status">{message}</p>:null}
  </section>;
 }

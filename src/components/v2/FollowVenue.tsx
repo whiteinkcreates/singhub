@@ -23,7 +23,7 @@ export function FollowVenue({venueId,venueSlug,venueName}:{venueId:string;venueS
     if(result.error)throw result.error;setFollowing(false);setEnabled(false);setStatus('Venue unfollowed.');
    }else if(action==='follow'){
     const result=await db.from('singer_follows').upsert({user_id:data.user.id,target_type:'venue',target_id:venueId,target_slug:venueSlug,target_name:venueName,notifications_enabled:false},{onConflict:'user_id,target_type,target_id'});
-    if(result.error)throw result.error;setFollowing(true);setEnabled(false);setStatus('Following! Updates are off until you turn them on.');
+    if(result.error)throw result.error;setFollowing(true);setEnabled(false);setStatus('Following. Updates are off until you enable them.');
    }else{
     const next=!enabled;
     const result=await db.from('singer_follows').update({notifications_enabled:next}).eq('user_id',data.user.id).eq('target_type','venue').eq('target_id',venueId).select('notifications_enabled').single();
@@ -32,11 +32,11 @@ export function FollowVenue({venueId,venueSlug,venueName}:{venueId:string;venueS
   }catch(e){setStatus(e instanceof Error?e.message:'Could not save your preference.');}
   finally{setBusy(false);}
  }
- return <section className="follow-venue" aria-label="Follow this venue"><div><strong>Keep this room on your radar</strong><p>Follow for your next karaoke night. Opt into in-app updates about upcoming karaoke and members planning to go.</p></div>
-  {!loaded?<span>Loading…</span>:!signedIn?<a href="/account?signin=1">Sign in to follow →</a>:<>
-   <button type="button" disabled={busy} aria-pressed={following} onClick={()=>void save(following?'unfollow':'follow')}>{following?'✓ Following · Unfollow':'+ Follow venue'}</button>
-   {following?<label><input type="checkbox" disabled={busy} checked={enabled} onChange={()=>void save('alerts')}/> Show updates in My SingHUB</label>:null}
-  </>}
-  {status?<p role="status">{status}</p>:null}
- </section>;
+ const error=/(unavailable|could not|sign in)/i.test(status);
+ return <div className="venue-follow-control" aria-label="Follow this venue">
+  {!loaded?<span className="venue-follow-loading">Loading…</span>:!signedIn?<a href="/account?signin=1" aria-label="Sign in to follow venue">Follow</a>:
+   <button type="button" disabled={busy} aria-pressed={following} onClick={()=>void save(following?'unfollow':'follow')}>{following?'✓ Following':'Follow'}</button>}
+  {following?<details><summary>Update settings</summary><div className="venue-follow-preferences"><label><input type="checkbox" disabled={busy} checked={enabled} onChange={()=>void save('alerts')}/>Show updates in My SingHUB</label><small>In-app activity only. No push or email alerts.</small></div></details>:null}
+  {status?<span className="venue-follow-status" role={error?'alert':'status'}>{status}</span>:null}
+ </div>;
 }

@@ -18,9 +18,8 @@ import type {VenueTemplateProps} from "./VenueModules";
 import {useV2Actions,useViewerInitials} from "./actions";
 import {goBackToList} from "./listReturn";
 import {TourStopCheckIn} from "./TourStopCheckIn";
-import {FollowVenue} from "./FollowVenue";
+import {VenueQuickActions} from "./VenueQuickActions";
 import {TipAChair} from "./TipAChair";
-import "./styles/venueFollow.css";
 import "./tipChair.css";
 import "./styles/editorialVenue.css";
 
@@ -106,6 +105,7 @@ export function EditorialVenueTemplate({venue,events,kjHosts=[],enhancement,week
      {venue.instagram?<a href={venue.instagram} target="_blank" rel="noopener noreferrer">Instagram ↗</a>:null}
     </div>
    </div>
+   <div className="ve-quick-actions-rail"><VenueQuickActions venueId={venue.id} venueSlug={venue.slug} venueName={venue.venueName} canFollow={isLiveMarket}/></div>
    <section className="ve-next-mic" id="ve-next-mic" aria-labelledby="ve-next-mic-title">
      <div>
        <p className="ve-overline">ON THE MIC</p>
@@ -114,8 +114,7 @@ export function EditorialVenueTemplate({venue,events,kjHosts=[],enhancement,week
      </div>
      <a href="#ve-schedule">Full weekly schedule <span aria-hidden="true">↓</span></a>
    </section>
-
-
+   {isLiveMarket&&events.length>0?<div className="ve-planning-rail"><TipAChair venueSlug={venue.slug}/></div>:null}
 
    <div className="ve-content-grid" id="ve-programming">
     <div className="ve-main">
@@ -160,10 +159,7 @@ export function EditorialVenueTemplate({venue,events,kjHosts=[],enhancement,week
       </div>
       <button className={"ve-singhere"+(hasOnlineSignup?" ve-singhere-linked":"")} type="button" aria-label={hasOnlineSignup?"Open SingHERE online signup":"Open SingHERE signup instructions"} data-toast="SingHERE flow opened"><SingHereMark alt="SingHERE" /></button>
       {isLiveMarket?<TourStopCheckIn venueSlug={venue.slug} venueName={venue.venueName} offer={activeOffer}/>:null}
-      <div className="ve-actions"><button type="button" data-toast="Venue saved">Save</button><button type="button" data-toast="Share options opened">Share ↗</button></div>
      </section>
-     {isLiveMarket?<FollowVenue venueId={venue.id} venueSlug={venue.slug} venueName={venue.venueName}/>:null}
-     {isLiveMarket&&events.length>0?<TipAChair venueSlug={venue.slug}/>:null}
      {roomDetails.length>0?<section className="ve-amenities"><p className="ve-overline">WHAT YOU’LL FIND</p><h3>Around the room.</h3><ul>{roomDetails.map(item=><li key={item}>{item}</li>)}</ul></section>:null}
     </aside>
    </div>

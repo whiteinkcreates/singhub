@@ -71,6 +71,9 @@ jobs:
       - name: Keep heavy media out of deployments
         run: npm run check:assets
 
+      - name: Verify integrated venue engagement layout
+        run: node --test tests/venue-engagement-layout.test.mjs
+
       - name: Lint
         run: npm run lint
 
