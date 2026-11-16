@@ -4,7 +4,7 @@ Generated from spreadsheet 1E5RhaidevYFCQ90GAQdeQFwT55HlE-mSacM4pdir2Nc.
 Venue tab: Venues_Canonical.
 Event tab: Events_Canonical.
 Exported venues: 118.
-Exported events: 230.
+Exported events: 234.
 
 ## Generated Venue Schedule Candidates (Review Only)
 - None
@@ -33,7 +33,6 @@ Exported events: 230.
 - venue-0065 Jin Music Studios
 - venue-0066 North County - Larrys Beach Club
 - venue-0109 N City Sports Lounge
-- venue-0119 Rich's San Diego
 - venue-0127 Smitty's Downtown
 - venue-0128 La Estación
 - venue-0129 Barlando
@@ -105,7 +104,7 @@ Exported events: 230.
 ## Events Skipped Because Inactive
 - event row 71: weekly-urban-mos-bar-grill-sunday Urban Mo’s Bar & Grill (archived)
 ## Events Skipped Because Missing Day Or Start Time
-- None
+- event row 239: monthly-barley-sword-escondido-second-thursday Barley & Sword Brewing Company - Escondido
 ## Public Rows With TBD Address/Time/Host
 - event row 4: weekly-the-search-bar-thursday The Search Bar
 - event row 41: weekly-peter-ds-thursday Peter D's
@@ -152,8 +151,12 @@ Exported events: 230.
 - event row 219: weekly-rookies-oceanside-sunday Rookies Sports Bar
 - event row 224: weekly-salty-frog-thursday The Salty Frog Bar
 - event row 225: weekly-salty-frog-sunday The Salty Frog Bar
-- event row 235: weekly-saddle-bar-wednesday Saddle Bar
-- event row 236: weekly-1st-street-bar-sunday 1st Street Bar
+- event row 235: weekly-flicks-monday Flicks
+- event row 236: weekly-jimmy-os-del-mar-thursday Jimmy O's
+- event row 237: weekly-the-brass-rail-saturday The Brass Rail
+- event row 238: monthly-the-brass-rail-last-tuesday The Brass Rail
+- event row 240: weekly-saddle-bar-wednesday Saddle Bar
+- event row 241: weekly-1st-street-bar-sunday 1st Street Bar
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
@@ -191,15 +194,15 @@ SingHUB public data guardrails
 
 Data directory: /home/runner/work/singhub/singhub/.data-sync-output
 Public venues: 118
-Authoritative events: 230
+Authoritative events: 234
 Legacy venue slug aliases: 0
 
-PASS Monday: 20 authoritative / 8 expected minimum
-PASS Tuesday: 36 authoritative / 8 expected minimum
+PASS Monday: 21 authoritative / 8 expected minimum
+PASS Tuesday: 37 authoritative / 8 expected minimum
 PASS Wednesday: 33 authoritative / 9 expected minimum
-PASS Thursday: 47 authoritative / 14 expected minimum
+PASS Thursday: 48 authoritative / 14 expected minimum
 PASS Friday: 34 authoritative / 10 expected minimum
-PASS Saturday: 25 authoritative / 10 expected minimum
+PASS Saturday: 26 authoritative / 10 expected minimum
 PASS Sunday: 35 authoritative / 7 expected minimum
 
 Public data guardrails passed. Continue to QA/build and review warnings.
