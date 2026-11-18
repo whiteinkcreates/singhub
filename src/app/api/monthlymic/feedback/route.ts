@@ -26,7 +26,7 @@ export async function POST(request:Request){
   const rating=data.rating===null||data.rating===undefined||data.rating===""?null:data.rating;
   if(message.length<10||message.length>2000||
     (!anonymous&&(!displayName||displayName.length<2||displayName.length>100))||
-    (replyEmail!==null&&(replyEmail.length>254||!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(replyEmail)))||
+    (replyEmail!==null&&(replyEmail.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(replyEmail)))||
     (rating!==null&&(!Number.isInteger(rating)||typeof rating!=="number"||rating<1||rating>5))){
     return NextResponse.json({error:"Please check your message and optional details."},{status:400,headers});
   }
