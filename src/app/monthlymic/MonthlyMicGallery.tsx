@@ -6,7 +6,7 @@ export default function MonthlyMicGallery(){
  const [photos,setPhotos]=useState<Photo[]>([]),[status,setStatus]=useState(""),[busy,setBusy]=useState(false);
  const [submissionsOpen,setSubmissionsOpen]=useState(false);
  useEffect(()=>{
-  const timer=window.setTimeout(()=>setSubmissionsOpen(Date.now()>=new Date("2026-11-19T00:00:00-08:00").getTime()),0);
+  const timer=window.setTimeout(()=>setSubmissionsOpen(Date.now()>=new Date("2026-11-18T00:00:00-08:00").getTime()),0);
   return ()=>window.clearTimeout(timer);
  },[]);
  useEffect(()=>{fetch("/api/monthlymic/media",{cache:"no-store"}).then(r=>r.json()).then(d=>{if(Array.isArray(d.photos))setPhotos(d.photos)}).catch(()=>setStatus("Gallery photos are temporarily unavailable."));},[]);
