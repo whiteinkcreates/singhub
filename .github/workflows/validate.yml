@@ -77,6 +77,9 @@ jobs:
       - name: Verify address-reviewed venue coordinates
         run: node --test tests/venue-geocoordinates.test.mjs
 
+      - name: Verify map renderer failure recovery
+        run: node --test tests/map-failure-recovery.test.mjs
+
       - name: Lint
         run: npm run lint
 

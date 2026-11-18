@@ -560,7 +560,13 @@ function buildEvents(sourceRows, venueRows, report) {
     const verifiedUntimedWeekly = verifiedStatus &&
       Boolean(clean(row.source_primary)) &&
       (truthy(row.recurring) || /^weekly$/i.test(clean(row.recurring)));
-    if (!days.length || (isTbd(row.start_time) && !verifiedUntimedWeekly)) {
+    // Monthly nights are also useful with unknown hours, but only when the
+    // source specifies an ordinal weekday that the app can actually schedule.
+    const monthlyDay = clean(row.recurring).match(/\b(?:first|second|third|fourth|fifth|last|final|1st|2nd|3rd|4th|5th)[ -]+(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b/i);
+    const verifiedUntimedMonthly = verifiedStatus &&
+      Boolean(clean(row.source_primary)) && /monthly/i.test(clean(row.recurring)) &&
+      monthlyDay && days.length === 1 && days[0].toLowerCase() === monthlyDay[1].toLowerCase();
+    if (!days.length || (isTbd(row.start_time) && !verifiedUntimedWeekly && !verifiedUntimedMonthly)) {
       report.eventsSkippedMissingDayOrStart.push(`event row ${row.__rowNumber}: ${row.event_id} ${row.venue_name}`);
       continue;
     }
