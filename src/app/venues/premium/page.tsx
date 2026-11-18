@@ -111,7 +111,7 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
         <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6" aria-labelledby="venue-growth-heading">
           <p className="venue-offers-eyebrow">DISCOVERY / CONNECTION / ACTIVATION</p>
           <h2 id="venue-growth-heading" className="mt-3 max-w-4xl text-3xl font-black leading-tight text-white md:text-5xl">More than a listing. <span className="text-cyan-300">More ways to fill the room.</span></h2>
-          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300">Not every venue needs the same thing. Some want more singers on Tuesdays. Others have event space, need a KJ, or want better promotion inside their own four walls. We can start with the challenge you're trying to solve.</p>
+          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300">Not every venue needs the same thing. Some want more singers on Tuesdays. Others have event space, need a KJ, or want better promotion inside their own four walls. We can start with the challenge you&apos;re trying to solve.</p>
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             {[
               {n:"01",title:"Be easier to discover",desc:"Accurate listings stay free. Partner profiles add fuller venue storytelling, specials, calendars and eligible promotion so singers can see why your room suits them.",tag:"Free + Partner"},
@@ -123,7 +123,7 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
             </article>)}
           </div>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-solid">Talk about your venue's goals ↗</Link>
+            <Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-solid">Talk about your venue&apos;s goals ↗</Link>
             <Link href="/plan-karaoke" className="venue-offers-button venue-offers-outline">See the group event experience ↗</Link>
           </div>
           <p className="mt-4 max-w-4xl text-sm text-slate-400">The Partner plan is not unlimited advertising or event production. Group referrals and special campaigns are optional, separately agreed services. No guaranteed visitors, attendance, ranking, bookings or revenue.</p>

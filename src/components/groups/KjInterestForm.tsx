@@ -22,7 +22,7 @@ export function KjInterestForm(){
   }catch(err){setError(err instanceof Error?err.message:"Unable to send interest. Please retry.");}
   finally{setBusy(false);}
  }
- if(sent)return <div className="rounded-3xl border border-cyan-300/35 bg-cyan-300/10 p-8" role="status"><h2 className="text-3xl font-black">You're on our radar.</h2><p className="mt-3 leading-7 text-slate-200">Thanks for sharing your details. We'll review your interest and follow up if a suitable request comes in. This is not a booking or guarantee of work.</p><Link href="/hosts" className="mt-5 inline-block font-bold text-cyan-300 underline">Explore host profiles</Link></div>;
+ if(sent)return <div className="rounded-3xl border border-cyan-300/35 bg-cyan-300/10 p-8" role="status"><h2 className="text-3xl font-black">You&apos;re on our radar.</h2><p className="mt-3 leading-7 text-slate-200">Thanks for sharing your details. We&apos;ll review your interest and follow up if a suitable request comes in. This is not a booking or guarantee of work.</p><Link href="/hosts" className="mt-5 inline-block font-bold text-cyan-300 underline">Explore host profiles</Link></div>;
  const input="mt-2 w-full rounded-xl border border-white/20 bg-slate-950 p-4 text-white focus:border-cyan-300 focus:outline-none";
  return <form onSubmit={submit} className="rounded-3xl border border-white/15 bg-slate-900/80 p-6 md:p-8">
   <h2 className="text-2xl font-black">Tell us what you bring to the show.</h2><p className="mt-2 text-slate-300">This is an opt-in interest form for possible group bookings, separate from your public KJ profile.</p>
