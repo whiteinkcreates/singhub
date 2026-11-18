@@ -185,7 +185,7 @@ begin
 end;
 $$;
 
-revoke all on function public.submit_vibe_check(uuid, text, text, text, text, text, date, text[], boolean) from public;
+revoke all on function public.submit_vibe_check(uuid, text, text, text, text, text, date, text[], boolean) from public, anon, authenticated;
 grant execute on function public.submit_vibe_check(uuid, text, text, text, text, text, date, text[], boolean) to service_role;
 
 comment on table public.vibe_check_responses is
@@ -306,7 +306,7 @@ begin
 end;
 $$;
 
-revoke all on function public.submit_feature_vote(uuid, text, text, text, boolean) from public;
+revoke all on function public.submit_feature_vote(uuid, text, text, text, boolean) from public, anon, authenticated;
 grant execute on function public.submit_feature_vote(uuid, text, text, text, boolean) to service_role;
 
 comment on table public.feature_poll_votes is
