@@ -11,6 +11,18 @@ setWorkerUrl(new URL('maplibre-gl/dist/maplibre-gl-worker.mjs',import.meta.url).
 const attribution='<a href="https://openfreemap.org/">OpenFreeMap</a> &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
 const styles={night:'https://tiles.openfreemap.org/styles/dark',street:'https://tiles.openfreemap.org/styles/positron'};
 
+// The adapter registers with Leaflet before constructing WebGL. If construction
+// throws, its stock onRemove dereferences a renderer that does not exist.
+export function protectBasemapRemoval(layer:ReturnType<typeof maplibreGL>){
+ const onRemove=layer.onRemove;
+ layer.onRemove=function(map){
+  if(this.getMaplibreMap())return onRemove.call(this,map);
+  this.getContainer()?.remove();
+  return this;
+ };
+ return layer;
+}
+
 /** Native vector styling, shared by discovery, venue, places and Tour maps. */
 export function SingHubBasemap({theme='night'}:{theme?:'night'|'street'}){
  const map=useMap();const [status,setStatus]=useState<'loading'|'ready'|'error'>('loading');const [retry,setRetry]=useState(0);
@@ -21,7 +33,7 @@ export function SingHubBasemap({theme='night'}:{theme?:'night'|'street'}){
   queueMicrotask(()=>update('loading'));
   const timer=setTimeout(()=>{if(!ready)update('error');},20000);
   try{
-   layer=maplibreGL({style:styles[theme],attributionControl:{customAttribution:attribution}});
+   layer=protectBasemapRemoval(maplibreGL({style:styles[theme],attributionControl:{customAttribution:attribution}}));
    layer.addTo(map);
    const renderer=layer.getMaplibreMap();
    renderer.on('style.load',()=>{
@@ -35,7 +47,12 @@ export function SingHubBasemap({theme='night'}:{theme?:'night'|'street'}){
    });
    renderer.on('idle',()=>{if(renderer.isStyleLoaded()&&renderer.areTilesLoaded()){ready=true;clearTimeout(timer);update('ready');}});
    renderer.on('error',()=>update('error'));
-  }catch{queueMicrotask(()=>update('error'));}
+  }catch{
+   // Remove the failed layer now so its move/zoom handlers cannot run against
+   // an absent renderer while the user reads the error or closes the map.
+   layer?.remove();layer=undefined;
+   queueMicrotask(()=>update('error'));
+  }
   return()=>{active=false;clearTimeout(timer);layer?.remove();delete container.dataset.mapStyle;delete container.dataset.mapState;};
  },[map,theme,retry]);
  return status==='ready'?null:<div className="singhub-map-status" role="status">{status==='loading'?'Loading map…':<>The map could not finish loading. <button type="button" onClick={()=>setRetry(value=>value+1)}>Retry map</button></>}</div>;

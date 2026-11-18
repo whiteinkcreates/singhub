@@ -64,10 +64,10 @@ test('sync retains sourced weekly events with unknown time without publishing un
   vm.createContext(context);vm.runInContext(body,context);
   const venue={id:'venue-0050',slug:'saddle-bar',venue_name:'Saddle Bar'};
   const base={event_id:'weekly-saddle-bar-wednesday',venue_id:venue.id,venue_slug:venue.slug,karaoke_day:'Wednesday',start_time:'TBD',end_time:'TBD',host_display_name:'TBD',recurring:'Weekly',active_status:'active',app_visible:'TRUE',review_status:'verified_official_current_schedule_needs_host_end_time',source_primary:'https://thesaddlebar.com/'};
-  for(const [changes,count] of [[{},1],[{start_time:''},1],[{review_status:'verified_direct_user_confirmation'},1],[{review_status:'verified_direct_schedule'},1],[{review_status:'flyer_verified_current_schedule'},1],[{review_status:'verified_schedule'},1],[{review_status:'needs_review'},0],[{review_status:'unverified'},0],[{source_primary:''},0],[{app_visible:'FALSE'},0],[{active_status:'inactive'},0],[{recurring:'One-time: 2026-10-14'},0]]){
+  for(const [changes,count] of [[{},1],[{start_time:''},1],[{review_status:'verified_direct_user_confirmation'},1],[{review_status:'verified_direct_schedule'},1],[{review_status:'flyer_verified_current_schedule'},1],[{review_status:'verified_schedule'},1],[{review_status:'needs_review'},0],[{review_status:'unverified'},0],[{source_primary:''},0],[{app_visible:'FALSE'},0],[{active_status:'inactive'},0],[{recurring:'One-time: 2026-10-14'},0],[{recurring:'2nd Wednesday monthly'},1],[{recurring:'last Wednesday monthly'},1],[{recurring:'2nd Wednesday monthly',review_status:'needs_review'},0],[{recurring:'2nd Wednesday monthly',source_primary:''},0],[{recurring:'monthly'},0],[{recurring:'2nd Thursday monthly'},0]]){
     const report=Object.fromEntries(['eventsInvalidAppVisibility','eventsSkippedAppHidden','eventsSkippedInactive','eventReferencesMissingVenues','eventSlugMismatches','eventsSkippedMissingDayOrStart','publicRowsWithTbd'].map(key=>[key,[]]));
     const events=context.buildEvents([{...base,...changes}],[venue],report);
     assert.equal(events.length,count);
-    if(count){assert.equal(events[0].host_id,'');assert.equal(events[0].generated,'FALSE');assert.ok(['TBD',''].includes(events[0].start_time));}
+    if(count){if(/monthly/.test(changes.recurring||''))assert.equal(events[0].recurring,changes.recurring);assert.equal(events[0].host_id,'');assert.equal(events[0].generated,'FALSE');assert.ok(['TBD',''].includes(events[0].start_time));}
   }
 });
