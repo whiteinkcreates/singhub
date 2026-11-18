@@ -1,4 +1,5 @@
 import MonthlyMicGallery from "./MonthlyMicGallery";
+import MonthlyMicFeedback from "./MonthlyMicFeedback";
 import MonthlyMicPromo from "./MonthlyMicPromo";
 import type {Metadata} from "next";
 import QRCode from "qrcode";
@@ -26,6 +27,7 @@ export default async function MonthlyMicPage(){
     <p className="mt-5 max-w-2xl text-xl text-slate-200">New venue. New voices. New friends. Every month.</p>
     <p className="mt-6 text-sm font-semibold text-cyan-200">Stop #001 · The Mesa · Wednesday, November 18 · Arrive 6:30–7 PM · {m.neighborhood}</p>
     <a href="#rsvp" className="mt-8 inline-block rounded-xl bg-cyan-300 px-6 py-3 font-black text-slate-950">RSVP for November 18</a>
+    <a href="#monthlymic-feedback" className="ml-4 mt-5 inline-block text-sm font-semibold text-fuchsia-200 underline underline-offset-4">Leave feedback</a>
    </div>
   </section>
   <MonthlyMicPromo/>
@@ -36,6 +38,7 @@ export default async function MonthlyMicPage(){
     <div className="mt-8 rounded-2xl border border-fuchsia-400/30 bg-fuchsia-400/10 p-6"><h3 className="text-2xl font-black">JustDuet 🎤</h3><p className="mt-2 text-slate-200">Feeling adventurous? Put your name in the bowl, get paired with another willing singer, and pick a duet. We&apos;ll work with the KJ&apos;s normal rotation.</p></div>
     <section className="mt-6 rounded-2xl border border-white/10 p-6"><h3 className="text-2xl font-black">Wear the Mic</h3><p className="mt-2 text-slate-300">Choose the original or our first limited-edition venue tee. MonthlyMic is always free, and shirts are optional.</p><div className="mt-5 grid gap-4 sm:grid-cols-2"><div className="rounded-xl bg-white/5 p-4"><h4 className="text-lg font-bold">SingHUB Original · $25 event pickup</h4><p className="mt-2 text-sm text-slate-300">Special pickup price (regularly $31). Prepay through WhiteInk Creates, then pick up at the SingHUB table on November 18. No shipping for this offer.</p><a href="https://whiteinkcreates.com/products/singhub-original-tee-monthlymic-001-event-pickup" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block rounded-lg bg-fuchsia-400 px-4 py-3 text-sm font-black text-slate-950">Get the original · $25 pickup</a></div><div className="rounded-xl bg-white/5 p-4"><h4 className="text-lg font-bold">MonthlyMic #001 limited edition</h4><p className="mt-2 text-sm text-slate-300">The Mesa-inspired shirt is available in all 46 size and color combinations. Choose prepaid event pickup for $30 with no individual shipping charge, or order the shipped version.</p><p className="mt-3 text-xs font-semibold text-amber-200">Event pickup orders close November 5 at 11:59 PM Pacific. November 18 pickup is the target; production delays may require an alternate pickup or refund.</p><div className="mt-4 flex flex-wrap gap-2"><a href="https://whiteinkcreates.com/products/monthlymic-001-the-mesa-event-pickup-prepaid" target="_blank" rel="noopener noreferrer" className="inline-block rounded-lg bg-cyan-300 px-4 py-3 text-sm font-black text-slate-950">Prepay for pickup · $30</a><a href="https://whiteinkcreates.com/products/monthlymic-001-the-mesa-limited-edition-tee" target="_blank" rel="noopener noreferrer" className="inline-block rounded-lg border border-cyan-300 px-4 py-3 text-sm font-black text-cyan-200">Ship to me · $30 + shipping</a></div></div></div><p className="mt-4 text-xs text-slate-400">Shirt purchases are handled by WhiteInk Creates. Check your selected product&apos;s shipping or pickup details before checkout.</p></section>
     <MonthlyMicGallery/>
+    <MonthlyMicFeedback/>
     <p className="mt-10 text-sm text-slate-400">Have a venue we should visit next? Bring your nomination. We&apos;ll collect suggestions at the meetup.</p>
     <Link href="/singboard" className="mt-4 inline-block text-cyan-300 underline">More local events on SingBOARD</Link>
    </div>
