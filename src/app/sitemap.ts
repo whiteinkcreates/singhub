@@ -19,7 +19,6 @@ function slugify(value: string) {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
   const [venues, activeHosts] = await Promise.all([
     getVenueListings(),
     getActiveHosts(),
@@ -38,6 +37,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/claim-listing",
     "/support",
     "/venues/premium",
+    "/plan-karaoke",
+    "/hire-a-kj",
+    "/kj-bookings",
+    "/monthlymic",
     "/guides",
     "/neighborhoods",
   ];
@@ -68,10 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]),
   ];
 
-  return routes.map((path) => ({
-    url: absoluteUrl(path),
-    lastModified: now,
-    changeFrequency: path.startsWith("/guides") ? "weekly" : "daily",
-    priority: path === "/" || path === "/karaoke-near-me" ? 1 : 0.7,
-  }));
+  // Only send modification dates when we have a source-of-truth content timestamp.
+  // A fresh timestamp for every page on every request misrepresents page updates.
+  return routes.map((path) => ({ url: absoluteUrl(path) }));
 }
