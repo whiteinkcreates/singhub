@@ -10,7 +10,7 @@ export async function GET(){
 }
 export async function POST(request:Request){
  const origin=request.headers.get("origin");if(origin&&origin!==new URL(request.url).origin)return NextResponse.json({error:"Invalid origin"},{status:403});
- if(new Date()<new Date("2026-11-19T00:00:00-08:00"))return NextResponse.json({error:"Photo submissions open after the meetup."},{status:403});
+ if(new Date()<new Date("2026-11-18T00:00:00-08:00"))return NextResponse.json({error:"Photo submissions open after the meetup."},{status:403});
  const data=await request.formData();
  if(data.get("website"))return NextResponse.json({ok:true});
  const file=data.get("file"),consent=data.get("consent")==="yes";
