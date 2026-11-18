@@ -10,9 +10,9 @@ import "./premium.css";
 
 export const dynamic = "force-dynamic";
 export const metadata = {
-  title: "SingHUB for Venues | Free Listing vs. Partner",
+  title: "SingHUB for Venues | Discovery, Groups & Promotion",
 
-  description: "Every venue can be found on SingHUB for free. Compare the free karaoke listing with SingHUB Partner's enhanced calendar, promotions, SingBOARD and real venue examples.",
+  description: "Help more karaoke people discover your venue. Explore free karaoke listings, SingHUB Partner, group event referrals, promotional campaigns and community events.",
 
   alternates: { canonical: "/venues/premium" },
 };
@@ -49,6 +49,7 @@ const differences = [
 ];
 
 const faqs = [
+  {question:"Are group event referrals, sponsored placements or print production part of $59/month?", answer:"No. The standard Partner plan covers the stated enhanced profile and eligible ongoing promotion. Event referrals, separately sponsored placements, custom design, printing and event production require individual discussion and agreed terms. No booking or attendance is guaranteed."},
   {question:"What does $59 per month include?", answer:"Your enhanced profile and gallery, wider event calendar, specials, eligible SingBOARD posts, optional configured offers, priority updates and engagement insights where reporting is available and validated. The essential karaoke listing remains free."},
   {question:"Does a request start a subscription?", answer:"No. The inquiry is free and begins a personal review, not billing. We explain setup and terms before activating the $59/month standard Partner plan."},
   {question:"Do I have to discount drinks?", answer:"No. Offers are optional and controlled by the venue. Any offer requires agreed terms and an end-to-end staff redemption test."},
@@ -83,8 +84,8 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
         <div className="venue-offers-photo-shade" aria-hidden="true" />
         <div data-hero-copy="" className="venue-offers-hero-copy">
           <p className="venue-offers-eyebrow">SINGHUB FOR VENUES</p>
-          <h1 id="venue-offers-title">Your place has a personality. <span>Let people find it.</span></h1>
-          <p>Your karaoke nights should be easy to find. Your food, events, specials and atmosphere deserve attention too. See what your venue already has and what a partnership could add.</p>
+          <h1 id="venue-offers-title">You have a room worth finding. <span>Let karaoke people find it.</span></h1>
+          <p>Turn your karaoke night into a reason to choose your venue. SingHUB helps with discovery, richer venue storytelling, group-event connections and practical promotions, all under one karaoke platform.</p>
           <div className="venue-offers-hero-actions">
             <a href="#real-profiles" className="venue-offers-primary">See live profiles <span aria-hidden="true">↓</span></a>
             <Link href={requestedVenue ? `/claim-listing?premium=true&venue=${encodeURIComponent(requestedVenue)}` : "/claim-listing?premium=true"} className="venue-offers-secondary">Tell us about your place ↗</Link>
@@ -96,8 +97,8 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
       <div data-page-surface="" className="venue-offers-sheet">
         <section className="venue-offers-intro" aria-labelledby="difference-heading">
           <p className="venue-offers-eyebrow">GOOD FOR SINGERS. BETTER FOR YOUR VENUE.</p>
-          <h2 id="difference-heading">A good listing starts the story. <span>A Partner profile tells more of it.</span></h2>
-          <p>We keep the essentials free because accurate karaoke information helps everyone. Partner gives your team room to show the experience, highlight what happens beyond karaoke and keep the good stuff from getting buried.</p>
+          <h2 id="difference-heading">Getting discovered is the beginning. <span>Give them a reason to choose your room.</span></h2>
+          <p>Every venue keeps its useful free karaoke listing. Partner makes your venue easier to understand and promote. Separate group-booking introductions and campaign services offer ways to work together when you have a particular night or room to fill.</p>
         </section>
 
         <section id="real-profiles" className="venue-offers-compare" aria-labelledby="real-profile-heading">
@@ -107,6 +108,26 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
           <VenueProfileExplorer venues={publicVenues} initialSlug={requestedVenue} />
         </section>
 
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6" aria-labelledby="venue-growth-heading">
+          <p className="venue-offers-eyebrow">DISCOVERY / CONNECTION / ACTIVATION</p>
+          <h2 id="venue-growth-heading" className="mt-3 max-w-4xl text-3xl font-black leading-tight text-white md:text-5xl">More than a listing. <span className="text-cyan-300">More ways to fill the room.</span></h2>
+          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300">Not every venue needs the same thing. Some want more singers on Tuesdays. Others have event space, need a KJ, or want better promotion inside their own four walls. We can start with the challenge you're trying to solve.</p>
+          <div className="mt-8 grid gap-4 md:grid-cols-2">
+            {[
+              {n:"01",title:"Be easier to discover",desc:"Accurate listings stay free. Partner profiles add fuller venue storytelling, specials, calendars and eligible promotion so singers can see why your room suits them.",tag:"Free + Partner"},
+              {n:"02",title:"Hear about group bookings",desc:"Corporate celebrations, holiday parties and birthdays can bring a different kind of customer. Interested venues can opt in for potential group referrals, with terms negotiated before any paid arrangement.",tag:"Booking introductions · Opt-in"},
+              {n:"03",title:"Promote beyond the profile",desc:"Explore digital displays, QR table tents, in-venue creative, spotlights and campaign placements. Custom creation, production and paid placements are quoted separately.",tag:"Campaign services · Custom"},
+              {n:"04",title:"Host something memorable",desc:"Interested in a community night such as SingHUB MonthlyMic? Tell us what nights you'd like to grow. Hosting and any sponsorship would be discussed before confirmation.",tag:"Events · By arrangement"}
+            ].map(item=><article key={item.n} className="rounded-3xl border border-white/15 bg-white/[.04] p-6 md:p-8">
+              <span className="text-sm font-black tracking-[.25em] text-fuchsia-300">{item.n} / {item.tag}</span><h3 className="mt-4 text-2xl font-black text-white">{item.title}</h3><p className="mt-3 text-sm leading-7 text-slate-300">{item.desc}</p>
+            </article>)}
+          </div>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-solid">Talk about your venue's goals ↗</Link>
+            <Link href="/plan-karaoke" className="venue-offers-button venue-offers-outline">See the group event experience ↗</Link>
+          </div>
+          <p className="mt-4 max-w-4xl text-sm text-slate-400">The Partner plan is not unlimited advertising or event production. Group referrals and special campaigns are optional, separately agreed services. No guaranteed visitors, attendance, ranking, bookings or revenue.</p>
+        </section>
         <section className="venue-offers-journey" aria-labelledby="partner-process-heading">
           <p className="venue-offers-eyebrow">NO BIG PITCH. JUST A BETTER WAY TO SHOW UP.</p>
           <h2 id="partner-process-heading">Here&apos;s how we work together.</h2>
