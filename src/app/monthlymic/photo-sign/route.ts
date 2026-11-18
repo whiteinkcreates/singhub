@@ -4,7 +4,7 @@ import {SITE_WORDMARK_SRC} from "@/lib/siteWordmark";
 export const runtime = "nodejs";
 
 export async function GET() {
-  const target = "https://singhub.app/monthlymic#monthlymic-gallery";
+  const target = "https://singhub.app/monthlymic/photos";
   const qr = await QRCode.toDataURL(target, {
     errorCorrectionLevel: "H",
     margin: 4,
@@ -51,7 +51,7 @@ h1 span { color: #ec008b; }
   <div class="pinkline" aria-hidden="true"></div>
   <div class="qr-wrap"><img class="qr" src="${qr}" alt="QR code to the SingHUB MonthlyMic photo submission form" width="900" height="900"></div>
   <p class="steps">SCAN · CHOOSE A PHOTO · SEND IT</p>
-  <p class="url">singhub.app/monthlymic#monthlymic-gallery</p>
+  <p class="url">singhub.app/monthlymic/photos</p>
   <p class="info">Your photos. Our karaoke community.<br>No account needed. Photos are reviewed before appearing publicly.</p>
   <p class="disclosure">JPG, PNG or WebP · Up to 8 MB · Name, email and photo permission required.<br>Only submit photos you took or have permission to share.</p>
 </main>
