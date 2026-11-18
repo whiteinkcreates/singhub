@@ -126,7 +126,7 @@ export function EventRider({ defaultService = "", holiday = false }: { defaultSe
           <div className="rider-options rider-size-options">{groupSizes.map(size=><button type="button" key={size} onClick={()=>choose("size",size)} className="rider-option rider-size"><strong>{size}</strong><small>people</small></button>)}</div>
         </>}
         {step===3&&<><h2>Where's the show?</h2><p className="rider-subtitle">San Diego County first. We'll narrow things down from here.</p>
-          <div className="rider-options rider-two">{areas.map(area=><button type="button" key={area} onClick={()=>choose("area",area)} className={"rider-option"+(rider.area===area?" rider-selected":"")}><strong>{area}</strong><span className="rider-chevron" aria-hidden="true">↗</span></button>)}</div>
+          <div className="rider-options rider-two">{areas.map(area=><button type="button" key={area} onClick={()=>update("area",area)} className={"rider-option"+(rider.area===area?" rider-selected":"")}><strong>{area}</strong><span className="rider-chevron" aria-hidden="true">↗</span></button>)}</div>
           <label className="rider-field"><span>{rider.service==="kj"?"Already have an event location?":"Specific neighborhood or venue in mind? (optional)"}</span>
             <input value={rider.areaNotes} onChange={e=>update("areaNotes",e.target.value)} maxLength={160} placeholder="e.g., office in Mission Valley, or a favorite bar"/></label>
         </>}
