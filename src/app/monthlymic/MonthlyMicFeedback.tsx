@@ -42,7 +42,7 @@ export default function MonthlyMicFeedback() {
     }finally{setBusy(false);}
   }
 
-  return <section id="monthlymic-feedback" aria-labelledby="monthlymic-feedback-title" className="mt-10 rounded-3xl border border-fuchsia-400/30 bg-[#151a2b] p-5 sm:p-8">
+  return <section id="monthlymic-feedback" aria-labelledby="monthlymic-feedback-title" className="rounded-3xl border border-fuchsia-400/30 bg-[#151a2b] p-5 sm:p-8">
     <p className="text-xs font-black uppercase tracking-[.2em] text-fuchsia-300">A note to the SingHUB guy</p>
     <h2 id="monthlymic-feedback-title" className="mt-2 text-3xl font-black text-white">How'd MonthlyMic go?</h2>
     <p className="mt-3 text-sm leading-6 text-slate-200">The good, the awkward, a suggestion for next time, or somewhere we should go next. Tell Corey. This goes to a <strong>private inbox</strong>, not a public review page.</p>
