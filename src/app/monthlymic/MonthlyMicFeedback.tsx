@@ -49,7 +49,7 @@ export default function MonthlyMicFeedback() {
     <form onSubmit={submit} className="mt-6 space-y-5">
       <fieldset>
         <legend className="mb-3 text-sm font-bold text-white">Who is this from?</legend>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
           <label className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 text-sm font-bold ${mode==="anonymous"?"border-cyan-300 bg-cyan-300/10 text-white":"border-white/20 text-slate-200"}`}>
             <input type="radio" name="identity" value="anonymous" checked={mode==="anonymous"} onChange={()=>setMode("anonymous")} className="h-4 w-4 accent-cyan-300"/>
             Anonymous
@@ -61,7 +61,7 @@ export default function MonthlyMicFeedback() {
         </div>
         <p className="mt-2 text-xs text-slate-400">Anonymous notes have no name or email attached.</p>
       </fieldset>
-      {mode==="named"&&<div className="grid gap-4 sm:grid-cols-2">
+      {mode==="named"&&<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
         <label className="block text-sm font-bold text-white">Your name
           <input name="name" autoComplete="name" required minLength={2} maxLength={100} placeholder="Name" className="mt-2 w-full rounded-lg border border-white/20 bg-white p-3 text-base text-slate-950"/>
         </label>
