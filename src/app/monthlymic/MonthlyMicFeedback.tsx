@@ -44,7 +44,7 @@ export default function MonthlyMicFeedback() {
 
   return <section id="monthlymic-feedback" aria-labelledby="monthlymic-feedback-title" className="rounded-3xl border border-fuchsia-400/30 bg-[#151a2b] p-5 sm:p-8">
     <p className="text-xs font-black uppercase tracking-[.2em] text-fuchsia-300">A note to the SingHUB guy</p>
-    <h2 id="monthlymic-feedback-title" className="mt-2 text-3xl font-black text-white">How'd MonthlyMic go?</h2>
+    <h2 id="monthlymic-feedback-title" className="mt-2 text-3xl font-black text-white">How&apos;d MonthlyMic go?</h2>
     <p className="mt-3 text-sm leading-6 text-slate-200">The good, the awkward, a suggestion for next time, or somewhere we should go next. Tell Corey. This goes to a <strong>private inbox</strong>, not a public review page.</p>
     <form onSubmit={submit} className="mt-6 space-y-5">
       <fieldset>
@@ -83,7 +83,7 @@ export default function MonthlyMicFeedback() {
         <textarea name="message" required minLength={10} maxLength={2000} rows={5} placeholder="What worked? What could be better? Who should host the next MonthlyMic?" className="mt-2 w-full rounded-lg border border-white/20 bg-white p-3 text-base text-slate-950"/>
       </label>
       <input name="website" type="text" autoComplete="off" tabIndex={-1} aria-hidden="true" className="absolute -left-[9999px] h-px w-px" />
-      <p className="text-xs leading-5 text-slate-400">No account required. Your note won't be published or added to a mailing list.</p>
+      <p className="text-xs leading-5 text-slate-400">No account required. Your note won&apos;t be published or added to a mailing list.</p>
       <button type="submit" disabled={busy} className="w-full rounded-xl bg-fuchsia-500 px-5 py-3 font-black text-white disabled:opacity-60">{busy?"Sending...":"Send Corey a note"}</button>
       <p role="status" aria-live="polite" className={`text-sm ${success?"text-cyan-300":"text-amber-200"}`}>{message}</p>
     </form>
