@@ -13,6 +13,7 @@ const primaryNavItems = [
   { href: "/places", label: "Venue Index" },
   { href: "/neighborhoods", label: "Neighborhoods" },
   { href: "/hosts", label: "Hosts" },
+  { href: "/plan-karaoke", label: "Plan an Event" },
 ];
 
 const utilityNavItems = [

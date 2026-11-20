@@ -66,6 +66,7 @@ export function FoundingVenueInquiryForm({
         `Best time to connect: ${getFormValue(formData, "best-time") || "Not provided"}`,
         `Current karaoke details:\n${karaokeDetails || "Not provided"}`,
         `Promotion goals:\n${getFormValue(formData, "promotion-goals") || "Not provided"}`,
+        `Interested services: ${formData.getAll("interests").map(String).join(", ") || "Not selected"}`,
         `Additional notes:\n${getFormValue(formData, "notes") || "None"}`,
       ].join("\n\n"),
     };
@@ -183,10 +184,26 @@ export function FoundingVenueInquiryForm({
           name="promotion-goals"
           helper="Maybe a karaoke night, live music, food, specials or just the feel of your place."
         />
+        <fieldset className="md:col-span-2 rounded-2xl border border-cyan-300/20 bg-cyan-300/[.04] p-5">
+          <legend className="px-1 text-sm font-bold text-cyan-200">What would help your venue grow?</legend>
+          <p className="mb-4 text-xs leading-5 text-slate-400">Choose any that sound useful. These are conversation topics, not included services or a purchase.</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[
+              "More singer discovery",
+              "Group / holiday party referrals",
+              "Custom QR, table tents or digital displays",
+              "Featured promotions or spotlights",
+              "Hosting a MonthlyMic community event",
+              "Find a KJ or karaoke entertainment"
+            ].map(interest=><label className="flex items-start gap-3 text-sm text-slate-200" key={interest}>
+              <input type="checkbox" name="interests" value={interest} className="mt-1 accent-cyan-300"/>{interest}
+            </label>)}
+          </div>
+        </fieldset>
         <TextAreaField
           label="Anything else we should know?"
           name="notes"
-          helper="Questions, current marketing efforts, multiple locations, or concerns about the pilot."
+          helper="Questions, current marketing efforts, multiple locations, or upcoming events."
           className="md:col-span-2"
         />
       </div>
