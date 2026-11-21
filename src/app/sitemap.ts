@@ -40,6 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/plan-karaoke",
     "/hire-a-kj",
     "/kj-bookings",
+    "/group-venues",
     "/monthlymic",
     "/guides",
     "/neighborhoods",
