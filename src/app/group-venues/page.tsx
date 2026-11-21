@@ -15,8 +15,8 @@ export default function GroupVenuesPage(){
     <div className="mx-auto max-w-4xl">
       <img src={SITE_WORDMARK_SRC} alt="SingHUB" className="mb-10 h-12 w-auto object-contain"/>
       <p className="text-xs font-black uppercase tracking-[.24em] text-cyan-300">SingHUB · Group event partners</p>
-      <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-6xl">You've got the room. <span className="text-fuchsia-300">Let's find the group.</span></h1>
-      <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">Birthdays, company outings, celebrations, and parties. We're collecting interest from San Diego venues willing to consider group karaoke inquiries. Tell us about your space so we know when it could be a fit.</p>
+      <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-6xl">You&apos;ve got the room. <span className="text-fuchsia-300">Let&apos;s find the group.</span></h1>
+      <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-300">Birthdays, company outings, celebrations, and parties. We&apos;re collecting interest from San Diego venues willing to consider group karaoke inquiries. Tell us about your space so we know when it could be a fit.</p>
       <div className="mt-10"><VenueGroupInterestForm/></div>
       <p className="mt-9 text-sm text-slate-400">Looking for broader venue marketing? <Link href="/venues/premium" className="text-cyan-300 underline">Explore SingHUB for venues</Link>. Organizing an event instead? <Link href="/plan-karaoke" className="text-cyan-300 underline">Plan your karaoke party</Link>. Karaoke host? <Link href="/kj-bookings" className="text-cyan-300 underline">Join KJ booking interest</Link>.</p>
     </div>
