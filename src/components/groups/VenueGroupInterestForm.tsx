@@ -39,8 +39,8 @@ export function VenueGroupInterestForm(){
   }
 
   if(sent)return <div className="rounded-3xl border border-cyan-300/35 bg-cyan-300/10 p-8" role="status">
-    <h2 className="text-3xl font-black">You're on our radar.</h2>
-    <p className="mt-3 leading-7 text-slate-200">We've received your venue's group-booking interest. We'll review the details and reach out before making any introductions. This is not a booking, contract or paid membership.</p>
+    <h2 className="text-3xl font-black">You&apos;re on our radar.</h2>
+    <p className="mt-3 leading-7 text-slate-200">We&apos;ve received your venue's group-booking interest. We&apos;ll review the details and reach out before making any introductions. This is not a booking, contract or paid membership.</p>
     <Link href="/venues/premium" className="mt-5 inline-block font-bold text-cyan-300 underline">Explore additional SingHUB venue tools</Link>
   </div>;
 
@@ -64,8 +64,8 @@ export function VenueGroupInterestForm(){
       <label className="text-sm font-bold md:col-span-2">Anything we should know? (optional)<textarea name="notes" rows={3} maxLength={1200} placeholder="Room capacities, private-event minimums, food/drink options, preferred days, booking contact..." className={input}/></label>
     </div>
     <div aria-hidden="true" className="absolute -left-[10000px] h-px w-px overflow-hidden"><label>Company website<input name="companyWebsite" tabIndex={-1} autoComplete="off"/></label></div>
-    <label className="mt-6 flex items-start gap-3 text-sm leading-6 text-slate-300"><input name="consent" required type="checkbox" className="mt-1 accent-cyan-300"/><span>I agree SingHUB may contact me about possible group events. We'll ask permission before sharing my contact details with an organizer. <Link href="/privacy" className="text-cyan-300 underline">Privacy policy</Link>.</span></label>
-    <p className="mt-4 text-xs leading-6 text-slate-400">Registering interest is free and doesn't enroll you in the $59/month Partner plan. There are no guaranteed referrals. Any referral fees or commercial terms would be discussed and agreed separately before proceeding.</p>
+    <label className="mt-6 flex items-start gap-3 text-sm leading-6 text-slate-300"><input name="consent" required type="checkbox" className="mt-1 accent-cyan-300"/><span>I agree SingHUB may contact me about possible group events. We&apos;ll ask permission before sharing my contact details with an organizer. <Link href="/privacy" className="text-cyan-300 underline">Privacy policy</Link>.</span></label>
+    <p className="mt-4 text-xs leading-6 text-slate-400">Registering interest is free and doesn&apos;t enroll you in the $59/month Partner plan. There are no guaranteed referrals. Any referral fees or commercial terms would be discussed and agreed separately before proceeding.</p>
     {error&&<p role="alert" className="mt-4 rounded-xl border border-red-300/40 bg-red-500/10 p-3 text-red-200">{error}</p>}
     <button type="submit" disabled={busy} className="mt-6 rounded-xl bg-cyan-300 px-7 py-4 font-black text-slate-950 disabled:opacity-60">{busy?"Submitting...":"Register group-booking interest"}</button>
   </form>;
