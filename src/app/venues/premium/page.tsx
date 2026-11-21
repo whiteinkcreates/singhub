@@ -123,7 +123,7 @@ export default async function PremiumVenuePage({ searchParams }: { searchParams:
             </article>)}
           </div>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-solid">Talk about your venue&apos;s goals ↗</Link>
+            <Link href="/group-venues" className="venue-offers-button venue-offers-solid">Join group booking interest ↗</Link><Link href="/claim-listing?premium=true" className="venue-offers-button venue-offers-outline">Other venue goals ↗</Link>
             <Link href="/plan-karaoke" className="venue-offers-button venue-offers-outline">See the group event experience ↗</Link>
           </div>
           <p className="mt-4 max-w-4xl text-sm text-slate-400">The Partner plan is not unlimited advertising or event production. Group referrals and special campaigns are optional, separately agreed services. No guaranteed visitors, attendance, ranking, bookings or revenue.</p>

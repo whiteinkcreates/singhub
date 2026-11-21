@@ -36,7 +36,7 @@ export async function POST(request: Request) {
   }
 
   const submissionType=cleanString(payload.submissionType) || inferSubmissionType(payload);
-  if(["support_request","venue_claim_request","claim_update","venue_partner_inquiry","karaoke_event_inquiry","kj_booking_optin"].includes(submissionType)){
+  if(["support_request","venue_claim_request","claim_update","venue_partner_inquiry","karaoke_event_inquiry","kj_booking_optin","venue_group_optin"].includes(submissionType)){
     const origin=request.headers.get("origin");
     if(origin&&origin!==new URL(request.url).origin)
       return NextResponse.json({error:"Cross-site submissions are not allowed."},{status:403});
@@ -47,6 +47,7 @@ export async function POST(request: Request) {
   const isPartnerInquiry=submissionType==="venue_partner_inquiry";
   const isEventRequest=submissionType==="karaoke_event_inquiry";
   const isKjBookingOptin=submissionType==="kj_booking_optin";
+  const isVenueGroupOptin=submissionType==="venue_group_optin";
   if(isSupportRequest||isClaimRequest||isPartnerInquiry){
     const email=cleanString(payload.submitterContact);
     const notes=cleanString(payload.notes);
@@ -64,7 +65,7 @@ export async function POST(request: Request) {
     if(notes.length<15||notes.length>1000||email.length>200||(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)))
       return NextResponse.json({error:"Enter a short request and a valid optional email address."},{status:400});
   }
-  if(isEventRequest||isKjBookingOptin){
+  if(isEventRequest||isKjBookingOptin||isVenueGroupOptin){
     const email=cleanString(payload.submitterContact);
     const name=cleanString(payload.submitterName);
     const notes=cleanString(payload.notes);
@@ -92,7 +93,7 @@ export async function POST(request: Request) {
          !payload.requirements.every((need:unknown)=>typeof need==="string"&&validNeeds.includes(need))){
         return NextResponse.json({error:"Please check your event rider details."},{status:400});
       }
-    }else{
+    }else if(isKjBookingOptin){
       const validEquipment=["Full karaoke, microphones, speakers and screen","Karaoke system and microphones, venue provides sound","Host only, venue provides equipment","Custom / depends on event"];
       if(cleanString(payload.hostName).length<2||cleanString(payload.hostName).length>120||
          cleanString(payload.neighborhood).length<2||cleanString(payload.neighborhood).length>160||
@@ -100,6 +101,15 @@ export async function POST(request: Request) {
          !validEquipment.includes(cleanString(payload.equipment))||
          cleanString(payload.bookingUrl).length>300||cleanString(payload.phone).length>40)
         return NextResponse.json({error:"Please check your KJ booking details."},{status:400});
+    }else{
+      const validSpace=["Private karaoke rooms","Reserved tables / public karaoke","Private event / full buyout","Multiple options"];
+      const validSizes=["2–10","11–20","21–50","51–100","100+","Varies"];
+      if(cleanString(payload.venueName).length<2||cleanString(payload.venueName).length>140||
+         cleanString(payload.neighborhood).length<2||cleanString(payload.neighborhood).length>160||
+         !validSpace.includes(cleanString(payload.spaceType))||
+         !validSizes.includes(cleanString(payload.groupCapacity))||
+         cleanString(payload.bookingUrl).length>300||cleanString(payload.phone).length>40)
+        return NextResponse.json({error:"Please check your venue group-booking details."},{status:400});
     }
   }
   const usefulValues = [
@@ -152,6 +162,16 @@ export async function POST(request: Request) {
     "Phone: "+cleanString(payload.phone),
     "Notes: "+cleanString(payload.notes),
     "Interest only; do not publish rates or contact details without approval."
+  ].join("\n"):isVenueGroupOptin?[
+    "Venue group-booking interest (not a paid Partner membership)",
+    "Venue: "+cleanString(payload.venueName),
+    "Neighborhood: "+cleanString(payload.neighborhood),
+    "Largest group: "+cleanString(payload.groupCapacity),
+    "Space type: "+cleanString(payload.spaceType),
+    "Reservation site: "+cleanString(payload.bookingUrl),
+    "Phone: "+cleanString(payload.phone),
+    "Notes: "+cleanString(payload.notes),
+    "Opt-in only; any booking or referral terms require separate agreement."
   ].join("\n"):"";
   const enrichedPayload = {
     ...payload,
@@ -194,7 +214,7 @@ export async function POST(request: Request) {
     // Preserve main's notifications for every saved submission, including legacy
     // listings, while adding the new support and claim categories.
     {
-      const label = isEventRequest ? "event planning inquiry" : isKjBookingOptin ? "KJ booking opt-in" : isSupportRequest ? "support: " + (cleanString(payload.supportCategory) === "sign_in" ? "sign-in problem" : "new problem report")
+      const label = isEventRequest ? "event planning inquiry" : isKjBookingOptin ? "KJ booking opt-in" : isVenueGroupOptin ? "venue group-booking opt-in" : isSupportRequest ? "support: " + (cleanString(payload.supportCategory) === "sign_in" ? "sign-in problem" : "new problem report")
         : isPartnerInquiry || submissionType === "founding_venue_inquiry" ? "Partner inquiry"
         : submissionType === "venue_claim_request" ? "venue claim requires verification"
         : isClaimRequest ? "Listing correction"
