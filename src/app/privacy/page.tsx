@@ -26,7 +26,7 @@ const sections = [
   },
   {
     title: "Sharing and visibility",
-    body: "Information published on public venue, event, or host profiles may be seen by anyone. We may share information with service providers and when required by law or needed to protect users and the service. We do not present private account details or individual check-in histories as public profiles simply because someone checks in.",
+    body: "Information published on public venue, event, or host profiles may be seen by anyone. For an event inquiry, we use your request and contact details to respond and may share relevant details with potential providers to arrange an introduction, consistent with the permission you give when submitting. We may share information with service providers and when required by law or needed to protect users and the service. We do not present private account details or individual check-in histories as public profiles simply because someone checks in.",
   },
   {
     title: "Retention and security",

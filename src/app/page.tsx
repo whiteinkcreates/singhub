@@ -132,6 +132,13 @@ export default async function Home({searchParams}:{searchParams:Promise<Record<s
       </div>
      </Link>
     </div>
+    <section className="mx-auto my-10 grid max-w-6xl gap-5 rounded-[2rem] border border-cyan-300/25 bg-slate-950/65 p-6 shadow-xl md:grid-cols-[1fr_auto] md:items-center md:p-9" aria-labelledby="event-planning-heading">
+      <div><p className="text-xs font-black uppercase tracking-[.22em] text-cyan-300">More ways to SingHUB</p>
+        <h2 id="event-planning-heading" className="mt-3 text-2xl font-black text-white md:text-4xl">Getting the whole group together?</h2>
+        <p className="mt-3 max-w-2xl text-slate-300">Holiday parties, birthdays and team nights. Find a karaoke venue, hire a KJ, or ask us about both.</p>
+      </div>
+      <Link href="/plan-karaoke" className="inline-flex justify-center rounded-xl bg-cyan-300 px-6 py-4 text-sm font-black text-slate-950 hover:bg-cyan-200">Plan a karaoke event ↗</Link>
+    </section>
     <div className="landing-outro"><p>Enough talking about karaoke. Go find some.</p><Link href="/discover">Find karaoke tonight <span aria-hidden="true">↗</span></Link></div>
    </div>
   </section>
