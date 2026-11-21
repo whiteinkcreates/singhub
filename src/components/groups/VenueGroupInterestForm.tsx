@@ -40,7 +40,7 @@ export function VenueGroupInterestForm(){
 
   if(sent)return <div className="rounded-3xl border border-cyan-300/35 bg-cyan-300/10 p-8" role="status">
     <h2 className="text-3xl font-black">You&apos;re on our radar.</h2>
-    <p className="mt-3 leading-7 text-slate-200">We&apos;ve received your venue's group-booking interest. We&apos;ll review the details and reach out before making any introductions. This is not a booking, contract or paid membership.</p>
+    <p className="mt-3 leading-7 text-slate-200">We&apos;ve received your venue&apos;s group-booking interest. We&apos;ll review the details and reach out before making any introductions. This is not a booking, contract or paid membership.</p>
     <Link href="/venues/premium" className="mt-5 inline-block font-bold text-cyan-300 underline">Explore additional SingHUB venue tools</Link>
   </div>;
 
