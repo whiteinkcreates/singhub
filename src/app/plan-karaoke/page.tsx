@@ -42,7 +42,7 @@ export default function PlanKaraokePage(){
     </div></section>
     <section className="mx-auto max-w-6xl px-5 py-20"><h2 className="text-3xl font-black sm:text-4xl">Good questions before the encore</h2>
       <div className="mt-8 grid gap-4 md:grid-cols-2">{faqs.map(f=><article key={f.question} className="rounded-2xl border border-white/10 bg-white/[.04] p-6"><h3 className="text-lg font-extrabold">{f.question}</h3><p className="mt-3 text-sm leading-7 text-slate-300">{f.answer}</p></article>)}</div>
-      <p className="mt-10 text-sm text-slate-400">Own a venue interested in hosting groups? <Link href="/venues/premium" className="font-bold text-cyan-300 underline">Explore SingHUB for Venues</Link>. Karaoke host looking for bookings? <Link href="/kj-bookings" className="font-bold text-cyan-300 underline">Join the booking interest list</Link>.</p>
+      <p className="mt-10 text-sm text-slate-400">Own a venue interested in hosting groups? <Link href="/group-venues" className="font-bold text-cyan-300 underline">Join venue group-booking interest</Link>. Karaoke host looking for bookings? <Link href="/kj-bookings" className="font-bold text-cyan-300 underline">Join the booking interest list</Link>.</p>
     </section>
     <JsonLd data={{"@context":"https://schema.org","@type":"FAQPage",mainEntity:faqs.map(f=>({"@type":"Question",name:f.question,acceptedAnswer:{"@type":"Answer",text:f.answer}}))}}/>
   </main>;
