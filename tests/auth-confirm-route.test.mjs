@@ -51,7 +51,7 @@ function fixture(fail = false) {
     readFileSync("src/app/auth/confirm/route.ts", "utf8"),
     { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } },
   ).outputText;
-  vm.runInNewContext(output, { exports, require: requireMock, URL, Response, Headers });
+  vm.runInNewContext(output, { exports, require: requireMock, URL, Response, Headers, process: { env: { NEXT_PUBLIC_SUPABASE_URL: "https://fixture.supabase.co", NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "fixture-public" } } });
   const url = "https://singhub.app/auth/confirm";
   function makeRequest(input, options = {}) {
     const request = new Request(input, options);
