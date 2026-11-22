@@ -12,11 +12,12 @@ test("My SingHUB sign-in presents a single button-only email path",()=>{
  assert.doesNotMatch(dialog,/verifyEmailCode|verifyOtp|setOtp|sentEmail|singhub-email-otp|one-time-code|six-digit|code & sign in/i);
 });
 test("Supabase email template sends one secure confirmation button without any OTP text",()=>{
- assert.match(email,/href="{{ \.ConfirmationURL }}"/);
+ assert.match(email,/href="{{ \.SiteURL }}\/auth\/confirm\?token_hash={{ \.TokenHash }}&amp;type=email&amp;next={{ \.RedirectTo }}"/);
  assert.equal((email.match(/<a\s/g)||[]).length,1,"one CTA link only");
  assert.doesNotMatch(email,/\.Token\s*}}|\bOption 1\b|\bOption 2\b|Paste this code|six-digit/i);
  assert.match(email,/>Sign in to SingHUB<\/a>/);
  assert.match(email,/Subject: Your SingHUB sign-in link/);
+ assert.match(email,/BOTH the Magic Link and Confirm signup templates/);
 });
 
 test("support recovery guidance matches button-only sign-in",()=>{
