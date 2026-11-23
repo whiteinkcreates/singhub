@@ -318,8 +318,12 @@ function attachCanonicalSchedules(
   }
 
   for (const event of events) {
-    // One-off events are shown with their specific dates, not as weekly recurring gigs.
-    if (/^date:20\d{2}-\d{2}-\d{2}$/i.test(event.recurrencePattern || "")) continue;
+    // The shareable weekly grid only includes weekly/daily gigs. Date-specific,
+    // biweekly and monthly appearances must not be shown as every-week shifts.
+    if (
+      !event.recurring &&
+      !/^(daily|daily availability|weekly \(seasonal\))$/i.test(event.recurrencePattern || "")
+    ) continue;
     // Corey confirmed 2026-11-12 that Rodney at Hearth House and Werewolf is one host.
     const matchedHosts = new Set<HostProfile>();
 
