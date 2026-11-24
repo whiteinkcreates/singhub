@@ -114,6 +114,7 @@ export type HostProfile = {
   directoryHeroPlacement?: ResponsiveImagePlacement;
   heroImageUrl?: string;
   heroImageAlt?: string;
+  gallery?: {url:string;alt:string}[];
   heroPosition?: "center" | "top" | "bottom" | "left" | "right";
   profileImagePosition?: "center" | "top" | "bottom" | "left" | "right";
   directoryHeroImageUrl?: string;
