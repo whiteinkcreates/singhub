@@ -1,3 +1,4 @@
+import type {VenueGalleryItem} from './venueEnhancements';
 import {parseImagePlacement,type ResponsiveImagePlacement} from './imagePlacement';
 import type {HeroPosition} from '@/lib/venueEnhancements';
 export const HOST_DIRECTORY_MEDIA_KEY='singhub-hosts-directory';
@@ -13,19 +14,20 @@ export const SITE_RADAR_HERO_KEY='singhub-radar-hero';
 export const SITE_NEIGHBORHOODS_HERO_KEY='singhub-neighborhoods-hero';
 export const SITE_SAN_DIEGO_KARAOKE_HERO_KEY='singhub-san-diego-karaoke-hero';
 export const SITE_HERO_KEYS=[SITE_DISCOVERY_HERO_KEY,SITE_VENUES_HERO_KEY,SITE_ACCOUNT_HERO_KEY,SITE_SINGBOARD_HERO_KEY,SITE_BACKYARD_HERO_KEY,SITE_HOTELS_INDEX_HERO_KEY,SITE_RADAR_HERO_KEY,SITE_NEIGHBORHOODS_HERO_KEY,SITE_SAN_DIEGO_KARAOKE_HERO_KEY,SITE_PARTNER_OFFERS_HERO_KEY] as const;
-export type HostMediaSettings={heroPlacement?:ResponsiveImagePlacement;portraitPlacement?:ResponsiveImagePlacement;portraitUrl?:string;portraitPosition?:HeroPosition;heroUrl?:string;heroAlt?:string;heroPosition?:HeroPosition;imageSource?:string;usageRights?:string;houseRules?:string;rotationPolicy?:string};
+export type HostMediaSettings={heroPlacement?:ResponsiveImagePlacement;portraitPlacement?:ResponsiveImagePlacement;portraitUrl?:string;portraitPosition?:HeroPosition;heroUrl?:string;heroAlt?:string;heroPosition?:HeroPosition;imageSource?:string;usageRights?:string;houseRules?:string;rotationPolicy?:string;memberPronouns?:string;gallery?:VenueGalleryItem[]};
 export function parseHostMediaSettings(input:unknown):HostMediaSettings{
  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('Host media settings are required.');
  const value=input as Record<string,unknown>;const output:HostMediaSettings={};
- for(const key of ['portraitUrl','heroUrl','heroAlt','imageSource','usageRights','houseRules','rotationPolicy'] as const){
+ for(const key of ['portraitUrl','heroUrl','heroAlt','imageSource','usageRights','houseRules','rotationPolicy','memberPronouns'] as const){
   if(value[key]===undefined)continue;
-  const limit=key==='heroAlt'?300:key==='houseRules'||key==='rotationPolicy'?1200:2048;
+  const limit=key==='heroAlt'?300:key==='houseRules'||key==='rotationPolicy'?1200:key==='memberPronouns'?300:2048;
   if(typeof value[key]!=='string'||value[key].length>limit)throw new Error(`Invalid ${key}.`);
   output[key]=value[key].trim();
  }
  for(const key of ['portraitUrl','heroUrl'] as const){if(output[key]){if(output[key]===HOST_BOOTH_IMAGE)continue;const url=new URL(output[key]!);if(!['https:','http:'].includes(url.protocol))throw new Error('Images must use HTTP or HTTPS.');}}
  for(const key of ['portraitPosition','heroPosition'] as const){if(value[key]!==undefined){if(!['center','top','bottom','left','right'].includes(String(value[key])))throw new Error('Invalid image focal point.');output[key]=value[key] as HeroPosition;}}
  if(output.heroUrl&&!output.heroAlt)throw new Error('Add a description for the hero image.');
+ if(value.gallery!==undefined){if(!Array.isArray(value.gallery)||value.gallery.length>15)throw new Error('Host gallery must contain at most 15 images.');output.gallery=value.gallery.map((item:unknown)=>{if(!item||typeof item!=='object'||Array.isArray(item))throw new Error('Invalid host gallery item.');const photo=item as Record<string,unknown>;if(typeof photo.url!=='string'||typeof photo.alt!=='string'||!photo.alt.trim()||photo.alt.length>300)throw new Error('Host gallery requires an image URL and description.');const url=new URL(photo.url);if(!['https:','http:'].includes(url.protocol))throw new Error('Host gallery images must use HTTP or HTTPS.');if(photo.caption!==undefined&&(typeof photo.caption!=='string'||photo.caption.length>400))throw new Error('Host gallery captions must be under 400 characters.');return {url:photo.url,alt:photo.alt.trim(),...(typeof photo.caption==='string'&&photo.caption.trim()?{caption:photo.caption.trim()}:{}),placement:parseImagePlacement(photo.placement)};});}
  output.heroPlacement=parseImagePlacement(value.heroPlacement);output.portraitPlacement=parseImagePlacement(value.portraitPlacement);
  return output;
 }
