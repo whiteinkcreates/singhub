@@ -45,7 +45,7 @@ export async function DELETE(request:Request){
   };
   const assignments=data.flatMap(row=>{
    const media=row.media&&typeof row.media==='object'?row.media as Record<string,unknown>:{};
-   return ['heroUrl','portraitUrl'].filter(field=>matches(media[field])).map(field=>row.slug+' ('+field+')');
+   return [...['heroUrl','portraitUrl'].filter(field=>matches(media[field])).map(field=>row.slug+' ('+field+')'),...(Array.isArray(media.gallery)&&media.gallery.some((photo:unknown)=>photo&&typeof photo==='object'&&matches((photo as Record<string,unknown>).url))?[row.slug+' (gallery)']:[])];
   });
   const canonical=await getHostBySlug(slug);
   if(canonical&&(matches(canonical.profileImageUrl)||matches(canonical.logoUrl)))assignments.push(slug+' (canonical host portrait)');
