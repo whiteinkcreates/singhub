@@ -153,6 +153,8 @@ export type HostProfile = {
   weeklyStatus?: string;
   favoriteKaraokeSpots?: string;
   houseRules?: string;
+  memberPronouns?: string;
+  gallery?: {url:string;alt:string;caption?:string}[];
   rotationPolicy?: string;
   /** Optional guidance directly supplied in the canonical host sheet. */
   singerGuidelines?: string;
