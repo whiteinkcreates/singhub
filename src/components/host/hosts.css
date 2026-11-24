@@ -49,3 +49,13 @@
 .host-link-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 .host-link-grid .host-button{min-width:0}
 @media(min-width:951px) and (max-width:1250px){.host-link-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Public host gallery: reuse approved host media, no invented imagery. */
+.host-gallery-section{margin:24px 0 30px}
+.host-gallery-section h2{font-size:clamp(1.25rem,3vw,1.65rem);letter-spacing:.05em;margin-bottom:15px}
+.host-gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.host-gallery-item{display:block;aspect-ratio:4/3;overflow:hidden;background:#111d28;border:1px solid #264b58;border-radius:12px}
+.host-gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .2s ease}
+.host-gallery-item:hover img,.host-gallery-item:focus-visible img{transform:scale(1.03)}
+.host-gallery-item:focus-visible{outline:2px solid #00c8ef;outline-offset:3px}
+@media(max-width:640px){.host-gallery-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.host-gallery-item{aspect-ratio:1/1}}
