@@ -587,6 +587,7 @@ export async function getHosts({includeMedia=true}: {includeMedia?:boolean} = {}
       rotationPolicy: settings?.rotationPolicy?.trim() || host.rotationPolicy,
       heroImageUrl: settings?.heroUrl || undefined,
       heroImageAlt: settings?.heroAlt,
+      gallery: settings?.gallery || [],
       heroPosition: settings?.heroPosition,
       directoryHeroImageUrl: directory?.heroUrl || undefined,
       directoryHeroPosition: directory?.heroPosition,
