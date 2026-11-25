@@ -41,7 +41,7 @@ vm.runInNewContext(
  ts.transpileModule(occurrenceSource, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText,
  { exports: occurrenceExports, Intl, Date },
 );
-const { eventRunsOnNight, getVenueNightCancellation } = occurrenceExports;
+const { eventRunsOnNight, getVenueNightCancellation, effectiveEventForNight, getEventOverride } = occurrenceExports;
 
 test('Grand Comedy Wednesday is cancelled only for November 25, 2026', () => {
  const event = {
@@ -62,9 +62,9 @@ test('Grand Comedy Wednesday is cancelled only for November 25, 2026', () => {
  const nextWednesday=new Date('2026-12-03T01:00:00Z');
  assert.equal(eventRunsOnNight(event,'Wednesday',cancelledNight),false);
  assert.equal(eventRunsOnNight(event,'Wednesday',rollover),false);
- assert.equal(getVenueNightCancellation('grand-comedy-club',cancelledNight)?.date,'2026-11-25');
+ assert.equal(getVenueNightCancellation([event],cancelledNight)?.nightlifeDate,'2026-11-25');
  assert.equal(eventRunsOnNight(event,'Wednesday',nextWednesday),true);
- assert.equal(getVenueNightCancellation('grand-comedy-club',nextWednesday),undefined);
+ assert.equal(getVenueNightCancellation([event],nextWednesday),undefined);
 });
 
 test('one-night Grand Comedy cancellation cannot suppress unrelated Wednesday karaoke', () => {
@@ -72,4 +72,28 @@ test('one-night Grand Comedy cancellation cannot suppress unrelated Wednesday ka
  assert.equal(eventRunsOnNight(other,'Wednesday',new Date('2026-11-26T01:00:00Z')),true);
  const content=readFileSync(new URL('../src/lib/v2/presentation.ts', import.meta.url),'utf8');
  assert.match(content,/cancellation\?'Not happening tonight'/);
+});
+
+test('future-dated time and host changes only affect their selected night', () => {
+ const base = {eventId:'weekly-test-friday',venueSlug:'test',karaokeDay:'Friday',startTime:'8:00 PM',
+ endTime:'12:00 AM',hostName:'Original KJ',hostId:'original',recurring:true,recurrencePattern:'TRUE',
+ dateOverrides:[
+  {eventId:'weekly-test-friday',venueSlug:'test',nightlifeDate:'2026-11-27',status:'time_changed',startTime:'9:30 PM',endTime:'1:00 AM'},
+  {eventId:'weekly-test-friday',venueSlug:'test',nightlifeDate:'2026-12-04',status:'host_changed',hostName:'Substitute KJ'}
+ ]};
+ const friday=new Date('2026-11-28T05:00:00Z');
+ const nextFriday=new Date('2026-12-05T05:00:00Z');
+ const thirdFriday=new Date('2026-12-12T05:00:00Z');
+ assert.equal(eventRunsOnNight(base,'Friday',friday),true);
+ assert.equal(effectiveEventForNight(base,friday).startTime,'9:30 PM');
+ assert.equal(effectiveEventForNight(base,friday).endTime,'1:00 AM');
+ assert.equal(effectiveEventForNight(base,friday).hostName,'Original KJ');
+ assert.equal(effectiveEventForNight(base,nextFriday).hostName,'Substitute KJ');
+ assert.equal(effectiveEventForNight(base,nextFriday).hostId,undefined);
+ assert.equal(effectiveEventForNight(base,nextFriday).startTime,'8:00 PM');
+ assert.equal(effectiveEventForNight(base,thirdFriday).hostName,'Original KJ');
+ assert.equal(effectiveEventForNight(base,thirdFriday).startTime,'8:00 PM');
+ assert.equal(base.startTime,'8:00 PM');
+ assert.equal(base.hostName,'Original KJ');
+ assert.equal(getEventOverride(base,thirdFriday),undefined);
 });
