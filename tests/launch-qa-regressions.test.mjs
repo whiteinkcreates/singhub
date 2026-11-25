@@ -105,7 +105,9 @@ test('Cheers retains the verified seasonal 8:30 PM to 12:30 AM karaoke schedule 
  for(const event of events){
   assert.equal(event.start_time,'8:30 PM');
   assert.equal(event.end_time,'12:30 AM');
-  assert.match(event.event_notes,/Seasonal shorter-day start time is 8:30 PM/);
-  assert.match(event.source_2,/2026-11-05/);
+  // Preserve the verified schedule and direct attribution, not a brittle note wording.
+  assert.match(event.event_notes,/8:30 PM(?:\s*[–-]\s*|\s+to\s+)12:30 AM/i);
+  assert.equal(event.last_verified,'2026-11-23');
+  assert.match(event.source_2,/Corey/i);
  }
 });
