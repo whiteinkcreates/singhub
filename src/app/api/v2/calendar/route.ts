@@ -26,6 +26,7 @@ export async function GET(request:NextRequest){
   const end=clock(event.endTime);if(end){const endDate=new Date(date);if(end<=time)endDate.setUTCDate(endDate.getUTCDate()+1);lines.push('DTEND;TZID=America/Los_Angeles:'+endDate.toISOString().slice(0,10).replaceAll('-','')+'T'+end);}
   lines.push('RRULE:FREQ='+(ordinal?'MONTHLY;BYDAY='+ordinal+codes[day]:biweekly?'WEEKLY;INTERVAL=2;BYDAY='+codes[day]:'WEEKLY;BYDAY='+codes[day]),'SUMMARY:'+escape('Karaoke at '+venue.venueName),'LOCATION:'+escape(venue.address),'DESCRIPTION:'+escape([scheduleQualification(event),event.hostName,event.eventNotes,'https://singhub.app/venues/'+venue.slug].filter(Boolean).join('\n')),
   'END:VEVENT');
+  const recurringEventEnd = lines.length - 1;
   // An RRULE alone incorrectly republishes a canceled night. Exclude each affected
   // recurring instance, then add a one-off updated instance for host/time changes.
   for (const override of event.dateOverrides || []) {
@@ -33,7 +34,7 @@ export async function GET(request:NextRequest){
     if (Number.isNaN(local.getTime()) ||
         !eventRunsOnNight({...event,dateOverrides:[]},weekdays[local.getUTCDay()],local)) continue;
     const ymd=override.nightlifeDate.replaceAll("-","");
-    lines.splice(lines.length-1,0,"EXDATE;TZID=America/Los_Angeles:"+ymd+"T"+time);
+    lines.splice(recurringEventEnd,0,"EXDATE;TZID=America/Los_Angeles:"+ymd+"T"+time);
     if (override.status==="canceled") continue;
     const changed=effectiveEventForNight(event,local);
     const newStart=clock(changed.startTime);
