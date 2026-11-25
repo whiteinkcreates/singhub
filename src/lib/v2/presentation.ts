@@ -1,4 +1,4 @@
-import { eventRunsOnNight, scheduleQualification } from "@/lib/eventOccurrence";
+import { eventRunsOnNight, getVenueNightCancellation, scheduleQualification } from "@/lib/eventOccurrence";
 import type { VenueListing,KaraokeEventListing } from '@/types';
 import type { VenueEnhancement } from '@/lib/venueEnhancements';
 import { getDistanceInMiles } from '@/utils/distance';
@@ -49,6 +49,7 @@ export function verificationDate(events:KaraokeEventListing[], venue?:VenueListi
 }
 export function makeVenueRow(venue:VenueListing,events:KaraokeEventListing[],weekday:string,enhancement?:VenueEnhancement){
   const today=events.filter(event=>eventRunsOnNight(event,weekday));
+  const cancellation=!today.length?getVenueNightCancellation(venue.slug):undefined;
   const days=[...new Set(events.map(event=>event.karaokeDay))];
   const nightCount=days.length;
   const date=verificationDate(events,venue);
@@ -70,7 +71,7 @@ export function makeVenueRow(venue:VenueListing,events:KaraokeEventListing[],wee
   return {venue,events,tonight:today[0],nightCount,kind,rhythm,tags:tags.slice(0,4),tonightTags,liveBandTonight,photo,photoAlt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName,
     trust:verified?'✓ Verified karaoke':venue.listingStatus==='claimed'?'Updated listing':'Schedule awaiting verification',
     verification:date?(verified?'Verified ':'Updated ')+new Date(date.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}):'Verification date pending',
-    verificationDate:date,tonightTime:today[0]?usable(today[0].startTime)||'Time pending':venue.venueType==='private_room'?'Reserve a room':'No confirmed karaoke tonight',
+    verificationDate:date,tonightTime:today[0]?usable(today[0].startTime)||'Time pending':cancellation?'Not happening tonight':venue.venueType==='private_room'?'Reserve a room':'No confirmed karaoke tonight',
     typicalStart:[...new Set(events.map(event=>usable(event.startTime)).filter(Boolean))].join(' / ')||'Time pending',liveBand,checkInPerkTonight,search};
 }
 export function filterRows(rows:VenueRowData[],query:string,filter:string,mode:'tonight'|'week'|'directory',position?:{latitude:number;longitude:number}|null,startFilter:KaraokeStartFilter='any'){

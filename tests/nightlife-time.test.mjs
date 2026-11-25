@@ -34,3 +34,36 @@ test('rollover follows San Diego through both daylight-saving transitions', () =
     assert.equal(getSanDiegoNightlifeWeekday(new Date(after)), current);
   }
 });
+
+const occurrenceExports = {};
+const occurrenceSource = readFileSync(new URL('../src/lib/eventOccurrence.ts', import.meta.url), 'utf8');
+vm.runInNewContext(
+ ts.transpileModule(occurrenceSource, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText,
+ { exports: occurrenceExports, Intl, Date },
+);
+const { eventRunsOnNight, getVenueNightCancellation } = occurrenceExports;
+
+test('Grand Comedy Wednesday is cancelled only for November 25, 2026', () => {
+ const event = {
+  eventId:'weekly-grand-comedy-club-wednesday',
+  venueSlug:'grand-comedy-club',
+  karaokeDay:'Wednesday',
+  recurring:true,
+  recurrencePattern:'TRUE',
+ };
+ const cancelledNight=new Date('2026-11-26T01:00:00Z');
+ const rollover=new Date('2026-11-26T10:59:00Z');
+ const nextWednesday=new Date('2026-12-03T01:00:00Z');
+ assert.equal(eventRunsOnNight(event,'Wednesday',cancelledNight),false);
+ assert.equal(eventRunsOnNight(event,'Wednesday',rollover),false);
+ assert.equal(getVenueNightCancellation('grand-comedy-club',cancelledNight)?.date,'2026-11-25');
+ assert.equal(eventRunsOnNight(event,'Wednesday',nextWednesday),true);
+ assert.equal(getVenueNightCancellation('grand-comedy-club',nextWednesday),undefined);
+});
+
+test('one-night Grand Comedy cancellation cannot suppress unrelated Wednesday karaoke', () => {
+ const other={eventId:'weekly-somewhere-wednesday',venueSlug:'somewhere',karaokeDay:'Wednesday',recurring:true,recurrencePattern:'TRUE'};
+ assert.equal(eventRunsOnNight(other,'Wednesday',new Date('2026-11-26T01:00:00Z')),true);
+ const content=readFileSync(new URL('../src/lib/v2/presentation.ts', import.meta.url),'utf8');
+ assert.match(content,/cancellation\?'Not happening tonight'/);
+});
