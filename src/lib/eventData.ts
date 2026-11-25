@@ -1,4 +1,5 @@
 import { eventRunsOnNight } from "@/lib/eventOccurrence";
+import { getPublishedKaraokeOverrides } from "@/lib/karaokeOverrides.server";
 import { applySeasonalKaraokeHours } from "@/lib/seasonalKaraokeHours";
 import fs from "node:fs";
 import path from "node:path";
@@ -115,11 +116,17 @@ export async function getKaraokeEventData(): Promise<{
     Number.isFinite(maximumAgeDays) &&
     snapshotAge > maximumAgeDays * 24 * 60 * 60 * 1000;
 
+  const overrides = await getPublishedKaraokeOverrides();
+  const byId = new Map<string, typeof overrides>();
+  for (const override of overrides) {
+    byId.set(override.eventId, [...(byId.get(override.eventId) || []), override]);
+  }
   const events = rows
     .filter((row) => !getOptionalValue(row.archive_reason))
     .filter((row) => !getOptionalValue(row.duplicate_of))
     .map(rowToKaraokeEventListing)
     .map(event => applySeasonalKaraokeHours(event))
+    .map(event => ({ ...event, dateOverrides: (byId.get(event.eventId) || []).filter(override => override.venueSlug === event.venueSlug) }))
     .filter((event) => event.venueSlug && event.karaokeDay)
     .filter((event) => event.activeStatus === "active")
     .filter((event) => !event.generated);
