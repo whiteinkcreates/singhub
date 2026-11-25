@@ -43,6 +43,9 @@ export default function KaraokeChangeForm({events,edit}:{events:EventOption[];ed
   const [start,setStart]=useState(timeForInput(edit?.start_time)||timeForInput(event?.startTime));
   const [end,setEnd]=useState(timeForInput(edit?.end_time)||timeForInput(event?.endTime));
   const [host,setHost]=useState(edit?.host_name||"");
+  const weekdays=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const selectedWeekday=date&&/^\\d{4}-\\d{2}-\\d{2}$/.test(date)?weekdays[new Date(date+"T12:00:00Z").getUTCDay()]:"";
+  const dayMatches=Boolean(event?.day.toLowerCase().includes(selectedWeekday.toLowerCase()));
   const inputStyle="mt-1 w-full rounded-xl border border-white/15 bg-slate-900 px-4 py-3 text-white focus:border-cyan-300";
   const handleVenue=(value:string)=>{
     setVenue(value);
@@ -68,17 +71,17 @@ export default function KaraokeChangeForm({events,edit}:{events:EventOption[];ed
     </div>
     <div className="grid gap-4 md:grid-cols-2">
       <label className="text-sm font-bold">Venue
-        <select className={inputStyle} name="venue_slug" required value={venue} onChange={e=>handleVenue(e.target.value)}>
+        <select className={inputStyle} name={edit?undefined:"venue_slug"} disabled={Boolean(edit)} required value={venue} onChange={e=>handleVenue(e.target.value)}>
           {venues.map(([slug,name])=><option key={slug} value={slug}>{name}</option>)}
         </select>
       </label>
       <label className="text-sm font-bold">Recurring karaoke event
-        <select className={inputStyle} name="event_id" required value={event?.eventId||""} onChange={e=>handleEvent(e.target.value)}>
+        <select className={inputStyle} name={edit?undefined:"event_id"} disabled={Boolean(edit)} required value={event?.eventId||""} onChange={e=>handleEvent(e.target.value)}>
           {venueEvents.map(e=><option key={e.eventId} value={e.eventId}>{e.day} · {e.startTime} · {e.hostName||"Host TBD"}</option>)}
         </select>
       </label>
       <label className="text-sm font-bold">Date to change
-        <input className={inputStyle} type="date" name="nightlife_date" value={date} onChange={e=>setDate(e.target.value)} required />
+        <input className={inputStyle} type="date" name={edit?undefined:"nightlife_date"} disabled={Boolean(edit)} value={date} onChange={e=>setDate(e.target.value)} required />
       </label>
       <label className="text-sm font-bold">What changed?
         <select className={inputStyle} name="status" value={status} onChange={e=>setStatus(e.target.value)}>
@@ -88,6 +91,8 @@ export default function KaraokeChangeForm({events,edit}:{events:EventOption[];ed
         </select>
       </label>
     </div>
+    {edit&&<><input type="hidden" name="venue_slug" value={venue}/><input type="hidden" name="event_id" value={event?.eventId||""}/><input type="hidden" name="nightlife_date" value={date}/></>}
+    {!dayMatches&&<p role="alert" className="rounded-xl border border-amber-400/40 p-3 text-sm text-amber-200">The selected date is not on this event's usual {event?.day} rotation. Choose the correct weekday.</p>}
     {event&&<p className="rounded-xl border border-white/10 p-3 text-sm text-slate-300">Regular schedule: <strong className="text-white">{event.day}, {event.startTime} to {event.endTime}, {event.hostName||"host to be confirmed"}</strong></p>}
     {status==="time_changed"&&<div className="grid gap-4 md:grid-cols-2">
       <label className="text-sm font-bold">New start time
@@ -106,7 +111,7 @@ export default function KaraokeChangeForm({events,edit}:{events:EventOption[];ed
     </label>
     <div className="flex flex-wrap items-center justify-between gap-4">
       <p className="text-sm text-slate-300">Affects only <strong className="text-white">{date||"the chosen date"}</strong>. Changes can be edited or undone later.</p>
-      <button type="submit" className="rounded-xl bg-cyan-300 px-6 py-3 font-black text-slate-950 hover:bg-cyan-200">
+      <button type="submit" disabled={!dayMatches} className="rounded-xl bg-cyan-300 px-6 py-3 font-black text-slate-950 hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-40">
         {edit?"Update this occurrence":"Save dated change"}
       </button>
     </div>
