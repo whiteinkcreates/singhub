@@ -1,7 +1,7 @@
 import { getKaraokeEventsByVenueSlug } from '@/lib/eventData';
 import { getVenueListingBySlug } from '@/lib/venueData';
 import { isPublicVenue } from '@/lib/publicVenueFilters';
-import { biweeklyAnchor, eventRunsOnNight, monthlyOrdinal, scheduleQualification } from '@/lib/eventOccurrence';
+import { biweeklyAnchor, effectiveEventForNight, eventRunsOnNight, monthlyOrdinal, scheduleQualification } from '@/lib/eventOccurrence';
 import { NextRequest } from 'next/server';
 const weekdays=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const codes=['SU','MO','TU','WE','TH','FR','SA'];
@@ -24,7 +24,36 @@ export async function GET(request:NextRequest){
   const stamp=date.toISOString().slice(0,10).replaceAll('-','');
   lines.push('BEGIN:VEVENT','UID:'+escape(event.eventId)+'@singhub.app','DTSTAMP:'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d{3}/,''),'DTSTART;TZID=America/Los_Angeles:'+stamp+'T'+time);
   const end=clock(event.endTime);if(end){const endDate=new Date(date);if(end<=time)endDate.setUTCDate(endDate.getUTCDate()+1);lines.push('DTEND;TZID=America/Los_Angeles:'+endDate.toISOString().slice(0,10).replaceAll('-','')+'T'+end);}
-  lines.push('RRULE:FREQ='+(ordinal?'MONTHLY;BYDAY='+ordinal+codes[day]:biweekly?'WEEKLY;INTERVAL=2;BYDAY='+codes[day]:'WEEKLY;BYDAY='+codes[day]),'SUMMARY:'+escape('Karaoke at '+venue.venueName),'LOCATION:'+escape(venue.address),'DESCRIPTION:'+escape([scheduleQualification(event),event.hostName,event.eventNotes,'https://singhub.app/venues/'+venue.slug].filter(Boolean).join('\n')),'END:VEVENT');
+  lines.push('RRULE:FREQ='+(ordinal?'MONTHLY;BYDAY='+ordinal+codes[day]:biweekly?'WEEKLY;INTERVAL=2;BYDAY='+codes[day]:'WEEKLY;BYDAY='+codes[day]),'SUMMARY:'+escape('Karaoke at '+venue.venueName),'LOCATION:'+escape(venue.address),'DESCRIPTION:'+escape([scheduleQualification(event),event.hostName,event.eventNotes,'https://singhub.app/venues/'+venue.slug].filter(Boolean).join('\n')),
+  'END:VEVENT');
+  const recurringEventEnd = lines.length - 1;
+  // An RRULE alone incorrectly republishes a canceled night. Exclude each affected
+  // recurring instance, then add a one-off updated instance for host/time changes.
+  for (const override of event.dateOverrides || []) {
+    const local=new Date(override.nightlifeDate+"T20:00:00Z");
+    if (Number.isNaN(local.getTime()) ||
+        !eventRunsOnNight({...event,dateOverrides:[]},weekdays[local.getUTCDay()],local)) continue;
+    const ymd=override.nightlifeDate.replaceAll("-","");
+    lines.splice(recurringEventEnd,0,"EXDATE;TZID=America/Los_Angeles:"+ymd+"T"+time);
+    if (override.status==="canceled") continue;
+    const changed=effectiveEventForNight(event,local);
+    const newStart=clock(changed.startTime);
+    if (!newStart) continue;
+    const newEnd=clock(changed.endTime);
+    lines.push("BEGIN:VEVENT","UID:"+escape(event.eventId+"-"+override.nightlifeDate)+"@singhub.app",
+      "DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,""),
+      "DTSTART;TZID=America/Los_Angeles:"+ymd+"T"+newStart);
+    if (newEnd) {
+      const endDate=new Date(local);
+      if (newEnd<=newStart) endDate.setUTCDate(endDate.getUTCDate()+1);
+      lines.push("DTEND;TZID=America/Los_Angeles:"+endDate.toISOString().slice(0,10).replaceAll("-","")+"T"+newEnd);
+    }
+    lines.push("SUMMARY:"+escape("Karaoke at "+venue.venueName),
+      "LOCATION:"+escape(venue.address),
+      "DESCRIPTION:"+escape([override.status==="time_changed"?"One-night time change":"One-night host change",
+        changed.hostName,"https://singhub.app/venues/"+venue.slug].filter(Boolean).join("\n")),
+      "END:VEVENT");
+  }
  }
  if(!count)return new Response('No confirmed calendar event',{status:404});lines.push('END:VCALENDAR');
  return new Response(lines.join('\r\n'),{headers:{'Content-Type':'text/calendar; charset=utf-8','Content-Disposition':'attachment; filename="'+venue.slug.replace(/[^a-z0-9-]/gi,'')+'.ics"'}});

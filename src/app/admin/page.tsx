@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 const tools = [
+  { href: "/admin/karaoke-changes", eyebrow: "Schedule Control", title: "Tonight & Future Changes", description: "Cancel one karaoke date, change its time or KJ, and undo the override without touching the weekly rotation." },
   { href: "/admin/perks", eyebrow: "Partner Performance", title: "Perks & Redemptions", description: "Compare check-ins, unlocked perks, one-time presentations, and staff-confirmed redemptions across venues. See active offers even before activity begins." },
   { href: "/admin/monthlymic", eyebrow: "Community Events", title: "MonthlyMic RSVPs", description: "View November 18 registrations, group sizes, JustDuet interest, and attendee details." },
   { href: "/admin/main-heroes", eyebrow: "Site Appearance", title: "Main Page Heroes", description: "Upload and replace Discover, Venues, My SingHUB, and SingBOARD main hero images without touching host profile media." },

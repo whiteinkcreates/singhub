@@ -59,7 +59,7 @@ return <div className="v2-basic" data-responsive-basic="" ref={root}>
 {isEnhanced&&(enhancement?.tagline||enhancement?.about)?<section className="section"><div className="section-heading"><h2>Why here</h2></div>{enhancement?.tagline?<strong className="partner-editorial-tagline">{enhancement.tagline}</strong>:null}{enhancement?.about?<p className="partner-editorial-about">{enhancement.about}</p>:null}</section>:null}
 <section className="section">
 <div className="card tonight-card">
-<div className="tonight-label"><span className="live-dot"></span>{venue.venueType==='private_room'?' PRIVATE ROOMS':row.tonight?' TONIGHT':' KARAOKE SCHEDULE'}</div>
+<div className="tonight-label"><span className="live-dot"></span>{venue.venueType==='private_room'?' PRIVATE ROOMS':row.tonightChange?' '+row.tonightChange:row.tonightCancellation?' NOT TONIGHT':row.tonight?' TONIGHT':' KARAOKE SCHEDULE'}</div>
 <div className="event-row"><div><strong>{venue.venueType==='private_room'?'Reserve a room':'Karaoke'}</strong><div className="host">{usable(row.tonight?.hostName) ? 'Hosted by '+row.tonight?.hostName : row.tonight ? 'Host details pending' : venue.venueType==='private_room'?'Contact the venue for room availability.':'No confirmed karaoke tonight'}</div></div><time className="event-time">{row.tonight ? publicEventTimeLabel(row.tonight) : row.tonightTime}</time></div>
 <button className="primary-action singhere-brand-action" aria-label={venue.venueType==='private_room'?'SingHERE private rooms':row.tonight?'SingHERE tonight':'SingHERE signup information'} data-toast="SingHERE flow would open here"><SingHereMark alt="" className="singhere-wordmark" /></button>
 </div>

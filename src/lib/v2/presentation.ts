@@ -1,4 +1,4 @@
-import { eventRunsOnNight, getVenueNightCancellation, scheduleQualification } from "@/lib/eventOccurrence";
+import { eventRunsOnNight, effectiveEventForNight, getEventOverride, getVenueNightCancellation, scheduleQualification } from "@/lib/eventOccurrence";
 import type { VenueListing,KaraokeEventListing } from '@/types';
 import type { VenueEnhancement } from '@/lib/venueEnhancements';
 import { getDistanceInMiles } from '@/utils/distance';
@@ -13,9 +13,9 @@ export type HotelRowData = {
 export function usable(value?:string){return value && !/^(tbd|unknown|-|n\/a)$/i.test(value.trim())?value.trim():'';}
 export function compactTime(value?:string){return usable(value).replace(/(\d{1,2}):00(?=\s*[AP]M)/gi,'$1');}
 /** Honor host-advertised flexible hours without breaking structured event-time filtering. */
-export function publicEventTimeLabel(event:Pick<KaraokeEventListing,'startTime'|'endTime'|'eventNotes'>){
+export function publicEventTimeLabel(event:Pick<KaraokeEventListing,'startTime'|'endTime'|'eventNotes'|'activeOverrideStatus'>){
   const advertised=event.eventNotes?.match(/Official advertised hours:\s*([^;\n.]+)/i)?.[1]?.trim();
-  return advertised||[compactTime(event.startTime),compactTime(event.endTime)].filter(Boolean).join(" - ")||"Time pending";
+  return (event.activeOverrideStatus==="time_changed"?undefined:advertised)||[compactTime(event.startTime),compactTime(event.endTime)].filter(Boolean).join(" - ")||"Time pending";
 }
 /** Parse a confirmed karaoke start time as San Diego-local minutes after midnight. */
 export function karaokeStartMinutes(value:string|undefined):number|null {
@@ -48,8 +48,10 @@ export function verificationDate(events:KaraokeEventListing[], venue?:VenueListi
   return dates.sort().at(-1);
 }
 export function makeVenueRow(venue:VenueListing,events:KaraokeEventListing[],weekday:string,enhancement?:VenueEnhancement){
-  const today=events.filter(event=>eventRunsOnNight(event,weekday));
-  const cancellation=!today.length?getVenueNightCancellation(venue.slug):undefined;
+  const tonightSource=events.filter(event=>eventRunsOnNight(event,weekday));
+  const today=tonightSource.map(event=>effectiveEventForNight(event));
+  const tonightChange=tonightSource[0]?getEventOverride(tonightSource[0]):undefined;
+  const cancellation=!today.length?getVenueNightCancellation(events):undefined;
   const days=[...new Set(events.map(event=>event.karaokeDay))];
   const nightCount=days.length;
   const date=verificationDate(events,venue);
@@ -71,7 +73,10 @@ export function makeVenueRow(venue:VenueListing,events:KaraokeEventListing[],wee
   return {venue,events,tonight:today[0],nightCount,kind,rhythm,tags:tags.slice(0,4),tonightTags,liveBandTonight,photo,photoAlt:enhancement?.heroImageAlt||venue.bannerImageAlt||venue.venueName,
     trust:verified?'✓ Verified karaoke':venue.listingStatus==='claimed'?'Updated listing':'Schedule awaiting verification',
     verification:date?(verified?'Verified ':'Updated ')+new Date(date.slice(0,10)+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'}):'Verification date pending',
-    verificationDate:date,tonightTime:today[0]?usable(today[0].startTime)||'Time pending':cancellation?'Not happening tonight':venue.venueType==='private_room'?'Reserve a room':'No confirmed karaoke tonight',
+    verificationDate:date,
+    tonightChange:tonightChange?.status==="time_changed"?"TIME CHANGED":tonightChange?.status==="host_changed"?"HOST CHANGED":undefined,
+    tonightCancellation:Boolean(cancellation),
+    tonightTime:today[0]?usable(today[0].startTime)||'Time pending':cancellation?'Not happening tonight':venue.venueType==='private_room'?'Reserve a room':'No confirmed karaoke tonight',
     typicalStart:[...new Set(events.map(event=>usable(event.startTime)).filter(Boolean))].join(' / ')||'Time pending',liveBand,checkInPerkTonight,search};
 }
 export function filterRows(rows:VenueRowData[],query:string,filter:string,mode:'tonight'|'week'|'directory',position?:{latitude:number;longitude:number}|null,startFilter:KaraokeStartFilter='any'){

@@ -7,10 +7,12 @@ import ts from "typescript";
 const source=readFileSync("src/lib/venueCalendarOccurrences.ts","utf8");
 const js=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
 const exports={};
+const occurrenceExports={};
+vm.runInNewContext(ts.transpileModule(readFileSync("src/lib/eventOccurrence.ts","utf8"),{
+  compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}
+}).outputText,{exports:occurrenceExports,Intl,Date});
 const stubs={
-  "@/lib/eventOccurrence":{
-    eventRunsOnNight:(event,weekday)=>event.karaokeDay===weekday && event.recurring,
-  },
+  "@/lib/eventOccurrence":occurrenceExports,
   "@/lib/v2/presentation":{
     usable:value=>typeof value==="string"?value.trim():"",
     publicEventTimeLabel:event=>[event.startTime,event.endTime].filter(Boolean).join(" - ") || "Time pending",
@@ -90,4 +92,18 @@ test("unverified or inactive canonical karaoke never creates a calendar event",(
     karaokeEvents:[{...karaoke[0],activeStatus:"inactive"},karaoke[1]],
   });
   assert.equal(items.filter(x=>x.category==="karaoke").length,1);
+});
+
+test("date-specific canceled, changed-time and changed-host entries stay scoped to individual weeks",()=>{
+  const event={eventId:"wed",venueSlug:"test",karaokeDay:"Wednesday",startTime:"8 PM",endTime:"1 AM",hostName:"Regular",activeStatus:"active",recurring:true,
+    dateOverrides:[
+      {eventId:"wed",venueSlug:"test",nightlifeDate:"2026-11-04",status:"canceled"},
+      {eventId:"wed",venueSlug:"test",nightlifeDate:"2026-11-11",status:"time_changed",startTime:"9:30 PM",endTime:"12:00 AM"},
+      {eventId:"wed",venueSlug:"test",nightlifeDate:"2026-11-18",status:"host_changed",hostName:"Guest KJ"}
+    ]};
+  const items=list("2026-11-01","2026-11-21",{datedEvents:[],weeklyProgramming:[],karaokeEvents:[event]});
+  assert.equal(items.find(x=>x.date==="2026-11-04")?.title,"Karaoke canceled");
+  assert.equal(items.find(x=>x.date==="2026-11-11")?.time,"9:30 PM - 12:00 AM");
+  assert.equal(items.find(x=>x.date==="2026-11-18")?.title,"Karaoke with Guest KJ");
+  assert.equal(items.find(x=>x.date==="2026-11-18")?.time,"8 PM - 1 AM");
 });

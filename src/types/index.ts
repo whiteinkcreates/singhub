@@ -57,7 +57,22 @@ export type VenueListing = {
   checkInPerk?: { title: string; days?: string[] };
 };
 
+export type KaraokeEventOverride = {
+  eventId: string;
+  venueSlug: string;
+  nightlifeDate: string;
+  status: "canceled" | "time_changed" | "host_changed";
+  startTime?: string;
+  endTime?: string;
+  hostId?: string;
+  hostName?: string;
+  note?: string;
+};
+
 export type KaraokeEventListing = {
+  dateOverrides?: KaraokeEventOverride[];
+  activeOverrideStatus?: KaraokeEventOverride["status"];
+
   eventId: string;
   venueId: string;
   venueName: string;

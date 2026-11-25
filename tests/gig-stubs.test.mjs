@@ -9,11 +9,15 @@ function nightlifeWeekday(date=new Date()){
  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];const weekday=parts.find(p=>p.type==='weekday').value;const hour=Number(parts.find(p=>p.type==='hour').value);
  if(hour>=4)return weekday;return days[(days.indexOf(weekday)+6)%7];
 }
+const occurrenceExports={};
+vm.runInNewContext(ts.transpileModule(readFileSync('src/lib/eventOccurrence.ts','utf8'),{
+ compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}
+}).outputText,{exports:occurrenceExports,Intl,Date});
 const helpers={};
 vm.runInNewContext(ts.transpileModule(readFileSync('src/lib/tourStops.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText,{
  exports:helpers,Intl,Date,Map,Math,Number,
  require:id=>({
-  '@/lib/eventOccurrence':{eventRunsOnNight:(event,weekday)=>event.karaokeDay===weekday},
+  '@/lib/eventOccurrence':occurrenceExports,
   '@/lib/nightlifeTime':{getSanDiegoNightlifeWeekday:nightlifeWeekday},
  }[id]),
 });

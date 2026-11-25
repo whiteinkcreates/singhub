@@ -1,6 +1,6 @@
 import type {KaraokeEventListing} from '@/types';
 import type {SingHereConfig} from '@/lib/venueEnhancements';
-import {eventRunsOnNight} from '@/lib/eventOccurrence';
+import {eventRunsOnNight,effectiveEventForNight} from '@/lib/eventOccurrence';
 
 /**
  * Verified host-night signup destinations.
@@ -22,7 +22,7 @@ export function singHereForHostNight(
   base:SingHereConfig|undefined,
   hosts:readonly {hostId:string;hostName:string;publicDisplayName:string;tipLink?:string;signupLink?:string}[]=[]
 ):SingHereConfig|undefined {
-  const active=events.filter(event=>eventRunsOnNight(event,weekday)&&event.activeStatus==='active');
+  const active=events.filter(event=>eventRunsOnNight(event,weekday)&&event.activeStatus==='active').map(event=>effectiveEventForNight(event));
   // Ambiguous rotations should never silently show a signup for the wrong host.
   if(active.length!==1)return {...base,kjName:undefined,kjTips:undefined};
   const host=active[0].hostName?.trim();
@@ -33,13 +33,17 @@ export function singHereForHostNight(
   const normalized=(value:string)=>value.trim().toLowerCase();
   const byName=hosts.filter(h=>normalized(h.hostName)===key||normalized(h.publicDisplayName)===key);
   const matched=byId.length===1?byId[0]:byId.length===0&&byName.length===1?byName[0]:null;
+  // A substitute KJ must never inherit the regular host's signup or tip URL.
+  const changedHost=active[0].activeOverrideStatus==="host_changed";
+  const safeBase=changedHost?{...base,mode:"instructions" as const,url:undefined,linkLabel:undefined,
+    kjName:undefined,kjTips:undefined,instructions:"Ask the on-site KJ how to join tonight's rotation."}:base;
   const signupLink=matched?.signupLink?.trim();
   const signup=verifiedOverride||(signupLink&&/^https:\/\//i.test(signupLink)?{url:signupLink,label:'Sign up with '+matched!.publicDisplayName}:undefined);
   const link=matched?.tipLink?.trim();
   const kjTips=link&&/^https:\/\//i.test(link)?[{label:'Tip '+matched!.publicDisplayName,url:link}]:undefined;
-  if(!signup)return {...base,kjName:matched?.publicDisplayName,kjTips};
+  if(!signup)return {...safeBase,kjName:matched?.publicDisplayName,kjTips};
   return {
-    ...base,
+    ...safeBase,
     kjName:matched?.publicDisplayName,
     kjTips,
     mode:'external',

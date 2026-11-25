@@ -1,5 +1,5 @@
 import type {KaraokeEventListing} from '@/types';
-import {eventRunsOnNight} from '@/lib/eventOccurrence';
+import {eventRunsOnNight,effectiveEventForNight} from '@/lib/eventOccurrence';
 import {getSanDiegoNightlifeWeekday} from '@/lib/nightlifeTime';
 
 export type TourStopVisit={venue_id:string;venue_slug:string;venue_name:string;neighborhood:string|null;nightlife_date:string;created_at:string;method:'self_reported'|'location_matched'};
@@ -53,7 +53,7 @@ export type TourStopEligibility={phase:'early'|'open'|'closed';open:boolean;week
 
 export function tourStopEligibility(events:KaraokeEventListing[],now=new Date()):TourStopEligibility{
  const weekday=getSanDiegoNightlifeWeekday(now);
- const tonight=events.filter(event=>eventRunsOnNight(event,weekday,now));
+ const tonight=events.filter(event=>eventRunsOnNight(event,weekday,now)).map(event=>effectiveEventForNight(event,now));
  if(!tonight.length)return {phase:'closed',open:false,weekday,startTime:null,reason:'TourStops are available only on scheduled karaoke nights.'};
  const starts=tonight.map(event=>({label:event.startTime,minutes:parseClock(event.startTime)})).filter((item):item is {label:string;minutes:number}=>item.minutes!==null).map(item=>({...item,minutes:item.minutes<240?item.minutes+1440:item.minutes}));
  if(!starts.length)return {phase:'closed',open:false,weekday,startTime:null,reason:'Karaoke is scheduled tonight, but the start time is still being confirmed.'};

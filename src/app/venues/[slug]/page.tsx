@@ -6,6 +6,7 @@ import { getActiveVenueSingBoardFlyers } from "@/lib/singboard/repository";
 import { VenueProfile } from "@/components/venue/VenueProfile";
 import { getKaraokeEventsByVenueSlug } from "@/lib/eventData";
 import {applyKjSubs} from "@/lib/kjSubstitutions";
+import {effectiveEventForNight} from "@/lib/eventOccurrence";
 import { getPublicVenues, isPublicVenue } from "@/lib/publicVenueFilters";
 import { getSingersSaySummary } from "@/lib/singersSay.server";
 import {
@@ -83,7 +84,7 @@ export default async function VenuePage({ params }: VenuePageProps) {
   ]);
 
   const currentEvents=applyKjSubs(events,venue.slug);
-  const kjHosts = await getVenueHostLinks(currentEvents);
+  const kjHosts = await getVenueHostLinks([...currentEvents, ...currentEvents.map(event=>effectiveEventForNight(event))]);
   return (
     <>
       <JsonLd
