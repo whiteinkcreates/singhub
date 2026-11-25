@@ -13,13 +13,25 @@ export const SITE_RADAR_HERO_KEY='singhub-radar-hero';
 export const SITE_NEIGHBORHOODS_HERO_KEY='singhub-neighborhoods-hero';
 export const SITE_SAN_DIEGO_KARAOKE_HERO_KEY='singhub-san-diego-karaoke-hero';
 export const SITE_HERO_KEYS=[SITE_DISCOVERY_HERO_KEY,SITE_VENUES_HERO_KEY,SITE_ACCOUNT_HERO_KEY,SITE_SINGBOARD_HERO_KEY,SITE_BACKYARD_HERO_KEY,SITE_HOTELS_INDEX_HERO_KEY,SITE_RADAR_HERO_KEY,SITE_NEIGHBORHOODS_HERO_KEY,SITE_SAN_DIEGO_KARAOKE_HERO_KEY,SITE_PARTNER_OFFERS_HERO_KEY] as const;
-export type HostMediaSettings={heroPlacement?:ResponsiveImagePlacement;portraitPlacement?:ResponsiveImagePlacement;portraitUrl?:string;portraitPosition?:HeroPosition;heroUrl?:string;heroAlt?:string;heroPosition?:HeroPosition;imageSource?:string;usageRights?:string;houseRules?:string;rotationPolicy?:string};
+export type HostGalleryItem={url:string;alt:string;caption?:string;placement?:ResponsiveImagePlacement};
+export type HostMediaSettings={gallery?:HostGalleryItem[];memberPronouns?:string;heroPlacement?:ResponsiveImagePlacement;portraitPlacement?:ResponsiveImagePlacement;portraitUrl?:string;portraitPosition?:HeroPosition;heroUrl?:string;heroAlt?:string;heroPosition?:HeroPosition;imageSource?:string;usageRights?:string;houseRules?:string;rotationPolicy?:string};
 export function parseHostMediaSettings(input:unknown):HostMediaSettings{
  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('Host media settings are required.');
  const value=input as Record<string,unknown>;const output:HostMediaSettings={};
- for(const key of ['portraitUrl','heroUrl','heroAlt','imageSource','usageRights','houseRules','rotationPolicy'] as const){
+ if(value.gallery!==undefined){
+  if(!Array.isArray(value.gallery)||value.gallery.length>15)throw new Error('Host gallery must contain at most 15 images.');
+  output.gallery=value.gallery.map((item:unknown)=>{
+   if(!item||typeof item!=='object'||Array.isArray(item))throw new Error('Invalid gallery item.');
+   const entry=item as Record<string,unknown>;
+   if(typeof entry.url!=='string'||typeof entry.alt!=='string'||entry.url.length>2048||entry.alt.length>300)throw new Error('Invalid gallery image details.');
+   const url=new URL(entry.url);if(!['http:','https:'].includes(url.protocol))throw new Error('Gallery images must use HTTP or HTTPS.');
+   if(entry.caption!==undefined&&(typeof entry.caption!=='string'||entry.caption.length>400))throw new Error('Gallery caption must be under 400 characters.');
+   return {url:entry.url.trim(),alt:entry.alt.trim()||'Karaoke host photo',...(typeof entry.caption==='string'&&entry.caption.trim()?{caption:entry.caption.trim()}:{}),placement:parseImagePlacement(entry.placement)};
+  });
+ }
+ for(const key of ['portraitUrl','heroUrl','heroAlt','imageSource','usageRights','houseRules','rotationPolicy','memberPronouns'] as const){
   if(value[key]===undefined)continue;
-  const limit=key==='heroAlt'?300:key==='houseRules'||key==='rotationPolicy'?1200:2048;
+  const limit=key==='heroAlt'?300:key==='houseRules'||key==='rotationPolicy'?1200:key==='memberPronouns'?300:2048;
   if(typeof value[key]!=='string'||value[key].length>limit)throw new Error(`Invalid ${key}.`);
   output[key]=value[key].trim();
  }

@@ -318,8 +318,7 @@ function attachCanonicalSchedules(
   }
 
   for (const event of events) {
-    // The shareable weekly grid only includes weekly/daily gigs. Date-specific,
-    // biweekly and monthly appearances must not be shown as every-week shifts.
+    // A weekly/shareable schedule must not include one-offs, alternating weeks or monthly gigs.
     if (
       !event.recurring &&
       !/^(daily|daily availability|weekly \(seasonal\))$/i.test(event.recurrencePattern || "")
@@ -588,9 +587,11 @@ export async function getHosts({includeMedia=true}: {includeMedia?:boolean} = {}
       heroPlacement: settings?.heroPlacement,
       directoryHeroPlacement: directory?.heroPlacement,
       houseRules: settings?.houseRules,
+      memberPronouns: settings?.memberPronouns,
       rotationPolicy: settings?.rotationPolicy?.trim() || host.rotationPolicy,
       heroImageUrl: settings?.heroUrl || undefined,
       heroImageAlt: settings?.heroAlt,
+      gallery: settings?.gallery || [],
       heroPosition: settings?.heroPosition,
       directoryHeroImageUrl: directory?.heroUrl || undefined,
       directoryHeroPosition: directory?.heroPosition,

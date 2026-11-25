@@ -54,11 +54,11 @@ Exported events: 235.
 - row 45: venue-0034 Paradise Lounge
 - row 46: venue-0028 Parkys Saloon
 - row 50: venue-0023 Rock Out Karaoke
-- row 54: venue-0064 Spot KTV & Restaurant
-- row 56: venue-0016 The Cordova Bar
-- row 64: venue-0024 Tremont St. Bar & Grill
-- row 78: venue-0093 Rosie O'Grady's
-- row 996: venue-0121 Vogue Tavern
+- row 53: venue-0064 Spot KTV & Restaurant
+- row 55: venue-0016 The Cordova Bar
+- row 63: venue-0024 Tremont St. Bar & Grill
+- row 77: venue-0093 Rosie O'Grady's
+- row 972: venue-0121 Vogue Tavern
 ## Venues With Invalid App Visibility
 - None
 ## Venues Skipped As Not Public-Usable
@@ -71,24 +71,24 @@ Exported events: 235.
 - event row 67: event-good-news-1st-3rd-wed
 - event row 69: event-cordova-summer-pride-2026-07-14
 - event row 76: event-double-deuce-2026-07-17-navy-nick-cover
-- event row 121: event-mcguffies-karaoke-2026-09-02
-- event row 122: event-mcguffies-karaoke-2026-09-23
-- event row 123: event-mcguffies-karaoke-2026-09-30
-- event row 124: weekly-grand-comedy-club-monday
-- event row 152: weekly-richs-san-diego-thursday
-- event row 153: event-n-city-sports-lounge-thursday-karaoke-party
-- event row 154: weekly-docks-cocktail-lounge-friday
-- event row 155: weekly-docks-cocktail-lounge-saturday
-- event row 162: event-n-city-sports-lounge-karaoke-2026-09-03
-- event row 165: weekly-vogue-tavern-tuesday
-- event row 166: weekly-vogue-tavern-saturday
-- event row 168: event-kaminskis-sports-lounge-karaoke-2026-09-04
-- event row 178: event-richs-san-diego-karaoke-2026-09-17
-- event row 179: event-kaminskis-sports-lounge-karaoke-2026-09-18
-- event row 182: weekly-barlando-friday
-- event row 186: weekly-alpine-vfw-post-9578-thursday
-- event row 223: event-barley-sword-escondido-2026-10-08
-- event row 226: event-sugar-monkey-el-segundo-2026-10-14
+- event row 120: event-mcguffies-karaoke-2026-09-02
+- event row 121: event-mcguffies-karaoke-2026-09-23
+- event row 122: event-mcguffies-karaoke-2026-09-30
+- event row 123: weekly-grand-comedy-club-monday
+- event row 151: weekly-richs-san-diego-thursday
+- event row 152: event-n-city-sports-lounge-thursday-karaoke-party
+- event row 153: weekly-docks-cocktail-lounge-friday
+- event row 154: weekly-docks-cocktail-lounge-saturday
+- event row 160: event-n-city-sports-lounge-karaoke-2026-09-03
+- event row 163: weekly-vogue-tavern-tuesday
+- event row 164: weekly-vogue-tavern-saturday
+- event row 166: event-kaminskis-sports-lounge-karaoke-2026-09-04
+- event row 176: event-richs-san-diego-karaoke-2026-09-17
+- event row 177: event-kaminskis-sports-lounge-karaoke-2026-09-18
+- event row 180: weekly-barlando-friday
+- event row 184: weekly-alpine-vfw-post-9578-thursday
+- event row 210: event-barley-sword-escondido-2026-10-08
+- event row 213: event-sugar-monkey-el-segundo-2026-10-14
 ## Events With Invalid App Visibility
 - None
 ## Canonical Schema Problems
@@ -116,46 +116,45 @@ Exported events: 235.
 - event row 51: weekly-star-bar-wednesday Star Bar
 - event row 64: weekly-clark-cabaret-friday Clark Cabaret
 - event row 70: event-winstons-friday Winstons Beach Club
-- event row 95: weekly-mine-oyster-wednesday Mine Oyster
-- event row 96: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
-- event row 99: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
-- event row 99: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
-- event row 99: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
-- event row 103: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
-- event row 119: weekly-de-oro-mine-co-monday De Oro Mine Co.
-- event row 125: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
-- event row 133: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
-- event row 140: event-0046 Market on 8th
-- event row 158: weekly-the-luau-thursday The Luau
-- event row 159: weekly-the-luau-saturday The Luau
-- event row 160: weekly-the-luau-sunday The Luau
-- event row 161: weekly-the-luau-friday The Luau
-- event row 169: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
-- event row 180: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
-- event row 181: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
-- event row 193: weekly-casa-reveles-valley-center-monday Casa Reveles
-- event row 194: weekly-redwing-bar-grill-thursday Redwing Bar & Grill
-- event row 202: weekly-710-beach-club-tuesday 710 Beach Club
-- event row 207: weekly-jimmy-os-del-mar-tuesday Jimmy O's
-- event row 219: weekly-moonshine-beach-friday Moonshine Beach
-- event row 220: weekly-moonshine-beach-saturday Moonshine Beach
-- event row 221: weekly-mcguffies-live-wednesday McGuffie's Live
-- event row 224: weekly-dirks-niteclub-friday Dirk's Niteclub
-- event row 225: weekly-el-sinaloense-cardiff-tuesday El Sinaloense - Cardiff
-- event row 227: weekly-winstons-thursday Winstons Beach Club
-- event row 228: weekly-junkyard-oceanside-wednesday Junkyard Sports Bar & Grill
-- event row 229: weekly-junkyard-oceanside-saturday Junkyard Sports Bar & Grill
-- event row 230: weekly-peter-ds-monday Peter D's
-- event row 232: weekly-rookies-oceanside-sunday Rookies Sports Bar
-- event row 237: weekly-salty-frog-thursday The Salty Frog Bar
-- event row 238: weekly-salty-frog-sunday The Salty Frog Bar
-- event row 248: weekly-flicks-monday Flicks
-- event row 249: weekly-jimmy-os-del-mar-thursday Jimmy O's
-- event row 250: weekly-the-brass-rail-saturday The Brass Rail
-- event row 251: monthly-the-brass-rail-last-tuesday The Brass Rail
-- event row 252: monthly-barley-sword-escondido-second-thursday Barley & Sword Brewing Company - Escondido
-- event row 1000: weekly-saddle-bar-wednesday Saddle Bar
-- event row 1001: weekly-1st-street-bar-sunday 1st Street Bar
+- event row 94: weekly-mine-oyster-wednesday Mine Oyster
+- event row 95: weekly-pier-1-pizza-thursday Pier 1 Pizza & Pub
+- event row 98: weekly-white-bull-tavern-tue-thu-tuesday The White Bull Tavern
+- event row 98: weekly-white-bull-tavern-tue-thu-wednesday The White Bull Tavern
+- event row 98: weekly-white-bull-tavern-tue-thu-thursday The White Bull Tavern
+- event row 102: event-scoreboard-thursday-launch The Scoreboard Imperial Beach Sports Bar & Grill
+- event row 118: weekly-de-oro-mine-co-monday De Oro Mine Co.
+- event row 124: weekly-grand-comedy-club-wednesday Grand Comedy Club and Pizzeria
+- event row 132: monthly-bns-brewing-distilling-co-first-friday BNS Brewing and Distilling Co.
+- event row 139: event-0046 Market on 8th
+- event row 156: weekly-the-luau-thursday The Luau
+- event row 157: weekly-the-luau-saturday The Luau
+- event row 158: weekly-the-luau-sunday The Luau
+- event row 159: weekly-the-luau-friday The Luau
+- event row 167: weekly-mr-peabodys-tuesday Mr. Peabody's Bar & Grill
+- event row 178: weekly-gaslamplighter-thursday Gaslamplighter Karaoke Cocktail Bar
+- event row 179: weekly-gaslamplighter-saturday Gaslamplighter Karaoke Cocktail Bar
+- event row 191: weekly-casa-reveles-valley-center-monday Casa Reveles
+- event row 192: weekly-redwing-bar-grill-thursday Redwing Bar & Grill
+- event row 200: weekly-710-beach-club-tuesday 710 Beach Club
+- event row 205: weekly-jimmy-os-del-mar-tuesday Jimmy O's
+- event row 206: weekly-moonshine-beach-friday Moonshine Beach
+- event row 207: weekly-moonshine-beach-saturday Moonshine Beach
+- event row 208: weekly-mcguffies-live-wednesday McGuffie's Live
+- event row 211: weekly-dirks-niteclub-friday Dirk's Niteclub
+- event row 212: weekly-el-sinaloense-cardiff-tuesday El Sinaloense - Cardiff
+- event row 214: weekly-winstons-thursday Winstons Beach Club
+- event row 215: weekly-junkyard-oceanside-wednesday Junkyard Sports Bar & Grill
+- event row 216: weekly-junkyard-oceanside-saturday Junkyard Sports Bar & Grill
+- event row 217: weekly-peter-ds-monday Peter D's
+- event row 219: weekly-rookies-oceanside-sunday Rookies Sports Bar
+- event row 224: weekly-salty-frog-thursday The Salty Frog Bar
+- event row 225: weekly-salty-frog-sunday The Salty Frog Bar
+- event row 235: weekly-flicks-monday Flicks
+- event row 236: weekly-jimmy-os-del-mar-thursday Jimmy O's
+- event row 237: weekly-the-brass-rail-saturday The Brass Rail
+- event row 238: monthly-the-brass-rail-last-tuesday The Brass Rail
+- event row 240: weekly-saddle-bar-wednesday Saddle Bar
+- event row 241: weekly-1st-street-bar-sunday 1st Street Bar
 - venue: venue-0073 Dock's Cocktail Lounge
 - venue: venue-0048 Hive Karaoke
 - venue: venue-0065 Jin Music Studios
@@ -167,7 +166,6 @@ Exported events: 235.
 - venue: venue-0128 La Estación
 - venue: venue-0129 Barlando
 - venue: venue-0132 Alpine VFW Post 9578
-- venue: venue-0144 Barley & Sword Brewing Company - Escondido
 - venue: venue-0145 Watra Night Club
 - venue: venue-0147 Sugar Monkey Brewing & Social Club
 ## Public Venues Missing Coordinates
@@ -191,7 +189,7 @@ Exported events: 235.
 ```text
 SingHUB public data guardrails
 
-Data directory: /tmp/singhub-audit-candidate
+Data directory: /home/runner/work/singhub/singhub/.data-sync-output
 Public venues: 118
 Authoritative events: 235
 Legacy venue slug aliases: 0
