@@ -46,7 +46,7 @@ export async function GET(request:NextRequest){
     if (newEnd) {
       const endDate=new Date(local);
       if (newEnd<=newStart) endDate.setUTCDate(endDate.getUTCDate()+1);
-      lines.push("DTEND;TZID=America/Los_Angeles:"+endDate.toISOString().slice(0,10).replaceAll("-")+"T"+newEnd);
+      lines.push("DTEND;TZID=America/Los_Angeles:"+endDate.toISOString().slice(0,10).replaceAll("-","")+"T"+newEnd);
     }
     lines.push("SUMMARY:"+escape("Karaoke at "+venue.venueName),
       "LOCATION:"+escape(venue.address),
