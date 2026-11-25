@@ -1,21 +1,25 @@
 import type { KaraokeEventListing } from "@/types";
 
-type ScheduledEvent = Pick<KaraokeEventListing,"karaokeDay"|"recurring"|"recurrencePattern"|"eventNotes"> & Partial<Pick<KaraokeEventListing,"eventId"|"venueSlug">>;
+type ScheduledEvent = Pick<KaraokeEventListing, "karaokeDay" | "recurring" | "recurrencePattern" | "eventNotes"> &
+ Partial<Pick<KaraokeEventListing, "eventId" | "venueSlug" | "dateOverrides">>;
 
-// Date-specific venue exceptions are independent of recurring karaoke schedules.
-// They expire automatically after the named local nightlife date.
-const ONE_NIGHT_CANCELLATIONS = [
- {venueSlug:"grand-comedy-club",eventId:"weekly-grand-comedy-club-wednesday",date:"2026-11-25",reason:"No karaoke tonight. The regular Wednesday schedule resumes next week."},
-] as const;
-
-export function getOneNightCancellation(venueSlug:string,eventId:string,date=new Date()){
- const night=nightlifeDate(date).toISOString().slice(0,10);
- return ONE_NIGHT_CANCELLATIONS.find(item=>item.venueSlug===venueSlug&&item.eventId===eventId&&item.date===night);
+export function getEventOverride(event: ScheduledEvent, date = new Date()) {
+  const night = nightlifeDate(date).toISOString().slice(0, 10);
+  return event.dateOverrides?.find(override => override.nightlifeDate === night && override.eventId === event.eventId && override.venueSlug === event.venueSlug);
 }
 
-export function getVenueNightCancellation(venueSlug:string,date=new Date()){
- const night=nightlifeDate(date).toISOString().slice(0,10);
- return ONE_NIGHT_CANCELLATIONS.find(item=>item.venueSlug===venueSlug&&item.date===night);
+export function getVenueNightCancellation(events: readonly ScheduledEvent[], date = new Date()) {
+  return events.map(event => getEventOverride(event, date)).find(override => override?.status === "canceled");
+}
+
+/** Apply only a specific nightlife date's effective details, without changing weekly source data. */
+export function effectiveEventForNight<T extends KaraokeEventListing>(event: T, date = new Date()): T {
+  const override = getEventOverride(event, date);
+  if (!override || override.status === "canceled") return event;
+  if (override.status === "time_changed") {
+    return { ...event, startTime: override.startTime || event.startTime, endTime: override.endTime || event.endTime, activeOverrideStatus: override.status };
+  }
+  return { ...event, hostId: override.hostId || undefined, hostName: override.hostName || undefined, activeOverrideStatus: override.status };
 }
 
 export function scheduleQualification(event: ScheduledEvent) {
@@ -46,7 +50,7 @@ function nightlifeDate(date: Date) {
 }
 export function eventRunsOnNight(event: ScheduledEvent, weekday: string, date=new Date()) {
  if(!event.karaokeDay.toLowerCase().includes(weekday.toLowerCase())) return false;
- if(event.venueSlug && event.eventId && getOneNightCancellation(event.venueSlug,event.eventId,date))return false;
+ if(getEventOverride(event,date)?.status==="canceled")return false;
  const pattern=event.recurrencePattern?.trim() || "";
  if(!pattern || event.recurring || /^(daily|daily availability|weekly \(seasonal\))$/i.test(pattern)) return true;
  const night=nightlifeDate(date);
