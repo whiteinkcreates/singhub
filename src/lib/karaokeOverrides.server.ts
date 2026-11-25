@@ -17,7 +17,6 @@ export function publicOverride(row: OverrideRow): KaraokeEventOverride {
     status: row.status,
     startTime: row.start_time || undefined, endTime: row.end_time || undefined,
     hostId: row.host_id || undefined, hostName: row.host_name || undefined,
-    note: row.note || undefined,
   };
 }
 
@@ -27,7 +26,7 @@ export const getPublishedKaraokeOverrides = unstable_cache(async (): Promise<Kar
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return [];
   const now = new Date();
   const start = new Date(now.getTime() - 14 * 86400000).toISOString().slice(0, 10);
-  const end = new Date(now.getTime() + 400 * 86400000).toISOString().slice(0, 10);
+  const end = new Date(now.getTime() + 740 * 86400000).toISOString().slice(0, 10);
   try {
     const { data, error } = await createAdminClient().from("karaoke_event_overrides")
       .select("event_id,venue_slug,nightlife_date,status,start_time,end_time,host_id,host_name,note")
