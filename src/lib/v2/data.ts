@@ -9,7 +9,8 @@ import { nightlifeDate } from '@/lib/tourStops';
 import { makeVenueRow } from './presentation';
 // Share the search-ready directory across requests. The weekday is an explicit
 // cache key plus local nightlife date so next week's same weekday cannot reuse tonight's exceptions.
-const getCachedDiscoveryData = unstable_cache(async (weekday:string,_nightlifeDate:string) => {
+const getCachedDiscoveryData = unstable_cache(async (weekday:string,nightlifeDateKey:string) => {
+  void nightlifeDateKey; // Explicit data-cache key: current local nightlife date.
   const [venues,eventData]=await Promise.all([getVenueListings(),getKaraokeEventData()]);
   const publicVenues=getSanDiegoPublicVenues(venues);const events=groupKaraokeEvents(eventData.events);
   const rows=publicVenues.map(venue=>makeVenueRow(venue,events[venue.slug]||[],weekday,getVenueEnhancement(venue.slug)));
