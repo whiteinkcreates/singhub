@@ -17,6 +17,8 @@ async function loadHosts({sheet=false, explicitRodney=false,rodneyName}={}) {
     eventId:row.event_id,venueSlug:row.venue_slug,venueName:row.venue_name,
     karaokeDay:row.karaoke_day,startTime:row.start_time,endTime:row.end_time,
     hostId:row.host_id||undefined,hostName:row.host_name,
+    recurring:/^(true|yes|1|weekly|recurring)$/i.test(row.recurring||''),
+    recurrencePattern:row.recurring||'',
   }));
   if(explicitRodney)for(const event of events)if(event.venueSlug==='hearth-house'){
     event.hostId='rodney';
@@ -52,6 +54,11 @@ for(const sheet of [false,true])test(`confirmed Rodney identity attaches Hearth 
     assert.ok(!hosts.some(host=>host.hostId==='james'));
     const company=gigs(hosts.find(host=>host.hostId==='all-mic-long'));
     for(const venue of ['gingers','tonys-martini-bar','kaminskis-sports-lounge'])assert.ok(company.some(gig=>gig.venueId===venue));
+    assert.ok(!company.some(gig=>gig.venueId==='hennesseys-la-jolla'), 'twice-monthly event must not appear on a weekly share card');
+    const harvest=gigs(hosts.find(host=>host.hostId==='dj-harvest'));
+    assert.ok(!harvest.some(gig=>gig.venueId==='joycees-cocktails'), 'alternating Wednesdays must not look weekly');
+    const bryon=gigs(hosts.find(host=>host.hostId==='bryon-bea'));
+    for(const venue of ['the-mesa','redwing-bar-grill'])assert.ok(bryon.some(gig=>gig.venueId===venue));
     for(const id of ['mikey-mic','devyn-conover'])assert.ok(!gigs(hosts.find(host=>host.hostId===id)).some(gig=>['gingers','tonys-martini-bar'].includes(gig.venueId)));
   }
 });
