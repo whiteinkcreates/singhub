@@ -9,6 +9,7 @@ import {singHereForHostNight} from "@/lib/singHereHostNight";
 import {resolveSingHere} from "@/lib/singHere";
 import {getMarketConfig} from "@/lib/markets";
 import {eventRunsOnNight,scheduleQualification} from "@/lib/eventOccurrence";
+import {nightlifeDate} from "@/lib/tourStops";
 import {makeVenueRow,usable,publicEventTimeLabel} from "@/lib/v2/presentation";
 import {scheduledExtrasOnDay,venueAmenities} from "@/lib/karaokePlusOverlap";
 import {getTonightSpecials} from "@/lib/venueEnhancements";
@@ -48,9 +49,19 @@ export function EditorialVenueTemplate({venue,events,kjHosts=[],enhancement,week
  const activeOffer=enhancement?.enabled&&enhancement?.singhubOffer?.enabled&&(!enhancement.singhubOffer.days?.length||enhancement.singhubOffer.days.some(day=>day.toLowerCase()===weekday.toLowerCase()))?enhancement.singhubOffer:undefined;
  const days=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
  const currentDay=days.findIndex(day=>day.toLowerCase()===weekday.toLowerCase());
- const regularUpcoming=events.filter(event=>event.recurring||/weekly/i.test(event.recurrencePattern||""))
-  .map(event=>({event,offset:(days.findIndex(day=>day.toLowerCase()===event.karaokeDay.toLowerCase())-currentDay+7)%7}))
-  .filter(entry=>entry.offset>=0&&entry.offset<7)
+ const regularUpcoming=events.filter(event=>event.recurring||/weekly|monthly|biweekly/i.test(event.recurrencePattern||""))
+  .map(event=>{
+   const target=days.findIndex(day=>day.toLowerCase()===event.karaokeDay.toLowerCase());
+   if(target<0)return {event,offset:999};
+   let offset=(target-currentDay+7)%7;
+   const base=new Date(nightlifeDate()+"T12:00:00Z");
+   for(let attempt=0;attempt<7;attempt++,offset+=7){
+    const date=new Date(base);date.setUTCDate(date.getUTCDate()+offset);
+    if(eventRunsOnNight(event,event.karaokeDay,date))return {event,offset};
+   }
+   return {event,offset:999};
+  })
+  .filter(entry=>entry.offset<49)
   .sort((a,b)=>a.offset-b.offset)[0]?.event;
  const nextMicNight=row.tonight||regularUpcoming;
  const spotlightHosts=kjHosts.filter(host=>host.slug&&host.publicDisplayName?.trim());
@@ -109,8 +120,8 @@ export function EditorialVenueTemplate({venue,events,kjHosts=[],enhancement,week
    <section className="ve-next-mic" id="ve-next-mic" aria-labelledby="ve-next-mic-title">
      <div>
        <p className="ve-overline">ON THE MIC</p>
-       <h2 id="ve-next-mic-title">{row.tonight?"Karaoke tonight":nextMicNight?"Next regular karaoke":"Karaoke dates being verified"}</h2>
-       <p>{nextMicNight?<><strong>{nextMicNight.karaokeDay}</strong>{" · "+publicEventTimeLabel(nextMicNight)}{usable(nextMicNight.hostName)?" · "+nextMicNight.hostName:""}</>:"Check with the venue for its current karaoke schedule."}</p>
+       <h2 id="ve-next-mic-title">{row.tonightCancellation?"NOT TONIGHT · Karaoke canceled":row.tonight?"Karaoke tonight":nextMicNight?"Next regular karaoke":"Karaoke dates being verified"}</h2>
+       <p>{row.tonightCancellation?<strong>Not happening tonight. Next regular night: </strong>:null}{nextMicNight?<><strong>{nextMicNight.karaokeDay}</strong>{" · "+publicEventTimeLabel(nextMicNight)}{usable(nextMicNight.hostName)?" · "+nextMicNight.hostName:""}</>:"Check with the venue for its current karaoke schedule."}</p>
      </div>
      <a href="#ve-schedule">Full weekly schedule <span aria-hidden="true">↓</span></a>
    </section>
@@ -153,11 +164,11 @@ export function EditorialVenueTemplate({venue,events,kjHosts=[],enhancement,week
 
     <aside className="ve-aside">
      <section className="ve-tonight" aria-labelledby="ve-tonight-title">
-      <p className="ve-overline">{row.tonight?"TONIGHT / LIVE ON THE MIC":"PLAN YOUR VISIT"}</p>
-      <h2 id="ve-tonight-title">{venue.venueType==="private_room"?"Book your room.":row.tonight?(hasOnlineSignup?"Let's get you signed up.":"How to join tonight."):hasOnlineSignup?"Join the karaoke list.":"Plan your karaoke night."}</h2>
+      <p className="ve-overline">{row.tonightChange||(row.tonightCancellation?"NOT TONIGHT":row.tonight?"TONIGHT / LIVE ON THE MIC":"PLAN YOUR VISIT")}</p>
+      <h2 id="ve-tonight-title">{venue.venueType==="private_room"?"Book your room.":row.tonight?(hasOnlineSignup?"Let's get you signed up.":"How to join tonight."):row.tonightCancellation?"No karaoke tonight.":hasOnlineSignup?"Join the karaoke list.":"Plan your karaoke night."}</h2>
       <div className="ve-tonight-info">
-       <span>{row.tonight?"Karaoke tonight":nextMicNight?"Next regular night":"Karaoke information"}</span>
-       <strong>{nextMicNight?nextMicNight.karaokeDay+" · "+publicEventTimeLabel(nextMicNight):venue.venueType==="private_room"?"Book with the venue":"Schedule being verified"}</strong>
+       <span>{row.tonightCancellation?"Canceled for this date":row.tonight?"Karaoke tonight":nextMicNight?"Next regular night":"Karaoke information"}</span>
+       <strong>{row.tonightCancellation?"Regular weekly night returns next time":nextMicNight?nextMicNight.karaokeDay+" · "+publicEventTimeLabel(nextMicNight):venue.venueType==="private_room"?"Book with the venue":"Schedule being verified"}</strong>
        <p>{nextMicNight?(usable(nextMicNight.hostName)?"Hosted by "+nextMicNight.hostName:"Host details pending"):"Check the venue for dates and host details."}</p>
       </div>
       <button className={"ve-singhere"+(hasOnlineSignup?" ve-singhere-linked":"")} type="button" aria-label={hasOnlineSignup?"Open SingHERE online signup":"Open SingHERE signup instructions"} data-toast="SingHERE flow opened"><SingHereMark alt="SingHERE" /></button>
