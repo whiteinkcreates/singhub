@@ -1,6 +1,6 @@
 import type {KaraokeEventListing} from "@/types";
 import type {VenueProgramEvent,VenueWeeklyProgram} from "@/lib/venueEnhancements";
-import {eventRunsOnNight} from "@/lib/eventOccurrence";
+import {eventRunsOnNight,effectiveEventForNight,getEventOverride} from "@/lib/eventOccurrence";
 import {publicEventTimeLabel,usable} from "@/lib/v2/presentation";
 
 const WEEKDAYS=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
@@ -31,12 +31,21 @@ export function venueCalendarOccurrences({
       result.push({date:iso,title:program.title,time:program.time,detail:program.detail,category:program.category||"community",sourceUrl:program.sourceUrl,recurring:true});
     }
     for(const karaoke of karaokeEvents){
-      if(karaoke.activeStatus!=="active" || !eventRunsOnNight(karaoke,weekday,new Date(date)))continue;
+      const activeDate = new Date(date);
+      const exception = getEventOverride(karaoke,activeDate);
+      if (exception?.status==="canceled") {
+        if (!result.some(item=>item.date===iso&&item.title==="Karaoke canceled")) {
+          result.push({date:iso,title:"Karaoke canceled",detail:"Not happening on this date. Weekly karaoke continues next time.",category:"special"});
+        }
+        continue;
+      }
+      if(karaoke.activeStatus!=="active" || !eventRunsOnNight(karaoke,weekday,activeDate))continue;
+      const current = effectiveEventForNight(karaoke,activeDate);
       // Specific dated karaoke announcements override a standard recurrence for this date.
       if(onDate.some(item=>item.category==="karaoke"||/karaoke/i.test(item.title)))continue;
-      const host=usable(karaoke.hostName);
+      const host=usable(current.hostName);
       const title=host && /\bkaraoke\b/i.test(host)?host:host?"Karaoke with "+host:"Karaoke";
-      const time=publicEventTimeLabel(karaoke);
+      const time=publicEventTimeLabel(current);
       if(result.some(item=>item.date===iso&&item.title===title))continue;
       result.push({date:iso,title,time:time==="Time pending"?undefined:time,category:"karaoke",recurring:true});
     }
