@@ -1,6 +1,6 @@
 import type {KaraokeEventListing} from '@/types';
 import type {SingHereConfig} from '@/lib/venueEnhancements';
-import {eventRunsOnNight} from '@/lib/eventOccurrence';
+import {eventRunsOnNight,effectiveEventForNight} from '@/lib/eventOccurrence';
 
 /**
  * Verified host-night signup destinations.
@@ -22,7 +22,7 @@ export function singHereForHostNight(
   base:SingHereConfig|undefined,
   hosts:readonly {hostId:string;hostName:string;publicDisplayName:string;tipLink?:string;signupLink?:string}[]=[]
 ):SingHereConfig|undefined {
-  const active=events.filter(event=>eventRunsOnNight(event,weekday)&&event.activeStatus==='active');
+  const active=events.filter(event=>eventRunsOnNight(event,weekday)&&event.activeStatus==='active').map(event=>effectiveEventForNight(event));
   // Ambiguous rotations should never silently show a signup for the wrong host.
   if(active.length!==1)return {...base,kjName:undefined,kjTips:undefined};
   const host=active[0].hostName?.trim();
