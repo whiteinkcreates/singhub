@@ -153,7 +153,6 @@ Exported events: 235.
 - event row 236: weekly-jimmy-os-del-mar-thursday Jimmy O's
 - event row 237: weekly-the-brass-rail-saturday The Brass Rail
 - event row 238: monthly-the-brass-rail-last-tuesday The Brass Rail
-- event row 239: monthly-barley-sword-escondido-second-thursday Barley & Sword Brewing Company - Escondido
 - event row 240: weekly-saddle-bar-wednesday Saddle Bar
 - event row 241: weekly-1st-street-bar-sunday 1st Street Bar
 - venue: venue-0073 Dock's Cocktail Lounge
@@ -167,7 +166,6 @@ Exported events: 235.
 - venue: venue-0128 La Estación
 - venue: venue-0129 Barlando
 - venue: venue-0132 Alpine VFW Post 9578
-- venue: venue-0144 Barley & Sword Brewing Company - Escondido
 - venue: venue-0145 Watra Night Club
 - venue: venue-0147 Sugar Monkey Brewing & Social Club
 ## Public Venues Missing Coordinates
