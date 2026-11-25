@@ -50,6 +50,12 @@ test('Grand Comedy Wednesday is cancelled only for November 25, 2026', () => {
   karaokeDay:'Wednesday',
   recurring:true,
   recurrencePattern:'TRUE',
+  dateOverrides:[{
+    eventId:'weekly-grand-comedy-club-wednesday',
+    venueSlug:'grand-comedy-club',
+    nightlifeDate:'2026-11-25',
+    status:'canceled'
+  }],
  };
  const cancelledNight=new Date('2026-11-26T01:00:00Z');
  const rollover=new Date('2026-11-26T10:59:00Z');
