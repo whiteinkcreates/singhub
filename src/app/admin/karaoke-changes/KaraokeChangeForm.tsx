@@ -61,7 +61,7 @@ export default function KaraokeChangeForm({events,edit}:{events:EventOption[];ed
     setEnd(timeForInput(next?.endTime));
     setHost("");
   };
-  return <form action={saveKaraokeChange} className="space-y-5 rounded-2xl border border-cyan-300/20 bg-slate-950/80 p-5">
+  return <form id="edit" action={saveKaraokeChange} className="space-y-5 rounded-2xl border border-cyan-300/20 bg-slate-950/80 p-5">
     <div>
       <h2 className="text-2xl font-black">{edit?"Update dated change":"Schedule a one-date change"}</h2>
       <p className="mt-2 text-sm text-slate-300">Pick the exact karaoke event and local date. The normal weekly rotation is never modified.</p>
