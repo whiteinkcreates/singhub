@@ -1,6 +1,22 @@
 import type { KaraokeEventListing } from "@/types";
 
-type ScheduledEvent = Pick<KaraokeEventListing,"karaokeDay"|"recurring"|"recurrencePattern"|"eventNotes">;
+type ScheduledEvent = Pick<KaraokeEventListing,"karaokeDay"|"recurring"|"recurrencePattern"|"eventNotes"> & Partial<Pick<KaraokeEventListing,"eventId"|"venueSlug">>;
+
+// Date-specific venue exceptions are independent of recurring karaoke schedules.
+// They expire automatically after the named local nightlife date.
+const ONE_NIGHT_CANCELLATIONS = [
+ {venueSlug:"grand-comedy-club",eventId:"weekly-grand-comedy-club-wednesday",date:"2026-11-25",reason:"No karaoke tonight. The regular Wednesday schedule resumes next week."},
+] as const;
+
+export function getOneNightCancellation(venueSlug:string,eventId:string,date=new Date()){
+ const night=nightlifeDate(date).toISOString().slice(0,10);
+ return ONE_NIGHT_CANCELLATIONS.find(item=>item.venueSlug===venueSlug&&item.eventId===eventId&&item.date===night);
+}
+
+export function getVenueNightCancellation(venueSlug:string,date=new Date()){
+ const night=nightlifeDate(date).toISOString().slice(0,10);
+ return ONE_NIGHT_CANCELLATIONS.find(item=>item.venueSlug===venueSlug&&item.date===night);
+}
 
 export function scheduleQualification(event: ScheduledEvent) {
  const pattern=event.recurrencePattern?.trim() || "";
@@ -30,6 +46,7 @@ function nightlifeDate(date: Date) {
 }
 export function eventRunsOnNight(event: ScheduledEvent, weekday: string, date=new Date()) {
  if(!event.karaokeDay.toLowerCase().includes(weekday.toLowerCase())) return false;
+ if(event.venueSlug && event.eventId && getOneNightCancellation(event.venueSlug,event.eventId,date))return false;
  const pattern=event.recurrencePattern?.trim() || "";
  if(!pattern || event.recurring || /^(daily|daily availability|weekly \(seasonal\))$/i.test(pattern)) return true;
  const night=nightlifeDate(date);
