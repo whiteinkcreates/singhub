@@ -92,7 +92,7 @@ export default function KaraokeChangeForm({events,edit}:{events:EventOption[];ed
       </label>
     </div>
     {edit&&<><input type="hidden" name="venue_slug" value={venue}/><input type="hidden" name="event_id" value={event?.eventId||""}/><input type="hidden" name="nightlife_date" value={date}/></>}
-    {!dayMatches&&<p role="alert" className="rounded-xl border border-amber-400/40 p-3 text-sm text-amber-200">The selected date is not on this event's usual {event?.day} rotation. Choose the correct weekday.</p>}
+    {!dayMatches&&<p role="alert" className="rounded-xl border border-amber-400/40 p-3 text-sm text-amber-200">The selected date is not on this event&apos;s usual {event?.day} rotation. Choose the correct weekday.</p>}
     {event&&<p className="rounded-xl border border-white/10 p-3 text-sm text-slate-300">Regular schedule: <strong className="text-white">{event.day}, {event.startTime} to {event.endTime}, {event.hostName||"host to be confirmed"}</strong></p>}
     {status==="time_changed"&&<div className="grid gap-4 md:grid-cols-2">
       <label className="text-sm font-bold">New start time
