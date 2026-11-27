@@ -162,3 +162,14 @@ test('admin report detects an API cap below its requested limit instead of showi
  assert.equal(exports.hasIncompleteRows({count:0,data:[]}),false);
  assert.equal(exports.hasIncompleteRows({count:null,data:[]}),true);
 });
+
+test('perk presentation copy supports KJs, bartenders and servers without changing redemption mode',()=>{
+ const presentation=readFileSync('src/components/v2/VenueOfferPresentation.tsx','utf8');
+ const editor=readFileSync('src/components/admin/VenueOfferEditor.tsx','utf8');
+ assert.match(presentation,/KJ, bartender or server/);
+ assert.match(presentation,/Show perk/);
+ assert.match(editor,/honors the perk according to its terms/);
+ for(const file of ['src/components/v2/VenueOfferPresentation.tsx','src/components/v2/MyOffers.tsx','src/components/v2/TourStopCheckIn.tsx','src/components/admin/VenueOfferEditor.tsx']){
+  assert.doesNotMatch(readFileSync(file,'utf8'),/Open for bartender|your bartender is ready|Have your bartender ready/);
+ }
+});

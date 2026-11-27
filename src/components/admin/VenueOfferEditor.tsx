@@ -1,10 +1,13 @@
 "use client";
 import {useState} from "react";
+import {PERK_TEMPLATES} from "@/lib/perkTemplates";
 import type {SingHubOffer} from "@/lib/venueEnhancements";
 
 const DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 
 export function VenueOfferEditor({slug,partnerEnabled,offer,onChange}:{slug:string;partnerEnabled:boolean;offer:SingHubOffer;onChange:(offer:SingHubOffer)=>void}){
+ const [templateName,setTemplateName]=useState("");
+ const template=PERK_TEMPLATES.find(item=>item.name===templateName);
  const [generating,setGenerating]=useState(false);
  const [registerKey,setRegisterKey]=useState("");
  const [message,setMessage]=useState("");
@@ -31,14 +34,27 @@ export function VenueOfferEditor({slug,partnerEnabled,offer,onChange}:{slug:stri
    <button type="button" onClick={()=>patch({enabled:!offer.enabled})} aria-pressed={offer.enabled} className={`relative h-8 w-14 shrink-0 rounded-full transition ${offer.enabled?"bg-fuchsia-400":"bg-slate-700"}`}><span className={`absolute top-1 h-6 w-6 rounded-full bg-white transition ${offer.enabled?"left-7":"left-1"}`}/></button>
   </div>
   {!partnerEnabled&&offer.enabled?<p className="mt-3 rounded-xl border border-amber-300/20 bg-amber-300/[0.06] p-3 text-xs font-bold text-amber-100">Offer is configured, but it will not unlock publicly until the enhanced profile is enabled.</p>:null}
+  <div className="mt-4 rounded-2xl border border-white/10 bg-black/20 p-4">
+   <label className={label}>Perk library<select className={input} value={templateName} onChange={event=>setTemplateName(event.target.value)}>
+    <option value="">Choose a perk template (optional)</option>
+    {["Mic","Venue"].map(category=><optgroup key={category} label={category+" perks"}>{PERK_TEMPLATES.filter(item=>item.category===category).map(item=><option key={item.name} value={item.name}>{item.name}</option>)}</optgroup>)}
+    <option value="other">Other / custom perk</option>
+   </select></label>
+   {template?<div className="mt-3 space-y-2 text-sm text-slate-300" aria-live="polite">
+    <p className="font-bold text-white">{template.description}</p>
+    <p className="text-xs leading-5 text-slate-400">{template.guidance}</p>
+    <p className="text-xs text-amber-200">Applying replaces headline, guest detail and fine print only. Review all terms and valid nights before saving. Eligibility beyond check-in and configured days is verified by staff or the KJ.</p>
+    <button type="button" onClick={()=>patch({title:template.name,detail:template.detail||"",terms:template.terms||""})} className="rounded-full border border-cyan-300/30 px-4 py-2 text-xs font-bold text-cyan-100">Use template</button>
+   </div>:templateName==="other"?<p className="mt-3 text-sm text-slate-300" aria-live="polite">Enter your custom perk name, description and terms in the editable fields below. Existing values are preserved until you change them.</p>:<p className="mt-2 text-xs text-slate-400">Browse ideas or keep editing the existing offer. Selecting a template does not change or enable an offer.</p>}
+  </div>
   <div className="mt-4 grid gap-4 md:grid-cols-2">
-   <label className={label}>Offer headline<input className={input} value={offer.title} onChange={event=>patch({title:event.target.value})} placeholder="$1 off one drink"/></label>
-   <label className={label}>Guest detail<input className={input} value={offer.detail||""} onChange={event=>patch({detail:event.target.value})} placeholder="Open your live offer and show it to your bartender."/></label>
+   <label className={label}>{templateName==="other"?"Custom perk name":"Offer headline"}<input className={input} value={offer.title} onChange={event=>patch({title:event.target.value})} placeholder="$1 off one drink"/></label>
+   <label className={label}>{templateName==="other"?"Custom perk description":"Guest detail"}<input className={input} value={offer.detail||""} onChange={event=>patch({detail:event.target.value})} placeholder="Show your live perk to the appropriate KJ, bartender or server."/></label>
    <label className={`${label} md:col-span-2`}>Fine print<input className={input} value={offer.terms||""} onChange={event=>patch({terms:event.target.value})} placeholder="One per person per night. Cannot be combined with other offers."/></label>
   </div>
-  <div className="mt-4"><label className={label}>How singers present the offer<select className={input} value={offer.presentationMode||"staff_code"} onChange={event=>patch({presentationMode:event.target.value as "staff_code"|"one_time"})}><option value="staff_code">Staff enters six-digit code</option><option value="one_time">One-time live presentation (no staff device)</option></select></label><p className="mt-2 text-xs text-slate-400">{offer.presentationMode==="one_time"?"Singer shows one live offer, then closes it as Presented. No venue login or code needed.":"Venue staff enters the code to mark the offer Redeemed."}</p></div>
+  <div className="mt-4"><label className={label}>How singers present the offer<select className={input} value={offer.presentationMode||"staff_code"} onChange={event=>patch({presentationMode:event.target.value as "staff_code"|"one_time"})}><option value="staff_code">Authorized staff enters six-digit code</option><option value="one_time">One-time live presentation (no staff device)</option></select></label><p className="mt-2 text-xs text-slate-400">{offer.presentationMode==="one_time"?"Singer shows one live offer, then closes it as Presented. No venue login or code needed.":"An authorized KJ, bartender or server enters the code using the venue's connected register to mark the offer Redeemed."}</p></div>
   <div className="mt-4"><p className={label}>Valid nights <span className="normal-case tracking-normal text-slate-600">leave blank for every night</span></p><div className="mt-3 flex flex-wrap gap-2">{DAYS.map(day=>{const active=offer.days?.includes(day);return <button key={day} type="button" onClick={()=>toggleDay(day)} className={`rounded-full border px-3 py-2 text-xs font-bold ${active?"border-cyan-300/55 bg-cyan-300/15 text-cyan-100":"border-white/10 text-slate-400"}`}>{active?"✓ ":""}{day.slice(0,3)}</button>;})}</div></div>
-  {offer.presentationMode==="one_time"?<p className="mt-5 rounded-2xl border border-cyan-300/25 bg-cyan-300/[0.05] p-4 text-xs leading-5 text-cyan-100">No register setup is needed. The bartender checks the moving live offer on the singer&apos;s phone and applies the discount using the usual register. SingHUB records Presented when the singer closes it.</p>:<div className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4">
+  {offer.presentationMode==="one_time"?<p className="mt-5 rounded-2xl border border-cyan-300/25 bg-cyan-300/[0.05] p-4 text-xs leading-5 text-cyan-100">No register setup is needed. The KJ, bartender or server checks the moving live offer on the singer&apos;s phone and honors the perk according to its terms. SingHUB records Presented when the singer closes it.</p>:<div className="mt-5 rounded-2xl border border-white/10 bg-black/20 p-4">
    <div className="flex flex-wrap items-center justify-between gap-3"><div><p className={label}>Venue register</p><p className="mt-1 text-xs leading-5 text-slate-500">Open <b className="text-slate-300">/register/{slug}</b> on a venue-managed phone, tablet or browser. The private key connects that device once.</p></div><button type="button" disabled={generating||!slug} onClick={()=>void generateKey()} className="rounded-full border border-cyan-300/30 px-4 py-2 text-xs font-black text-cyan-100 disabled:opacity-40">{generating?"Generating…":"Generate / rotate key"}</button></div>
    {registerKey?<div className="mt-4 grid gap-2"><span className="text-[10px] font-black uppercase tracking-[0.14em] text-fuchsia-300">Copy this key now</span><code className="overflow-x-auto rounded-xl border border-white/10 bg-slate-950 p-3 text-xs text-cyan-100">{registerKey}</code></div>:null}
    {message?<p className="mt-3 text-xs text-slate-300">{message}</p>:null}
