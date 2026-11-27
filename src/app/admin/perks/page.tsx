@@ -1,4 +1,5 @@
 import Link from "next/link";
+import {PERK_TEMPLATES} from "@/lib/perkTemplates";
 import {createAdminClient} from "@/lib/supabase/admin";
 import {requireAdminAuthorization} from "@/lib/adminAuthorization";
 import {getVenueListings} from "@/lib/venueData";
@@ -99,6 +100,15 @@ export default async function AdminPerks({searchParams}:{searchParams:Promise<{p
     <Link href="/admin/light-up-venues" className="rounded-full border border-white/15 px-4 py-2 text-cyan-200">Configure perks ↗</Link>
    </nav>
   </header>
+  <details className="mt-6 rounded-2xl border border-white/10 bg-white/[.04] p-4">
+   <summary className="cursor-pointer text-lg font-black text-cyan-200">SingHUB Perk Library</summary>
+   <p className="mt-2 text-sm text-slate-400">Browse ideas for venue and Mic Perks. These are templates, not active offers. Configure a venue to apply or customize one.</p>
+   <div className="mt-4 grid gap-2 sm:grid-cols-2">
+    {PERK_TEMPLATES.map(item=><details key={item.name} className="rounded-xl border border-white/10 bg-slate-950/60 p-3"><summary className="cursor-pointer text-sm font-bold text-white">{item.name} <span className="ml-2 text-xs font-normal text-slate-400">{item.category}</span></summary><p className="mt-2 text-sm text-slate-200">{item.description}</p><p className="mt-2 text-xs leading-5 text-slate-400">{item.guidance}</p></details>)}
+    <details className="rounded-xl border border-white/10 bg-slate-950/60 p-3"><summary className="cursor-pointer text-sm font-bold text-white">Other / custom perk</summary><p className="mt-2 text-sm text-slate-200">Create a custom perk with its own name, description and terms in the venue editor.</p></details>
+   </div>
+   <Link href="/admin/light-up-venues" className="mt-4 inline-block rounded-full border border-cyan-300/30 px-4 py-2 text-sm font-bold text-cyan-200">Choose a venue and configure a perk</Link>
+  </details>
   {truncated&&<p role="alert" className="mt-6 rounded-xl border border-amber-300/30 bg-amber-400/10 p-4 text-sm text-amber-100">
    The report could not confirm complete results. Displayed totals may be incomplete. Shorten the date range before comparing venues.
   </p>}
