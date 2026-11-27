@@ -52,7 +52,7 @@ export function MyOffers({userId,venues}:{userId:string|null;venues:Venue[]}){
   return()=>window.clearInterval(interval);
  },[offers]);
  return <section className="panel my-offers-panel" id="offers" aria-labelledby="my-offers-title">
-  <header className="panel-head"><div><h2 id="my-offers-title">My Offers</h2><p>Unlocked offers for the current San Diego nightlife date. Open only when your bartender is ready.</p></div>
+  <header className="panel-head"><div><h2 id="my-offers-title">My Offers</h2><p>Unlocked offers for the current San Diego nightlife date. Open only when the person honoring your perk is ready.</p></div>
    <button type="button" className="text-button" disabled={pending} onClick={()=>void load()}>{pending?"Loading…":"Refresh"}</button>
   </header>
   {offers.length?<div className="my-offers-list">{offers.map(offer=>{
