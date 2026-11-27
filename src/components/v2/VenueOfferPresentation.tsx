@@ -50,8 +50,8 @@ export function VenueOfferPresentation({offer,venueSlug,venueName,onChange,onLiv
    <p className="gig-eyebrow">{offer.redeemedAt?"Offer redeemed":"SingHUB Offer unlocked"}</p>
    <h3>{offer.title}</h3>
    {offer.detail&&<p>{offer.detail}</p>}
-   {offer.code&&<div className="tour-offer-code"><span>REGISTER CODE</span><strong>{offer.code}</strong></div>}
-   <p className="gig-fine">{offer.redeemedAt?"This offer has already been redeemed.":"Show this code at the register. Venue staff marks it redeemed."}</p>
+   {offer.code&&<div className="tour-offer-code"><span>REDEMPTION CODE</span><strong>{offer.code}</strong></div>}
+   <p className="gig-fine">{offer.redeemedAt?"This offer has already been redeemed.":"Show this code to the person handling your perk. Authorized staff marks it redeemed."}</p>
    {offer.terms&&<small>{offer.terms}</small>}
   </section>
  );
@@ -65,7 +65,7 @@ export function VenueOfferPresentation({offer,venueSlug,venueName,onChange,onLiv
      <strong className="tour-offer-headline">{offer.title}</strong>
      {offer.detail&&<p>{offer.detail}</p>}
      <p className="tour-offer-clock" aria-label="Current San Diego time">{new Date(now).toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit",second:"2-digit",timeZone:"America/Los_Angeles"})}</p>
-     <p className="gig-fine">San Diego time · Show this moving screen to the bartender</p>
+     <p className="gig-fine">San Diego time · Show this moving screen to your KJ, bartender or server</p>
      {offer.terms&&<small>{offer.terms}</small>}
      <button type="button" className="tour-offer-end" disabled={pending} onClick={()=>void change("close")}>{pending?"Closing…":"Close offer · Mark Presented"}</button>
      {message&&<p role="alert">{message}</p>}
@@ -77,11 +77,11 @@ export function VenueOfferPresentation({offer,venueSlug,venueName,onChange,onLiv
    {offer.detail&&<p>{offer.detail}</p>}
    {unavailable?<p className="gig-fine">{offer.presentedAt?"This offer has been presented and cannot be opened again.":"This one-time offer was opened already and is no longer available."}</p>:
    phase==="warning"?<div className="tour-offer-warning">
-    <strong>Have your bartender ready.</strong>
+    <strong>Have the person honoring your perk ready.</strong>
     <p>This offer opens one time. Once you close it, it becomes Presented and cannot be reopened. An accidental browser reload has a short recovery window.</p>
     <button type="button" disabled={pending} onClick={()=>void change("open")}>{pending?"Opening…":"Open live offer"}</button>
     <button type="button" className="tour-offer-secondary" disabled={pending} onClick={()=>setPhase("summary")}>Not yet</button>
-   </div>:<><p className="gig-fine">No code needed. Show the live, animated screen to your bartender when you are ready.</p><button type="button" onClick={()=>setPhase("warning")}>{offer.presentationStartedAt?"Recover live offer":"Open for bartender"}</button></>}
+   </div>:<><p className="gig-fine">No code needed. Show the live, animated screen to your KJ, bartender or server when they are ready.</p><button type="button" onClick={()=>setPhase("warning")}>{offer.presentationStartedAt?"Recover live offer":"Show perk"}</button></>}
    {offer.terms&&<small>{offer.terms}</small>}
    {message&&<p role="alert">{message}</p>}
   </>}
